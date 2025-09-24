@@ -13,6 +13,12 @@ import { generateBranchName, createFallbackBranchName } from '@/lib/utils/branch
 
 export async function GET() {
   try {
+    if (!db) {
+      return NextResponse.json({ 
+        tasks: [], 
+        message: 'Database not available - using fallback mode' 
+      })
+    }
     const allTasks = await db.select().from(tasks).orderBy(desc(tasks.createdAt))
     return NextResponse.json({ tasks: allTasks })
   } catch (error) {
@@ -35,6 +41,30 @@ export async function POST(request: NextRequest) {
       logs: [createInfoLog('Task created, preparing to start...')],
     })
 
+    // Handle case when database is not available
+    if (!db) {
+      const fallbackTask = {
+        ...validatedData,
+        id: taskId,
+        status: 'pending' as const,
+        progress: 0,
+        logs: [createInfoLog('Task created (database not available - using fallback mode)')],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+      
+      // Process the task asynchronously without database
+      processTaskWithTimeout(
+        taskId,
+        validatedData.prompt,
+        validatedData.repoUrl || '',
+        validatedData.selectedAgent || 'claude',
+        validatedData.selectedModel,
+      )
+      
+      return NextResponse.json({ task: fallbackTask })
+    }
+
     // Insert the task into the database - ensure id is definitely present
     const [newTask] = await db
       .insert(tasks)
@@ -44,69 +74,75 @@ export async function POST(request: NextRequest) {
       })
       .returning()
 
-    // Generate AI branch name after response is sent (non-blocking)
-    after(async () => {
-      try {
-        // Check if AI Gateway API key is available
-        if (!process.env.AI_GATEWAY_API_KEY) {
-          console.log('AI_GATEWAY_API_KEY not available, skipping AI branch name generation')
-          return
-        }
-
-        const logger = createTaskLogger(taskId)
-        await logger.info('Generating AI-powered branch name...')
-
-        // Extract repository name from URL for context
-        let repoName: string | undefined
+    // Generate AI branch name after response is sent (non-blocking) - only if database is available
+    if (db) {
+      after(async () => {
         try {
-          const url = new URL(validatedData.repoUrl || '')
-          const pathParts = url.pathname.split('/')
-          if (pathParts.length >= 3) {
-            repoName = pathParts[pathParts.length - 1].replace('.git', '')
+          // Check if AI Gateway API key is available
+          if (!process.env.AI_GATEWAY_API_KEY) {
+            console.log('AI_GATEWAY_API_KEY not available, skipping AI branch name generation')
+            return
           }
-        } catch {
-          // Ignore URL parsing errors
-        }
-
-        // Generate AI branch name
-        const aiBranchName = await generateBranchName({
-          description: validatedData.prompt,
-          repoName,
-          context: `${validatedData.selectedAgent} agent task`,
-        })
-
-        // Update task with AI-generated branch name
-        await db
-          .update(tasks)
-          .set({
-            branchName: aiBranchName,
-            updatedAt: new Date(),
-          })
-          .where(eq(tasks.id, taskId))
-
-        await logger.success(`Generated AI branch name: ${aiBranchName}`)
-      } catch (error) {
-        console.error('Error generating AI branch name:', error)
-
-        // Fallback to timestamp-based branch name
-        const fallbackBranchName = createFallbackBranchName(taskId)
-
-        try {
-          await db
-            .update(tasks)
-            .set({
-              branchName: fallbackBranchName,
-              updatedAt: new Date(),
-            })
-            .where(eq(tasks.id, taskId))
 
           const logger = createTaskLogger(taskId)
-          await logger.info(`Using fallback branch name: ${fallbackBranchName}`)
-        } catch (dbError) {
-          console.error('Error updating task with fallback branch name:', dbError)
+          await logger.info('Generating AI-powered branch name...')
+
+          // Extract repository name from URL for context
+          let repoName: string | undefined
+          try {
+            const url = new URL(validatedData.repoUrl || '')
+            const pathParts = url.pathname.split('/')
+            if (pathParts.length >= 3) {
+              repoName = pathParts[pathParts.length - 1].replace('.git', '')
+            }
+          } catch {
+            // Ignore URL parsing errors
+          }
+
+          // Generate AI branch name
+          const aiBranchName = await generateBranchName({
+            description: validatedData.prompt,
+            repoName,
+            context: `${validatedData.selectedAgent} agent task`,
+          })
+
+          // Update task with AI-generated branch name
+          if (db) {
+            await db
+              .update(tasks)
+              .set({
+                branchName: aiBranchName,
+                updatedAt: new Date(),
+              })
+              .where(eq(tasks.id, taskId))
+          }
+
+          await logger.success(`Generated AI branch name: ${aiBranchName}`)
+        } catch (error) {
+          console.error('Error generating AI branch name:', error)
+
+          // Fallback to timestamp-based branch name
+          const fallbackBranchName = createFallbackBranchName(taskId)
+
+          try {
+            if (db) {
+              await db
+                .update(tasks)
+                .set({
+                  branchName: fallbackBranchName,
+                  updatedAt: new Date(),
+                })
+                .where(eq(tasks.id, taskId))
+            }
+
+            const logger = createTaskLogger(taskId)
+            await logger.info(`Using fallback branch name: ${fallbackBranchName}`)
+          } catch (dbError) {
+            console.error('Error updating task with fallback branch name:', dbError)
+          }
         }
-      }
-    })
+      })
+    }
 
     // Process the task asynchronously with timeout
     processTaskWithTimeout(
@@ -184,6 +220,9 @@ async function waitForBranchName(taskId: string, maxWaitMs: number = 10000): Pro
 
   while (Date.now() - startTime < maxWaitMs) {
     try {
+      if (!db) {
+        return null
+      }
       const [task] = await db.select().from(tasks).where(eq(tasks.id, taskId))
       if (task?.branchName) {
         return task.branchName
@@ -214,9 +253,12 @@ async function processTask(
     await logger.updateStatus('processing', 'Task created, preparing to start...')
     await logger.updateProgress(10, 'Initializing task execution...')
 
-    // Wait for AI-generated branch name (with timeout)
-    await logger.updateProgress(12, 'Waiting for AI-generated branch name...')
-    const aiBranchName = await waitForBranchName(taskId, 10000)
+    // Wait for AI-generated branch name (with timeout) - only if database is available
+    let aiBranchName: string | null = null
+    if (db) {
+      await logger.updateProgress(12, 'Waiting for AI-generated branch name...')
+      aiBranchName = await waitForBranchName(taskId, 10000)
+    }
 
     if (aiBranchName) {
       await logger.info(`Using AI-generated branch name: ${aiBranchName}`)
@@ -264,18 +306,20 @@ async function processTask(
       }
     }
 
-    // Update sandbox URL and branch name (only update branch name if not already set by AI)
-    const updateData: { sandboxUrl?: string; updatedAt: Date; branchName?: string } = {
-      sandboxUrl: domain || undefined,
-      updatedAt: new Date(),
-    }
+    // Update sandbox URL and branch name (only if database is available)
+    if (db) {
+      const updateData: { sandboxUrl?: string; updatedAt: Date; branchName?: string } = {
+        sandboxUrl: domain || undefined,
+        updatedAt: new Date(),
+      }
 
-    // Only update branch name if we don't already have an AI-generated one
-    if (!aiBranchName) {
-      updateData.branchName = branchName
-    }
+      // Only update branch name if we don't already have an AI-generated one
+      if (!aiBranchName) {
+        updateData.branchName = branchName
+      }
 
-    await db.update(tasks).set(updateData).where(eq(tasks.id, taskId))
+      await db.update(tasks).set(updateData).where(eq(tasks.id, taskId))
+    }
 
     // Log agent execution start
     await logger.updateProgress(50, `Installing and executing ${selectedAgent} agent...`)
@@ -420,6 +464,13 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete tasks based on conditions
+    if (!db) {
+      return NextResponse.json({ 
+        error: 'Database not available', 
+        message: 'Tasks cannot be deleted without database connection' 
+      }, { status: 503 })
+    }
+    
     const whereClause = conditions.length === 1 ? conditions[0] : or(...conditions)
     const deletedTasks = await db.delete(tasks).where(whereClause).returning()
 

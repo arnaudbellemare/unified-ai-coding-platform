@@ -15,6 +15,12 @@ export class TaskLogger {
    */
   async append(type: 'info' | 'command' | 'error' | 'success', message: string): Promise<void> {
     try {
+      // Handle case when database is not available
+      if (!db) {
+        console.log(`[Task ${this.taskId}] ${type.toUpperCase()}: ${message}`)
+        return
+      }
+
       // Create the log entry with timestamp
       let logEntry: LogEntry
       switch (type) {
@@ -78,6 +84,12 @@ export class TaskLogger {
    */
   async updateProgress(progress: number, message: string): Promise<void> {
     try {
+      // Handle case when database is not available
+      if (!db) {
+        console.log(`[Task ${this.taskId}] PROGRESS: ${progress}% - ${message}`)
+        return
+      }
+
       const logEntry = createInfoLog(message)
 
       // Get current task to preserve existing logs
@@ -105,6 +117,12 @@ export class TaskLogger {
    */
   async updateStatus(status: 'pending' | 'processing' | 'completed' | 'error', message?: string): Promise<void> {
     try {
+      // Handle case when database is not available
+      if (!db) {
+        console.log(`[Task ${this.taskId}] STATUS: ${status}${message ? ` - ${message}` : ''}`)
+        return
+      }
+
       const updates: {
         status: 'pending' | 'processing' | 'completed' | 'error'
         updatedAt: Date
