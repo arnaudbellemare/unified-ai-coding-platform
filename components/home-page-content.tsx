@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { TaskForm } from '@/components/task-form'
 import { HomePageHeader } from '@/components/home-page-header'
+import { CostOptimization } from '@/components/cost-optimization'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { useTasks } from '@/components/app-layout'
@@ -60,8 +61,13 @@ export function HomePageContent() {
       <div className="mx-auto p-3">
         <HomePageHeader />
 
-        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
-          <TaskForm onSubmit={handleTaskSubmit} isSubmitting={isSubmitting} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
+          <div className="space-y-6">
+            <TaskForm onSubmit={handleTaskSubmit} isSubmitting={isSubmitting} />
+          </div>
+          <div className="space-y-6">
+            <CostOptimization />
+          </div>
         </div>
       </div>
     </div>
