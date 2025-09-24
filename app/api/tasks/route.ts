@@ -14,9 +14,9 @@ import { generateBranchName, createFallbackBranchName } from '@/lib/utils/branch
 export async function GET() {
   try {
     if (!db) {
-      return NextResponse.json({ 
-        tasks: [], 
-        message: 'Database not available - using fallback mode' 
+      return NextResponse.json({
+        tasks: [],
+        message: 'Database not available - using fallback mode',
       })
     }
     const allTasks = await db.select().from(tasks).orderBy(desc(tasks.createdAt))
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         createdAt: new Date(),
         updatedAt: new Date(),
       }
-      
+
       // Process the task asynchronously without database
       processTaskWithTimeout(
         taskId,
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         validatedData.selectedAgent || 'claude',
         validatedData.selectedModel,
       )
-      
+
       return NextResponse.json({ task: fallbackTask })
     }
 
@@ -465,12 +465,15 @@ export async function DELETE(request: NextRequest) {
 
     // Delete tasks based on conditions
     if (!db) {
-      return NextResponse.json({ 
-        error: 'Database not available', 
-        message: 'Tasks cannot be deleted without database connection' 
-      }, { status: 503 })
+      return NextResponse.json(
+        {
+          error: 'Database not available',
+          message: 'Tasks cannot be deleted without database connection',
+        },
+        { status: 503 },
+      )
     }
-    
+
     const whereClause = conditions.length === 1 ? conditions[0] : or(...conditions)
     const deletedTasks = await db.delete(tasks).where(whereClause).returning()
 

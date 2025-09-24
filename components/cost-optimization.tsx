@@ -1,70 +1,68 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
 
 interface CostOptimizationResult {
-  originalCost: number;
-  optimizedCost: number;
-  savings: number;
-  savingsPercentage: string;
-  originalTokens: number;
-  optimizedTokens: number;
-  apiCalls: number;
-  realApiCost: number;
+  originalCost: number
+  optimizedCost: number
+  savings: number
+  savingsPercentage: string
+  originalTokens: number
+  optimizedTokens: number
+  apiCalls: number
+  realApiCost: number
 }
 
 interface CostOptimizationProps {
-  onOptimizationComplete?: (result: CostOptimizationResult) => void;
+  onOptimizationComplete?: (result: CostOptimizationResult) => void
 }
 
 export function CostOptimization({ onOptimizationComplete }: CostOptimizationProps) {
-  const [prompt, setPrompt] = useState('');
-  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [prompt, setPrompt] = useState('')
+  const [isOptimizing, setIsOptimizing] = useState(false)
   const [result, setResult] = useState<{
-    originalPrompt: string;
-    optimizedPrompt: string;
-    costOptimization: CostOptimizationResult;
-  } | null>(null);
+    originalPrompt: string
+    optimizedPrompt: string
+    costOptimization: CostOptimizationResult
+  } | null>(null)
 
   const handleOptimize = async () => {
-    if (!prompt.trim()) return;
+    if (!prompt.trim()) return
 
-    setIsOptimizing(true);
-    setResult(null);
+    setIsOptimizing(true)
+    setResult(null)
 
     try {
       const response = await fetch('/api/optimize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
+        body: JSON.stringify({ prompt }),
+      })
 
-      const data = await response.json();
-      
+      const data = await response.json()
+
       if (data.success) {
-        setResult(data);
-        onOptimizationComplete?.(data.costOptimization);
+        setResult(data)
+        onOptimizationComplete?.(data.costOptimization)
       } else {
-        console.error('Optimization failed:', data.error);
+        console.error('Optimization failed:', data.error)
       }
     } catch (error) {
-      console.error('Optimization error:', error);
+      console.error('Optimization error:', error)
     } finally {
-      setIsOptimizing(false);
+      setIsOptimizing(false)
     }
-  };
+  }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>💰 Cost Optimization</CardTitle>
-        <CardDescription>
-          Optimize your prompts to reduce API costs while maintaining quality
-        </CardDescription>
+        <CardDescription>Optimize your prompts to reduce API costs while maintaining quality</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
@@ -78,11 +76,7 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
           />
         </div>
 
-        <Button 
-          onClick={handleOptimize} 
-          disabled={isOptimizing || !prompt.trim()}
-          className="w-full"
-        >
+        <Button onClick={handleOptimize} disabled={isOptimizing || !prompt.trim()} className="w-full">
           {isOptimizing ? 'Optimizing...' : '🚀 Optimize for Cost'}
         </Button>
 
@@ -98,7 +92,7 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
                   {result.originalPrompt.length} characters, {result.costOptimization.originalTokens} tokens
                 </p>
               </div>
-              
+
               <div>
                 <h4 className="font-medium mb-2">Optimized Prompt</h4>
                 <p className="text-sm text-muted-foreground bg-background p-2 rounded border">
@@ -115,12 +109,12 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
                 <p className="text-sm text-muted-foreground">Original Cost</p>
                 <p className="text-lg font-semibold">${result.costOptimization.originalCost.toFixed(4)}</p>
               </div>
-              
+
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Optimized Cost</p>
                 <p className="text-lg font-semibold">${result.costOptimization.optimizedCost.toFixed(4)}</p>
               </div>
-              
+
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Savings</p>
                 <p className="text-lg font-semibold text-green-600">
@@ -130,16 +124,12 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <Badge variant="outline">
-                {result.costOptimization.apiCalls} API calls made
-              </Badge>
-              <Badge variant="outline">
-                Real cost: ${result.costOptimization.realApiCost.toFixed(4)}
-              </Badge>
+              <Badge variant="outline">{result.costOptimization.apiCalls} API calls made</Badge>
+              <Badge variant="outline">Real cost: ${result.costOptimization.realApiCost.toFixed(4)}</Badge>
             </div>
           </div>
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

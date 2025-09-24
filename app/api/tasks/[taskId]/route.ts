@@ -12,15 +12,18 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { taskId } = await params
-    
+
     // Handle case when database is not available
     if (!db) {
-      return NextResponse.json({ 
-        error: 'Database not available', 
-        message: 'Task data cannot be retrieved without database connection' 
-      }, { status: 503 })
+      return NextResponse.json(
+        {
+          error: 'Database not available',
+          message: 'Task data cannot be retrieved without database connection',
+        },
+        { status: 503 },
+      )
     }
-    
+
     const task = await db.select().from(tasks).where(eq(tasks.id, taskId)).limit(1)
 
     if (!task[0]) {
@@ -40,10 +43,13 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // Handle case when database is not available
     if (!db) {
-      return NextResponse.json({ 
-        error: 'Database not available', 
-        message: 'Task cannot be deleted without database connection' 
-      }, { status: 503 })
+      return NextResponse.json(
+        {
+          error: 'Database not available',
+          message: 'Task cannot be deleted without database connection',
+        },
+        { status: 503 },
+      )
     }
 
     // Check if task exists first
