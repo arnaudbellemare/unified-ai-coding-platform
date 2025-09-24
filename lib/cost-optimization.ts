@@ -39,7 +39,10 @@ export class CostOptimization {
     // Remove common filler words and phrases
     let optimized = originalPrompt
       // Remove politeness and filler words
-      .replace(/\b(please|kindly|would you|could you|I would like you to|I would really appreciate it if you could)\b/gi, '')
+      .replace(
+        /\b(please|kindly|would you|could you|I would like you to|I would really appreciate it if you could)\b/gi,
+        '',
+      )
       .replace(/\b(very|really|quite|rather|somewhat|pretty|fairly|absolutely|definitely)\b/gi, '')
       .replace(/\b(comprehensive|detailed|thorough|extensive|complete|full)\b/gi, '')
       .replace(/\b(beautiful|elegant|gorgeous|stunning|amazing|wonderful|fantastic)\b/gi, '')
