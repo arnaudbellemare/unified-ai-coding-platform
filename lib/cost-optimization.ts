@@ -27,48 +27,9 @@ export class CostOptimization {
    * Optimize a prompt for cost reduction
    */
   async optimizePrompt(originalPrompt: string): Promise<string> {
-    // If API keys are not available, use local optimization
-    if (!this.perplexityApiKey) {
-      console.warn('Perplexity API key not configured, using local optimization')
-      return this.localOptimizePrompt(originalPrompt)
-    }
-
-    try {
-      const optimizationPrompt = `Optimize this prompt for cost efficiency while maintaining quality. Remove unnecessary words, use concise language, and focus on the core request. Return only the optimized prompt:
-
-Original: ${originalPrompt}
-
-Optimized:`
-
-      const response = await fetch('https://api.perplexity.ai/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${this.perplexityApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-sonar-small-128k-online',
-          messages: [
-            {
-              role: 'user',
-              content: optimizationPrompt,
-            },
-          ],
-          max_tokens: 500,
-          temperature: 0.1,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Perplexity API error: ${response.statusText}`)
-      }
-
-      const data = await response.json()
-      return data.choices[0]?.message?.content?.trim() || originalPrompt
-    } catch (error) {
-      console.error('Cost optimization failed, using local optimization:', error)
-      return this.localOptimizePrompt(originalPrompt)
-    }
+    // Use local optimization by default - it's more reliable and faster
+    console.log('Using local optimization for cost reduction')
+    return this.localOptimizePrompt(originalPrompt)
   }
 
   /**
@@ -77,23 +38,40 @@ Optimized:`
   private localOptimizePrompt(originalPrompt: string): string {
     // Remove common filler words and phrases
     let optimized = originalPrompt
-      .replace(/\b(please|kindly|would you|could you|I would like you to)\b/gi, '')
-      .replace(/\b(very|really|quite|rather|somewhat|pretty|fairly)\b/gi, '')
-      .replace(/\b(comprehensive|detailed|thorough|extensive)\b/gi, '')
-      .replace(/\b(beautiful|elegant|gorgeous|stunning)\b/gi, '')
-      .replace(/\b(advanced|sophisticated|complex|intricate)\b/gi, '')
+      // Remove politeness and filler words
+      .replace(/\b(please|kindly|would you|could you|I would like you to|I would really appreciate it if you could)\b/gi, '')
+      .replace(/\b(very|really|quite|rather|somewhat|pretty|fairly|absolutely|definitely)\b/gi, '')
+      .replace(/\b(comprehensive|detailed|thorough|extensive|complete|full)\b/gi, '')
+      .replace(/\b(beautiful|elegant|gorgeous|stunning|amazing|wonderful|fantastic)\b/gi, '')
+      .replace(/\b(advanced|sophisticated|complex|intricate|elaborate|fancy)\b/gi, '')
+      .replace(/\b(create|build|make|develop|generate|construct|design)\s+(a|an|the)\s+/gi, '')
+      .replace(/\b(that|which|who|where|when)\s+/gi, '')
+      .replace(/\b(including|with|featuring|having|containing)\s+/gi, '')
+      .replace(/\b(and|or|but|so|for|nor|yet)\s+/gi, '')
+      .replace(/\b(also|additionally|furthermore|moreover|besides)\b/gi, '')
+      .replace(/\b(actually|basically|essentially|fundamentally|basically)\b/gi, '')
       .replace(/\s+/g, ' ')
       .trim()
 
     // If optimization didn't change much, try more aggressive optimization
-    if (optimized.length > originalPrompt.length * 0.8) {
+    if (optimized.length > originalPrompt.length * 0.7) {
       optimized = originalPrompt
-        .replace(/\b(create|build|make|develop|generate)\s+(a|an|the)\s+/gi, '')
+        .replace(/\b(I want|I need|I would like|I would love|I would prefer)\b/gi, '')
+        .replace(/\b(can you|could you|would you|will you)\b/gi, '')
+        .replace(/\b(help me|assist me|support me)\b/gi, '')
+        .replace(/\b(create|build|make|develop|generate|construct|design)\s+(a|an|the)\s+/gi, '')
         .replace(/\b(that|which|who|where|when)\s+/gi, '')
-        .replace(/\b(including|with|featuring|having)\s+/gi, '')
+        .replace(/\b(including|with|featuring|having|containing)\s+/gi, '')
+        .replace(/\b(and|or|but|so|for|nor|yet)\s+/gi, '')
         .replace(/\s+/g, ' ')
         .trim()
     }
+
+    // Final cleanup
+    optimized = optimized
+      .replace(/\s+/g, ' ')
+      .replace(/^\s+|\s+$/g, '')
+      .replace(/\b\s+\b/g, ' ')
 
     return optimized || originalPrompt
   }
@@ -113,8 +91,8 @@ Optimized:`
       const savings = originalCost - optimizedCost
       const savingsPercentage = originalCost > 0 ? ((savings / originalCost) * 100).toFixed(1) : '0.0'
 
-      // Make real API calls to verify costs (if API keys are available)
-      const realApiCost = await this.getRealApiCost(originalPrompt, optimizedPrompt)
+      // Skip real API calls to avoid rate limits and errors
+      const realApiCost = 0
 
       return {
         originalCost,
