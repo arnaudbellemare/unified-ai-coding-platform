@@ -14,9 +14,53 @@ import { generateBranchName, createFallbackBranchName } from '@/lib/utils/branch
 export async function GET() {
   try {
     if (!db) {
+      // Return fallback tasks for development
+      const fallbackTasks = [
+        {
+          id: 'demo-task-1',
+          prompt: 'Create a React component with TypeScript',
+          repoUrl: 'https://github.com/example/demo-repo',
+          selectedAgent: 'codex',
+          selectedModel: 'gpt-5',
+          status: 'completed' as const,
+          progress: 100,
+          logs: [
+            {
+              type: 'info' as const,
+              message: 'Task completed successfully (demo mode)',
+              timestamp: new Date().toISOString(),
+            },
+          ],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          sandboxUrl: 'https://demo-sandbox.vercel.app',
+          branchName: 'feature/demo-component',
+        },
+        {
+          id: 'demo-task-2',
+          prompt: 'Add authentication to the app',
+          repoUrl: 'https://github.com/example/auth-repo',
+          selectedAgent: 'opencode',
+          selectedModel: 'gpt-5-mini',
+          status: 'processing' as const,
+          progress: 75,
+          logs: [
+            {
+              type: 'info' as const,
+              message: 'Task in progress (demo mode)',
+              timestamp: new Date().toISOString(),
+            },
+          ],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          sandboxUrl: 'https://auth-sandbox.vercel.app',
+          branchName: 'feature/authentication',
+        },
+      ]
+      
       return NextResponse.json({
-        tasks: [],
-        message: 'Database not available - using fallback mode',
+        tasks: fallbackTasks,
+        message: 'Database not available - showing demo tasks',
       })
     }
     const allTasks = await db.select().from(tasks).orderBy(desc(tasks.createdAt))
