@@ -7,46 +7,40 @@ export async function POST(req: NextRequest) {
     const { prompt, testAllStrategies } = await req.json()
 
     if (!prompt) {
-      return NextResponse.json(
-        { error: 'Prompt is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Prompt is required' }, { status: 400 })
     }
 
     console.log('[Test Optimizer] Testing prompt:', prompt.substring(0, 50) + '...')
 
     // Test enhanced optimizer
     const optimizationResult = enhancedPromptOptimizer.optimize(prompt, 4)
-    
+
     // Get cost analysis
-    const costAnalysis = await costOptimization.calculateCostOptimization(
-      prompt, 
-      optimizationResult.optimizedPrompt
-    )
+    const costAnalysis = await costOptimization.calculateCostOptimization(prompt, optimizationResult.optimizedPrompt)
 
     // Test all strategies individually if requested
     let individualStrategyResults = null
     if (testAllStrategies) {
       const strategies = [
         'entropy_optimization',
-        'punctuation_optimization', 
+        'punctuation_optimization',
         'synonym_replacement',
         'lemmatization',
         'name_replacement',
         'aggressive_compression',
         'remove_redundancy',
         'remove_filler_words',
-        'remove_politeness'
+        'remove_politeness',
       ]
 
-      individualStrategyResults = strategies.map(strategyName => {
+      individualStrategyResults = strategies.map((strategyName) => {
         // Create a mock strategy object for testing
         const mockStrategy = {
           name: strategyName,
           weight: 5,
-          apply: (p: string) => enhancedPromptOptimizer['optimize'](p, 1) // This won't work perfectly but gives us an idea
+          apply: (p: string) => enhancedPromptOptimizer['optimize'](p, 1), // This won't work perfectly but gives us an idea
         }
-        
+
         try {
           const result = enhancedPromptOptimizer.optimize(prompt, 1)
           return {
@@ -54,12 +48,12 @@ export async function POST(req: NextRequest) {
             optimizedPrompt: result.optimizedPrompt,
             tokenReduction: result.tokenReduction,
             costReduction: result.costReduction,
-            accuracyMaintained: result.accuracyMaintained
+            accuracyMaintained: result.accuracyMaintained,
           }
         } catch (error) {
           return {
             strategy: strategyName,
-            error: 'Failed to test strategy'
+            error: 'Failed to test strategy',
           }
         }
       })
@@ -74,7 +68,7 @@ export async function POST(req: NextRequest) {
         tokenReduction: optimizationResult.tokenReduction,
         costReduction: optimizationResult.costReduction,
         accuracyMaintained: optimizationResult.accuracyMaintained,
-        totalSavings: optimizationResult.totalSavings
+        totalSavings: optimizationResult.totalSavings,
       },
       costAnalysis: {
         originalCost: costAnalysis.originalCost,
@@ -83,16 +77,16 @@ export async function POST(req: NextRequest) {
         savingsPercentage: costAnalysis.savingsPercentage,
         originalTokens: costAnalysis.originalTokens,
         optimizedTokens: costAnalysis.optimizedTokens,
-        estimatedMonthlySavings: costAnalysis.estimatedMonthlySavings
+        estimatedMonthlySavings: costAnalysis.estimatedMonthlySavings,
       },
-      individualStrategyResults
+      individualStrategyResults,
     }
 
     console.log('[Test Optimizer] Completed:', {
       originalLength: prompt.length,
       optimizedLength: optimizationResult.optimizedPrompt.length,
       savings: costAnalysis.savingsPercentage,
-      strategies: optimizationResult.strategies
+      strategies: optimizationResult.strategies,
     })
 
     return NextResponse.json(response)
@@ -103,7 +97,7 @@ export async function POST(req: NextRequest) {
         error: 'Optimizer test failed',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -116,9 +110,9 @@ export async function GET() {
         description: 'Test the enhanced prompt optimizer',
         body: {
           prompt: 'string (required)',
-          testAllStrategies: 'boolean (optional)'
-        }
-      }
+          testAllStrategies: 'boolean (optional)',
+        },
+      },
     },
     strategies: [
       'entropy_optimization',
@@ -129,7 +123,7 @@ export async function GET() {
       'aggressive_compression',
       'remove_redundancy',
       'remove_filler_words',
-      'remove_politeness'
-    ]
+      'remove_politeness',
+    ],
   })
 }

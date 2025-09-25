@@ -41,7 +41,7 @@ export async function createSandbox(config: SandboxConfig): Promise<SandboxResul
     if (!envValidation.valid) {
       throw new Error(envValidation.error!)
     }
-    
+
     if (envValidation.warnings) {
       logs.push(`Warning: ${envValidation.warnings}`)
     } else {

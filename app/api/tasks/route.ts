@@ -78,23 +78,23 @@ export async function POST(request: NextRequest) {
 
     // Use provided ID or generate a new one
     const taskId = body.id || generateId(12)
-    
+
     // Optimize the prompt using enhanced optimizer before creating the task
     let optimizedPrompt = body.prompt
     let costOptimizationData = null
-    
+
     if (body.prompt) {
       try {
         console.log('[Task Creation] Optimizing prompt with enhanced optimizer...')
         const optimizationResult = await costOptimization.optimizeWithEnhancedAnalysis(body.prompt)
         optimizedPrompt = optimizationResult.optimizedPrompt
         costOptimizationData = optimizationResult.costAnalysis
-        
+
         console.log('[Task Creation] Prompt optimization completed:', {
           originalLength: body.prompt.length,
           optimizedLength: optimizedPrompt.length,
           savings: optimizationResult.costAnalysis.savingsPercentage,
-          strategies: optimizationResult.optimizationResult.strategies
+          strategies: optimizationResult.optimizationResult.strategies,
         })
       } catch (error) {
         console.error('[Task Creation] Prompt optimization failed:', error)

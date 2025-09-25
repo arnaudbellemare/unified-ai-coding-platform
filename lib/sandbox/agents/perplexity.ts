@@ -70,9 +70,9 @@ export async function executePerplexityInSandbox(
   try {
     // Use AI Gateway instead of creating files
     logs.push(createInfoLog('Using AI Gateway for Perplexity API calls (no file creation needed)'))
-    
+
     const modelToUse = selectedModel || 'perplexity-sonar-medium'
-    
+
     // Check if AI_GATEWAY_API_KEY is available
     if (!process.env.AI_GATEWAY_API_KEY) {
       return {
@@ -132,10 +132,19 @@ fi
 `
 
     // Write the execution script using a simple echo approach
-    const writeScript = await runAndLogCommand(sandbox, 'sh', ['-c', `cat > execute-perplexity.sh << 'SCRIPT_EOF'
+    const writeScript = await runAndLogCommand(
+      sandbox,
+      'sh',
+      [
+        '-c',
+        `cat > execute-perplexity.sh << 'SCRIPT_EOF'
 ${executionScript}
-SCRIPT_EOF`], logs, logger)
-    
+SCRIPT_EOF`,
+      ],
+      logs,
+      logger,
+    )
+
     if (!writeScript.success) {
       const errorMessage = `Failed to create Perplexity execution script: ${writeScript.error}`
       logs.push(createErrorLog(errorMessage))
@@ -147,10 +156,10 @@ SCRIPT_EOF`], logs, logger)
         logs,
       }
     }
-    
+
     // Make the script executable
     const chmodResult = await runAndLogCommand(sandbox, 'chmod', ['+x', 'execute-perplexity.sh'], logs, logger)
-    
+
     if (!chmodResult.success) {
       logs.push(createInfoLog('Warning: Failed to make script executable, but continuing'))
     }
@@ -159,7 +168,9 @@ SCRIPT_EOF`], logs, logger)
 
     // Execute the Perplexity task
     if (logger) {
-      await logger.info(`Executing Perplexity API with model ${modelToUse} and instruction: ${instruction.substring(0, 100)}...`)
+      await logger.info(
+        `Executing Perplexity API with model ${modelToUse} and instruction: ${instruction.substring(0, 100)}...`,
+      )
     }
 
     const executionResult = await runAndLogCommand(sandbox, 'bash', ['execute-perplexity.sh'], logs, logger)

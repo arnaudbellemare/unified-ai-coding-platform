@@ -65,17 +65,14 @@ export class CostOptimization {
   }> {
     // Use enhanced optimizer
     const optimizationResult = enhancedPromptOptimizer.optimize(originalPrompt, 4)
-    
+
     // Calculate cost analysis
-    const costAnalysis = await this.calculateCostOptimization(
-      originalPrompt, 
-      optimizationResult.optimizedPrompt
-    )
+    const costAnalysis = await this.calculateCostOptimization(originalPrompt, optimizationResult.optimizedPrompt)
 
     return {
       optimizedPrompt: optimizationResult.optimizedPrompt,
       optimizationResult,
-      costAnalysis
+      costAnalysis,
     }
   }
 
@@ -141,18 +138,18 @@ export class CostOptimization {
       const inputCostPer1K = 0.03
       const outputCostPer1K = 0.06
       const outputMultiplier = 2 // Assume 2x output tokens for coding tasks
-      
+
       const originalInputCost = (originalTokens / 1000) * inputCostPer1K
-      const originalOutputCost = (originalTokens * outputMultiplier / 1000) * outputCostPer1K
+      const originalOutputCost = ((originalTokens * outputMultiplier) / 1000) * outputCostPer1K
       const originalCost = originalInputCost + originalOutputCost
 
       const optimizedInputCost = (optimizedTokens / 1000) * inputCostPer1K
-      const optimizedOutputCost = (optimizedTokens * outputMultiplier / 1000) * outputCostPer1K
+      const optimizedOutputCost = ((optimizedTokens * outputMultiplier) / 1000) * outputCostPer1K
       const optimizedCost = optimizedInputCost + optimizedOutputCost
 
       const savings = originalCost - optimizedCost
       const savingsPercentage = originalCost > 0 ? ((savings / originalCost) * 100).toFixed(1) : '0.0'
-      
+
       // Estimate monthly savings (assuming 100 similar tasks per month)
       const estimatedMonthlySavings = savings * 100
 

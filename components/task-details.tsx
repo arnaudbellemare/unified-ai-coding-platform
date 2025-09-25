@@ -7,7 +7,8 @@ import { ExternalLink, GitBranch, Clock, CheckCircle, AlertCircle, Loader2, Copy
 import { cn } from '@/lib/utils'
 import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
-import { Claude, Codex, OpenCode } from '@/components/logos'
+import { Claude, Codex, OpenCode, Perplexity } from '@/components/logos'
+import { DeployToVercel } from '@/components/deploy-to-vercel'
 
 interface TaskDetailsProps {
   task: Task
@@ -30,6 +31,8 @@ export function TaskDetails({ task }: TaskDetailsProps) {
         return Codex
       case 'opencode':
         return OpenCode
+      case 'perplexity':
+        return Perplexity
       default:
         return null
     }
@@ -265,6 +268,16 @@ export function TaskDetails({ task }: TaskDetailsProps) {
             )}
           </CardContent>
         </Card>
+
+        {/* Deploy to Vercel */}
+        {task.status === 'completed' && task.repoUrl && task.branchName && (
+          <DeployToVercel
+            taskId={task.id}
+            repoUrl={task.repoUrl}
+            branchName={task.branchName}
+            sandboxUrl={task.sandboxUrl || undefined}
+          />
+        )}
 
         {/* Logs */}
         {task.logs && task.logs.length > 0 && (

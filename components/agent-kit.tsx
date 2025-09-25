@@ -9,19 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { 
-  Bot, 
-  Zap, 
-  Settings, 
-  Play, 
-  Pause, 
-  Square, 
-  Code, 
-  MessageSquare, 
-  BarChart3,
-  Target,
-  Activity
-} from 'lucide-react'
+import { Bot, Zap, Settings, Play, Pause, Square, Code, MessageSquare, BarChart3, Target, Activity } from 'lucide-react'
 
 interface AgentConfig {
   name: string
@@ -47,7 +35,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
     temperature: 0.7,
     maxTokens: 1000,
     instructions: '',
-    tools: []
+    tools: [],
   })
   const [createdAgents, setCreatedAgents] = useState<AgentConfig[]>([])
   const [selectedAgent, setSelectedAgent] = useState<string>('')
@@ -57,9 +45,19 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
   const agentTypes = [
     { value: 'coding', label: 'Coding Agent', icon: Code, description: 'Specialized in programming tasks' },
     { value: 'content', label: 'Content Agent', icon: MessageSquare, description: 'Creates and optimizes content' },
-    { value: 'analytics', label: 'Analytics Agent', icon: BarChart3, description: 'Analyzes data and generates insights' },
-    { value: 'customer_service', label: 'Customer Service', icon: MessageSquare, description: 'Handles customer inquiries' },
-    { value: 'search', label: 'Search Agent', icon: Zap, description: 'Real-time search and research capabilities' }
+    {
+      value: 'analytics',
+      label: 'Analytics Agent',
+      icon: BarChart3,
+      description: 'Analyzes data and generates insights',
+    },
+    {
+      value: 'customer_service',
+      label: 'Customer Service',
+      icon: MessageSquare,
+      description: 'Handles customer inquiries',
+    },
+    { value: 'search', label: 'Search Agent', icon: Zap, description: 'Real-time search and research capabilities' },
   ]
 
   const availableModels = [
@@ -70,7 +68,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
     'claude-3-haiku',
     'perplexity-sonar-small',
     'perplexity-sonar-medium',
-    'perplexity-sonar-large'
+    'perplexity-sonar-large',
   ]
 
   const availableTools = [
@@ -83,14 +81,14 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
     'text_analysis',
     'real_time_search',
     'web_scraping',
-    'data_research'
+    'data_research',
   ]
 
   const handleCreateAgent = () => {
     if (!agentConfig.name || !agentConfig.instructions) return
 
     const newAgent = { ...agentConfig }
-    setCreatedAgents(prev => [...prev, newAgent])
+    setCreatedAgents((prev) => [...prev, newAgent])
     setSelectedAgent(newAgent.name)
     onAgentCreate?.(newAgent)
 
@@ -102,7 +100,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
       temperature: 0.7,
       maxTokens: 1000,
       instructions: '',
-      tools: []
+      tools: [],
     })
   }
 
@@ -113,18 +111,16 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
     try {
       onAgentExecute?.(selectedAgent, agentInput)
       // Simulate execution
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, 2000))
     } finally {
       setIsExecuting(false)
     }
   }
 
   const toggleTool = (tool: string) => {
-    setAgentConfig(prev => ({
+    setAgentConfig((prev) => ({
       ...prev,
-      tools: prev.tools.includes(tool)
-        ? prev.tools.filter(t => t !== tool)
-        : [...prev.tools, tool]
+      tools: prev.tools.includes(tool) ? prev.tools.filter((t) => t !== tool) : [...prev.tools, tool],
     }))
   }
 
@@ -135,9 +131,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
           <Bot className="h-6 w-6" />
           AgentKit - AI Agent Builder
         </CardTitle>
-        <CardDescription>
-          Create, configure, and deploy custom AI agents for specific tasks
-        </CardDescription>
+        <CardDescription>Create, configure, and deploy custom AI agents for specific tasks</CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
@@ -161,14 +155,14 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
               {/* Basic Configuration */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Basic Configuration</h3>
-                
+
                 <div>
                   <Label htmlFor="agent-name">Agent Name</Label>
                   <Input
                     id="agent-name"
                     placeholder="My Custom Agent"
                     value={agentConfig.name}
-                    onChange={(e) => setAgentConfig(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) => setAgentConfig((prev) => ({ ...prev, name: e.target.value }))}
                   />
                 </div>
 
@@ -176,15 +170,13 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
                   <Label htmlFor="agent-type">Agent Type</Label>
                   <Select
                     value={agentConfig.type}
-                    onValueChange={(value: AgentConfig['type']) => 
-                      setAgentConfig(prev => ({ ...prev, type: value }))
-                    }
+                    onValueChange={(value: AgentConfig['type']) => setAgentConfig((prev) => ({ ...prev, type: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {agentTypes.map(type => (
+                      {agentTypes.map((type) => (
                         <SelectItem key={type.value} value={type.value}>
                           <div className="flex items-center gap-2">
                             <type.icon className="h-4 w-4" />
@@ -203,13 +195,13 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
                   <Label htmlFor="model">AI Model</Label>
                   <Select
                     value={agentConfig.model}
-                    onValueChange={(value) => setAgentConfig(prev => ({ ...prev, model: value }))}
+                    onValueChange={(value) => setAgentConfig((prev) => ({ ...prev, model: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {availableModels.map(model => (
+                      {availableModels.map((model) => (
                         <SelectItem key={model} value={model}>
                           {model}
                         </SelectItem>
@@ -222,7 +214,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
               {/* Advanced Configuration */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Advanced Configuration</h3>
-                
+
                 <div>
                   <Label htmlFor="temperature">Temperature: {agentConfig.temperature}</Label>
                   <Input
@@ -232,7 +224,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
                     max="1"
                     step="0.1"
                     value={agentConfig.temperature}
-                    onChange={(e) => setAgentConfig(prev => ({ ...prev, temperature: parseFloat(e.target.value) }))}
+                    onChange={(e) => setAgentConfig((prev) => ({ ...prev, temperature: parseFloat(e.target.value) }))}
                   />
                 </div>
 
@@ -242,14 +234,14 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
                     id="max-tokens"
                     type="number"
                     value={agentConfig.maxTokens}
-                    onChange={(e) => setAgentConfig(prev => ({ ...prev, maxTokens: parseInt(e.target.value) }))}
+                    onChange={(e) => setAgentConfig((prev) => ({ ...prev, maxTokens: parseInt(e.target.value) }))}
                   />
                 </div>
 
                 <div>
                   <Label>Available Tools</Label>
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    {availableTools.map(tool => (
+                    {availableTools.map((tool) => (
                       <div key={tool} className="flex items-center space-x-2">
                         <input
                           type="checkbox"
@@ -258,7 +250,9 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
                           onChange={() => toggleTool(tool)}
                           className="rounded"
                         />
-                        <Label htmlFor={tool} className="text-sm">{tool}</Label>
+                        <Label htmlFor={tool} className="text-sm">
+                          {tool}
+                        </Label>
                       </div>
                     ))}
                   </div>
@@ -272,7 +266,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
                 id="instructions"
                 placeholder="Describe what this agent should do, how it should behave, and any specific guidelines..."
                 value={agentConfig.instructions}
-                onChange={(e) => setAgentConfig(prev => ({ ...prev, instructions: e.target.value }))}
+                onChange={(e) => setAgentConfig((prev) => ({ ...prev, instructions: e.target.value }))}
                 rows={6}
                 className="mt-2"
               />
@@ -304,11 +298,9 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {agent.instructions.substring(0, 100)}...
-                      </p>
+                      <p className="text-sm text-muted-foreground mb-3">{agent.instructions.substring(0, 100)}...</p>
                       <div className="flex flex-wrap gap-1">
-                        {agent.tools.map(tool => (
+                        {agent.tools.map((tool) => (
                           <Badge key={tool} variant="secondary" className="text-xs">
                             {tool}
                           </Badge>
@@ -323,7 +315,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
 
           <TabsContent value="execute" className="space-y-4">
             <h3 className="text-lg font-semibold">Execute Agent</h3>
-            
+
             <div>
               <Label htmlFor="select-agent">Select Agent</Label>
               <Select value={selectedAgent} onValueChange={setSelectedAgent}>
@@ -352,8 +344,8 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
               />
             </div>
 
-            <Button 
-              onClick={handleExecuteAgent} 
+            <Button
+              onClick={handleExecuteAgent}
               disabled={!selectedAgent || !agentInput || isExecuting}
               className="w-full"
             >

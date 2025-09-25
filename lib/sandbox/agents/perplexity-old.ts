@@ -121,19 +121,22 @@ module.exports = { PerplexityClient };
     // Write the client code using a temporary file approach
     // First, create a temporary file with the content
     const tempFile = '/tmp/perplexity-client-temp.js'
-    
+
     // Write to temp file using cat with heredoc
-    const writeTemp = await runCommandInSandbox(sandbox, 'sh', ['-c', `cat > ${tempFile} << 'PERPLEXITY_EOF'
+    const writeTemp = await runCommandInSandbox(sandbox, 'sh', [
+      '-c',
+      `cat > ${tempFile} << 'PERPLEXITY_EOF'
 ${clientCode}
-PERPLEXITY_EOF`])
-    
+PERPLEXITY_EOF`,
+    ])
+
     if (writeTemp.success) {
       // Copy from temp file to final location
       const copyFile = await runCommandInSandbox(sandbox, 'cp', [tempFile, 'perplexity-client.js'])
-      
+
       if (copyFile.success) {
         logs.push('Perplexity API client created successfully')
-        
+
         // Verify the file was created
         const verifyClient = await runCommandInSandbox(sandbox, 'ls', ['-la', 'perplexity-client.js'])
         if (verifyClient.success) {
@@ -185,14 +188,17 @@ testPerplexity().catch(console.error);
 
     // Write test script using temporary file approach
     const testTempFile = '/tmp/test-perplexity-temp.js'
-    
-    const writeTestTemp = await runCommandInSandbox(sandbox, 'sh', ['-c', `cat > ${testTempFile} << 'TEST_EOF'
+
+    const writeTestTemp = await runCommandInSandbox(sandbox, 'sh', [
+      '-c',
+      `cat > ${testTempFile} << 'TEST_EOF'
 ${testScript}
-TEST_EOF`])
-    
+TEST_EOF`,
+    ])
+
     if (writeTestTemp.success) {
       const copyTest = await runCommandInSandbox(sandbox, 'cp', [testTempFile, 'test-perplexity.js'])
-      
+
       if (copyTest.success) {
         logs.push('Perplexity test script created successfully')
       } else {
@@ -310,11 +316,20 @@ executePerplexityTask().catch(error => {
 
     // Write execution script using temporary file approach
     const execTempFile = '/tmp/execute-perplexity-temp.js'
-    
-    const writeExecTemp = await runAndLogCommand(sandbox, 'sh', ['-c', `cat > ${execTempFile} << 'EXEC_EOF'
+
+    const writeExecTemp = await runAndLogCommand(
+      sandbox,
+      'sh',
+      [
+        '-c',
+        `cat > ${execTempFile} << 'EXEC_EOF'
 ${executionScript}
-EXEC_EOF`], logs, logger)
-    
+EXEC_EOF`,
+      ],
+      logs,
+      logger,
+    )
+
     if (!writeExecTemp.success) {
       const errorMessage = `Failed to create temporary Perplexity execution script: ${writeExecTemp.error}`
       logs.push(errorMessage)
@@ -326,9 +341,9 @@ EXEC_EOF`], logs, logger)
         logs,
       }
     }
-    
+
     const copyExec = await runAndLogCommand(sandbox, 'cp', [execTempFile, 'execute-perplexity.js'], logs, logger)
-    
+
     if (!copyExec.success) {
       const errorMessage = `Failed to copy Perplexity execution script: ${copyExec.error}`
       logs.push(errorMessage)
@@ -340,13 +355,14 @@ EXEC_EOF`], logs, logger)
         logs,
       }
     }
-    
-    logs.push('Perplexity execution script created successfully')
 
+    logs.push('Perplexity execution script created successfully')
 
     // Execute the Perplexity task
     if (logger) {
-      await logger.info(`Executing Perplexity API with model ${modelToUse} and instruction: ${instruction.substring(0, 100)}...`)
+      await logger.info(
+        `Executing Perplexity API with model ${modelToUse} and instruction: ${instruction.substring(0, 100)}...`,
+      )
     }
 
     const result = await runCommandInSandbox(sandbox, 'node', ['execute-perplexity.js'])
@@ -389,7 +405,9 @@ EXEC_EOF`], logs, logger)
     const fileCheck = await runAndLogCommand(sandbox, 'ls', ['-la'], logs, logger)
 
     const hasChanges = gitStatusCheck.success && gitStatusCheck.output?.trim()
-    const hasNewFiles = fileCheck.success && (fileCheck.output?.includes('perplexity-response.txt') || fileCheck.output?.includes('execute-perplexity.js'))
+    const hasNewFiles =
+      fileCheck.success &&
+      (fileCheck.output?.includes('perplexity-response.txt') || fileCheck.output?.includes('execute-perplexity.js'))
 
     if (result.success || result.exitCode === 0) {
       return {

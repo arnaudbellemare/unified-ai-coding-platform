@@ -147,7 +147,7 @@ export function HomePageContent() {
 
         {activeTab === 'agents' && (
           <div className="max-w-6xl mx-auto">
-            <AgentKit 
+            <AgentKit
               onAgentCreate={(config) => {
                 toast.success(`Agent "${config.name}" created successfully!`)
               }}
@@ -160,7 +160,7 @@ export function HomePageContent() {
 
         {activeTab === 'payment' && (
           <div className="max-w-6xl mx-auto">
-            <X402Payment 
+            <X402Payment
               onPaymentComplete={(paymentData) => {
                 toast.success(`Payment completed for ${paymentData.tier.name} plan!`)
               }}

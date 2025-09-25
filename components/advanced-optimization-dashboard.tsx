@@ -7,12 +7,12 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  Activity, 
-  Zap, 
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Activity,
+  Zap,
   Shield,
   Clock,
   Target,
@@ -21,46 +21,46 @@ import {
   AlertTriangle,
   CheckCircle,
   XCircle,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react'
 
 interface OptimizationDecision {
-  providerId: string;
-  providerName: string;
-  reason: string;
-  confidence: number;
-  expectedSavings: number;
-  riskLevel: 'low' | 'medium' | 'high';
+  providerId: string
+  providerName: string
+  reason: string
+  confidence: number
+  expectedSavings: number
+  riskLevel: 'low' | 'medium' | 'high'
 }
 
 interface OptimizationMetrics {
-  totalOptimizations: number;
-  totalSavings: number;
-  averageSavings: number;
-  successRate: number;
-  failureRate: number;
-  lastOptimization: Date;
+  totalOptimizations: number
+  totalSavings: number
+  averageSavings: number
+  successRate: number
+  failureRate: number
+  lastOptimization: Date
 }
 
 interface ProviderPerformance {
-  providerId: string;
-  providerName: string;
-  totalRequests: number;
-  successfulRequests: number;
-  averageResponseTime: number;
-  averageCost: number;
-  reliability: number;
-  performance: number;
-  lastUsed: Date;
+  providerId: string
+  providerName: string
+  totalRequests: number
+  successfulRequests: number
+  averageResponseTime: number
+  averageCost: number
+  reliability: number
+  performance: number
+  lastUsed: Date
 }
 
 interface OptimizationRule {
-  id: string;
-  name: string;
-  condition: (metrics: OptimizationMetrics) => boolean;
-  action: (metrics: OptimizationMetrics) => OptimizationDecision | null;
-  priority: number;
-  enabled: boolean;
+  id: string
+  name: string
+  condition: (metrics: OptimizationMetrics) => boolean
+  action: (metrics: OptimizationMetrics) => OptimizationDecision | null
+  priority: number
+  enabled: boolean
 }
 
 export function AdvancedOptimizationDashboard() {
@@ -70,9 +70,9 @@ export function AdvancedOptimizationDashboard() {
     averageSavings: 0,
     successRate: 0,
     failureRate: 0,
-    lastOptimization: new Date()
+    lastOptimization: new Date(),
   })
-  
+
   const [providerPerformance, setProviderPerformance] = useState<ProviderPerformance[]>([])
   const [optimizationHistory, setOptimizationHistory] = useState<OptimizationDecision[]>([])
   const [optimizationRules, setOptimizationRules] = useState<OptimizationRule[]>([])
@@ -84,10 +84,10 @@ export function AdvancedOptimizationDashboard() {
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true)
-      
+
       // Simulate API calls
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
       // Mock data
       setOptimizationMetrics({
         totalOptimizations: 47,
@@ -95,7 +95,7 @@ export function AdvancedOptimizationDashboard() {
         averageSavings: 4.99,
         successRate: 0.94,
         failureRate: 0.06,
-        lastOptimization: new Date()
+        lastOptimization: new Date(),
       })
 
       setProviderPerformance([
@@ -108,7 +108,7 @@ export function AdvancedOptimizationDashboard() {
           averageCost: 0.03,
           reliability: 0.988,
           performance: 0.95,
-          lastUsed: new Date()
+          lastUsed: new Date(),
         },
         {
           providerId: 'anthropic-claude',
@@ -119,7 +119,7 @@ export function AdvancedOptimizationDashboard() {
           averageCost: 0.032,
           reliability: 0.983,
           performance: 0.92,
-          lastUsed: new Date()
+          lastUsed: new Date(),
         },
         {
           providerId: 'openai-gpt35',
@@ -128,9 +128,9 @@ export function AdvancedOptimizationDashboard() {
           successfulRequests: 2080,
           averageResponseTime: 800,
           averageCost: 0.002,
-          reliability: 0.990,
-          performance: 0.90,
-          lastUsed: new Date()
+          reliability: 0.99,
+          performance: 0.9,
+          lastUsed: new Date(),
         },
         {
           providerId: 'perplexity-sonar-medium',
@@ -141,7 +141,7 @@ export function AdvancedOptimizationDashboard() {
           averageCost: 0.015,
           reliability: 0.985,
           performance: 0.92,
-          lastUsed: new Date()
+          lastUsed: new Date(),
         },
         {
           providerId: 'perplexity-sonar-small',
@@ -152,8 +152,8 @@ export function AdvancedOptimizationDashboard() {
           averageCost: 0.005,
           reliability: 0.983,
           performance: 0.88,
-          lastUsed: new Date()
-        }
+          lastUsed: new Date(),
+        },
       ])
 
       setOptimizationHistory([
@@ -163,7 +163,7 @@ export function AdvancedOptimizationDashboard() {
           reason: 'Cost savings: $0.028 per request',
           confidence: 0.85,
           expectedSavings: 0.028,
-          riskLevel: 'low'
+          riskLevel: 'low',
         },
         {
           providerId: 'anthropic-claude',
@@ -171,8 +171,8 @@ export function AdvancedOptimizationDashboard() {
           reason: 'Better reliability: 0.98 vs 0.95',
           confidence: 0.75,
           expectedSavings: 0,
-          riskLevel: 'medium'
-        }
+          riskLevel: 'medium',
+        },
       ])
 
       setOptimizationRules([
@@ -182,7 +182,7 @@ export function AdvancedOptimizationDashboard() {
           condition: () => true,
           action: () => null,
           priority: 1,
-          enabled: true
+          enabled: true,
         },
         {
           id: 'performance_optimization',
@@ -190,7 +190,7 @@ export function AdvancedOptimizationDashboard() {
           condition: () => true,
           action: () => null,
           priority: 2,
-          enabled: true
+          enabled: true,
         },
         {
           id: 'load_balancing',
@@ -198,8 +198,8 @@ export function AdvancedOptimizationDashboard() {
           condition: () => true,
           action: () => null,
           priority: 3,
-          enabled: false
-        }
+          enabled: false,
+        },
       ])
 
       setPriceData([
@@ -210,7 +210,7 @@ export function AdvancedOptimizationDashboard() {
         { provider: 'Cohere Command', price: 0.015, change: 3.2, trend: 'up' },
         { provider: 'Perplexity Sonar Small', price: 0.005, change: -1.2, trend: 'down' },
         { provider: 'Perplexity Sonar Medium', price: 0.015, change: 0.5, trend: 'stable' },
-        { provider: 'Perplexity Sonar Large', price: 0.025, change: 2.1, trend: 'up' }
+        { provider: 'Perplexity Sonar Large', price: 0.025, change: 2.1, trend: 'up' },
       ])
 
       setIsLoading(false)
@@ -218,42 +218,45 @@ export function AdvancedOptimizationDashboard() {
     }
 
     loadData()
-    
+
     // Refresh data every 30 seconds
     const interval = setInterval(loadData, 30000)
     return () => clearInterval(interval)
   }, [])
 
   const toggleRule = (ruleId: string, enabled: boolean) => {
-    setOptimizationRules(prev => 
-      prev.map(rule => 
-        rule.id === ruleId ? { ...rule, enabled } : rule
-      )
-    )
+    setOptimizationRules((prev) => prev.map((rule) => (rule.id === ruleId ? { ...rule, enabled } : rule)))
   }
 
   const forceOptimization = async () => {
     setIsLoading(true)
     // Simulate optimization check
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000))
     setIsLoading(false)
     setLastUpdate(new Date())
   }
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-      case 'medium': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-      case 'high': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      case 'low':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      case 'high':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
   }
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <TrendingUp className="h-4 w-4 text-red-500" />
-      case 'down': return <TrendingDown className="h-4 w-4 text-green-500" />
-      default: return <Activity className="h-4 w-4 text-gray-500" />
+      case 'up':
+        return <TrendingUp className="h-4 w-4 text-red-500" />
+      case 'down':
+        return <TrendingDown className="h-4 w-4 text-green-500" />
+      default:
+        return <Activity className="h-4 w-4 text-gray-500" />
     }
   }
 
@@ -263,9 +266,7 @@ export function AdvancedOptimizationDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold">Advanced Optimization Engine</h2>
-          <p className="text-muted-foreground">
-            AI-powered provider switching and cost optimization
-          </p>
+          <p className="text-muted-foreground">AI-powered provider switching and cost optimization</p>
         </div>
         <div className="flex items-center gap-2">
           <Button onClick={forceOptimization} disabled={isLoading}>
@@ -287,9 +288,7 @@ export function AdvancedOptimizationDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{optimizationMetrics.totalOptimizations}</div>
-            <p className="text-xs text-muted-foreground">
-              +12% from last week
-            </p>
+            <p className="text-xs text-muted-foreground">+12% from last week</p>
           </CardContent>
         </Card>
 
@@ -299,9 +298,7 @@ export function AdvancedOptimizationDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">${optimizationMetrics.totalSavings.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">
-              +18% from last week
-            </p>
+            <p className="text-xs text-muted-foreground">+18% from last week</p>
           </CardContent>
         </Card>
 
@@ -311,9 +308,7 @@ export function AdvancedOptimizationDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{(optimizationMetrics.successRate * 100).toFixed(1)}%</div>
-            <p className="text-xs text-muted-foreground">
-              -2% from last week
-            </p>
+            <p className="text-xs text-muted-foreground">-2% from last week</p>
           </CardContent>
         </Card>
 
@@ -323,9 +318,7 @@ export function AdvancedOptimizationDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">${optimizationMetrics.averageSavings.toFixed(3)}</div>
-            <p className="text-xs text-muted-foreground">
-              per optimization
-            </p>
+            <p className="text-xs text-muted-foreground">per optimization</p>
           </CardContent>
         </Card>
       </div>
@@ -359,9 +352,7 @@ export function AdvancedOptimizationDashboard() {
                     </div>
                     <div className="text-right">
                       <div className="font-medium">${provider.averageCost.toFixed(4)}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {provider.averageResponseTime}ms
-                      </div>
+                      <div className="text-sm text-muted-foreground">{provider.averageResponseTime}ms</div>
                     </div>
                   </div>
                 ))}
@@ -383,16 +374,18 @@ export function AdvancedOptimizationDashboard() {
                       {getTrendIcon(item.trend)}
                       <div>
                         <div className="font-medium">{item.provider}</div>
-                        <div className="text-sm text-muted-foreground">
-                          ${item.price.toFixed(4)} per request
-                        </div>
+                        <div className="text-sm text-muted-foreground">${item.price.toFixed(4)} per request</div>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className={`font-medium ${item.change >= 0 ? 'text-red-600' : 'text-green-600'}`}>
-                        {item.change >= 0 ? '+' : ''}{item.change.toFixed(1)}%
+                        {item.change >= 0 ? '+' : ''}
+                        {item.change.toFixed(1)}%
                       </div>
-                      <Badge variant="outline" className={getRiskColor(item.change >= 2 ? 'high' : item.change >= 0 ? 'medium' : 'low')}>
+                      <Badge
+                        variant="outline"
+                        className={getRiskColor(item.change >= 2 ? 'high' : item.change >= 0 ? 'medium' : 'low')}
+                      >
                         {item.trend}
                       </Badge>
                     </div>
@@ -407,9 +400,7 @@ export function AdvancedOptimizationDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Provider Analytics</CardTitle>
-              <CardDescription>
-                Detailed performance metrics for each AI provider
-              </CardDescription>
+              <CardDescription>Detailed performance metrics for each AI provider</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -417,11 +408,9 @@ export function AdvancedOptimizationDashboard() {
                   <div key={provider.providerId} className="p-4 border rounded-lg">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-semibold">{provider.providerName}</h3>
-                      <Badge variant="outline">
-                        {(provider.reliability * 100).toFixed(1)}% reliable
-                      </Badge>
+                      <Badge variant="outline">{(provider.reliability * 100).toFixed(1)}% reliable</Badge>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <div className="text-muted-foreground">Total Requests</div>
@@ -429,7 +418,9 @@ export function AdvancedOptimizationDashboard() {
                       </div>
                       <div>
                         <div className="text-muted-foreground">Success Rate</div>
-                        <div className="font-medium">{(provider.successfulRequests / provider.totalRequests * 100).toFixed(1)}%</div>
+                        <div className="font-medium">
+                          {((provider.successfulRequests / provider.totalRequests) * 100).toFixed(1)}%
+                        </div>
                       </div>
                       <div>
                         <div className="text-muted-foreground">Avg Response Time</div>
@@ -451,9 +442,7 @@ export function AdvancedOptimizationDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Optimization Rules</CardTitle>
-              <CardDescription>
-                Configure automatic optimization rules and triggers
-              </CardDescription>
+              <CardDescription>Configure automatic optimization rules and triggers</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -467,8 +456,10 @@ export function AdvancedOptimizationDashboard() {
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {rule.id === 'cost_optimization' && 'Automatically switch to cheaper providers when cost savings exceed 10%'}
-                        {rule.id === 'performance_optimization' && 'Switch to more reliable providers when current reliability drops below 90%'}
+                        {rule.id === 'cost_optimization' &&
+                          'Automatically switch to cheaper providers when cost savings exceed 10%'}
+                        {rule.id === 'performance_optimization' &&
+                          'Switch to more reliable providers when current reliability drops below 90%'}
                         {rule.id === 'load_balancing' && 'Distribute load across providers to prevent rate limiting'}
                       </p>
                     </div>
@@ -493,9 +484,7 @@ export function AdvancedOptimizationDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Optimization History</CardTitle>
-              <CardDescription>
-                Recent optimization decisions and their outcomes
-              </CardDescription>
+              <CardDescription>Recent optimization decisions and their outcomes</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -504,19 +493,13 @@ export function AdvancedOptimizationDashboard() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-medium">Switched to {decision.providerName}</h3>
-                        <Badge className={getRiskColor(decision.riskLevel)}>
-                          {decision.riskLevel} risk
-                        </Badge>
+                        <Badge className={getRiskColor(decision.riskLevel)}>{decision.riskLevel} risk</Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {decision.reason}
-                      </p>
+                      <p className="text-sm text-muted-foreground mb-2">{decision.reason}</p>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <span>Confidence: {(decision.confidence * 100).toFixed(0)}%</span>
                         {decision.expectedSavings > 0 && (
-                          <span className="text-green-600">
-                            Savings: ${decision.expectedSavings.toFixed(4)}
-                          </span>
+                          <span className="text-green-600">Savings: ${decision.expectedSavings.toFixed(4)}</span>
                         )}
                       </div>
                     </div>
