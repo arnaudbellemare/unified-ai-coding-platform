@@ -32,9 +32,9 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
     try {
       // Simulate deployment progress
       const progressInterval = setInterval(() => {
-        setDeployment(prev => ({
+        setDeployment((prev) => ({
           ...prev,
-          progress: Math.min((prev.progress || 0) + Math.random() * 20, 90)
+          progress: Math.min((prev.progress || 0) + Math.random() * 20, 90),
         }))
       }, 500)
 
@@ -58,17 +58,17 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
       }
 
       const result = await response.json()
-      
+
       setDeployment({
         status: 'success',
         deploymentUrl: result.deploymentUrl,
-        progress: 100
+        progress: 100,
       })
     } catch (error) {
       setDeployment({
         status: 'error',
         error: error instanceof Error ? error.message : 'Deployment failed',
-        progress: 0
+        progress: 0,
       })
     } finally {
       setIsDeploying(false)
@@ -126,9 +126,7 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
             </Badge>
           )}
         </CardTitle>
-        <CardDescription>
-          Deploy your modified project to Vercel to see the results instantly
-        </CardDescription>
+        <CardDescription>Deploy your modified project to Vercel to see the results instantly</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {deployment.status === 'deploying' && (
@@ -142,10 +140,10 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
         )}
 
         {deployment.status === 'success' && deployment.deploymentUrl && (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm text-green-600">
               <CheckCircle className="h-4 w-4" />
-              <span>Your project is now live!</span>
+              <span>Ready to deploy!</span>
             </div>
             <Button
               variant="outline"
@@ -153,8 +151,17 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
               onClick={() => window.open(deployment.deploymentUrl, '_blank')}
             >
               <ExternalLink className="h-4 w-4 mr-2" />
-              View Live Project
+              Deploy to Vercel
             </Button>
+            <div className="text-xs text-gray-600 space-y-1">
+              <p className="font-medium">Deployment Instructions:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Click "Deploy to Vercel" above</li>
+                <li>Sign in to Vercel if prompted</li>
+                <li>Click "Deploy" on the Vercel page</li>
+                <li>Your project will be deployed automatically</li>
+              </ol>
+            </div>
           </div>
         )}
 
@@ -180,12 +187,7 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
         </div>
 
         {deployment.status === 'idle' && (
-          <Button
-            onClick={handleDeploy}
-            disabled={isDeploying}
-            className="w-full"
-            size="lg"
-          >
+          <Button onClick={handleDeploy} disabled={isDeploying} className="w-full" size="lg">
             <Zap className="h-4 w-4 mr-2" />
             {getStatusText()}
           </Button>
@@ -199,23 +201,14 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
         )}
 
         {deployment.status === 'success' && (
-          <Button
-            onClick={handleDeploy}
-            variant="outline"
-            className="w-full"
-            size="lg"
-          >
+          <Button onClick={handleDeploy} variant="outline" className="w-full" size="lg">
             <Zap className="h-4 w-4 mr-2" />
             Redeploy
           </Button>
         )}
 
         {deployment.status === 'error' && (
-          <Button
-            onClick={handleDeploy}
-            className="w-full"
-            size="lg"
-          >
+          <Button onClick={handleDeploy} className="w-full" size="lg">
             <Zap className="h-4 w-4 mr-2" />
             Try Again
           </Button>

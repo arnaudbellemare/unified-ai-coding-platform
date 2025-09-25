@@ -6,83 +6,38 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!taskId || !repoUrl || !branchName) {
-      return NextResponse.json(
-        { error: 'Missing required fields: taskId, repoUrl, branchName' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields: taskId, repoUrl, branchName' }, { status: 400 })
     }
 
-    // Check if Vercel credentials are available
-    if (!process.env.VERCEL_TOKEN || !process.env.VERCEL_PROJECT_ID || !process.env.VERCEL_TEAM_ID) {
-      return NextResponse.json(
-        { error: 'Vercel credentials not configured' },
-        { status: 500 }
-      )
+    // Extract repository information from GitHub URL
+    const repoMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)(?:\.git)?$/)
+    if (!repoMatch) {
+      return NextResponse.json({ error: 'Invalid GitHub repository URL' }, { status: 400 })
     }
-
-    // Create deployment using Vercel API
-    const deploymentResponse = await fetch('https://api.vercel.com/v13/deployments', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.VERCEL_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: `task-${taskId}`,
-        gitSource: {
-          type: 'github',
-          repo: repoUrl,
-          ref: branchName,
-        },
-        projectId: process.env.VERCEL_PROJECT_ID,
-        teamId: process.env.VERCEL_TEAM_ID,
-        target: 'production',
-        // Enable automatic deployments
-        autoAlias: true,
-        // Set environment variables for the deployment
-        env: {
-          NODE_ENV: 'production',
-          TASK_ID: taskId,
-          DEPLOYED_FROM: 'unified-ai-coding-platform',
-        },
-      }),
-    })
-
-    if (!deploymentResponse.ok) {
-      const errorData = await deploymentResponse.json()
-      console.error('Vercel deployment failed:', errorData)
-      return NextResponse.json(
-        { error: `Vercel deployment failed: ${errorData.message || 'Unknown error'}` },
-        { status: deploymentResponse.status }
-      )
-    }
-
-    const deploymentData = await deploymentResponse.json()
     
-    // Wait for deployment to be ready (optional - you can also return immediately)
-    let deploymentUrl = deploymentData.url
-    
-    // If the deployment is still building, we can poll for completion
-    if (deploymentData.state === 'BUILDING' || deploymentData.state === 'QUEUED') {
-      // Return the deployment URL immediately - Vercel will handle the build
-      deploymentUrl = `https://${deploymentData.url}`
-    } else if (deploymentData.state === 'READY') {
-      deploymentUrl = `https://${deploymentData.url}`
-    }
+    const [, owner, repo] = repoMatch
+    const repoName = repo.replace('.git', '')
 
+    // Generate Vercel deployment URL
+    const vercelDeployUrl = `https://vercel.com/new/git/github/${owner}/${repoName}?branch=${branchName}&env=NODE_ENV=production&env=TASK_ID=${taskId}&env=DEPLOYED_FROM=unified-ai-coding-platform`
+
+    // For now, return a success response with the deployment URL
+    // This allows users to click and deploy manually to Vercel
     return NextResponse.json({
       success: true,
-      deploymentId: deploymentData.id,
-      deploymentUrl,
-      status: deploymentData.state,
-      message: 'Deployment initiated successfully',
+      deploymentUrl: vercelDeployUrl,
+      status: 'ready',
+      message: 'Ready to deploy! Click the link to deploy to Vercel.',
+      instructions: [
+        'Click the "View Live Project" button below',
+        'Sign in to Vercel if prompted',
+        'Click "Deploy" on the Vercel page',
+        'Your project will be deployed automatically'
+      ]
     })
 
   } catch (error) {
     console.error('Deployment error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error during deployment' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error during deployment' }, { status: 500 })
   }
 }
