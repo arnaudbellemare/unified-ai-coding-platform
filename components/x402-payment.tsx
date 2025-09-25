@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -18,7 +18,11 @@ import {
   AlertCircle,
   Settings,
   BarChart3,
+  Wallet,
+  Coins,
+  Link,
 } from 'lucide-react'
+import { PrivyWalletConnection } from './privy-wallet-connection'
 
 interface PricingTier {
   id: string
@@ -37,10 +41,19 @@ interface PricingTier {
 
 interface PaymentMethod {
   id: string
-  type: 'credit_card' | 'paypal' | 'crypto' | 'bank_transfer'
+  type: 'credit_card' | 'paypal' | 'crypto' | 'bank_transfer' | 'x402'
   name: string
   icon: React.ComponentType
   description: string
+  x402Enabled?: boolean
+}
+
+interface X402Wallet {
+  address: string
+  balance: string
+  network: 'base-sepolia' | 'base'
+  isConnected: boolean
+  privyUserId?: string
 }
 
 interface X402PaymentProps {
@@ -52,6 +65,9 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
   const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [x402Wallet, setX402Wallet] = useState<X402Wallet | null>(null)
+  const [x402Connected, setX402Connected] = useState(false)
+  const [privyWallet, setPrivyWallet] = useState<X402Wallet | null>(null)
   const [paymentDetails, setPaymentDetails] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -126,6 +142,14 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
 
   const paymentMethods: PaymentMethod[] = [
     {
+      id: 'x402',
+      type: 'x402',
+      name: 'X402 Protocol',
+      icon: Coins,
+      description: 'Accountless payments with x402 protocol',
+      x402Enabled: true,
+    },
+    {
       id: 'credit_card',
       type: 'credit_card',
       name: 'Credit Card',
@@ -155,22 +179,102 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
     },
   ]
 
+  // Initialize x402 connection
+  useEffect(() => {
+    const initializeX402 = async () => {
+      try {
+        // Check if x402 is available
+        if (typeof window !== 'undefined' && window.x402) {
+          setX402Connected(true)
+          // Initialize wallet connection
+          const wallet = await window.x402.connect()
+          setX402Wallet({
+            address: wallet.address,
+            balance: wallet.balance,
+            network: process.env.NODE_ENV === 'production' ? 'base' : 'base-sepolia',
+            isConnected: true,
+          })
+        }
+      } catch (error) {
+        console.error('Failed to initialize x402:', error)
+      }
+    }
+
+    initializeX402()
+  }, [])
+
+  // Handle Privy wallet connection
+  const handlePrivyWalletConnect = (wallet: X402Wallet) => {
+    setPrivyWallet(wallet)
+    setX402Connected(true)
+    setX402Wallet(wallet)
+  }
+
+  const handlePrivyWalletDisconnect = () => {
+    setPrivyWallet(null)
+    setX402Connected(false)
+    setX402Wallet(null)
+  }
+
   const handlePayment = async () => {
     if (!selectedTier || !selectedPaymentMethod) return
 
     setIsProcessing(true)
     try {
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 3000))
+      if (selectedPaymentMethod === 'x402' && x402Wallet) {
+        // Process x402 payment
+        const paymentResult = await processX402Payment(selectedTier, x402Wallet)
+        
+        onPaymentComplete?.({
+          tier: selectedTier,
+          paymentMethod: selectedPaymentMethod,
+          x402Payment: paymentResult,
+          timestamp: new Date().toISOString(),
+        })
+      } else {
+        // Simulate traditional payment processing
+        await new Promise((resolve) => setTimeout(resolve, 3000))
 
-      onPaymentComplete?.({
-        tier: selectedTier,
-        paymentMethod: selectedPaymentMethod,
-        paymentDetails: selectedPaymentMethod === 'credit_card' ? paymentDetails : null,
-        timestamp: new Date().toISOString(),
-      })
+        onPaymentComplete?.({
+          tier: selectedTier,
+          paymentMethod: selectedPaymentMethod,
+          paymentDetails: selectedPaymentMethod === 'credit_card' ? paymentDetails : null,
+          timestamp: new Date().toISOString(),
+        })
+      }
     } finally {
       setIsProcessing(false)
+    }
+  }
+
+  const processX402Payment = async (tier: PricingTier, wallet: X402Wallet) => {
+    try {
+      // Use x402 protocol for payment with Privy integration
+      const paymentRequest = {
+        amount: tier.price,
+        currency: 'USDC',
+        recipient: process.env.NEXT_PUBLIC_X402_RECIPIENT_ADDRESS,
+        network: wallet.network,
+        walletAddress: wallet.address,
+        privyUserId: wallet.privyUserId,
+        paymentMethod: 'privy_x402', // Indicate Privy integration
+      }
+
+      // Process payment through x402 protocol with Privy
+      const result = await fetch('/api/x402/payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentRequest),
+      })
+
+      if (!result.ok) {
+        throw new Error('X402 payment failed')
+      }
+
+      return await result.json()
+    } catch (error) {
+      console.error('X402 payment error:', error)
+      throw error
     }
   }
 
@@ -272,6 +376,36 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
                   )}
                 </div>
 
+                {/* Privy Wallet Connection */}
+                {!x402Connected && (
+                  <div className="mb-6">
+                    <PrivyWalletConnection
+                      onWalletConnect={handlePrivyWalletConnect}
+                      onWalletDisconnect={handlePrivyWalletDisconnect}
+                    />
+                  </div>
+                )}
+
+                {/* X402 Wallet Status */}
+                {x402Connected && x402Wallet && (
+                  <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg mb-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Wallet className="h-5 w-5 text-blue-600" />
+                      <span className="font-semibold text-blue-900 dark:text-blue-100">
+                        {privyWallet ? 'Privy Wallet Connected' : 'X402 Wallet Connected'}
+                      </span>
+                    </div>
+                    <div className="text-sm text-blue-700 dark:text-blue-300">
+                      <div>Address: {x402Wallet.address.slice(0, 6)}...{x402Wallet.address.slice(-4)}</div>
+                      <div>Balance: {x402Wallet.balance} USDC</div>
+                      <div>Network: {x402Wallet.network}</div>
+                      {privyWallet?.privyUserId && (
+                        <div>Privy User ID: {privyWallet.privyUserId.slice(0, 8)}...</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <h3 className="font-semibold mb-4">Payment Method</h3>
                   <div className="grid grid-cols-2 gap-4">
@@ -280,15 +414,30 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
                         key={method.id}
                         className={`cursor-pointer transition-colors ${
                           selectedPaymentMethod === method.id ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-muted/50'
-                        }`}
-                        onClick={() => setSelectedPaymentMethod(method.id)}
+                        } ${method.x402Enabled && !x402Connected ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        onClick={() => {
+                          if (method.x402Enabled && !x402Connected) return
+                          setSelectedPaymentMethod(method.id)
+                        }}
                       >
                         <CardContent className="p-4">
                           <div className="flex items-center gap-3">
                             <div className="h-6 w-6">{React.createElement(method.icon)}</div>
                             <div>
-                              <div className="font-medium">{method.name}</div>
+                              <div className="font-medium flex items-center gap-2">
+                                {method.name}
+                                {method.x402Enabled && (
+                                  <Badge variant="outline" className="text-xs">
+                                    X402
+                                  </Badge>
+                                )}
+                              </div>
                               <div className="text-sm text-muted-foreground">{method.description}</div>
+                              {method.x402Enabled && !x402Connected && (
+                                <div className="text-xs text-orange-600 mt-1">
+                                  X402 wallet not connected
+                                </div>
+                              )}
                             </div>
                           </div>
                         </CardContent>

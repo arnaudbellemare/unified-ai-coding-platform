@@ -2,13 +2,39 @@ import { NextRequest, NextResponse } from 'next/server'
 import { CostOptimization } from '@/lib/cost-optimization'
 import { getEnvironmentConfig } from '@/lib/config/env'
 import { hybridOptimizer } from '@/lib/hybrid-optimizer'
+import { getPrivyUser } from '@/lib/auth/privy-auth'
+
+interface X402PaymentRequest {
+  amount: number
+  currency: string
+  recipient: string
+  network: string
+  walletAddress: string
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt, selectedAgent, taskDescription } = await request.json()
+    const { prompt, selectedAgent, taskDescription, x402Payment } = await request.json()
 
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 })
+    }
+
+    // Get Privy user for authentication and wallet info
+    const privyUser = await getPrivyUser(request)
+    
+    // Check if x402 payment is required for premium optimization
+    const requiresPayment = prompt.length > 500 || selectedAgent === 'premium'
+    if (requiresPayment && !x402Payment) {
+      return NextResponse.json({ 
+        error: 'X402 payment required for premium optimization',
+        requiresPayment: true,
+        estimatedCost: 0.01, // $0.01 for premium optimization
+        privyUser: privyUser ? {
+          id: privyUser.id,
+          walletAddress: privyUser.wallet?.address
+        } : null
+      }, { status: 402 }) // 402 Payment Required
     }
 
     const config = getEnvironmentConfig()

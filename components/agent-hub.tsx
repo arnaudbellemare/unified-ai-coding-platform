@@ -50,6 +50,15 @@ interface CostOptimizationResult {
   verbosityLevel: 'small' | 'medium' | 'complex'
 }
 
+interface X402Payment {
+  transactionId: string
+  amount: number
+  currency: string
+  network: string
+  walletAddress: string
+  status: 'completed' | 'pending' | 'failed'
+}
+
 interface AgentHubProps {
   onAgentCreate?: (config: AgentConfig) => void
   onAgentExecute?: (agentId: string, input: string) => void
@@ -85,6 +94,8 @@ export function AgentHub({ onAgentCreate, onAgentExecute }: AgentHubProps) {
   >([])
   const [isOptimizing, setIsOptimizing] = useState(false)
   const [costOptimization, setCostOptimization] = useState<CostOptimizationResult | null>(null)
+  const [x402Payment, setX402Payment] = useState<X402Payment | null>(null)
+  const [requiresPayment, setRequiresPayment] = useState(false)
 
   const agentTypes = [
     { value: 'coding', label: 'Coding Agent', icon: Code, description: 'Specialized in programming tasks' },
@@ -196,11 +207,19 @@ export function AgentHub({ onAgentCreate, onAgentExecute }: AgentHubProps) {
           prompt: input,
           selectedAgent: agentType,
           taskDescription,
+          x402Payment: x402Payment?.status === 'completed' ? x402Payment : null,
         }),
         signal: controller.signal,
       })
 
       clearTimeout(timeoutId)
+
+      if (response.status === 402) {
+        // Payment required
+        const data = await response.json()
+        setRequiresPayment(true)
+        throw new Error(`Payment required: $${data.estimatedCost}`)
+      }
 
       if (response.ok) {
         const data = await response.json()
@@ -818,6 +837,42 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                 </>
               )}
             </Button>
+
+            {/* Payment Required Display */}
+            {requiresPayment && (
+              <Card className="border-orange-200 bg-orange-50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2 text-orange-800">
+                    <DollarSign className="h-4 w-4 text-orange-600" />
+                    Payment Required for Premium Optimization
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="text-sm text-orange-700 mb-3">
+                    This input requires premium optimization. Please complete payment to continue.
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      onClick={() => {
+                        // Redirect to payment page or open payment modal
+                        window.open('/#payment', '_blank')
+                      }}
+                    >
+                      <DollarSign className="h-4 w-4 mr-2" />
+                      Pay with X402
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setRequiresPayment(false)}
+                    >
+                      Continue without optimization
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Cost Optimization Display */}
             {costOptimization && (
