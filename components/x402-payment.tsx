@@ -22,7 +22,7 @@ import {
   Coins,
   Link,
 } from 'lucide-react'
-import { PrivyWalletConnection } from './privy-wallet-connection-proper'
+import { WalletConnectionComplete } from './wallet-connection-complete'
 
 interface PricingTier {
   id: string
@@ -376,17 +376,16 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
                   )}
                 </div>
 
-                {/* Privy Wallet Connection */}
+                {/* Complete Wallet Connection */}
                 {!x402Connected && (
                   <div className="mb-6">
-                    <PrivyWalletConnection
+                    <WalletConnectionComplete
                       onWalletConnect={(wallet) => {
                         const walletData: X402Wallet = {
                           address: wallet.address,
                           balance: wallet.balance,
-                          network: wallet.network,
+                          network: wallet.network as 'base-sepolia' | 'base',
                           isConnected: true,
-                          privyUserId: wallet.privyUserId,
                         }
                         handlePrivyWalletConnect(walletData)
                       }}

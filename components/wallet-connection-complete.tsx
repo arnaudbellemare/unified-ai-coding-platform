@@ -1,98 +1,78 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { usePrivy } from '@privy-io/react-auth'
+import { useAccount, useBalance, useDisconnect } from 'wagmi'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Wallet, Coins, CheckCircle, AlertCircle, ExternalLink, Copy, RefreshCw, Mail, Shield } from 'lucide-react'
-import { usePrivy } from './privy-provider-fixed'
+import { 
+  Wallet, 
+  Coins, 
+  CheckCircle, 
+  AlertCircle, 
+  Copy, 
+  RefreshCw, 
+  Mail, 
+  Shield,
+  ExternalLink,
+  LogOut
+} from 'lucide-react'
 
-interface PrivyWallet {
-  address: string
-  balance: string
-  network: 'base-sepolia' | 'base'
-  isConnected: boolean
-  privyUserId?: string
-}
-
-interface PrivyWalletConnectionProps {
-  onWalletConnect?: (wallet: PrivyWallet) => void
+interface WalletConnectionProps {
+  onWalletConnect?: (wallet: { address: string; balance: string; network: string }) => void
   onWalletDisconnect?: () => void
   onPaymentReady?: (ready: boolean) => void
 }
 
-export function PrivyWalletConnection({
-  onWalletConnect,
-  onWalletDisconnect,
-  onPaymentReady,
-}: PrivyWalletConnectionProps) {
-  const { user, isConnected, isLoading, login, logout, loginWithEmail, verifyEmailCode, getBalance } = usePrivy()
-  const [wallet, setWallet] = useState<PrivyWallet | null>(null)
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [isLoadingBalance, setIsLoadingBalance] = useState(false)
-  const [error, setError] = useState<string>('')
+export function WalletConnectionComplete({ 
+  onWalletConnect, 
+  onWalletDisconnect, 
+  onPaymentReady 
+}: WalletConnectionProps) {
+  const { user, isConnected, isLoading, login, logout, loginWithEmail, verifyEmailCode } = usePrivy()
+  const { address, isConnected: wagmiConnected } = useAccount()
+  const { data: balance } = useBalance({ address })
+  const { disconnect } = useDisconnect()
+  
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [showEmailForm, setShowEmailForm] = useState(false)
   const [showCodeForm, setShowCodeForm] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
+  const [error, setError] = useState<string>('')
 
   // Update wallet when user connects
   useEffect(() => {
-    if (isConnected && user) {
-      const walletData: PrivyWallet = {
-        address: user.wallet?.address || '',
-        balance: '0', // Will be fetched
-        network: process.env.NODE_ENV === 'production' ? 'base' : 'base-sepolia',
-        isConnected: true,
-        privyUserId: user.id,
+    if (isConnected && user && address) {
+      const walletData = {
+        address,
+        balance: balance?.formatted || '0',
+        network: 'base-sepolia', // Default to testnet
       }
-      setWallet(walletData)
       onWalletConnect?.(walletData)
       onPaymentReady?.(true)
-
-      // Fetch balance
-      if (user.wallet?.address) {
-        fetchBalance(user.wallet.address)
-      }
     } else {
-      setWallet(null)
       onWalletDisconnect?.()
       onPaymentReady?.(false)
     }
-  }, [isConnected, user, onWalletConnect, onWalletDisconnect, onPaymentReady])
-
-  const fetchBalance = async (address: string) => {
-    setIsLoadingBalance(true)
-    try {
-      const balance = await getBalance(address)
-      setWallet((prev) => (prev ? { ...prev, balance } : null))
-    } catch (error) {
-      console.error('Failed to fetch balance:', error)
-    } finally {
-      setIsLoadingBalance(false)
-    }
-  }
+  }, [isConnected, user, address, balance, onWalletConnect, onWalletDisconnect, onPaymentReady])
 
   const connectWallet = async () => {
-    setIsConnecting(true)
-    setError('')
-
     try {
       await login()
     } catch (error) {
       console.error('Wallet connection failed:', error)
       setError(error instanceof Error ? error.message : 'Failed to connect wallet')
-    } finally {
-      setIsConnecting(false)
     }
   }
 
   const disconnectWallet = async () => {
     try {
       await logout()
+      disconnect()
     } catch (error) {
       console.error('Wallet disconnection failed:', error)
       setError(error instanceof Error ? error.message : 'Failed to disconnect wallet')
@@ -134,9 +114,13 @@ export function PrivyWalletConnection({
   }
 
   const copyAddress = () => {
-    if (wallet?.address) {
-      navigator.clipboard.writeText(wallet.address)
+    if (address) {
+      navigator.clipboard.writeText(address)
     }
+  }
+
+  const formatAddress = (addr: string) => {
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`
   }
 
   if (isLoading) {
@@ -145,14 +129,14 @@ export function PrivyWalletConnection({
         <CardContent className="p-6">
           <div className="flex items-center justify-center">
             <RefreshCw className="h-5 w-5 animate-spin mr-2" />
-            <span>Loading...</span>
+            <span>Loading wallet...</span>
           </div>
         </CardContent>
       </Card>
     )
   }
 
-  if (isConnected && wallet) {
+  if (isConnected && user && address) {
     return (
       <Card className="w-full max-w-md">
         <CardHeader>
@@ -160,7 +144,9 @@ export function PrivyWalletConnection({
             <CheckCircle className="h-5 w-5 text-green-600" />
             Wallet Connected
           </CardTitle>
-          <CardDescription>Your wallet is connected and ready for x402 payments</CardDescription>
+          <CardDescription>
+            Your wallet is connected and ready for x402 payments
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -170,39 +156,49 @@ export function PrivyWalletConnection({
                 <Copy className="h-4 w-4" />
               </Button>
             </div>
-            <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs font-mono break-all">{wallet.address}</div>
+            <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs font-mono break-all">
+              {formatAddress(address)}
+            </div>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Network:</span>
-              <Badge variant="outline">{wallet.network}</Badge>
+              <Badge variant="outline">Base Sepolia</Badge>
             </div>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Balance:</span>
-              {isLoadingBalance ? (
-                <RefreshCw className="h-4 w-4 animate-spin" />
-              ) : (
-                <span className="text-sm">{wallet.balance} ETH</span>
-              )}
+              <span className="text-sm font-mono">
+                {balance ? `${balance.formatted} ${balance.symbol}` : 'Loading...'}
+              </span>
             </div>
           </div>
 
-          {wallet.privyUserId && (
+          {user.id && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Privy User ID:</span>
-                <span className="text-xs text-muted-foreground">{wallet.privyUserId}</span>
+                <span className="text-xs text-muted-foreground">{user.id}</span>
               </div>
             </div>
           )}
 
-          <Button onClick={disconnectWallet} variant="outline" className="w-full">
-            Disconnect Wallet
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={disconnectWallet} variant="outline" className="flex-1">
+              <LogOut className="h-4 w-4 mr-2" />
+              Disconnect
+            </Button>
+            <Button 
+              onClick={() => window.open(`https://sepolia.basescan.org/address/${address}`, '_blank')}
+              variant="outline" 
+              size="sm"
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          </div>
         </CardContent>
       </Card>
     )
@@ -215,13 +211,20 @@ export function PrivyWalletConnection({
           <Wallet className="h-5 w-5" />
           Connect Your Wallet
         </CardTitle>
-        <CardDescription>Connect your wallet for x402 payments and cost optimization</CardDescription>
+        <CardDescription>
+          Connect your wallet for x402 payments and cost optimization
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {!showEmailForm && !showCodeForm && (
           <>
-            <Button onClick={connectWallet} disabled={isConnecting} className="w-full" size="lg">
-              {isConnecting ? (
+            <Button 
+              onClick={connectWallet} 
+              disabled={isLoading}
+              className="w-full" 
+              size="lg"
+            >
+              {isLoading ? (
                 <>
                   <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
                   Connecting...
@@ -236,7 +239,11 @@ export function PrivyWalletConnection({
 
             <div className="text-center">
               <p className="text-xs text-muted-foreground mb-2">Or</p>
-              <Button onClick={() => setShowEmailForm(true)} variant="outline" className="w-full">
+              <Button 
+                onClick={() => setShowEmailForm(true)}
+                variant="outline"
+                className="w-full"
+              >
                 <Mail className="h-4 w-4 mr-2" />
                 Connect with Email
               </Button>
@@ -279,7 +286,9 @@ export function PrivyWalletConnection({
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Enter verification code"
               />
-              <p className="text-xs text-muted-foreground mt-1">Check your email for the verification code</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Check your email for the verification code
+              </p>
             </div>
             <div className="flex gap-2">
               <Button onClick={handleCodeVerification} className="flex-1">
