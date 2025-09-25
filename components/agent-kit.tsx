@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Bot, Zap, Settings, Play, Pause, Square, Code, MessageSquare, BarChart3, Target, Activity } from 'lucide-react'
+import { Bot, Zap, Settings, Play, Pause, Square, Code, MessageSquare, BarChart3, Target, Activity, Trash2 } from 'lucide-react'
 
 interface AgentConfig {
   name: string
@@ -114,6 +114,16 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
       instructions: '',
       tools: [],
     })
+  }
+
+  const handleDeleteAgent = (index: number) => {
+    setCreatedAgents((prev) => prev.filter((_, i) => i !== index))
+    
+    // If the deleted agent was selected, clear the selection
+    const deletedAgent = createdAgents[index]
+    if (selectedAgent === deletedAgent?.name) {
+      setSelectedAgent('')
+    }
   }
 
   const handleExecuteAgent = async () => {
@@ -537,7 +547,17 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg">{agent.name}</CardTitle>
-                        <Badge variant="outline">{agent.type}</Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{agent.type}</Badge>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteAgent(index)}
+                            className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                       <CardDescription className="text-sm">
                         Model: {agent.model} • Temperature: {agent.temperature}
@@ -639,7 +659,12 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                   <Card className="border-green-200 bg-green-50">
                     <CardContent className="pt-6">
                       <div className="max-w-none">
-                        <pre className="whitespace-pre-wrap text-sm leading-relaxed text-black !text-black" style={{ color: 'black' }}>{executionResults}</pre>
+                        <pre
+                          className="whitespace-pre-wrap text-sm leading-relaxed text-black !text-black"
+                          style={{ color: 'black' }}
+                        >
+                          {executionResults}
+                        </pre>
                       </div>
                     </CardContent>
                   </Card>
@@ -668,7 +693,9 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                             <Badge variant={execution.status === 'error' ? 'destructive' : 'default'}>
                               {execution.status}
                             </Badge>
-                            <span className="font-medium text-black !text-black" style={{ color: 'black' }}>{execution.agent}</span>
+                            <span className="font-medium text-black !text-black" style={{ color: 'black' }}>
+                              {execution.agent}
+                            </span>
                           </div>
                           <span className="text-xs text-muted-foreground">
                             {execution.timestamp.toLocaleTimeString()}
@@ -681,11 +708,16 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                       </CardHeader>
                       <CardContent>
                         <details className="cursor-pointer">
-                          <summary className="text-sm font-medium mb-2 text-black !text-black" style={{ color: 'black' }}>
+                          <summary
+                            className="text-sm font-medium mb-2 text-black !text-black"
+                            style={{ color: 'black' }}
+                          >
                             View {execution.status === 'error' ? 'Error' : 'Output'}
                           </summary>
                           <div className="mt-2 p-3 bg-white rounded border text-xs font-mono max-h-32 overflow-y-auto">
-                            <pre className="whitespace-pre-wrap text-black !text-black" style={{ color: 'black' }}>{execution.output}</pre>
+                            <pre className="whitespace-pre-wrap text-black !text-black" style={{ color: 'black' }}>
+                              {execution.output}
+                            </pre>
                           </div>
                         </details>
                       </CardContent>
