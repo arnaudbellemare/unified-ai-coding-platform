@@ -188,8 +188,8 @@ export function FastAPIOptimizationDashboard({ className }: FastAPIOptimizationD
                       </div>
                       <div>
                         <div className="text-green-600 font-medium">Confidence</div>
-                        <div className={`text-lg font-bold ${getConfidenceColor(optimizationResult.confidence)}`}>
-                          {(optimizationResult.confidence * 100).toFixed(1)}%
+                        <div className={`text-lg font-bold ${getConfidenceColor(optimizationResult.ml_insights.confidence)}`}>
+                          {(optimizationResult.ml_insights.confidence * 100).toFixed(1)}%
                         </div>
                       </div>
                       <div>

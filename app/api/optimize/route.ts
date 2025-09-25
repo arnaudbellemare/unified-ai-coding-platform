@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
           estimatedMonthlySavings: fastAPIResult.estimated_savings * 30,
           // FastAPI specific data
           mlInsights: fastAPIResult.ml_insights,
-          confidence: fastAPIResult.confidence,
+          confidence: fastAPIResult.ml_insights.confidence,
           strategies: fastAPIResult.optimization_strategies,
         }
 
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
           costOptimization: costResult,
           fastAPIBackend: true,
           mlInsights: fastAPIResult.ml_insights,
-          confidence: fastAPIResult.confidence,
+          confidence: fastAPIResult.ml_insights.confidence,
         })
       } catch (fastAPIError) {
         console.warn(
