@@ -252,9 +252,7 @@ export function AgentKitNuxtInspired() {
           <Bot className="h-8 w-8 text-blue-600" />
           <h1 className="text-3xl font-bold">AgentKit</h1>
         </div>
-        <p className="text-muted-foreground">
-          Create, manage, and execute AI agents with advanced optimization
-        </p>
+        <p className="text-muted-foreground">Create, manage, and execute AI agents with advanced optimization</p>
         <div className="flex justify-center gap-2">
           <Badge variant="outline" className="text-xs">
             <Sparkles className="h-3 w-3 mr-1" />
@@ -270,40 +268,38 @@ export function AgentKitNuxtInspired() {
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="create" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Create Agent
-            </TabsTrigger>
-            <TabsTrigger value="manage" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Manage Agents
-            </TabsTrigger>
-            <TabsTrigger value="execute" className="flex items-center gap-2">
-              <Play className="h-4 w-4" />
-              Execute Agent
-            </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              History
-            </TabsTrigger>
-          </TabsList>
+          <TabsTrigger value="create" className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Create Agent
+          </TabsTrigger>
+          <TabsTrigger value="manage" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Manage Agents
+          </TabsTrigger>
+          <TabsTrigger value="execute" className="flex items-center gap-2">
+            <Play className="h-4 w-4" />
+            Execute Agent
+          </TabsTrigger>
+          <TabsTrigger value="history" className="flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            History
+          </TabsTrigger>
+        </TabsList>
 
         {/* Create Agent Tab */}
         <TabsContent value="create" className="space-y-6">
           <Card>
-              <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2">
-              <Plus className="h-5 w-5" />
-              Create New Agent
-            </CardTitle>
-            <CardDescription>
-              Build intelligent agents tailored to your specific needs
-            </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <Plus className="h-5 w-5" />
+                Create New Agent
+              </CardTitle>
+              <CardDescription>Build intelligent agents tailored to your specific needs</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
                     <Label htmlFor="agent-name">Agent Name</Label>
                     <Input
                       id="agent-name"
@@ -311,7 +307,7 @@ export function AgentKitNuxtInspired() {
                       value={agentName}
                       onChange={(e) => setAgentName(e.target.value)}
                     />
-                    </div>
+                  </div>
 
                   <div>
                     <Label htmlFor="agent-type">Agent Type</Label>
@@ -319,81 +315,75 @@ export function AgentKitNuxtInspired() {
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
-                        <SelectContent>
-                          {AGENT_TYPES.map((type) => {
-                            const Icon = type.icon
-                            return (
-                              <SelectItem key={type.value} value={type.value}>
-                                <div className="flex items-center gap-2">
-                                  <Icon className="h-4 w-4" />
-                                  {type.label}
-                                </div>
-                              </SelectItem>
-                            )
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label
-                        htmlFor="advanced-settings"
-                        className="text-sm font-medium text-slate-700 dark:text-slate-300"
-                      >
-                        Advanced Settings
-                      </Label>
-                      <Switch id="advanced-settings" checked={showAdvanced} onCheckedChange={setShowAdvanced} />
-                    </div>
-
-                    {showAdvanced && (
-                      <div className="space-y-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                        <div>
-                          <Label
-                            htmlFor="temperature"
-                            className="text-sm font-medium text-slate-700 dark:text-slate-300"
-                          >
-                            Temperature: {temperature}
-                          </Label>
-                          <Input
-                            id="temperature"
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.1"
-                            value={temperature}
-                            onChange={(e) => setTemperature(parseFloat(e.target.value))}
-                            className="mt-1"
-                          />
-                        </div>
-                        <div>
-                          <Label
-                            htmlFor="max-tokens"
-                            className="text-sm font-medium text-slate-700 dark:text-slate-300"
-                          >
-                            Max Tokens
-                          </Label>
-                          <Input
-                            id="max-tokens"
-                            type="number"
-                            value={maxTokens}
-                            onChange={(e) => setMaxTokens(parseInt(e.target.value))}
-                            className="mt-1 border-slate-300 dark:border-slate-600"
-                          />
-                        </div>
-                      </div>
-                    )}
+                      <SelectContent>
+                        {AGENT_TYPES.map((type) => {
+                          const Icon = type.icon
+                          return (
+                            <SelectItem key={type.value} value={type.value}>
+                              <div className="flex items-center gap-2">
+                                <Icon className="h-4 w-4" />
+                                {type.label}
+                              </div>
+                            </SelectItem>
+                          )
+                        })}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
-            <Button onClick={createAgent} className="w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              Create Agent
-            </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label
+                      htmlFor="advanced-settings"
+                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Advanced Settings
+                    </Label>
+                    <Switch id="advanced-settings" checked={showAdvanced} onCheckedChange={setShowAdvanced} />
+                  </div>
+
+                  {showAdvanced && (
+                    <div className="space-y-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                      <div>
+                        <Label htmlFor="temperature" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Temperature: {temperature}
+                        </Label>
+                        <Input
+                          id="temperature"
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.1"
+                          value={temperature}
+                          onChange={(e) => setTemperature(parseFloat(e.target.value))}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="max-tokens" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Max Tokens
+                        </Label>
+                        <Input
+                          id="max-tokens"
+                          type="number"
+                          value={maxTokens}
+                          onChange={(e) => setMaxTokens(parseInt(e.target.value))}
+                          className="mt-1 border-slate-300 dark:border-slate-600"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <Button onClick={createAgent} className="w-full">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Agent
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* Manage Agents Tab */}
         <TabsContent value="manage" className="space-y-6">
@@ -406,9 +396,9 @@ export function AgentKitNuxtInspired() {
               <CardDescription>
                 {agents.length} agent{agents.length !== 1 ? 's' : ''} configured
               </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {agents.length === 0 ? (
+            </CardHeader>
+            <CardContent>
+              {agents.length === 0 ? (
                 <div className="text-center py-12">
                   <Bot className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-lg font-medium mb-2">No agents created yet</h3>
@@ -418,30 +408,28 @@ export function AgentKitNuxtInspired() {
                     Create Agent
                   </Button>
                 </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {agents.map((agent) => {
-                      const Icon = getAgentTypeIcon(agent.type)
-                      const colorClass = getAgentTypeColor(agent.type)
-                      return (
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {agents.map((agent) => {
+                    const Icon = getAgentTypeIcon(agent.type)
+                    const colorClass = getAgentTypeColor(agent.type)
+                    return (
                       <Card key={agent.id} className="hover:shadow-lg transition-shadow">
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-lg ${colorClass}`}>
-                                  <Icon className="h-4 w-4 text-white" />
-                                </div>
-                                <div>
-                                <h4 className="font-medium">{agent.name}</h4>
-                                <p className="text-xs text-muted-foreground capitalize">
-                                  {agent.type} Agent
-                                </p>
-                                </div>
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${colorClass}`}>
+                                <Icon className="h-4 w-4 text-white" />
                               </div>
-                              <Badge variant={agent.status === 'active' ? 'default' : 'secondary'} className="text-xs">
-                                {agent.status}
-                              </Badge>
+                              <div>
+                                <h4 className="font-medium">{agent.name}</h4>
+                                <p className="text-xs text-muted-foreground capitalize">{agent.type} Agent</p>
+                              </div>
                             </div>
+                            <Badge variant={agent.status === 'active' ? 'default' : 'secondary'} className="text-xs">
+                              {agent.status}
+                            </Badge>
+                          </div>
 
                           <div className="space-y-2 mb-4">
                             <div className="flex justify-between text-xs text-muted-foreground">
@@ -458,7 +446,7 @@ export function AgentKitNuxtInspired() {
                             </div>
                           </div>
 
-                            <div className="flex gap-2">
+                          <div className="flex gap-2">
                             <Button
                               size="sm"
                               onClick={() => {
@@ -478,16 +466,16 @@ export function AgentKitNuxtInspired() {
                             >
                               Delete
                             </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )
-                    })}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* Execute Agent Tab */}
         <TabsContent value="execute" className="space-y-6">
@@ -497,153 +485,151 @@ export function AgentKitNuxtInspired() {
                 <Play className="h-5 w-5" />
                 Execute Agent
               </CardTitle>
-              <CardDescription>
-                Run your agents and see real-time results
-              </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+              <CardDescription>Run your agents and see real-time results</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
               <div>
                 <Label htmlFor="select-agent">Select Agent</Label>
                 <Select value={selectedAgent} onValueChange={setSelectedAgent}>
                   <SelectTrigger>
                     <SelectValue placeholder="Choose an agent to execute" />
                   </SelectTrigger>
-                    <SelectContent>
-                      {agents.map((agent) => {
-                        const Icon = getAgentTypeIcon(agent.type)
-                        return (
-                          <SelectItem key={agent.id} value={agent.id}>
-                            <div className="flex items-center gap-2">
-                              <Icon className="h-4 w-4" />
-                              {agent.name}
-                            </div>
-                          </SelectItem>
-                        )
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {selectedAgent && (
-                  <>
-                <div>
-                  <Label htmlFor="agent-input">Input</Label>
-                  <Textarea
-                    id="agent-input"
-                    placeholder="Enter your request for the agent..."
-                    value={agentInput}
-                    onChange={(e) => setAgentInput(e.target.value)}
-                    className="min-h-[120px]"
-                  />
-                </div>
-
-                <Button
-                  onClick={() => executeAgent(selectedAgent, agentInput)}
-                  disabled={isExecuting || !agentInput.trim()}
-                  className="w-full"
-                >
-                      {isExecuting ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Executing...
-                        </>
-                      ) : (
-                        <>
-                          <Play className="h-4 w-4 mr-2" />
-                          Execute Agent
-                        </>
-                      )}
-                    </Button>
-                  </>
-                )}
-
-                {executionHistory.length > 0 && executionHistory[0] && (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      <MessageSquare className="h-5 w-5 text-blue-500" />
-                      <h3 className="font-medium text-slate-900 dark:text-white">Latest Result</h3>
-                    </div>
-
-                    <Card className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700">
-                      <CardContent className="p-4">
-                        <div className="space-y-3">
-                          <div>
-                            <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">Input</Label>
-                            <p className="text-sm text-slate-900 dark:text-white mt-1 p-3 bg-white dark:bg-slate-800 rounded-lg border">
-                              {executionHistory[0].input}
-                            </p>
+                  <SelectContent>
+                    {agents.map((agent) => {
+                      const Icon = getAgentTypeIcon(agent.type)
+                      return (
+                        <SelectItem key={agent.id} value={agent.id}>
+                          <div className="flex items-center gap-2">
+                            <Icon className="h-4 w-4" />
+                            {agent.name}
                           </div>
-                          <div>
-                            <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">Output</Label>
-                            <p className="text-sm text-slate-900 dark:text-white mt-1 p-3 bg-white dark:bg-slate-800 rounded-lg border whitespace-pre-wrap">
-                              {executionHistory[0].output}
-                            </p>
-                          </div>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
 
-                          {/* Cost Optimization Results */}
-                          {executionHistory[0].costOptimization && (
-                            <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                              <div className="flex items-center gap-2 mb-3">
-                                <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
-                                <h4 className="font-medium text-green-800 dark:text-green-200">
-                                  Cost Optimization Active
-                                </h4>
-                              </div>
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                                <div>
-                                  <div className="text-green-600 dark:text-green-400 font-medium">Total Cost</div>
-                                  <div className="font-bold text-slate-900 dark:text-white">
-                                    ${executionHistory[0].costOptimization.optimizedCost?.toFixed(6) || '0.000000'}
-                                  </div>
-                                </div>
-                                <div>
-                                  <div className="text-green-600 dark:text-green-400 font-medium">Tokens Used</div>
-                                  <div className="font-bold text-slate-900 dark:text-white">
-                                    {executionHistory[0].costOptimization.totalTokens || 0}
-                                  </div>
-                                </div>
-                                <div>
-                                  <div className="text-green-600 dark:text-green-400 font-medium">Savings</div>
-                                  <div className="font-bold text-slate-900 dark:text-white">
-                                    {executionHistory[0].costOptimization.savingsPercentage || '0%'}
-                                  </div>
-                                </div>
-                                <div>
-                                  <div className="text-green-600 dark:text-green-400 font-medium">Duration</div>
-                                  <div className="font-bold text-slate-900 dark:text-white">
-                                    {executionHistory[0].duration}ms
-                                  </div>
-                                </div>
-                              </div>
-                              {executionHistory[0].costOptimization.strategies &&
-                                executionHistory[0].costOptimization.strategies.length > 0 && (
-                                  <div className="mt-3">
-                                    <div className="text-green-600 dark:text-green-400 font-medium text-sm mb-2">
-                                      Optimization Strategies:
-                                    </div>
-                                    <div className="flex flex-wrap gap-1">
-                                      {executionHistory[0].costOptimization.strategies.map((strategy, index) => (
-                                        <Badge
-                                          key={index}
-                                          variant="outline"
-                                          className="text-xs bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 border-green-300 dark:border-green-600"
-                                        >
-                                          {strategy.replace('_', ' ')}
-                                        </Badge>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
+              {selectedAgent && (
+                <>
+                  <div>
+                    <Label htmlFor="agent-input">Input</Label>
+                    <Textarea
+                      id="agent-input"
+                      placeholder="Enter your request for the agent..."
+                      value={agentInput}
+                      onChange={(e) => setAgentInput(e.target.value)}
+                      className="min-h-[120px]"
+                    />
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+
+                  <Button
+                    onClick={() => executeAgent(selectedAgent, agentInput)}
+                    disabled={isExecuting || !agentInput.trim()}
+                    className="w-full"
+                  >
+                    {isExecuting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Executing...
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-4 w-4 mr-2" />
+                        Execute Agent
+                      </>
+                    )}
+                  </Button>
+                </>
+              )}
+
+              {executionHistory.length > 0 && executionHistory[0] && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5 text-blue-500" />
+                    <h3 className="font-medium text-slate-900 dark:text-white">Latest Result</h3>
+                  </div>
+
+                  <Card className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700">
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">Input</Label>
+                          <p className="text-sm text-slate-900 dark:text-white mt-1 p-3 bg-white dark:bg-slate-800 rounded-lg border">
+                            {executionHistory[0].input}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">Output</Label>
+                          <p className="text-sm text-slate-900 dark:text-white mt-1 p-3 bg-white dark:bg-slate-800 rounded-lg border whitespace-pre-wrap">
+                            {executionHistory[0].output}
+                          </p>
+                        </div>
+
+                        {/* Cost Optimization Results */}
+                        {executionHistory[0].costOptimization && (
+                          <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                            <div className="flex items-center gap-2 mb-3">
+                              <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
+                              <h4 className="font-medium text-green-800 dark:text-green-200">
+                                Cost Optimization Active
+                              </h4>
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                              <div>
+                                <div className="text-green-600 dark:text-green-400 font-medium">Total Cost</div>
+                                <div className="font-bold text-slate-900 dark:text-white">
+                                  ${executionHistory[0].costOptimization.optimizedCost?.toFixed(6) || '0.000000'}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="text-green-600 dark:text-green-400 font-medium">Tokens Used</div>
+                                <div className="font-bold text-slate-900 dark:text-white">
+                                  {executionHistory[0].costOptimization.totalTokens || 0}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="text-green-600 dark:text-green-400 font-medium">Savings</div>
+                                <div className="font-bold text-slate-900 dark:text-white">
+                                  {executionHistory[0].costOptimization.savingsPercentage || '0%'}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="text-green-600 dark:text-green-400 font-medium">Duration</div>
+                                <div className="font-bold text-slate-900 dark:text-white">
+                                  {executionHistory[0].duration}ms
+                                </div>
+                              </div>
+                            </div>
+                            {executionHistory[0].costOptimization.strategies &&
+                              executionHistory[0].costOptimization.strategies.length > 0 && (
+                                <div className="mt-3">
+                                  <div className="text-green-600 dark:text-green-400 font-medium text-sm mb-2">
+                                    Optimization Strategies:
+                                  </div>
+                                  <div className="flex flex-wrap gap-1">
+                                    {executionHistory[0].costOptimization.strategies.map((strategy, index) => (
+                                      <Badge
+                                        key={index}
+                                        variant="outline"
+                                        className="text-xs bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 border-green-300 dark:border-green-600"
+                                      >
+                                        {strategy.replace('_', ' ')}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* History Tab */}
         <TabsContent value="history" className="space-y-6">
@@ -653,86 +639,84 @@ export function AgentKitNuxtInspired() {
                 <Clock className="h-5 w-5" />
                 Execution History
               </CardTitle>
-              <CardDescription>
-                Track all agent executions and performance metrics
-              </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {executionHistory.length === 0 ? (
+              <CardDescription>Track all agent executions and performance metrics</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {executionHistory.length === 0 ? (
                 <div className="text-center py-12">
                   <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-lg font-medium mb-2">No executions yet</h3>
                   <p className="text-muted-foreground">Execute an agent to see the history here</p>
                 </div>
-                ) : (
-                  <div className="space-y-4">
-                    {executionHistory.map((execution) => {
-                      const agent = agents.find((a) => a.id === execution.agentId)
-                      const Icon = agent ? getAgentTypeIcon(agent.type) : Bot
-                      return (
-                        <Card
-                          key={execution.id}
-                          className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
-                        >
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex items-center gap-3">
-                                <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                                <div>
-                                  <h4 className="font-medium text-slate-900 dark:text-white">
-                                    {agent?.name || 'Unknown Agent'}
-                                  </h4>
-                                  <p className="text-xs text-slate-600 dark:text-slate-400">
-                                    {new Date(execution.timestamp).toLocaleString()}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                {execution.status === 'success' ? (
-                                  <CheckCircle className="h-4 w-4 text-green-500" />
-                                ) : (
-                                  <AlertCircle className="h-4 w-4 text-red-500" />
-                                )}
-                                <Badge
-                                  variant={execution.status === 'success' ? 'default' : 'destructive'}
-                                  className="text-xs"
-                                >
-                                  {execution.status}
-                                </Badge>
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
+              ) : (
+                <div className="space-y-4">
+                  {executionHistory.map((execution) => {
+                    const agent = agents.find((a) => a.id === execution.agentId)
+                    const Icon = agent ? getAgentTypeIcon(agent.type) : Bot
+                    return (
+                      <Card
+                        key={execution.id}
+                        className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                               <div>
-                                <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">Input</Label>
-                                <p className="text-sm text-slate-900 dark:text-white mt-1 p-2 bg-slate-50 dark:bg-slate-700 rounded border">
-                                  {execution.input}
-                                </p>
-                              </div>
-                              <div>
-                                <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">Output</Label>
-                                <p className="text-sm text-slate-900 dark:text-white mt-1 p-2 bg-slate-50 dark:bg-slate-700 rounded border whitespace-pre-wrap max-h-32 overflow-y-auto">
-                                  {execution.output}
+                                <h4 className="font-medium text-slate-900 dark:text-white">
+                                  {agent?.name || 'Unknown Agent'}
+                                </h4>
+                                <p className="text-xs text-slate-600 dark:text-slate-400">
+                                  {new Date(execution.timestamp).toLocaleString()}
                                 </p>
                               </div>
                             </div>
-
-                            <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                              <div className="flex gap-4 text-xs text-slate-600 dark:text-slate-400">
-                                <span>Duration: {execution.duration}ms</span>
-                                <span>Cost: ${execution.cost.toFixed(6)}</span>
-                                <span>Tokens: {execution.tokens}</span>
-                              </div>
+                            <div className="flex items-center gap-2">
+                              {execution.status === 'success' ? (
+                                <CheckCircle className="h-4 w-4 text-green-500" />
+                              ) : (
+                                <AlertCircle className="h-4 w-4 text-red-500" />
+                              )}
+                              <Badge
+                                variant={execution.status === 'success' ? 'default' : 'destructive'}
+                                className="text-xs"
+                              >
+                                {execution.status}
+                              </Badge>
                             </div>
-                          </CardContent>
-                        </Card>
-                      )
-                    })}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+                          </div>
+
+                          <div className="space-y-2">
+                            <div>
+                              <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">Input</Label>
+                              <p className="text-sm text-slate-900 dark:text-white mt-1 p-2 bg-slate-50 dark:bg-slate-700 rounded border">
+                                {execution.input}
+                              </p>
+                            </div>
+                            <div>
+                              <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">Output</Label>
+                              <p className="text-sm text-slate-900 dark:text-white mt-1 p-2 bg-slate-50 dark:bg-slate-700 rounded border whitespace-pre-wrap max-h-32 overflow-y-auto">
+                                {execution.output}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                            <div className="flex gap-4 text-xs text-slate-600 dark:text-slate-400">
+                              <span>Duration: {execution.duration}ms</span>
+                              <span>Cost: ${execution.cost.toFixed(6)}</span>
+                              <span>Tokens: {execution.tokens}</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   )

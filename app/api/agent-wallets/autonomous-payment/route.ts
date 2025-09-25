@@ -99,23 +99,26 @@ export async function GET(request: NextRequest) {
     const action = url.searchParams.get('action')
     const agentId = url.searchParams.get('agentId')
 
-    if (!agentId) {
-      return NextResponse.json({ success: false, error: 'Agent ID is required' }, { status: 400 })
-    }
-
     switch (action) {
+      case 'all_wallets':
+        // For getting all wallets, no agentId is required
+        const allWallets = autonomousAgentWallet.getAllAgentWallets()
+        return NextResponse.json({ success: true, wallets: allWallets })
+
       case 'wallet':
+        if (!agentId) {
+          return NextResponse.json({ success: false, error: 'Agent ID is required' }, { status: 400 })
+        }
         const wallet = autonomousAgentWallet.getAgentWallet(agentId)
         return NextResponse.json({ success: true, wallet })
 
       case 'history':
+        if (!agentId) {
+          return NextResponse.json({ success: false, error: 'Agent ID is required' }, { status: 400 })
+        }
         const limit = parseInt(url.searchParams.get('limit') || '50')
         const history = autonomousAgentWallet.getAgentTransactionHistory(agentId, limit)
         return NextResponse.json({ success: true, history })
-
-      case 'all_wallets':
-        const allWallets = autonomousAgentWallet.getAllAgentWallets()
-        return NextResponse.json({ success: true, wallets: allWallets })
 
       default:
         return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })

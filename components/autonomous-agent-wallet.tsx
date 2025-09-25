@@ -68,12 +68,22 @@ export function AutonomousAgentWallet() {
     fetchAgentWallets()
   }, [])
 
+  // Debug: Log agent wallets whenever they change
+  useEffect(() => {
+    console.log('💼 Agent wallets updated:', agentWallets)
+  }, [agentWallets])
+
   const fetchAgentWallets = async () => {
     try {
+      console.log('🔄 Fetching agent wallets...')
       const response = await fetch('/api/agent-wallets/autonomous-payment?action=all_wallets')
       const data = await response.json()
+      console.log('📦 Fetched wallets data:', data)
       if (data.success) {
         setAgentWallets(data.wallets || [])
+        console.log(`✅ Set ${data.wallets?.length || 0} wallets in state`)
+      } else {
+        console.error('❌ Failed to fetch wallets:', data.error)
       }
     } catch (error) {
       console.error('Failed to fetch agent wallets:', error)
@@ -84,6 +94,7 @@ export function AutonomousAgentWallet() {
   const createAgentWallet = async (agentId: string) => {
     setIsLoading(true)
     try {
+      console.log(`🚀 Creating demo wallet for agent: ${agentId}`)
       const response = await fetch('/api/agent-wallets/autonomous-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -97,10 +108,13 @@ export function AutonomousAgentWallet() {
       })
 
       const data = await response.json()
+      console.log('📦 Wallet creation response:', data)
       if (data.success) {
         toast.success(`Demo autonomous wallet created for agent: ${agentId}`)
+        console.log('✅ Wallet created successfully, refreshing list...')
         await fetchAgentWallets()
       } else {
+        console.error('❌ Wallet creation failed:', data.error)
         toast.error(data.error || 'Failed to create agent wallet')
       }
     } catch (error) {
