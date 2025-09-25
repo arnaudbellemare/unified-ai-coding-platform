@@ -130,7 +130,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
 
   const handleCreateAgent = () => {
     console.log('Creating agent with config:', agentConfig)
-    
+
     if (!agentConfig.name || !agentConfig.instructions) {
       console.log('Validation failed:', { name: agentConfig.name, instructions: agentConfig.instructions })
       return
@@ -138,13 +138,13 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
 
     const newAgent = { ...agentConfig }
     console.log('Adding new agent:', newAgent)
-    
+
     setCreatedAgents((prev) => {
       const updated = [...prev, newAgent]
       console.log('Updated agents list:', updated)
       return updated
     })
-    
+
     setSelectedAgent(newAgent.name)
     onAgentCreate?.(newAgent)
 
@@ -158,19 +158,19 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
       instructions: '',
       tools: [],
     })
-    
+
     console.log('Agent created successfully')
   }
 
   const handleDeleteAgent = (index: number) => {
     // Get the agent to be deleted before filtering
     const deletedAgent = createdAgents[index]
-    
+
     // If the deleted agent was selected, clear the selection
     if (selectedAgent === deletedAgent?.name) {
       setSelectedAgent('')
     }
-    
+
     // Remove the agent from the list
     setCreatedAgents((prev) => prev.filter((_, i) => i !== index))
   }
@@ -659,16 +659,13 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
               />
             </div>
 
-            <Button 
-              onClick={handleCreateAgent} 
+            <Button
+              onClick={handleCreateAgent}
               disabled={!agentConfig.name || !agentConfig.instructions}
               className="w-full"
             >
               <Bot className="h-4 w-4 mr-2" />
-              {!agentConfig.name || !agentConfig.instructions 
-                ? 'Fill in name and instructions' 
-                : 'Create Agent'
-              }
+              {!agentConfig.name || !agentConfig.instructions ? 'Fill in name and instructions' : 'Create Agent'}
             </Button>
           </TabsContent>
 
@@ -788,7 +785,12 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <div className="text-muted-foreground">Token Reduction</div>
-                      <div className="font-semibold text-green-600">{costOptimization.tokenReduction.toFixed(1)}%</div>
+                      <div className="font-semibold text-green-600">
+                        {typeof costOptimization.tokenReduction === 'number' 
+                          ? costOptimization.tokenReduction.toFixed(1) 
+                          : parseFloat(costOptimization.tokenReduction).toFixed(1)
+                        }%
+                      </div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Cost Savings</div>
@@ -801,11 +803,12 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                     <div>
                       <div className="text-muted-foreground">Efficiency</div>
                       <div className="font-semibold">
-                        {costOptimization.tokenReduction > 15
-                          ? '🚀 High'
-                          : costOptimization.tokenReduction > 8
-                            ? '⚡ Medium'
-                            : '💡 Optimized'}
+                        {(() => {
+                          const reduction = typeof costOptimization.tokenReduction === 'number' 
+                            ? costOptimization.tokenReduction 
+                            : parseFloat(costOptimization.tokenReduction);
+                          return reduction > 15 ? '🚀 High' : reduction > 8 ? '⚡ Medium' : '💡 Optimized';
+                        })()}
                       </div>
                     </div>
                   </div>
@@ -917,7 +920,10 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                             <div className="flex items-center gap-1">
                               <TrendingDown className="h-3 w-3 text-blue-600" />
                               <span className="text-blue-600 font-semibold">
-                                {execution.costOptimization.tokenReduction.toFixed(1)}% reduction
+                                {typeof execution.costOptimization.tokenReduction === 'number' 
+                                  ? execution.costOptimization.tokenReduction.toFixed(1) 
+                                  : parseFloat(execution.costOptimization.tokenReduction).toFixed(1)
+                                }% reduction
                               </span>
                             </div>
                             <div className="flex items-center gap-1">

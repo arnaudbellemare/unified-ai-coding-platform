@@ -182,8 +182,8 @@ export class HybridOptimizer {
 
     return {
       optimizedPrompt: optimized,
-      tokenReduction: tokenReduction.toFixed(2),
-      costReduction: costReduction.toFixed(6),
+      tokenReduction: tokenReduction, // Keep as number
+      costReduction: costReduction, // Keep as number
       accuracyMaintained: Math.max(0.85, 1 - (tokenReduction / 100) * 0.3),
       performanceScore: Math.max(0.8, 1 - (tokenReduction / 100) * 0.2),
       costScore: optimizedCost,

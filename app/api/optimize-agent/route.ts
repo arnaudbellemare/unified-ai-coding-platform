@@ -21,9 +21,9 @@ export async function POST(request: NextRequest) {
         domain: selectedAgent === 'coding' ? 'coding' : selectedAgent === 'analytics' ? 'analysis' : 'general',
         complexity: prompt.length > 200 ? 'complex' : prompt.length > 100 ? 'medium' : 'simple',
         requirements: [],
-        constraints: []
+        constraints: [],
       },
-      []
+      [],
     )
 
     // Get agent recommendation with cost analysis
