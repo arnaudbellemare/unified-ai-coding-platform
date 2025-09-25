@@ -8,17 +8,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { 
-  Wallet, 
-  Coins, 
-  CheckCircle, 
-  AlertCircle, 
-  Copy, 
-  RefreshCw, 
-  Mail, 
+import {
+  Wallet,
+  Coins,
+  CheckCircle,
+  AlertCircle,
+  Copy,
+  RefreshCw,
+  Mail,
   Shield,
   ExternalLink,
-  LogOut
+  LogOut,
 } from 'lucide-react'
 
 interface WalletConnectionProps {
@@ -27,16 +27,16 @@ interface WalletConnectionProps {
   onPaymentReady?: (ready: boolean) => void
 }
 
-export function WalletConnectionComplete({ 
-  onWalletConnect, 
-  onWalletDisconnect, 
-  onPaymentReady 
+export function WalletConnectionComplete({
+  onWalletConnect,
+  onWalletDisconnect,
+  onPaymentReady,
 }: WalletConnectionProps) {
   const { user, isConnected, isLoading, login, logout, loginWithEmail, verifyEmailCode } = usePrivy()
   const { address, isConnected: wagmiConnected } = useAccount()
   const { data: balance } = useBalance({ address })
   const { disconnect } = useDisconnect()
-  
+
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [showEmailForm, setShowEmailForm] = useState(false)
@@ -144,9 +144,7 @@ export function WalletConnectionComplete({
             <CheckCircle className="h-5 w-5 text-green-600" />
             Wallet Connected
           </CardTitle>
-          <CardDescription>
-            Your wallet is connected and ready for x402 payments
-          </CardDescription>
+          <CardDescription>Your wallet is connected and ready for x402 payments</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -191,9 +189,9 @@ export function WalletConnectionComplete({
               <LogOut className="h-4 w-4 mr-2" />
               Disconnect
             </Button>
-            <Button 
+            <Button
               onClick={() => window.open(`https://sepolia.basescan.org/address/${address}`, '_blank')}
-              variant="outline" 
+              variant="outline"
               size="sm"
             >
               <ExternalLink className="h-4 w-4" />
@@ -211,19 +209,12 @@ export function WalletConnectionComplete({
           <Wallet className="h-5 w-5" />
           Connect Your Wallet
         </CardTitle>
-        <CardDescription>
-          Connect your wallet for x402 payments and cost optimization
-        </CardDescription>
+        <CardDescription>Connect your wallet for x402 payments and cost optimization</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {!showEmailForm && !showCodeForm && (
           <>
-            <Button 
-              onClick={connectWallet} 
-              disabled={isLoading}
-              className="w-full" 
-              size="lg"
-            >
+            <Button onClick={connectWallet} disabled={isLoading} className="w-full" size="lg">
               {isLoading ? (
                 <>
                   <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
@@ -239,11 +230,7 @@ export function WalletConnectionComplete({
 
             <div className="text-center">
               <p className="text-xs text-muted-foreground mb-2">Or</p>
-              <Button 
-                onClick={() => setShowEmailForm(true)}
-                variant="outline"
-                className="w-full"
-              >
+              <Button onClick={() => setShowEmailForm(true)} variant="outline" className="w-full">
                 <Mail className="h-4 w-4 mr-2" />
                 Connect with Email
               </Button>
@@ -286,9 +273,7 @@ export function WalletConnectionComplete({
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Enter verification code"
               />
-              <p className="text-xs text-muted-foreground mt-1">
-                Check your email for the verification code
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Check your email for the verification code</p>
             </div>
             <div className="flex gap-2">
               <Button onClick={handleCodeVerification} className="flex-1">

@@ -328,28 +328,45 @@ export function AgentHub({ onAgentCreate, onAgentExecute }: AgentHubProps) {
       // Call the parent callback if provided
       onAgentExecute?.(selectedAgent, agentInput)
 
-      // Step 3: Simulate agent execution with optimized input (with timeout)
-      const executionPromise = new Promise((resolve) => setTimeout(resolve, 2000))
-      const executionTimeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Execution timeout')), 10000),
-      )
+      // Step 3: Execute agent with real AI API call
+      console.log('🤖 Executing agent with real AI API...')
+      
+      const executionResponse = await fetch('/api/agents/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agentId: selectedAgent,
+          agentType: agent.type,
+          input: optimizedInput,
+          model: agent.model,
+          temperature: agent.temperature,
+          maxTokens: agent.maxTokens,
+          instructions: agent.instructions,
+          tools: agent.tools,
+        }),
+      })
 
-      await Promise.race([executionPromise, executionTimeout])
+      if (!executionResponse.ok) {
+        throw new Error(`Agent execution failed: ${executionResponse.statusText}`)
+      }
 
-      // Generate a realistic response based on agent type (using optimized input)
-      const simulatedResult = generateSimulatedResult(agent.type, optimizedInput)
+      const executionData = await executionResponse.json()
+      
+      if (!executionData.success) {
+        throw new Error(executionData.error || 'Agent execution failed')
+      }
 
-      setExecutionResults(simulatedResult)
+      setExecutionResults(executionData.output)
 
-      // Add to execution history with cost optimization data
+      // Add to execution history with real API response data
       const newExecution = {
         id: Date.now().toString(),
         agent: selectedAgent,
         input: agentInput,
-        output: simulatedResult,
+        output: executionData.output,
         timestamp: new Date(),
         status: 'success' as const,
-        costOptimization: optimizationResult,
+        costOptimization: executionData.costOptimization || optimizationResult,
       }
       setExecutionHistory((prev) => [newExecution, ...prev])
     } catch (error) {
