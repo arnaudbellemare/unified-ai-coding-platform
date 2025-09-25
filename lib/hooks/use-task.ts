@@ -8,6 +8,7 @@ export function useTask(taskId: string) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const [retryAttempts, setRetryAttempts] = useState(0)
 
   const fetchTask = useCallback(async () => {
     try {
@@ -19,16 +20,26 @@ export function useTask(taskId: string) {
         setIsLoading(false)
         setIsInitialLoad(false)
       } else if (response.status === 404) {
-        // For the initial load, if we get 404, keep loading for a bit longer
+        // For the initial load, if we get 404, keep loading for much longer
         // This prevents the "Task Not Found" flash during task creation
         if (isInitialLoad) {
-          // Wait 3 seconds before showing error on initial load
+          // Progressive timeout: start with 5 seconds, then 10, then 20 seconds
+          // This gives task creation enough time for sandbox setup and agent execution
+          const timeoutDuration = retryAttempts === 0 ? 5000 : retryAttempts === 1 ? 10000 : 20000
+          
           setTimeout(() => {
-            if (!task) { // Only show error if task still doesn't exist
-              setError('Task not found')
-              setIsLoading(false)
+            if (!task) {
+              // Only show error if task still doesn't exist after all retries
+              if (retryAttempts >= 2) {
+                setError('Task not found')
+                setIsLoading(false)
+              } else {
+                // Retry with increased timeout
+                setRetryAttempts(prev => prev + 1)
+                fetchTask()
+              }
             }
-          }, 3000)
+          }, timeoutDuration)
         } else {
           // For subsequent loads (polling), show error immediately
           setError('Task not found')
@@ -44,7 +55,7 @@ export function useTask(taskId: string) {
       setError('Failed to fetch task')
       setIsLoading(false)
     }
-  }, [taskId, isInitialLoad, task])
+  }, [taskId, isInitialLoad, task, retryAttempts])
 
   // Initial fetch
   useEffect(() => {

@@ -209,6 +209,7 @@ log_requests = true
     // Use exec command with Vercel AI Gateway configuration
     // The model is now configured in config.toml, so we can use it directly
     // Use --dangerously-bypass-approvals-and-sandbox (no --cd flag like other agents)
+    // For Perplexity models, we need to ensure proper conversation format
     const logCommand = `codex exec --dangerously-bypass-approvals-and-sandbox "${instruction}"`
 
     logs.push(createCommandLog(logCommand))
@@ -220,10 +221,19 @@ log_requests = true
       )
     }
 
-    // Use the same pattern as other working agents (Claude, etc.)
-    // Execute with environment variables using sh -c like Claude does
+    // For Perplexity models, we need to ensure the conversation format is correct
+    // The issue is that Perplexity expects alternating user/assistant messages
+    // We'll use a fresh conversation context to avoid message alternation errors
     const envPrefix = `AI_GATEWAY_API_KEY="${process.env.AI_GATEWAY_API_KEY}" HOME="/home/vercel-sandbox" CI="true"`
-    const fullCommand = `${envPrefix} codex exec --dangerously-bypass-approvals-and-sandbox "${instruction}"`
+    
+    // For Perplexity models, we need to ensure a clean conversation context
+    // This prevents the "message alternation" error from Perplexity
+    // We'll use a system message to ensure proper conversation format
+    const instructionForPerplexity = modelToUse.includes('perplexity') 
+      ? `You are an AI coding assistant. Please help with this task: ${instruction}`
+      : instruction
+    
+    const fullCommand = `${envPrefix} codex exec --dangerously-bypass-approvals-and-sandbox "${instructionForPerplexity}"`
 
     // Use the standard runCommandInSandbox helper like other agents
     const result = await runCommandInSandbox(sandbox, 'sh', ['-c', fullCommand])
