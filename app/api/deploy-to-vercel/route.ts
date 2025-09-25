@@ -18,8 +18,14 @@ export async function POST(request: NextRequest) {
     const [, owner, repo] = repoMatch
     const repoName = repo.replace('.git', '')
 
-    // Generate Vercel deployment URL - use main branch since the feature branch may not exist in the remote repo
-    const vercelDeployUrl = `https://vercel.com/new/git/github/${owner}/${repoName}?env=NODE_ENV=production&env=TASK_ID=${taskId}&env=DEPLOYED_FROM=unified-ai-coding-platform`
+    // Check if this is a forked repository (contains task ID in name)
+    const isForkedRepo = repoName.includes(`-ai-task-${taskId}`)
+    
+    // Generate Vercel deployment URL
+    // If it's a forked repo, we can deploy from the specific branch
+    // Otherwise, use main branch for safety
+    const branchParam = isForkedRepo ? `&branch=${branchName}` : ''
+    const vercelDeployUrl = `https://vercel.com/new/git/github/${owner}/${repoName}?env=NODE_ENV=production&env=TASK_ID=${taskId}&env=DEPLOYED_FROM=unified-ai-coding-platform${branchParam}`
 
     // For now, return a success response with the deployment URL
     // This allows users to click and deploy manually to Vercel
@@ -32,8 +38,10 @@ export async function POST(request: NextRequest) {
         'Click "Deploy to Vercel" above to open Vercel',
         'Sign in to Vercel if prompted',
         'Click "Deploy" on the Vercel page',
-        'Note: This deploys the main branch of the repository',
-        'The AI-generated changes were made in the sandbox environment',
+        isForkedRepo 
+          ? 'This deploys from your forked repository with AI changes'
+          : 'This deploys the main branch of the original repository',
+        'AI changes were made in the sandbox environment',
       ],
     })
   } catch (error) {

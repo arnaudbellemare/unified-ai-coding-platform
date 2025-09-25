@@ -12,27 +12,27 @@ export const EXAMPLE_REPOSITORIES = [
     owner: 'vercel',
     repo: 'next.js',
     description: 'Perfect for web app development',
-    exampleTask: 'Add a contact form with email validation'
+    exampleTask: 'Add a contact form with email validation',
   },
   {
     name: 'React Todo App',
     owner: 'facebook',
     repo: 'create-react-app',
     description: 'Simple, well-documented React app',
-    exampleTask: 'Add dark mode toggle and local storage'
+    exampleTask: 'Add dark mode toggle and local storage',
   },
   {
     name: 'Express API',
     owner: 'expressjs',
     repo: 'express',
     description: 'Great for API development',
-    exampleTask: 'Add JWT authentication middleware'
+    exampleTask: 'Add JWT authentication middleware',
   },
   {
     name: 'Vue.js App',
     owner: 'vuejs',
     repo: 'vue',
     description: 'Alternative frontend framework',
-    exampleTask: 'Add Vue Router and state management'
-  }
+    exampleTask: 'Add Vue Router and state management',
+  },
 ] as const

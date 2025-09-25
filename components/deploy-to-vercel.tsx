@@ -159,8 +159,8 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
                 <li>Click "Deploy to Vercel" above</li>
                 <li>Sign in to Vercel if prompted</li>
                 <li>Click "Deploy" on the Vercel page</li>
-                <li>This deploys the main branch of the repository</li>
-                <li>AI changes were made in the sandbox environment</li>
+                <li>This deploys from your forked repository with AI changes</li>
+                <li>Your fork contains all the modifications made by the AI</li>
               </ol>
             </div>
           </div>

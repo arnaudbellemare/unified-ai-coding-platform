@@ -79,6 +79,58 @@ export async function POST(request: NextRequest) {
     // Use provided ID or generate a new one
     const taskId = body.id || generateId(12)
 
+    // Check repository access and fork if necessary
+    let finalRepoUrl = body.repoUrl
+    let forkInfo = null
+
+    if (body.repoUrl) {
+      try {
+        console.log('[Task Creation] Checking repository access...')
+        
+        // Check if we have access to the repository
+        const accessResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/check-repo-access`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ repoUrl: body.repoUrl }),
+        })
+
+        if (accessResponse.ok) {
+          const accessData = await accessResponse.json()
+          
+          if (!accessData.canPush && accessData.canFork) {
+            console.log('[Task Creation] Repository needs forking, creating fork...')
+            
+            // Fork the repository
+            const forkResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/fork-repository`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ repoUrl: body.repoUrl, taskId }),
+            })
+
+            if (forkResponse.ok) {
+              const forkData = await forkResponse.json()
+              finalRepoUrl = forkData.cloneUrl
+              forkInfo = {
+                originalUrl: body.repoUrl,
+                forkUrl: forkData.forkUrl,
+                forkName: forkData.forkName,
+              }
+              console.log('[Task Creation] Repository forked successfully:', forkData.forkName)
+            } else {
+              console.warn('[Task Creation] Failed to fork repository, proceeding with original URL')
+            }
+          } else if (!accessData.canPush && !accessData.canFork) {
+            console.warn('[Task Creation] Cannot access or fork repository, proceeding with original URL')
+          }
+        } else {
+          console.warn('[Task Creation] Failed to check repository access, proceeding with original URL')
+        }
+      } catch (error) {
+        console.error('[Task Creation] Repository access check failed:', error)
+        // Continue with original URL if access check fails
+      }
+    }
+
     // Optimize the prompt using enhanced optimizer before creating the task
     let optimizedPrompt = body.prompt
     let costOptimizationData = null
@@ -104,6 +156,7 @@ export async function POST(request: NextRequest) {
 
     const validatedData = insertTaskSchema.parse({
       ...body,
+      repoUrl: finalRepoUrl, // Use the final repository URL (forked if necessary)
       prompt: optimizedPrompt, // Use optimized prompt
       costOptimization: costOptimizationData, // Include cost optimization data
       id: taskId,
