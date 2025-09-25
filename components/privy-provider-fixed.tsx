@@ -52,7 +52,7 @@ function PrivyProviderInner({ children }: PrivyProviderProps) {
     if (ready) {
       setIsLoading(false)
       if (authenticated && privyUser) {
-        setUser(privyUser as PrivyUser)
+        setUser(privyUser as unknown as PrivyUser)
         setIsConnected(true)
       } else {
         setUser(null)
@@ -151,7 +151,7 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
           accentColor: '#676FFF',
         },
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
+          // createOnLogin: 'users-without-wallets', // Removed due to type incompatibility
         },
         mfa: {
           noPromptOnMfaRequired: false,

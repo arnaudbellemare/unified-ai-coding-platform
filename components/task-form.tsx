@@ -199,12 +199,15 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
     }
   }, [selectedOwner])
 
-  // Restore saved owner selection after owners are loaded
+  // Auto-select the connected GitHub user after owners are loaded
   useEffect(() => {
     if (owners.length > 0 && !selectedOwner) {
-      const lastUsedOwner = localStorage.getItem('last-selected-owner')
-      if (lastUsedOwner && owners.some((owner) => owner.login === lastUsedOwner)) {
-        setSelectedOwner(lastUsedOwner)
+      // The first owner in the list should be the connected GitHub user
+      const connectedUser = owners[0]
+      if (connectedUser) {
+        setSelectedOwner(connectedUser.login)
+        // Save the selection
+        localStorage.setItem('last-selected-owner', connectedUser.login)
       }
     }
   }, [owners, selectedOwner])
@@ -427,19 +430,27 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (prompt.trim() && selectedOwner && selectedRepo) {
-      const selectedRepoData = repos.find((repo) => repo.name === selectedRepo)
-      if (selectedRepoData) {
-        // Clear the saved prompt since we're submitting it
-        localStorage.removeItem('task-prompt')
+    if (prompt.trim()) {
+      let repoUrl = ''
 
-        onSubmit({
-          prompt: prompt.trim(),
-          repoUrl: selectedRepoData.clone_url,
-          selectedAgent,
-          selectedModel,
-        })
+      // If both owner and repo are selected, use the repo URL
+      if (selectedOwner && selectedRepo && selectedRepo !== 'no-repository') {
+        const selectedRepoData = repos.find((repo) => repo.name === selectedRepo)
+        if (selectedRepoData) {
+          repoUrl = selectedRepoData.clone_url
+        }
       }
+      // If no repo is selected or "no-repository" is selected, we'll use an empty string (no repo mode)
+
+      // Clear the saved prompt since we're submitting it
+      localStorage.removeItem('task-prompt')
+
+      onSubmit({
+        prompt: prompt.trim(),
+        repoUrl,
+        selectedAgent,
+        selectedModel,
+      })
     }
   }
 
@@ -466,6 +477,7 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
           >
             AI Gateway
           </a>
+          . Repository selection is optional - you can work standalone or with a GitHub repository.
         </p>
       </div>
 
@@ -544,7 +556,9 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
                 >
                   <SelectTrigger className="w-auto min-w-[160px] border-0 bg-transparent shadow-none focus:ring-0 h-8">
                     <SelectValue
-                      placeholder={!selectedOwner ? 'Select owner first' : loadingRepos ? 'Loading...' : 'Repo'}
+                      placeholder={
+                        !selectedOwner ? 'Select owner first' : loadingRepos ? 'Loading...' : 'Repo (optional)'
+                      }
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -570,6 +584,15 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
                       </div>
                     ) : (
                       <>
+                        {/* No Repository Option */}
+                        <SelectItem value="no-repository">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-muted-foreground">No Repository</span>
+                            <Badge variant="outline" className="text-xs">
+                              Standalone
+                            </Badge>
+                          </div>
+                        </SelectItem>
                         {displayedRepos.map((repo) => (
                           <SelectItem key={repo.full_name} value={repo.name}>
                             <div className="flex items-center gap-2">
@@ -675,7 +698,7 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !prompt.trim() || !selectedOwner || !selectedRepo}
+                  disabled={isSubmitting || !prompt.trim()}
                   size="sm"
                   className="rounded-full h-8 w-8 p-0"
                 >
@@ -735,7 +758,9 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
                 >
                   <SelectTrigger className="w-auto min-w-[160px] border-0 bg-transparent shadow-none focus:ring-0 h-8">
                     <SelectValue
-                      placeholder={!selectedOwner ? 'Select owner first' : loadingRepos ? 'Loading...' : 'Repo'}
+                      placeholder={
+                        !selectedOwner ? 'Select owner first' : loadingRepos ? 'Loading...' : 'Repo (optional)'
+                      }
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -761,6 +786,15 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
                       </div>
                     ) : (
                       <>
+                        {/* No Repository Option */}
+                        <SelectItem value="no-repository">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-muted-foreground">No Repository</span>
+                            <Badge variant="outline" className="text-xs">
+                              Standalone
+                            </Badge>
+                          </div>
+                        </SelectItem>
                         {displayedRepos.map((repo) => (
                           <SelectItem key={repo.full_name} value={repo.name}>
                             <div className="flex items-center gap-2">
@@ -833,7 +867,7 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={isSubmitting || !prompt.trim() || !selectedOwner || !selectedRepo}
+                disabled={isSubmitting || !prompt.trim()}
                 size="sm"
                 className="rounded-full h-8 w-8 p-0"
               >

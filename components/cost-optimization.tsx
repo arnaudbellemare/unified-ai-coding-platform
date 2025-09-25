@@ -105,8 +105,8 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
             placeholder="Enter your prompt here..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            rows={4}
-            className="mt-2"
+            rows={8}
+            className="mt-2 min-h-[200px] resize-none"
           />
         </div>
 

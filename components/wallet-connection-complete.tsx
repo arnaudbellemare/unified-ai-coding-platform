@@ -32,7 +32,7 @@ export function WalletConnectionComplete({
   onWalletDisconnect,
   onPaymentReady,
 }: WalletConnectionProps) {
-  const { user, isConnected, isLoading, login, logout, loginWithEmail, verifyEmailCode } = usePrivy()
+  const { user, authenticated, ready, login, logout } = usePrivy()
   const { address, isConnected: wagmiConnected } = useAccount()
   const { data: balance } = useBalance({ address })
   const { disconnect } = useDisconnect()
@@ -46,7 +46,7 @@ export function WalletConnectionComplete({
 
   // Update wallet when user connects
   useEffect(() => {
-    if (isConnected && user && address) {
+    if (authenticated && user && address) {
       const walletData = {
         address,
         balance: balance?.formatted || '0',
@@ -58,7 +58,7 @@ export function WalletConnectionComplete({
       onWalletDisconnect?.()
       onPaymentReady?.(false)
     }
-  }, [isConnected, user, address, balance, onWalletConnect, onWalletDisconnect, onPaymentReady])
+  }, [authenticated, user, address, balance, onWalletConnect, onWalletDisconnect, onPaymentReady])
 
   const connectWallet = async () => {
     try {
@@ -86,7 +86,8 @@ export function WalletConnectionComplete({
     }
 
     try {
-      await loginWithEmail(email)
+      // Email login not available
+      throw new Error('Email login not available')
       setEmailSent(true)
       setShowCodeForm(true)
       setError('')
@@ -103,7 +104,8 @@ export function WalletConnectionComplete({
     }
 
     try {
-      await verifyEmailCode(code)
+      // Email verification not available
+      throw new Error('Email verification not available')
       setShowEmailForm(false)
       setShowCodeForm(false)
       setError('')
@@ -123,7 +125,7 @@ export function WalletConnectionComplete({
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`
   }
 
-  if (isLoading) {
+  if (!ready) {
     return (
       <Card className="w-full max-w-md">
         <CardContent className="p-6">
@@ -136,7 +138,7 @@ export function WalletConnectionComplete({
     )
   }
 
-  if (isConnected && user && address) {
+  if (authenticated && user && address) {
     return (
       <Card className="w-full max-w-md">
         <CardHeader>
@@ -214,8 +216,8 @@ export function WalletConnectionComplete({
       <CardContent className="space-y-4">
         {!showEmailForm && !showCodeForm && (
           <>
-            <Button onClick={connectWallet} disabled={isLoading} className="w-full" size="lg">
-              {isLoading ? (
+            <Button onClick={connectWallet} disabled={!ready} className="w-full" size="lg">
+              {!ready ? (
                 <>
                   <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
                   Connecting...

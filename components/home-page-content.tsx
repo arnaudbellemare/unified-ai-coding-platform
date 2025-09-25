@@ -123,51 +123,61 @@ export function HomePageContent() {
 
         {/* Tab Content */}
         {activeTab === 'tasks' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            <div className="space-y-6">
-              <TaskForm onSubmit={handleTaskSubmit} isSubmitting={isSubmitting} />
-            </div>
-            <div className="space-y-6">
-              <CostOptimization />
+          <div className="flex justify-center items-start min-h-screen pt-24 pb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl w-full px-4">
+              <div className="space-y-6">
+                <TaskForm onSubmit={handleTaskSubmit} isSubmitting={isSubmitting} />
+              </div>
+              <div className="space-y-6">
+                <CostOptimization />
+              </div>
             </div>
           </div>
         )}
 
         {activeTab === 'optimization' && (
-          <div className="max-w-4xl mx-auto">
-            <CostOptimization />
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-4xl w-full px-4">
+              <CostOptimization />
+            </div>
           </div>
         )}
 
         {activeTab === 'advanced' && (
-          <div className="max-w-7xl mx-auto">
-            <AdvancedOptimizationDashboard />
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-7xl w-full px-4">
+              <AdvancedOptimizationDashboard />
+            </div>
           </div>
         )}
 
         {activeTab === 'agents' && (
-          <div className="max-w-6xl mx-auto">
-            <AgentHub
-              onAgentCreate={(config) => {
-                toast.success(`Agent "${config.name}" created successfully!`)
-              }}
-              onAgentExecute={(agentId, input) => {
-                toast.info(`Executing agent "${agentId}" with input: ${input.substring(0, 50)}...`)
-              }}
-            />
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-6xl w-full px-4">
+              <AgentHub
+                onAgentCreate={(config) => {
+                  toast.success(`Agent "${config.name}" created successfully!`)
+                }}
+                onAgentExecute={(agentId, input) => {
+                  toast.info(`Executing agent "${agentId}" with input: ${input.substring(0, 50)}...`)
+                }}
+              />
+            </div>
           </div>
         )}
 
         {activeTab === 'payment' && (
-          <div className="max-w-6xl mx-auto">
-            <X402Payment
-              onPaymentComplete={(paymentData) => {
-                toast.success(`Payment completed for ${(paymentData.tier as { name: string }).name} plan!`)
-              }}
-              onSubscriptionChange={(tier) => {
-                toast.info(`Subscription changed to ${tier.name} plan`)
-              }}
-            />
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-6xl w-full px-4">
+              <X402Payment
+                onPaymentComplete={(paymentData) => {
+                  toast.success(`Payment completed for ${(paymentData.tier as { name: string }).name} plan!`)
+                }}
+                onSubscriptionChange={(tier) => {
+                  toast.info(`Subscription changed to ${tier.name} plan`)
+                }}
+              />
+            </div>
           </div>
         )}
       </div>

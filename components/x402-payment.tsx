@@ -68,6 +68,7 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
   const [x402Wallet, setX402Wallet] = useState<X402Wallet | null>(null)
   const [x402Connected, setX402Connected] = useState(false)
   const [privyWallet, setPrivyWallet] = useState<X402Wallet | null>(null)
+  const [activeTab, setActiveTab] = useState<string>('pricing')
   const [paymentDetails, setPaymentDetails] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -184,10 +185,10 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
     const initializeX402 = async () => {
       try {
         // Check if x402 is available
-        if (typeof window !== 'undefined' && window.x402) {
+        if (typeof window !== 'undefined' && (window as any).x402) {
           setX402Connected(true)
           // Initialize wallet connection
-          const wallet = await window.x402.connect()
+          const wallet = await (window as any).x402.connect()
           setX402Wallet({
             address: wallet.address,
             balance: wallet.balance,
@@ -214,6 +215,18 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
     setPrivyWallet(null)
     setX402Connected(false)
     setX402Wallet(null)
+  }
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value)
+
+    // Auto-select the $29 Pro tier when switching to payment tab
+    if (value === 'payment' && !selectedTier) {
+      const proTier = pricingTiers.find((tier) => tier.price === 29)
+      if (proTier) {
+        setSelectedTier(proTier)
+      }
+    }
   }
 
   const handlePayment = async () => {
@@ -299,7 +312,7 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
         <CardDescription>Unlock advanced AI optimization features with our flexible pricing tiers</CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="pricing" className="w-full">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="pricing">Pricing Plans</TabsTrigger>
             <TabsTrigger value="payment">Payment</TabsTrigger>

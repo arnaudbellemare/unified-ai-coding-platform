@@ -1,9 +1,9 @@
 import { TaskPageClient } from '@/components/task-page-client'
 
 interface TaskPageProps {
-  params: {
+  params: Promise<{
     taskId: string
-  }
+  }>
 }
 
 export default async function TaskPage({ params }: TaskPageProps) {

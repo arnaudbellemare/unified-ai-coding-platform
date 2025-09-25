@@ -47,10 +47,10 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
     const initializePrivy = async () => {
       try {
         // Check if Privy is available
-        if (typeof window !== 'undefined' && window.privy) {
-          const connected = await window.privy.isConnected()
+        if (typeof window !== 'undefined' && (window as any).privy) {
+          const connected = await (window as any).privy.isConnected()
           if (connected) {
-            const privyUser = await window.privy.getUser()
+            const privyUser = await (window as any).privy.getUser()
             setUser(privyUser)
             setIsConnected(true)
           }
@@ -67,8 +67,8 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
 
   const login = async () => {
     try {
-      if (typeof window !== 'undefined' && window.privy) {
-        const privyUser = await window.privy.login()
+      if (typeof window !== 'undefined' && (window as any).privy) {
+        const privyUser = await (window as any).privy.login()
         setUser(privyUser)
         setIsConnected(true)
       }
@@ -80,8 +80,8 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
 
   const logout = async () => {
     try {
-      if (typeof window !== 'undefined' && window.privy) {
-        await window.privy.logout()
+      if (typeof window !== 'undefined' && (window as any).privy) {
+        await (window as any).privy.logout()
         setUser(null)
         setIsConnected(false)
       }

@@ -107,7 +107,7 @@ export class HybridOptimizer {
 
     // Find best result
     const bestResult = results.reduce((best, current) =>
-      parseFloat(current.tokenReduction) > parseFloat(best.tokenReduction) ? current : best,
+      current.tokenReduction > best.tokenReduction ? current : best,
     )
 
     return {
@@ -280,8 +280,8 @@ export class HybridOptimizer {
     const promptOptimizerResults = results.filter((r) => r.optimizationEngine === 'prompt_optimizer')
     const capoResults = results.filter((r) => r.optimizationEngine === 'capo_enhanced')
 
-    const totalTokenReduction = results.reduce((sum, r) => sum + parseFloat(r.tokenReduction), 0)
-    const totalCostReduction = results.reduce((sum, r) => sum + parseFloat(r.costReduction), 0)
+    const totalTokenReduction = results.reduce((sum, r) => sum + r.tokenReduction, 0)
+    const totalCostReduction = results.reduce((sum, r) => sum + r.costReduction, 0)
     const totalEvaluations = results.reduce((sum, r) => sum + r.evaluationsUsed, 0)
 
     return {

@@ -346,6 +346,20 @@ export class OptimizationEngine {
 
     return recommendations
   }
+
+  // Reset optimization metrics
+  resetOptimizationMetrics() {
+    this.metrics = {
+      totalOptimizations: 0,
+      totalSavings: 0,
+      averageSavings: 0.15,
+      successRate: 0.87,
+      failureRate: 0.13,
+      lastOptimization: new Date(),
+    }
+    this.optimizationHistory = []
+    console.log('Optimization metrics reset successfully')
+  }
 }
 
 // Export singleton instance

@@ -168,11 +168,16 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
       const response = await fetch('/api/tasks')
       if (response.ok) {
         const data = await response.json()
-        setTasks(data.tasks)
+        setTasks(data.tasks || [])
+        setIsLoading(false)
+      } else {
+        console.error('Failed to fetch tasks:', response.status, response.statusText)
+        setTasks([])
         setIsLoading(false)
       }
     } catch (error) {
       console.error('Error fetching tasks:', error)
+      setTasks([])
       setIsLoading(false)
     }
   }

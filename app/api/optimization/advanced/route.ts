@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         if (ruleId) {
           // Get current rule state and toggle it
           const rules = engine.getOptimizationRules()
-          const rule = rules.find(r => r.id === ruleId)
+          const rule = rules.find((r) => r.id === ruleId)
           if (rule) {
             engine.toggleOptimizationRule(ruleId, !rule.enabled)
             return NextResponse.json({

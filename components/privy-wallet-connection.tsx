@@ -35,10 +35,10 @@ export function PrivyWalletConnection({
     const initializePrivy = async () => {
       try {
         // Check if Privy is available
-        if (typeof window !== 'undefined' && window.privy) {
-          const isConnected = await window.privy.isConnected()
+        if (typeof window !== 'undefined' && (window as any).privy) {
+          const isConnected = await (window as any).privy.isConnected()
           if (isConnected) {
-            const user = await window.privy.getUser()
+            const user = await (window as any).privy.getUser()
             const walletAddress = user.wallet?.address
             if (walletAddress) {
               const walletData: PrivyWallet = {
@@ -67,9 +67,9 @@ export function PrivyWalletConnection({
     setError('')
 
     try {
-      if (typeof window !== 'undefined' && window.privy) {
+      if (typeof window !== 'undefined' && (window as any).privy) {
         // Connect to Privy
-        const user = await window.privy.login()
+        const user = await (window as any).privy.login()
 
         if (user && user.wallet?.address) {
           const walletData: PrivyWallet = {
@@ -99,8 +99,8 @@ export function PrivyWalletConnection({
 
   const disconnectWallet = async () => {
     try {
-      if (typeof window !== 'undefined' && window.privy) {
-        await window.privy.logout()
+      if (typeof window !== 'undefined' && (window as any).privy) {
+        await (window as any).privy.logout()
         setWallet(null)
         onWalletDisconnect?.()
       }
