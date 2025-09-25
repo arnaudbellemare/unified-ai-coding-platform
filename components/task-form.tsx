@@ -143,7 +143,7 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
       const response = await fetch('/api/optimize-agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: promptText, selectedAgent: currentAgent })
+        body: JSON.stringify({ prompt: promptText, selectedAgent: currentAgent }),
       })
 
       if (response.ok) {

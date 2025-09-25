@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Claude, Codex, OpenCode } from '@/components/logos'
+import { UsageDisplay } from '@/components/usage-display'
 
 // Model mappings for human-friendly names
 const AGENT_MODELS = {
@@ -78,6 +79,11 @@ export function TaskSidebar({ tasks, onTaskSelect, width = 288 }: TaskSidebarPro
             </Button>
           </Link>
         </div>
+      </div>
+
+      {/* Usage Display */}
+      <div className="mb-4">
+        <UsageDisplay />
       </div>
 
       <div className="space-y-1">

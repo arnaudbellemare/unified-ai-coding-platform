@@ -87,7 +87,7 @@ export function HomePageHeader() {
     <div className="flex items-center gap-2">
       {/* GitHub Authentication */}
       <GitHubAuth />
-      
+
       {/* Deploy to Vercel Button */}
       <Button
         asChild

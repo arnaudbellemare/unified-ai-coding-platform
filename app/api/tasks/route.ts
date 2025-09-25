@@ -11,14 +11,26 @@ import { createInfoLog } from '@/lib/utils/logging'
 import { createTaskLogger } from '@/lib/utils/task-logger'
 import { generateBranchName, createFallbackBranchName } from '@/lib/utils/branch-name-generator'
 import { costOptimization } from '@/lib/cost-optimization'
+import { getCurrentUser, requireAuth, SimpleUsageTracker } from '@/lib/auth/simple-auth'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Get current user
+    const user = await getCurrentUser(request)
+    
     if (!db) {
-      // Return fallback tasks for development
+      // Return fallback tasks for development (only if user is authenticated)
+      if (!user) {
+        return NextResponse.json({
+          tasks: [],
+          message: 'Please sign in with GitHub to view your tasks',
+        })
+      }
+      
       const fallbackTasks = [
         {
           id: 'demo-task-1',
+          userId: user.id,
           prompt: 'Create a React component with TypeScript',
           repoUrl: 'https://github.com/example/demo-repo',
           selectedAgent: 'codex',
@@ -37,26 +49,6 @@ export async function GET() {
           sandboxUrl: 'https://demo-sandbox.vercel.app',
           branchName: 'feature/demo-component',
         },
-        {
-          id: 'demo-task-2',
-          prompt: 'Add authentication to the app',
-          repoUrl: 'https://github.com/example/auth-repo',
-          selectedAgent: 'opencode',
-          selectedModel: 'gpt-5-mini',
-          status: 'processing' as const,
-          progress: 75,
-          logs: [
-            {
-              type: 'info' as const,
-              message: 'Task in progress (demo mode)',
-              timestamp: new Date().toISOString(),
-            },
-          ],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          sandboxUrl: 'https://auth-sandbox.vercel.app',
-          branchName: 'feature/authentication',
-        },
       ]
 
       return NextResponse.json({
@@ -64,8 +56,29 @@ export async function GET() {
         message: 'Database not available - showing demo tasks',
       })
     }
-    const allTasks = await db.select().from(tasks).orderBy(desc(tasks.createdAt))
-    return NextResponse.json({ tasks: allTasks })
+
+    // If no user, return empty tasks
+    if (!user) {
+      return NextResponse.json({
+        tasks: [],
+        message: 'Please sign in with GitHub to view your tasks',
+      })
+    }
+
+    // Get user's tasks only
+    const userTasks = await db
+      .select()
+      .from(tasks)
+      .where(eq(tasks.userId, user.id))
+      .orderBy(desc(tasks.createdAt))
+
+    return NextResponse.json({ 
+      tasks: userTasks,
+      user: {
+        username: user.username,
+        usage: SimpleUsageTracker.getUserUsage(user.id)
+      }
+    })
   } catch (error) {
     console.error('Error fetching tasks:', error)
     return NextResponse.json({ error: 'Failed to fetch tasks' }, { status: 500 })
@@ -74,7 +87,19 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication
+    const user = await requireAuth(request)
+    
     const body = await request.json()
+
+    // Check usage limits
+    const usageCheck = SimpleUsageTracker.canCreateTask(user.id)
+    if (!usageCheck.allowed) {
+      return NextResponse.json({
+        error: usageCheck.reason,
+        usage: SimpleUsageTracker.getUserUsage(user.id)
+      }, { status: 429 })
+    }
 
     // Use provided ID or generate a new one
     const taskId = body.id || generateId(12)
@@ -87,9 +112,12 @@ export async function POST(request: NextRequest) {
     const githubToken = userToken || serverToken
 
     if (!githubToken) {
-      return NextResponse.json({ 
-        error: 'GitHub authentication required. Please connect your GitHub account first.' 
-      }, { status: 401 })
+      return NextResponse.json(
+        {
+          error: 'GitHub authentication required. Please connect your GitHub account first.',
+        },
+        { status: 401 },
+      )
     }
 
     // Check repository access and fork if necessary
@@ -105,9 +133,9 @@ export async function POST(request: NextRequest) {
           `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/check-repo-access`,
           {
             method: 'POST',
-            headers: { 
+            headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${githubToken}`,
+              Authorization: `Bearer ${githubToken}`,
             },
             body: JSON.stringify({ repoUrl: body.repoUrl }),
           },
@@ -124,9 +152,9 @@ export async function POST(request: NextRequest) {
               `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/fork-repository`,
               {
                 method: 'POST',
-                headers: { 
+                headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${githubToken}`,
+                  Authorization: `Bearer ${githubToken}`,
                 },
                 body: JSON.stringify({ repoUrl: body.repoUrl, taskId }),
               },
@@ -181,6 +209,7 @@ export async function POST(request: NextRequest) {
 
     const validatedData = insertTaskSchema.parse({
       ...body,
+      userId: user.id, // Add user isolation
       repoUrl: finalRepoUrl, // Use the final repository URL (forked if necessary)
       prompt: optimizedPrompt, // Use optimized prompt
       costOptimization: costOptimizationData, // Include cost optimization data
@@ -211,6 +240,9 @@ export async function POST(request: NextRequest) {
         validatedData.selectedModel,
       )
 
+      // Record usage for billing/analytics (fallback mode)
+      SimpleUsageTracker.recordTaskCreation(user.id)
+
       return NextResponse.json({ task: fallbackTask })
     }
 
@@ -222,6 +254,9 @@ export async function POST(request: NextRequest) {
         id: taskId, // Ensure id is always present
       })
       .returning()
+
+    // Record usage for billing/analytics
+    SimpleUsageTracker.recordTaskCreation(user.id)
 
     // Generate AI branch name after response is sent (non-blocking) - only if database is available
     if (db) {

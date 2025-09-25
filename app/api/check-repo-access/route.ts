@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const authHeader = request.headers.get('authorization')
     const userToken = authHeader?.replace('Bearer ', '') || request.cookies.get('github_token')?.value
     const serverToken = process.env.GITHUB_TOKEN
-    
+
     const githubToken = userToken || serverToken
 
     if (!githubToken) {

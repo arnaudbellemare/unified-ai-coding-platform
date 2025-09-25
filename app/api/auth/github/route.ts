@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -59,8 +59,10 @@ export async function GET(request: NextRequest) {
     const user = await userResponse.json()
 
     // Create response with user data and token
-    const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/?github_connected=true`)
-    
+    const response = NextResponse.redirect(
+      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/?github_connected=true`,
+    )
+
     // Set secure HTTP-only cookie with the access token
     response.cookies.set('github_token', accessToken, {
       httpOnly: true,

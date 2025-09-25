@@ -40,7 +40,10 @@ export class CostOptimization {
   /**
    * Recommend the most cost-effective agent for a given prompt
    */
-  async recommendAgent(prompt: string, availableAgents: string[] = []): Promise<{
+  async recommendAgent(
+    prompt: string,
+    availableAgents: string[] = [],
+  ): Promise<{
     recommended: string
     reasoning: string
     alternatives: Array<{
@@ -50,42 +53,45 @@ export class CostOptimization {
     }>
   }> {
     const config = getEnvironmentConfig()
-    
+
     // Default available agents if none provided
-    const agents = availableAgents.length > 0 ? availableAgents : [
-      ...(config.hasPerplexity ? ['perplexity'] : []),
-      ...(config.hasOpenAI ? ['codex'] : []),
-      ...(config.hasAnthropic ? ['claude'] : []),
-      ...(config.hasCursor ? ['cursor'] : []),
-      'opencode' // Always available
-    ]
+    const agents =
+      availableAgents.length > 0
+        ? availableAgents
+        : [
+            ...(config.hasPerplexity ? ['perplexity'] : []),
+            ...(config.hasOpenAI ? ['codex'] : []),
+            ...(config.hasAnthropic ? ['claude'] : []),
+            ...(config.hasCursor ? ['cursor'] : []),
+            'opencode', // Always available
+          ]
 
     // Analyze prompt characteristics
     const promptAnalysis = this.analyzePrompt(prompt)
-    
+
     // Calculate costs for each agent
     const agentCosts = await Promise.all(
       agents.map(async (agent) => ({
         agent,
         cost: await this.estimateAgentCost(agent, prompt, promptAnalysis),
-        reasoning: this.getAgentReasoning(agent, promptAnalysis)
-      }))
+        reasoning: this.getAgentReasoning(agent, promptAnalysis),
+      })),
     )
 
     // Sort by cost (ascending)
     agentCosts.sort((a, b) => a.cost - b.cost)
-    
+
     const recommended = agentCosts[0]
     const alternatives = agentCosts.slice(1)
 
     return {
       recommended: recommended.agent,
       reasoning: recommended.reasoning,
-      alternatives: alternatives.map(alt => ({
+      alternatives: alternatives.map((alt) => ({
         agent: alt.agent,
         estimatedCost: alt.cost,
-        reasoning: alt.reasoning
-      }))
+        reasoning: alt.reasoning,
+      })),
     }
   }
 
@@ -120,7 +126,9 @@ export class CostOptimization {
 
     // Determine requirements
     const requiresWebSearch = /search|find|look up|current|latest|news|recent|today|now|web|internet/i.test(lowerPrompt)
-    const requiresCodeGeneration = /code|function|class|variable|debug|implement|create|build|write.*code/i.test(lowerPrompt)
+    const requiresCodeGeneration = /code|function|class|variable|debug|implement|create|build|write.*code/i.test(
+      lowerPrompt,
+    )
     const requiresRealTimeData = /current|latest|news|recent|today|now|live|real.*time/i.test(lowerPrompt)
 
     return {
@@ -129,7 +137,7 @@ export class CostOptimization {
       type,
       requiresWebSearch,
       requiresCodeGeneration,
-      requiresRealTimeData
+      requiresRealTimeData,
     }
   }
 
@@ -137,9 +145,9 @@ export class CostOptimization {
    * Estimate cost for a specific agent
    */
   private async estimateAgentCost(
-    agent: string, 
-    prompt: string, 
-    analysis: ReturnType<CostOptimization['analyzePrompt']>
+    agent: string,
+    prompt: string,
+    analysis: ReturnType<CostOptimization['analyzePrompt']>,
   ): Promise<number> {
     // Base costs per 1K tokens (approximate)
     const agentCosts = {
@@ -147,12 +155,12 @@ export class CostOptimization {
       perplexity: 0.0005, // $0.50 per 1M tokens
       claude: 0.003, // $3 per 1M tokens
       codex: 0.002, // $2 per 1M tokens (via AI Gateway)
-      cursor: 0.001 // $1 per 1M tokens (estimated)
+      cursor: 0.001, // $1 per 1M tokens (estimated)
     }
 
     // Estimate token usage based on prompt complexity
     let estimatedTokens = Math.max(100, analysis.length * 1.3) // Rough estimate
-    
+
     // Adjust for complexity
     if (analysis.complexity === 'complex') estimatedTokens *= 1.5
     else if (analysis.complexity === 'medium') estimatedTokens *= 1.2
@@ -169,29 +177,26 @@ export class CostOptimization {
   /**
    * Get reasoning for agent recommendation
    */
-  private getAgentReasoning(
-    agent: string, 
-    analysis: ReturnType<CostOptimization['analyzePrompt']>
-  ): string {
+  private getAgentReasoning(agent: string, analysis: ReturnType<CostOptimization['analyzePrompt']>): string {
     const reasons = {
-      opencode: "Free open-source agent, best for simple coding tasks",
-      perplexity: "Cost-effective for research and web search tasks",
-      claude: "High-quality for complex analysis and coding",
-      codex: "Optimized for coding with AI Gateway integration",
-      cursor: "Specialized for code completion and generation"
+      opencode: 'Free open-source agent, best for simple coding tasks',
+      perplexity: 'Cost-effective for research and web search tasks',
+      claude: 'High-quality for complex analysis and coding',
+      codex: 'Optimized for coding with AI Gateway integration',
+      cursor: 'Specialized for code completion and generation',
     }
 
-    let reasoning = reasons[agent as keyof typeof reasons] || "General purpose agent"
+    let reasoning = reasons[agent as keyof typeof reasons] || 'General purpose agent'
 
     // Add specific reasoning based on prompt analysis
     if (agent === 'perplexity' && analysis.requiresWebSearch) {
-      reasoning += " (optimal for web search requirements)"
+      reasoning += ' (optimal for web search requirements)'
     } else if (agent === 'codex' && analysis.requiresCodeGeneration) {
-      reasoning += " (optimized for code generation)"
+      reasoning += ' (optimized for code generation)'
     } else if (agent === 'opencode' && analysis.type === 'coding') {
-      reasoning += " (free option for coding tasks)"
+      reasoning += ' (free option for coding tasks)'
     } else if (agent === 'claude' && analysis.complexity === 'complex') {
-      reasoning += " (best for complex tasks)"
+      reasoning += ' (best for complex tasks)'
     }
 
     return reasoning
@@ -212,15 +217,15 @@ export class CostOptimization {
   async optimizePromptWithAnalysis(originalPrompt: string): Promise<CostOptimizationResult> {
     const optimizedPrompt = await this.optimizePrompt(originalPrompt)
     const costAnalysis = await this.calculateCostOptimization(originalPrompt, optimizedPrompt)
-    
+
     // Get agent recommendation
     const agentRecommendation = await this.recommendAgent(originalPrompt)
-    
+
     return {
       ...costAnalysis,
       recommendedAgent: agentRecommendation.recommended,
       agentReasoning: agentRecommendation.reasoning,
-      alternativeAgents: agentRecommendation.alternatives
+      alternativeAgents: agentRecommendation.alternatives,
     }
   }
 

@@ -19,7 +19,7 @@ export function useGitHubAuth() {
     try {
       setLoading(true)
       const response = await fetch('/api/auth/github/user')
-      
+
       if (response.ok) {
         const userData = await response.json()
         setUser(userData)

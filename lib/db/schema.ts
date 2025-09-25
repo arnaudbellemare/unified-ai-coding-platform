@@ -30,6 +30,7 @@ export type CostOptimization = z.infer<typeof costOptimizationSchema>
 
 export const tasks = pgTable('tasks', {
   id: text('id').primaryKey(),
+  userId: text('user_id'), // Added user isolation
   prompt: text('prompt').notNull(),
   repoUrl: text('repo_url'),
   selectedAgent: text('selected_agent').default('claude'),
@@ -53,6 +54,7 @@ export const tasks = pgTable('tasks', {
 // Manual Zod schemas for validation
 export const insertTaskSchema = z.object({
   id: z.string().optional(),
+  userId: z.string().optional(), // Added user isolation
   prompt: z.string().min(1, 'Prompt is required'),
   repoUrl: z.string().url('Must be a valid URL').optional(),
   selectedAgent: z.enum(['claude', 'codex', 'cursor', 'opencode', 'perplexity']).default('claude'),
@@ -71,6 +73,7 @@ export const insertTaskSchema = z.object({
 
 export const selectTaskSchema = z.object({
   id: z.string(),
+  userId: z.string().nullable(), // Added user isolation
   prompt: z.string(),
   repoUrl: z.string().nullable(),
   selectedAgent: z.string().nullable(),

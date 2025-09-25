@@ -5,14 +5,17 @@ export async function GET() {
   try {
     const config = getEnvironmentConfig()
     const validation = validateEnvironmentForDeployment()
-    
+
     // Get agent configurations
     const agents = ['claude', 'codex', 'perplexity', 'cursor', 'opencode']
-    const agentConfigs = agents.reduce((acc, agent) => {
-      acc[agent] = getMinimalConfigForAgent(agent)
-      return acc
-    }, {} as Record<string, any>)
-    
+    const agentConfigs = agents.reduce(
+      (acc, agent) => {
+        acc[agent] = getMinimalConfigForAgent(agent)
+        return acc
+      },
+      {} as Record<string, any>,
+    )
+
     const health = {
       status: validation.valid ? 'healthy' : 'degraded',
       timestamp: new Date().toISOString(),
@@ -38,31 +41,57 @@ export async function GET() {
       },
       agents: agentConfigs,
       recommendations: {
-        availableAgents: Object.keys(agentConfigs).filter(agent => {
+        availableAgents: Object.keys(agentConfigs).filter((agent) => {
           const agentConfig = agentConfigs[agent]
           return agentConfig.required.every((req: string) => {
-            const envVar = req.replace('_API_KEY', '_API_KEY').replace('_TOKEN', '_TOKEN').replace('_ID', '_ID').replace('_SECRET', '_SECRET')
-            return config.features[envVar.toLowerCase() as keyof typeof config.features]
+            // Check if the required environment variable is available
+            const envVar = req
+            switch (envVar) {
+              case 'POSTGRES_URL':
+                return config.hasDatabase
+              case 'AI_GATEWAY_API_KEY':
+                return config.hasAIGateway
+              case 'VERCEL_TOKEN':
+              case 'VERCEL_TEAM_ID':
+              case 'VERCEL_PROJECT_ID':
+                return config.hasVercel
+              case 'GITHUB_TOKEN':
+                return config.hasGitHub
+              case 'OPENAI_API_KEY':
+                return config.hasOpenAI
+              case 'ANTHROPIC_API_KEY':
+                return config.hasAnthropic
+              case 'PERPLEXITY_API_KEY':
+                return config.hasPerplexity
+              case 'CURSOR_API_KEY':
+                return config.hasCursor
+              default:
+                return false
+            }
           })
         }),
         costOptimized: config.hasPerplexity ? 'perplexity' : config.hasOpenAI ? 'codex' : 'opencode',
-        minimalSetup: config.hasPerplexity ? ['PERPLEXITY_API_KEY'] : config.hasOpenAI ? ['AI_GATEWAY_API_KEY', 'OPENAI_API_KEY'] : []
+        minimalSetup: config.hasPerplexity
+          ? ['PERPLEXITY_API_KEY']
+          : config.hasOpenAI
+            ? ['AI_GATEWAY_API_KEY', 'OPENAI_API_KEY']
+            : [],
       },
       validation: validation,
     }
 
-    return NextResponse.json(health, { 
-      status: validation.valid ? 200 : 503 
+    return NextResponse.json(health, {
+      status: validation.valid ? 200 : 503,
     })
   } catch (error) {
     console.error('Health check failed:', error)
     return NextResponse.json(
-      { 
+      {
         status: 'error',
         error: 'Health check failed',
-        timestamp: new Date().toISOString()
-      }, 
-      { status: 500 }
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 },
     )
   }
 }

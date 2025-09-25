@@ -10,7 +10,7 @@ let db: ReturnType<typeof drizzle> | null = null
 // Initialize database connection based on environment configuration
 function initializeDatabase() {
   const config = getEnvironmentConfig()
-  
+
   // Skip database connection during build time or if no POSTGRES_URL
   if (config.isBuildTime || !config.hasDatabase) {
     if (config.isBuildTime) {

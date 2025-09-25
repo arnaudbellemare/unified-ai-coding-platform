@@ -165,8 +165,12 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
               <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
                 <p className="font-medium text-yellow-800">⚠️ Important:</p>
                 <p className="text-yellow-700">
-                  After deployment, you'll need to configure environment variables in Vercel Settings → Environment Variables. 
-                  See the <a href="/DEPLOYMENT_GUIDE.md" target="_blank" className="underline">Deployment Guide</a> for details.
+                  After deployment, you'll need to configure environment variables in Vercel Settings → Environment
+                  Variables. See the{' '}
+                  <a href="/DEPLOYMENT_GUIDE.md" target="_blank" className="underline">
+                    Deployment Guide
+                  </a>{' '}
+                  for details.
                 </p>
               </div>
             </div>

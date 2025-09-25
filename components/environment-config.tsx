@@ -18,11 +18,14 @@ interface EnvironmentConfig {
     perplexity: boolean
     cursor: boolean
   }
-  agents: Record<string, {
-    required: string[]
-    optional: string[]
-    description: string
-  }>
+  agents: Record<
+    string,
+    {
+      required: string[]
+      optional: string[]
+      description: string
+    }
+  >
   recommendations: {
     availableAgents: string[]
     costOptimized: string
@@ -132,9 +135,7 @@ export function EnvironmentConfig() {
           <CardTitle className="flex items-center gap-2">
             {getStatusIcon(config.status)}
             Environment Status
-            <Badge className={getStatusColor(config.status)}>
-              {config.status.toUpperCase()}
-            </Badge>
+            <Badge className={getStatusColor(config.status)}>{config.status.toUpperCase()}</Badge>
           </CardTitle>
           <CardDescription>Current environment configuration and available features</CardDescription>
         </CardHeader>
@@ -165,7 +166,7 @@ export function EnvironmentConfig() {
             {Object.entries(config.agents).map(([agentName, agentConfig]) => {
               const isAvailable = availableAgents.includes(agentName)
               const isCostOptimized = agentName === costOptimizedAgent
-              
+
               return (
                 <div key={agentName} className="flex items-start gap-3 p-3 border rounded-lg">
                   <div className="flex-1">
@@ -183,7 +184,7 @@ export function EnvironmentConfig() {
                       )}
                     </div>
                     <p className="text-sm text-gray-600 mb-2">{agentConfig.description}</p>
-                    
+
                     {agentConfig.required.length > 0 && (
                       <div className="mb-2">
                         <p className="text-xs font-medium text-red-600 mb-1">Required:</p>
@@ -196,7 +197,7 @@ export function EnvironmentConfig() {
                         </div>
                       </div>
                     )}
-                    
+
                     {agentConfig.optional.length > 0 && (
                       <div>
                         <p className="text-xs font-medium text-gray-600 mb-1">Optional:</p>
@@ -230,7 +231,7 @@ export function EnvironmentConfig() {
               {costOptimizedAgent}
             </Badge>
           </div>
-          
+
           {config.recommendations.minimalSetup.length > 0 && (
             <div>
               <h4 className="font-medium mb-2">Minimal Setup Variables:</h4>
@@ -238,11 +239,7 @@ export function EnvironmentConfig() {
                 {config.recommendations.minimalSetup.map((variable) => (
                   <div key={variable} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
                     <code className="text-sm">{variable}=your_value_here</code>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => copyToClipboard(`${variable}=your_value_here`)}
-                    >
+                    <Button size="sm" variant="ghost" onClick={() => copyToClipboard(`${variable}=your_value_here`)}>
                       <Copy className="h-3 w-3" />
                     </Button>
                   </div>
@@ -250,13 +247,9 @@ export function EnvironmentConfig() {
               </div>
             </div>
           )}
-          
+
           <div className="pt-4 border-t">
-            <Button 
-              variant="outline" 
-              onClick={() => window.open('/DEPLOYMENT_GUIDE.md', '_blank')}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={() => window.open('/DEPLOYMENT_GUIDE.md', '_blank')} className="w-full">
               <ExternalLink className="h-4 w-4 mr-2" />
               View Full Deployment Guide
             </Button>
