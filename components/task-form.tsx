@@ -63,9 +63,8 @@ const AGENT_MODELS = {
     { value: 'openai/gpt-5-mini', label: 'GPT-5 Mini' },
     { value: 'openai/gpt-5-nano', label: 'GPT-5 Nano' },
     { value: 'openai/gpt-4.1', label: 'GPT-4.1' },
-    { value: 'perplexity-sonar-small', label: 'Perplexity Sonar Small' },
-    { value: 'perplexity-sonar-medium', label: 'Perplexity Sonar Medium' },
-    { value: 'perplexity-sonar-large', label: 'Perplexity Sonar Large' },
+    { value: 'perplexity/sonar', label: 'Perplexity Sonar' },
+    { value: 'perplexity/sonar-pro', label: 'Perplexity Sonar Pro' },
   ],
   cursor: [
     { value: 'auto', label: 'Auto' },
@@ -85,9 +84,8 @@ const AGENT_MODELS = {
     { value: 'claude-opus-4-1-20250805', label: 'Opus 4.1' },
   ],
   perplexity: [
-    { value: 'perplexity-sonar-small', label: 'Sonar Small' },
-    { value: 'perplexity-sonar-medium', label: 'Sonar Medium' },
-    { value: 'perplexity-sonar-large', label: 'Sonar Large' },
+    { value: 'perplexity/sonar', label: 'Sonar' },
+    { value: 'perplexity/sonar-pro', label: 'Sonar Pro' },
   ],
 } as const
 
@@ -97,7 +95,7 @@ const DEFAULT_MODELS = {
   codex: 'openai/gpt-5',
   cursor: 'auto',
   opencode: 'gpt-5',
-  perplexity: 'perplexity-sonar-medium',
+  perplexity: 'perplexity/sonar',
 } as const
 
 export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {

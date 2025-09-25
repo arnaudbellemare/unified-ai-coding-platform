@@ -121,9 +121,8 @@ export function AgentHub({ onAgentCreate, onAgentExecute }: AgentHubProps) {
     'claude-3-opus',
     'claude-3-sonnet',
     'claude-3-haiku',
-    'perplexity-sonar-small',
-    'perplexity-sonar-medium',
-    'perplexity-sonar-large',
+    'perplexity/sonar',
+    'perplexity/sonar-pro',
   ]
 
   const availableTools = [

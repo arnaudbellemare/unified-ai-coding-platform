@@ -71,7 +71,7 @@ export async function executePerplexityInSandbox(
     // Use AI Gateway instead of creating files
     logs.push(createInfoLog('Using AI Gateway for Perplexity API calls (no file creation needed)'))
 
-    const modelToUse = selectedModel || 'perplexity-sonar-medium'
+    const modelToUse = selectedModel || 'perplexity/sonar'
 
     // Check if AI_GATEWAY_API_KEY is available
     if (!process.env.AI_GATEWAY_API_KEY) {

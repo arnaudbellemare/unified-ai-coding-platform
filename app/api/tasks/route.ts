@@ -552,19 +552,23 @@ async function processTask(
       // Agent execution logs are already logged in real-time by the agent
       // No need to log them again here
 
-      // Push changes to branch
-      const commitMessage = `${prompt.substring(0, 50)}${prompt.length > 50 ? '...' : ''}`
-      const pushResult = await pushChangesToBranch(sandbox!, branchName!, commitMessage)
+      // Push changes to branch (only if we have a repository)
+      if (repoUrl && repoUrl.trim() !== '' && repoUrl !== 'no-repository') {
+        const commitMessage = `${prompt.substring(0, 50)}${prompt.length > 50 ? '...' : ''}`
+        const pushResult = await pushChangesToBranch(sandbox!, branchName!, commitMessage)
 
-      // Append push result logs in real-time
-      for (const log of pushResult.logs || []) {
-        if (log.startsWith('$ ')) {
-          await logger.command(log.substring(2)) // Remove "$ " prefix
-        } else if (log.startsWith('Error: ')) {
-          await logger.error(log)
-        } else {
-          await logger.info(log)
+        // Append push result logs in real-time
+        for (const log of pushResult.logs || []) {
+          if (log.startsWith('$ ')) {
+            await logger.command(log.substring(2)) // Remove "$ " prefix
+          } else if (log.startsWith('Error: ')) {
+            await logger.error(log)
+          } else {
+            await logger.info(log)
+          }
         }
+      } else {
+        await logger.info('No repository specified - skipping git operations')
       }
 
       // Shutdown sandbox

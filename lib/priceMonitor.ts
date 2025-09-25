@@ -128,9 +128,8 @@ export class PriceMonitor {
       'google-palm': 0.025, // $0.025 per 1K tokens
       'cohere-command': 0.015, // $0.015 per 1K tokens
       'huggingface-inference': 0.008, // $0.008 per 1K tokens
-      'perplexity-sonar-small': 0.005, // $0.005 per 1K tokens
-      'perplexity-sonar-medium': 0.015, // $0.015 per 1K tokens
-      'perplexity-sonar-large': 0.025, // $0.025 per 1K tokens
+      'perplexity/sonar': 0.005, // $0.005 per 1K tokens
+      'perplexity/sonar-pro': 0.015, // $0.015 per 1K tokens
     }
 
     return defaultPrices[providerId] || 0.01

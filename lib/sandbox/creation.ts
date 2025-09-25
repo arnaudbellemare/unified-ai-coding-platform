@@ -60,17 +60,24 @@ export async function createSandbox(config: SandboxConfig): Promise<SandboxResul
     // AI-generated branch names will be created later inside the sandbox
     const branchNameForEnv = config.existingBranchName
 
-    // Create sandbox with proper source configuration
-    const sandboxConfig = {
-      source: {
-        type: 'git' as const,
-        url: authenticatedRepoUrl,
-        revision: branchNameForEnv || 'main',
-      },
+    // Create sandbox configuration based on whether we have a repository
+    let sandboxConfig: any = {
       timeout: config.timeout ? parseInt(config.timeout.replace(/\D/g, '')) * 60 * 1000 : 5 * 60 * 1000, // Convert to milliseconds
       ports: config.ports || [3000],
       runtime: config.runtime || 'node22',
       resources: { vcpus: config.resources?.vcpus || 4 },
+    }
+
+    // Only add git source if we have a repository URL
+    if (config.repoUrl && config.repoUrl.trim() !== '' && config.repoUrl !== 'no-repository') {
+      sandboxConfig.source = {
+        type: 'git' as const,
+        url: authenticatedRepoUrl,
+        revision: branchNameForEnv || 'main',
+      }
+      logs.push('Creating sandbox with Git repository')
+    } else {
+      logs.push('Creating standalone sandbox (no repository)')
     }
 
     logs.push(
