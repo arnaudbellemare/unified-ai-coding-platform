@@ -166,7 +166,7 @@ export function HomePageContent() {
             <div className="max-w-6xl w-full px-4">
               <Tabs defaultValue="create" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="create">AgentKit (Nuxt UI)</TabsTrigger>
+                  <TabsTrigger value="create">AgentKit</TabsTrigger>
                   <TabsTrigger value="wallets">Agent Wallets</TabsTrigger>
                   <TabsTrigger value="management">Manage Agents</TabsTrigger>
                 </TabsList>
