@@ -96,7 +96,7 @@ export function HomePageContent() {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Advanced Engine
+              Economy Engine
             </button>
             <button
               onClick={() => setActiveTab('agents')}
