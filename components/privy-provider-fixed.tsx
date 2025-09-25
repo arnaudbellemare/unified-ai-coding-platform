@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { PrivyProvider as PrivySDKProvider, usePrivy as usePrivySDK } from '@privy-io/react-auth'
+import { PrivyProvider as PrivySDKProvider, usePrivy as usePrivySDK, useLoginWithEmail } from '@privy-io/react-auth'
 
 interface PrivyUser {
   id: string
@@ -21,6 +21,8 @@ interface PrivyContextType {
   isLoading: boolean
   login: () => Promise<void>
   logout: () => Promise<void>
+  loginWithEmail: (email: string) => Promise<void>
+  verifyEmailCode: (code: string) => Promise<void>
   getBalance: (address: string) => Promise<string>
 }
 
@@ -41,6 +43,7 @@ interface PrivyProviderProps {
 // Inner component that uses the Privy SDK
 function PrivyProviderInner({ children }: PrivyProviderProps) {
   const { user: privyUser, ready, authenticated, login: privyLogin, logout: privyLogout } = usePrivySDK()
+  const { sendCode, loginWithCode } = useLoginWithEmail()
   const [user, setUser] = useState<PrivyUser | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -76,14 +79,32 @@ function PrivyProviderInner({ children }: PrivyProviderProps) {
     }
   }
 
+  const loginWithEmail = async (email: string) => {
+    try {
+      await sendCode({ email })
+    } catch (error) {
+      console.error('Failed to send email code:', error)
+      throw error
+    }
+  }
+
+  const verifyEmailCode = async (code: string) => {
+    try {
+      await loginWithCode({ code })
+    } catch (error) {
+      console.error('Failed to verify email code:', error)
+      throw error
+    }
+  }
+
   const getBalance = async (address: string): Promise<string> => {
     try {
       const response = await fetch('/api/privy/balance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          address, 
-          network: process.env.NODE_ENV === 'production' ? 'base' : 'base-sepolia' 
+        body: JSON.stringify({
+          address,
+          network: process.env.NODE_ENV === 'production' ? 'base' : 'base-sepolia',
         }),
       })
 
@@ -104,6 +125,8 @@ function PrivyProviderInner({ children }: PrivyProviderProps) {
     isLoading,
     login,
     logout,
+    loginWithEmail,
+    verifyEmailCode,
     getBalance,
   }
 
@@ -112,7 +135,7 @@ function PrivyProviderInner({ children }: PrivyProviderProps) {
 
 export function PrivyProvider({ children }: PrivyProviderProps) {
   const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID
-  
+
   // If no valid Privy App ID, render children without Privy
   if (!appId || appId === 'demo-app-id') {
     return <>{children}</>
@@ -129,6 +152,9 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
         },
         embeddedWallets: {
           createOnLogin: 'users-without-wallets',
+        },
+        mfa: {
+          noPromptOnMfaRequired: false,
         },
       }}
     >

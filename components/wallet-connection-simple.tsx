@@ -24,20 +24,20 @@ export function WalletConnection({ onWalletConnect, onWalletDisconnect }: Wallet
       if (typeof window !== 'undefined' && window.ethereum) {
         // Request account access
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        
+
         if (accounts.length > 0) {
           const address = accounts[0]
-          
+
           // Get network
           const chainId = await window.ethereum.request({ method: 'eth_chainId' })
           const network = chainId === '0x2105' ? 'base' : 'base-sepolia' // Base mainnet or testnet
-          
+
           const walletData = {
             address,
             balance: '0', // Will be fetched separately
             network,
           }
-          
+
           onWalletConnect?.(walletData)
         }
       } else {
@@ -58,9 +58,7 @@ export function WalletConnection({ onWalletConnect, onWalletDisconnect }: Wallet
           <Wallet className="h-5 w-5" />
           Connect Your Wallet
         </CardTitle>
-        <CardDescription>
-          Connect your wallet for x402 payments and cost optimization
-        </CardDescription>
+        <CardDescription>Connect your wallet for x402 payments and cost optimization</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="text-center">
@@ -70,12 +68,7 @@ export function WalletConnection({ onWalletConnect, onWalletDisconnect }: Wallet
           </p>
         </div>
 
-        <Button 
-          onClick={connectWallet} 
-          disabled={isConnecting}
-          className="w-full" 
-          size="lg"
-        >
+        <Button onClick={connectWallet} disabled={isConnecting} className="w-full" size="lg">
           {isConnecting ? (
             <>
               <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
@@ -90,9 +83,7 @@ export function WalletConnection({ onWalletConnect, onWalletDisconnect }: Wallet
         </Button>
 
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">
-            Connect with MetaMask or other supported wallets
-          </p>
+          <p className="text-xs text-muted-foreground">Connect with MetaMask or other supported wallets</p>
         </div>
 
         {error && (
@@ -105,9 +96,7 @@ export function WalletConnection({ onWalletConnect, onWalletDisconnect }: Wallet
         <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
           <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
             <Coins className="h-4 w-4" />
-            <span className="text-sm font-medium">
-              Ready for x402 payments
-            </span>
+            <span className="text-sm font-medium">Ready for x402 payments</span>
           </div>
           <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
             Your wallet will be connected and ready for cost optimization payments
