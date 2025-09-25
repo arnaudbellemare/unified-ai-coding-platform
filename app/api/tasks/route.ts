@@ -57,7 +57,7 @@ export async function GET() {
           branchName: 'feature/authentication',
         },
       ]
-      
+
       return NextResponse.json({
         tasks: fallbackTasks,
         message: 'Database not available - showing demo tasks',

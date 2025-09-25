@@ -36,7 +36,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         sandboxUrl: 'https://example-sandbox.vercel.app',
         branchName: `task-${taskId}`,
       }
-      
+
       return NextResponse.json({ task: fallbackTask })
     }
 
