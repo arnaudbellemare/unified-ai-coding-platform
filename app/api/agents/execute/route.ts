@@ -168,9 +168,9 @@ Get your API keys from:
 
       // Count tokens before API call
       const chatMessages = chat.getMessages()
-      const fullPrompt = chatMessages.map(msg => 
-        `${msg.role}: ${typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)}`
-      ).join('\n')
+      const fullPrompt = chatMessages
+        .map((msg) => `${msg.role}: ${typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)}`)
+        .join('\n')
       promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
       console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
 
@@ -182,10 +182,12 @@ Get your API keys from:
           analysis: z.string().describe('The main analysis or response'),
           recommendations: z.array(z.string()).optional().describe('Actionable recommendations'),
           confidence: z.number().min(0).max(1).describe('Confidence level in the response'),
-          metadata: z.object({
-            processingTime: z.string().optional(),
-            dataSources: z.array(z.string()).optional(),
-          }).optional(),
+          metadata: z
+            .object({
+              processingTime: z.string().optional(),
+              dataSources: z.array(z.string()).optional(),
+            })
+            .optional(),
         })
 
         const structuredResult = await generateObject({
@@ -196,7 +198,7 @@ Get your API keys from:
         })
 
         // Format structured response for display
-        aiResponse = `${structuredResult.object.analysis}\n\n${structuredResult.object.recommendations?.length ? 'Recommendations:\n' + structuredResult.object.recommendations.map(rec => `• ${rec}`).join('\n') : ''}\n\nConfidence: ${(structuredResult.object.confidence * 100).toFixed(1)}%`
+        aiResponse = `${structuredResult.object.analysis}\n\n${structuredResult.object.recommendations?.length ? 'Recommendations:\n' + structuredResult.object.recommendations.map((rec) => `• ${rec}`).join('\n') : ''}\n\nConfidence: ${(structuredResult.object.confidence * 100).toFixed(1)}%`
         result = { text: aiResponse }
       } else {
         // Use standard text generation for other agent types

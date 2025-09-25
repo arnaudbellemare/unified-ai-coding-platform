@@ -200,7 +200,9 @@ executeAgent();
       }
     }
   } catch (error) {
-    logs.push(createErrorLog(`AI SDK v5 agent execution error: ${error instanceof Error ? error.message : 'Unknown error'}`))
+    logs.push(
+      createErrorLog(`AI SDK v5 agent execution error: ${error instanceof Error ? error.message : 'Unknown error'}`),
+    )
     return {
       success: false,
       output: '',
@@ -371,7 +373,9 @@ executeAgent();
       }
     }
   } catch (error) {
-    logs.push(createErrorLog(`AI SDK v5 agent execution error: ${error instanceof Error ? error.message : 'Unknown error'}`))
+    logs.push(
+      createErrorLog(`AI SDK v5 agent execution error: ${error instanceof Error ? error.message : 'Unknown error'}`),
+    )
     return {
       success: false,
       output: '',

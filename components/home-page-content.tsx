@@ -5,6 +5,7 @@ import { TaskForm } from '@/components/task-form'
 import { HomePageHeader } from '@/components/home-page-header'
 import { CostOptimization } from '@/components/cost-optimization'
 import { AgentHub } from '@/components/agent-hub'
+import { AgentKitNuxtInspired } from '@/components/agent-kit-nuxt-inspired'
 import { AutonomousAgentWallet } from '@/components/autonomous-agent-wallet'
 import { X402Payment } from '@/components/x402-payment'
 import { X402PaymentIntegration } from '@/components/x402-payment-integration'
@@ -165,20 +166,13 @@ export function HomePageContent() {
             <div className="max-w-6xl w-full px-4">
               <Tabs defaultValue="create" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="create">Create & Execute</TabsTrigger>
+                  <TabsTrigger value="create">AgentKit (Nuxt UI)</TabsTrigger>
                   <TabsTrigger value="wallets">Agent Wallets</TabsTrigger>
                   <TabsTrigger value="management">Manage Agents</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="create" className="space-y-6">
-                  <AgentHub
-                    onAgentCreate={(config) => {
-                      toast.success(`Agent "${config.name}" created successfully!`)
-                    }}
-                    onAgentExecute={(agentId, input) => {
-                      toast.info(`Executing agent "${agentId}" with input: ${input.substring(0, 50)}...`)
-                    }}
-                  />
+                  <AgentKitNuxtInspired />
                 </TabsContent>
 
                 <TabsContent value="wallets" className="space-y-6">
