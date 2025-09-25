@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'run_optimization':
-        const result = await engine.runOptimization()
+        const result = await engine.forceOptimizationCheck()
         return NextResponse.json({
           success: true,
           result,
