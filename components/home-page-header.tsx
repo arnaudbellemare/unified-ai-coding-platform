@@ -88,7 +88,6 @@ export function HomePageHeader() {
       {/* GitHub Authentication */}
       <GitHubAuth />
 
-
       {/* More Actions Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

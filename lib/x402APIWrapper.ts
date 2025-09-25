@@ -35,7 +35,7 @@ export class X402APIWrapper {
       {
         id: 'openai-gpt4',
         name: 'OpenAI GPT-4',
-        cost: 0.03,
+        cost: 0.03, // $0.03 per 1K tokens
         reliability: 0.99,
         performance: 0.95,
         region: 'us-east',
@@ -46,7 +46,7 @@ export class X402APIWrapper {
       {
         id: 'openai-gpt35',
         name: 'OpenAI GPT-3.5 Turbo',
-        cost: 0.002,
+        cost: 0.002, // $0.002 per 1K tokens
         reliability: 0.98,
         performance: 0.9,
         region: 'us-east',

@@ -27,7 +27,6 @@ export function TaskPageClient({ taskId }: TaskPageClientProps) {
             onToggleMobileMenu={toggleSidebar}
             actions={
               <div className="flex items-center gap-2">
-
                 {/* More Actions Menu Placeholder */}
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0" disabled>
                   <MoreHorizontal className="h-4 w-4" />
