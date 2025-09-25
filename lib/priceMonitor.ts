@@ -122,11 +122,11 @@ export class PriceMonitor {
 
     // Realistic AI API prices (per 1K tokens)
     const defaultPrices: Record<string, number> = {
-      'openai-gpt4': 0.03,        // $0.03 per 1K tokens
-      'openai-gpt35': 0.002,      // $0.002 per 1K tokens
-      'anthropic-claude': 0.032,  // $0.032 per 1K tokens
-      'google-palm': 0.025,       // $0.025 per 1K tokens
-      'cohere-command': 0.015,    // $0.015 per 1K tokens
+      'openai-gpt4': 0.03, // $0.03 per 1K tokens
+      'openai-gpt35': 0.002, // $0.002 per 1K tokens
+      'anthropic-claude': 0.032, // $0.032 per 1K tokens
+      'google-palm': 0.025, // $0.025 per 1K tokens
+      'cohere-command': 0.015, // $0.015 per 1K tokens
       'huggingface-inference': 0.008, // $0.008 per 1K tokens
       'perplexity-sonar-small': 0.005, // $0.005 per 1K tokens
       'perplexity-sonar-medium': 0.015, // $0.015 per 1K tokens

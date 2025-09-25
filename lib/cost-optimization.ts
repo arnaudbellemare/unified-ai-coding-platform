@@ -335,8 +335,8 @@ export class CostOptimization {
       // Estimate monthly savings (assuming 100 similar tasks per month)
       const estimatedMonthlySavings = savings * 100
 
-      // Skip real API calls to avoid rate limits and errors
-      const realApiCost = 0
+      // Calculate realistic API cost based on optimized prompt
+      const realApiCost = optimizedCost
 
       return {
         originalCost,

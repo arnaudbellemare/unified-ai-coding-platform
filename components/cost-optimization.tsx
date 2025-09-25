@@ -152,14 +152,14 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Savings</p>
                 <p className="text-lg font-semibold text-green-600">
-                  ${result.costOptimization.savings.toFixed(4)} ({result.costOptimization.savingsPercentage})
+                  ${(result.costOptimization.savings || 0).toFixed(4)} ({result.costOptimization.savingsPercentage || '0%'})
                 </p>
               </div>
             </div>
 
             <div className="flex items-center justify-between text-sm">
               <Badge variant="outline">{result.costOptimization.apiCalls} API calls made</Badge>
-              <Badge variant="outline">Real cost: ${result.costOptimization.realApiCost.toFixed(4)}</Badge>
+              <Badge variant="outline">Real cost: ${(result.costOptimization.realApiCost || 0).toFixed(4)}</Badge>
             </div>
 
             {/* Enhanced Optimization Details */}

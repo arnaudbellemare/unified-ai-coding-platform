@@ -219,7 +219,10 @@ export class OptimizationEngine {
       this.metrics.totalOptimizations++
       this.metrics.totalSavings += decision.expectedSavings
       // Keep realistic average savings around $0.15
-      this.metrics.averageSavings = Math.max(0.12, Math.min(0.18, this.metrics.totalSavings / this.metrics.totalOptimizations))
+      this.metrics.averageSavings = Math.max(
+        0.12,
+        Math.min(0.18, this.metrics.totalSavings / this.metrics.totalOptimizations),
+      )
       this.metrics.lastOptimization = new Date()
 
       // In a real implementation, you would:
