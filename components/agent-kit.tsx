@@ -9,7 +9,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Bot, Zap, Settings, Play, Pause, Square, Code, MessageSquare, BarChart3, Target, Activity, Trash2 } from 'lucide-react'
+import {
+  Bot,
+  Zap,
+  Settings,
+  Play,
+  Pause,
+  Square,
+  Code,
+  MessageSquare,
+  BarChart3,
+  Target,
+  Activity,
+  Trash2,
+} from 'lucide-react'
 
 interface AgentConfig {
   name: string
@@ -118,7 +131,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
 
   const handleDeleteAgent = (index: number) => {
     setCreatedAgents((prev) => prev.filter((_, i) => i !== index))
-    
+
     // If the deleted agent was selected, clear the selection
     const deletedAgent = createdAgents[index]
     if (selectedAgent === deletedAgent?.name) {

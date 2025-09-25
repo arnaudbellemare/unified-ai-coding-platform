@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'GitHub OAuth not configured' }, { status: 500 })
       }
 
-      const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/github`
+      const redirectUri = 'https://unified-ai-coding-platform.vercel.app/api/auth/github'
       const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo,user&state=${Date.now()}`
 
       return NextResponse.redirect(githubAuthUrl)
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
 
     // Create response with user data and token
     const response = NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/?github_connected=true`,
+      'https://unified-ai-coding-platform.vercel.app/?github_connected=true',
     )
 
     // Set secure HTTP-only cookie with the access token
@@ -74,6 +74,6 @@ export async function GET(request: NextRequest) {
     return response
   } catch (error) {
     console.error('GitHub OAuth error:', error)
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/?github_error=true`)
+    return NextResponse.redirect('https://unified-ai-coding-platform.vercel.app/?github_error=true')
   }
 }
