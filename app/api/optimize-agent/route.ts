@@ -3,6 +3,7 @@ import { CostOptimization } from '@/lib/cost-optimization'
 import { getEnvironmentConfig } from '@/lib/config/env'
 import { hybridOptimizer } from '@/lib/hybrid-optimizer'
 import { getPrivyUser } from '@/lib/auth/privy-auth'
+import { TokenCounter } from '@/lib/utils/token-counter'
 
 interface X402PaymentRequest {
   amount: number
@@ -147,8 +148,11 @@ export async function POST(request: NextRequest) {
         ].filter(Boolean) as string[],
       },
       costAnalysis: {
-        originalCost: 0, // Not available in hybrid result
-        optimizedCost: 0, // Not available in hybrid result
+        // Calculate real token costs using actual token counting
+        originalTokens: TokenCounter.countTokens(prompt, 'gpt-3.5-turbo'), // Use GPT-3.5 as baseline
+        optimizedTokens: TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'),
+        originalCost: TokenCounter.calculateCost(TokenCounter.countTokens(prompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt'),
+        optimizedCost: TokenCounter.calculateCost(TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt'),
         totalSavings: hybridResult.costReduction,
         estimatedMonthlySavings: hybridResult.costReduction * 30, // Estimate monthly savings
         tokenReduction: hybridResult.tokenReduction,
@@ -156,6 +160,8 @@ export async function POST(request: NextRequest) {
         optimizationEngine: hybridResult.optimizationEngine,
         strategies: hybridResult.strategies,
         verbosityLevel: hybridResult.verbosityLevel,
+        realTokenReduction: TokenCounter.countTokens(prompt, 'gpt-3.5-turbo') - TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'),
+        realCostSavings: TokenCounter.calculateCost(TokenCounter.countTokens(prompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt') - TokenCounter.calculateCost(TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt'),
       },
     })
   } catch (error) {

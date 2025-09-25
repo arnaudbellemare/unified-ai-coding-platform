@@ -26,7 +26,7 @@ export function useTask(taskId: string) {
           // Progressive timeout: start with 5 seconds, then 10, then 20 seconds
           // This gives task creation enough time for sandbox setup and agent execution
           const timeoutDuration = retryAttempts === 0 ? 5000 : retryAttempts === 1 ? 10000 : 20000
-          
+
           setTimeout(() => {
             if (!task) {
               // Only show error if task still doesn't exist after all retries
@@ -35,7 +35,7 @@ export function useTask(taskId: string) {
                 setIsLoading(false)
               } else {
                 // Retry with increased timeout
-                setRetryAttempts(prev => prev + 1)
+                setRetryAttempts((prev) => prev + 1)
                 fetchTask()
               }
             }

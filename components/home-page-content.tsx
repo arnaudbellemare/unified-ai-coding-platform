@@ -5,8 +5,16 @@ import { TaskForm } from '@/components/task-form'
 import { HomePageHeader } from '@/components/home-page-header'
 import { CostOptimization } from '@/components/cost-optimization'
 import { AgentHub } from '@/components/agent-hub'
+import { AutonomousAgentWallet } from '@/components/autonomous-agent-wallet'
 import { X402Payment } from '@/components/x402-payment'
+import { X402PaymentIntegration } from '@/components/x402-payment-integration'
+import { PaymentProtocolComparison } from '@/components/payment-protocol-comparison'
+import { MicroEcommercePayment } from '@/components/micro-ecommerce-payment'
+import { X402ProtocolAnalysis } from '@/components/x402-protocol-analysis'
 import { AdvancedOptimizationDashboard } from '@/components/advanced-optimization-dashboard'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Bot } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { useTasks } from '@/components/app-layout'
@@ -110,6 +118,7 @@ export function HomePageContent() {
             </button>
             <button
               onClick={() => setActiveTab('payment')}
+              data-tab="payment"
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'payment'
                   ? 'bg-background text-foreground shadow-sm'
@@ -154,29 +163,95 @@ export function HomePageContent() {
         {activeTab === 'agents' && (
           <div className="flex justify-center items-start min-h-screen py-8">
             <div className="max-w-6xl w-full px-4">
-              <AgentHub
-                onAgentCreate={(config) => {
-                  toast.success(`Agent "${config.name}" created successfully!`)
-                }}
-                onAgentExecute={(agentId, input) => {
-                  toast.info(`Executing agent "${agentId}" with input: ${input.substring(0, 50)}...`)
-                }}
-              />
+              <Tabs defaultValue="create" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="create">Create & Execute</TabsTrigger>
+                  <TabsTrigger value="wallets">Agent Wallets</TabsTrigger>
+                  <TabsTrigger value="management">Manage Agents</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="create" className="space-y-6">
+                  <AgentHub
+                    onAgentCreate={(config) => {
+                      toast.success(`Agent "${config.name}" created successfully!`)
+                    }}
+                    onAgentExecute={(agentId, input) => {
+                      toast.info(`Executing agent "${agentId}" with input: ${input.substring(0, 50)}...`)
+                    }}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="wallets" className="space-y-6">
+                  <AutonomousAgentWallet />
+                </TabsContent>
+                
+                <TabsContent value="management" className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Agent Management</CardTitle>
+                      <CardDescription>
+                        Manage your AI agents, their configurations, and autonomous capabilities
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center py-12">
+                        <Bot className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                        <h3 className="text-lg font-semibold mb-2">Agent Management Coming Soon</h3>
+                        <p className="text-muted-foreground">
+                          Advanced agent management features will be available here
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         )}
 
         {activeTab === 'payment' && (
           <div className="flex justify-center items-start min-h-screen py-8">
-            <div className="max-w-6xl w-full px-4">
-              <X402Payment
-                onPaymentComplete={(paymentData) => {
-                  toast.success(`Payment completed for ${(paymentData.tier as { name: string }).name} plan!`)
-                }}
-                onSubscriptionChange={(tier) => {
-                  toast.info(`Subscription changed to ${tier.name} plan`)
-                }}
-              />
+            <div className="max-w-6xl w-full px-4 space-y-8">
+              <Tabs defaultValue="micro-ecommerce" className="w-full">
+                <TabsList className="grid w-full grid-cols-5">
+                  <TabsTrigger value="micro-ecommerce">Micro E-commerce</TabsTrigger>
+                  <TabsTrigger value="protocol-analysis">Protocol Analysis</TabsTrigger>
+                  <TabsTrigger value="protocols">Payment Protocols</TabsTrigger>
+                  <TabsTrigger value="x402">x402 Foundation</TabsTrigger>
+                  <TabsTrigger value="subscription">Subscription Plans</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="micro-ecommerce" className="space-y-6">
+                  <MicroEcommercePayment />
+                </TabsContent>
+                
+                <TabsContent value="protocol-analysis" className="space-y-6">
+                  <X402ProtocolAnalysis />
+                </TabsContent>
+                
+                <TabsContent value="protocols" className="space-y-6">
+                  <PaymentProtocolComparison
+                    onProtocolSelect={(protocol) => {
+                      toast.info(`Selected ${protocol} protocol for payments`)
+                    }}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="x402" className="space-y-6">
+                  <X402PaymentIntegration />
+                </TabsContent>
+                
+                <TabsContent value="subscription" className="space-y-6">
+                  <X402Payment
+                    onPaymentComplete={(paymentData) => {
+                      toast.success(`Payment completed for ${(paymentData.tier as { name: string }).name} plan!`)
+                    }}
+                    onSubscriptionChange={(tier) => {
+                      toast.info(`Subscription changed to ${tier.name} plan`)
+                    }}
+                  />
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         )}

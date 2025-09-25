@@ -4,6 +4,9 @@ import { generateText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { perplexity } from '@ai-sdk/perplexity'
 import { anthropic } from '@ai-sdk/anthropic'
+import { ap2Service } from '@/lib/ap2/service'
+import { PaymentIntent } from '@/lib/ap2/types'
+import { TokenCounter, type TokenUsage } from '@/lib/utils/token-counter'
 
 interface AgentExecutionRequest {
   agentId: string
@@ -32,11 +35,56 @@ export async function POST(request: NextRequest) {
 
     console.log(`🤖 Executing agent ${agentId} (${agentType}) with input: ${input.substring(0, 100)}...`)
 
+    // Check if payment is required for this agent execution
+    const requiresPayment = await checkPaymentRequirement(agentType, input, llmConfig)
+    
+    if (requiresPayment && privyUser) {
+      // Create payment intent using x402 Foundation standard
+      const paymentIntent = await ap2Service.createPaymentRequest(
+        agentId,
+        privyUser.id,
+        requiresPayment.amount,
+        'USD',
+        `AI Agent Execution: ${agentType} - ${input.substring(0, 50)}...`,
+        {
+          agentType,
+          model,
+          inputLength: input.length,
+          optimizationLevel: llmConfig?.useOwnKeys ? 'premium' : 'standard',
+        }
+      )
+
+      // Generate x402 HTTP response for payment required
+      const x402Response = ap2Service.generateX402Response(paymentIntent)
+
+      console.log(`💰 Payment required for agent execution: $${requiresPayment.amount} USD`)
+
+      return NextResponse.json(
+        {
+          success: false,
+          requiresPayment: true,
+          paymentIntent,
+          x402Response,
+          message: 'Payment required to proceed with agent execution',
+          amount: requiresPayment.amount,
+          currency: 'USD',
+          description: `AI Agent Execution: ${agentType}`,
+        },
+        { status: 402 }
+      )
+    }
+
     // Simulate processing time
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     // Generate real AI response using actual API calls
     let aiResponse = ''
+    let promptTokens = 0
+    let completionTokens = 0
+    let totalTokens = 0
+    let promptCost = 0
+    let completionCost = 0
+    let totalCost = 0
 
     try {
       // Use user's LLM configuration if provided, otherwise fall back to environment
@@ -94,19 +142,38 @@ Get your API keys from:
         }
       }
 
-      // Use real AI API call with selected provider
-      const result = await generateText({
-        model: aiProvider(modelName),
-        prompt: `You are a ${agentType} agent. ${instructions}
+      // Prepare the full prompt for token counting
+      const fullPrompt = `You are a ${agentType} agent. ${instructions}
 
 User Input: ${input}
 
-Please provide a comprehensive, helpful response based on your expertise in ${agentType}.${aiProvider === perplexity ? ' Use real-time information when relevant.' : ''}`,
+Please provide a comprehensive, helpful response based on your expertise in ${agentType}.${aiProvider === perplexity ? ' Use real-time information when relevant.' : ''}`
+
+      // Count tokens before API call
+      promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
+      console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
+
+      // Use real AI API call with selected provider
+      const result = await generateText({
+        model: aiProvider(modelName),
+        prompt: fullPrompt,
         temperature,
       })
 
       aiResponse = result.text
-      console.log(`✅ Real AI API call successful using ${aiProvider === perplexity ? 'Perplexity' : 'OpenAI'}`)
+      
+      // Count tokens after API call
+      completionTokens = TokenCounter.countTokens(aiResponse, modelName)
+      totalTokens = promptTokens + completionTokens
+      
+      // Calculate real costs
+      promptCost = TokenCounter.calculateCost(promptTokens, modelName, 'prompt')
+      completionCost = TokenCounter.calculateCost(completionTokens, modelName, 'completion')
+      totalCost = promptCost + completionCost
+      
+      console.log(`✅ Real AI API call successful using ${aiProvider === perplexity ? 'Perplexity' : aiProvider === openai ? 'OpenAI' : 'Anthropic'}`)
+      console.log(`📊 Token usage: ${promptTokens} prompt + ${completionTokens} completion = ${totalTokens} total`)
+      console.log(`💰 Real cost: $${totalCost.toFixed(6)} (prompt: $${promptCost.toFixed(6)}, completion: $${completionCost.toFixed(6)})`)
     } catch (error) {
       console.error('❌ AI API call failed:', error instanceof Error ? error.message : 'Unknown error')
 
@@ -127,6 +194,29 @@ Please provide a comprehensive, helpful response based on your expertise in ${ag
       )
     }
 
+    // Create real cost optimization data
+    const realCostOptimization = {
+      originalTokens: promptTokens,
+      optimizedTokens: promptTokens, // Same as original since we're not optimizing the prompt in this execution
+      tokenReduction: 0,
+      originalCost: promptCost,
+      optimizedCost: promptCost,
+      savings: 0,
+      savingsPercentage: '0%',
+      optimizationEngine: 'none',
+      strategies: [],
+      verbosityLevel: input.length > 200 ? 'complex' : input.length > 100 ? 'medium' : 'small',
+      // Real usage data
+      promptTokens,
+      completionTokens,
+      totalTokens,
+      promptCost,
+      completionCost,
+      totalCost,
+      model,
+      realApiCost: totalCost,
+    }
+
     return NextResponse.json({
       success: true,
       agentId,
@@ -135,18 +225,7 @@ Please provide a comprehensive, helpful response based on your expertise in ${ag
       output: aiResponse,
       timestamp: new Date().toISOString(),
       model,
-      costOptimization: {
-        originalTokens: Math.ceil(input.length / 4),
-        optimizedTokens: Math.ceil(aiResponse.length / 4),
-        tokenReduction: 15.2,
-        originalCost: 0.0023,
-        optimizedCost: 0.0019,
-        savings: 0.0004,
-        savingsPercentage: '17.4%',
-        optimizationEngine: 'prompt_optimizer',
-        strategies: ['entropy_optimization', 'synonym_replacement'],
-        verbosityLevel: input.length > 200 ? 'complex' : input.length > 100 ? 'medium' : 'small',
-      },
+      costOptimization: realCostOptimization,
       privyUser: privyUser
         ? {
             id: privyUser.id,
@@ -489,4 +568,60 @@ Based on your search query "${input}", here's what I found:
 4. **Look for recent updates** on the topic
 
 *Search results generated by ${model} - Contextual analysis of your query*`
+}
+
+/**
+ * Check if payment is required for agent execution based on x402 Foundation standards
+ * This implements Internet-native money principles for autonomous agent payments
+ */
+async function checkPaymentRequirement(
+  agentType: string,
+  input: string,
+  llmConfig?: {
+    useOwnKeys: boolean
+    provider: 'perplexity' | 'openai' | 'anthropic' | null
+    apiKey: string
+    model: string
+  }
+): Promise<{ amount: number; reason: string } | null> {
+  // If user is using their own API keys, no payment required
+  if (llmConfig?.useOwnKeys && llmConfig.apiKey) {
+    return null
+  }
+
+  // Determine payment amount based on agent type and complexity
+  let baseAmount = 0.02 // $0.02 base fee for Internet-native payments
+  
+  // Adjust pricing based on agent type (following x402 Foundation principles)
+  switch (agentType) {
+    case 'coding':
+      baseAmount = 0.05 // Higher value for code generation
+      break
+    case 'analytics':
+      baseAmount = 0.03 // Data analysis and insights
+      break
+    case 'content':
+      baseAmount = 0.02 // Content generation
+      break
+    case 'customer_service':
+      baseAmount = 0.01 // Support responses
+      break
+    case 'search':
+      baseAmount = 0.02 // Information retrieval
+      break
+  }
+
+  // Add complexity multiplier based on input length
+  const complexityMultiplier = Math.min(1 + (input.length / 1000), 3) // Max 3x for very long inputs
+  const finalAmount = Math.round((baseAmount * complexityMultiplier) * 100) / 100
+
+  // Only require payment for amounts > $0.01 (minimum Internet-native payment)
+  if (finalAmount <= 0.01) {
+    return null
+  }
+
+  return {
+    amount: finalAmount,
+    reason: `Internet-native payment required for ${agentType} agent execution (${input.length} chars)`
+  }
 }

@@ -22,6 +22,24 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // Handle tiktoken WASM files
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+    }
+    
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        crypto: false,
+      }
+    }
+    
+    return config
+  },
 }
 
 export default nextConfig

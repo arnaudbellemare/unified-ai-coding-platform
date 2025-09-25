@@ -47,6 +47,13 @@ interface CostOptimizationResult {
   verbosityLevel?: 'small' | 'medium' | 'complex'
   apiCalls?: number
   realApiCost?: number
+  promptTokens?: number
+  completionTokens?: number
+  totalTokens?: number
+  promptCost?: number
+  completionCost?: number
+  totalCost?: number
+  model?: string
 }
 
 interface ExecutionHistoryItem {
@@ -173,14 +180,21 @@ export function AgentHub() {
           maxTokens: agent.maxTokens,
           instructions: agent.instructions,
           tools: agent.tools,
+          llmConfig: null,
         }),
       })
+
+      const result = await executionResponse.json()
+
+      // Handle x402 payment required response (Internet-native payments)
+      if (executionResponse.status === 402 && result.requiresPayment) {
+        setExecutionError(`💰 Payment Required: $${result.amount} ${result.currency}\n\n${result.message}\n\nThis implements the x402 Foundation standard for Internet-native payments. Please complete payment to proceed with agent execution.`)
+        return
+      }
 
       if (!executionResponse.ok) {
         throw new Error(`Agent execution failed: ${executionResponse.statusText}`)
       }
-
-      const result = await executionResponse.json()
 
       if (result.success) {
         setExecutionResults(result.output)
@@ -525,34 +539,39 @@ export function AgentHub() {
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
-                        <div className="text-green-600 dark:text-green-400 font-medium">Actual Cost</div>
+                        <div className="text-green-600 dark:text-green-400 font-medium">Real Cost</div>
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
-                          $
-                          {(
-                            executionHistory[0].costOptimization.realApiCost ||
-                            executionHistory[0].costOptimization.optimizedCost ||
-                            0
-                          ).toFixed(4)}
+                          ${(executionHistory[0].costOptimization.realApiCost || executionHistory[0].costOptimization.totalCost || 0).toFixed(6)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {executionHistory[0].costOptimization.promptTokens || 0} prompt + {executionHistory[0].costOptimization.completionTokens || 0} completion
                         </div>
                       </div>
                       <div>
-                        <div className="text-green-600 dark:text-green-400 font-medium">Savings</div>
-                        <div className="text-lg font-bold text-green-600 dark:text-green-400">
-                          {executionHistory[0].costOptimization.savingsPercentage || '0%'}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-green-600 dark:text-green-400 font-medium">Tokens Used</div>
+                        <div className="text-green-600 dark:text-green-400 font-medium">Total Tokens</div>
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
-                          {executionHistory[0].costOptimization.optimizedTokens || 0}
+                          {executionHistory[0].costOptimization.totalTokens || (executionHistory[0].costOptimization.promptTokens || 0) + (executionHistory[0].costOptimization.completionTokens || 0)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {executionHistory[0].costOptimization.model || 'Unknown model'}
                         </div>
                       </div>
                       <div>
-                        <div className="text-green-600 dark:text-green-400 font-medium">Optimization Engine</div>
+                        <div className="text-green-600 dark:text-green-400 font-medium">Token Breakdown</div>
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {executionHistory[0].costOptimization.optimizationEngine === 'prompt_optimizer'
-                            ? 'Prompt Optimizer'
-                            : 'CAPO Enhanced'}
+                          Prompt: {executionHistory[0].costOptimization.promptTokens || 0}
+                        </div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          Output: {executionHistory[0].costOptimization.completionTokens || 0}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-green-600 dark:text-green-400 font-medium">Cost Breakdown</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          Prompt: ${(executionHistory[0].costOptimization.promptCost || 0).toFixed(6)}
+                        </div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          Output: ${(executionHistory[0].costOptimization.completionCost || 0).toFixed(6)}
                         </div>
                       </div>
                     </div>

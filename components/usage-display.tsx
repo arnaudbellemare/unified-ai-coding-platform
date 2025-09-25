@@ -19,7 +19,11 @@ interface UserInfo {
   usage: UsageStats
 }
 
-export function UsageDisplay() {
+interface UsageDisplayProps {
+  onUpgrade?: () => void
+}
+
+export function UsageDisplay({ onUpgrade }: UsageDisplayProps = {}) {
   const { user, isAuthenticated } = useGitHubAuth()
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
@@ -151,8 +155,20 @@ export function UsageDisplay() {
           variant="outline"
           className="w-full"
           onClick={() => {
-            // TODO: Implement upgrade flow
-            alert('Upgrade feature coming soon!')
+            if (onUpgrade) {
+              onUpgrade()
+            } else {
+              // Navigate to payment tab by clicking the payment button
+              const paymentButton = document.querySelector('[data-tab="payment"]') as HTMLButtonElement
+              if (paymentButton) {
+                paymentButton.click()
+                // Scroll to top to ensure the payment section is visible
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              } else {
+                // Fallback: show alert if payment tab not found
+                alert('Please navigate to the X402 Payment section to upgrade to Pro.')
+              }
+            }
           }}
         >
           Upgrade to Pro
