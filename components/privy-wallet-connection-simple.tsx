@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Wallet, Coins, CheckCircle, AlertCircle, ExternalLink, Copy, RefreshCw } from 'lucide-react'
-import { usePrivy } from './privy-provider'
+import { usePrivy } from './privy-provider-fixed'
 
 interface PrivyWallet {
   address: string
@@ -21,10 +21,10 @@ interface PrivyWalletConnectionProps {
   onPaymentReady?: (wallet: PrivyWallet) => void
 }
 
-export function PrivyWalletConnection({ 
-  onWalletConnect, 
-  onWalletDisconnect, 
-  onPaymentReady 
+export function PrivyWalletConnection({
+  onWalletConnect,
+  onWalletDisconnect,
+  onPaymentReady,
 }: PrivyWalletConnectionProps) {
   const { user, isConnected, isLoading, login, logout, getBalance } = usePrivy()
   const [wallet, setWallet] = useState<PrivyWallet | null>(null)
@@ -75,11 +75,11 @@ export function PrivyWalletConnection({
 
   const fetchWalletBalance = async (address: string) => {
     if (!wallet) return
-    
+
     setIsLoadingBalance(true)
     try {
       const balance = await getBalance(address)
-      setWallet(prev => prev ? { ...prev, balance } : null)
+      setWallet((prev) => (prev ? { ...prev, balance } : null))
     } catch (error) {
       console.error('Failed to fetch balance:', error)
     } finally {
@@ -95,9 +95,10 @@ export function PrivyWalletConnection({
 
   const openExplorer = () => {
     if (wallet?.address) {
-      const explorerUrl = wallet.network === 'base' 
-        ? `https://basescan.org/address/${wallet.address}`
-        : `https://sepolia.basescan.org/address/${wallet.address}`
+      const explorerUrl =
+        wallet.network === 'base'
+          ? `https://basescan.org/address/${wallet.address}`
+          : `https://sepolia.basescan.org/address/${wallet.address}`
       window.open(explorerUrl, '_blank')
     }
   }
@@ -122,9 +123,7 @@ export function PrivyWalletConnection({
           <Wallet className="h-5 w-5" />
           Wallet Connection
         </CardTitle>
-        <CardDescription>
-          Connect your wallet for x402 payments and cost optimization
-        </CardDescription>
+        <CardDescription>Connect your wallet for x402 payments and cost optimization</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {!isConnected || !wallet ? (
@@ -136,12 +135,7 @@ export function PrivyWalletConnection({
               </p>
             </div>
 
-            <Button 
-              onClick={connectWallet} 
-              disabled={isConnecting}
-              className="w-full" 
-              size="lg"
-            >
+            <Button onClick={connectWallet} disabled={isConnecting} className="w-full" size="lg">
               {isConnecting ? (
                 <>
                   <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
@@ -174,9 +168,7 @@ export function PrivyWalletConnection({
             <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle className="h-5 w-5 text-green-600" />
-                <span className="font-semibold text-green-900 dark:text-green-100">
-                  Wallet Connected
-                </span>
+                <span className="font-semibold text-green-900 dark:text-green-100">Wallet Connected</span>
               </div>
               <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
                 <div className="flex items-center justify-between">
@@ -193,12 +185,10 @@ export function PrivyWalletConnection({
                 <div className="flex items-center justify-between">
                   <span>Balance:</span>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">
-                      {isLoadingBalance ? '...' : `${wallet.balance} USDC`}
-                    </span>
-                    <Button 
-                      size="sm" 
-                      variant="ghost" 
+                    <span className="font-semibold">{isLoadingBalance ? '...' : `${wallet.balance} USDC`}</span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
                       onClick={() => fetchWalletBalance(wallet.address)}
                       disabled={isLoadingBalance}
                     >
@@ -217,21 +207,11 @@ export function PrivyWalletConnection({
 
             {/* Wallet Actions */}
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={openExplorer}
-                className="flex-1"
-              >
+              <Button variant="outline" size="sm" onClick={openExplorer} className="flex-1">
                 <ExternalLink className="h-4 w-4 mr-2" />
                 View on Explorer
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={disconnectWallet}
-                className="flex-1"
-              >
+              <Button variant="outline" size="sm" onClick={disconnectWallet} className="flex-1">
                 Disconnect
               </Button>
             </div>
@@ -241,9 +221,7 @@ export function PrivyWalletConnection({
               <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
                 <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
                   <Coins className="h-4 w-4" />
-                  <span className="text-sm font-medium">
-                    Ready for x402 payments
-                  </span>
+                  <span className="text-sm font-medium">Ready for x402 payments</span>
                 </div>
                 <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                   Your wallet is connected and ready for cost optimization payments

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { PrivyProvider as PrivySDKProvider } from '@privy-io/react-auth'
+import { PrivyProvider as PrivySDKProvider, usePrivy as usePrivySDK } from '@privy-io/react-auth'
 
 interface PrivyUser {
   id: string
@@ -38,40 +38,29 @@ interface PrivyProviderProps {
   children: React.ReactNode
 }
 
-export function PrivyProvider({ children }: PrivyProviderProps) {
+// Inner component that uses the Privy SDK
+function PrivyProviderInner({ children }: PrivyProviderProps) {
+  const { user: privyUser, ready, authenticated, login: privyLogin, logout: privyLogout } = usePrivySDK()
   const [user, setUser] = useState<PrivyUser | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const initializePrivy = async () => {
-      try {
-        // Check if Privy is available
-        if (typeof window !== 'undefined' && window.privy) {
-          const connected = await window.privy.isConnected()
-          if (connected) {
-            const privyUser = await window.privy.getUser()
-            setUser(privyUser)
-            setIsConnected(true)
-          }
-        }
-      } catch (error) {
-        console.error('Failed to initialize Privy:', error)
-      } finally {
-        setIsLoading(false)
+    if (ready) {
+      setIsLoading(false)
+      if (authenticated && privyUser) {
+        setUser(privyUser as PrivyUser)
+        setIsConnected(true)
+      } else {
+        setUser(null)
+        setIsConnected(false)
       }
     }
-
-    initializePrivy()
-  }, [])
+  }, [ready, authenticated, privyUser])
 
   const login = async () => {
     try {
-      if (typeof window !== 'undefined' && window.privy) {
-        const privyUser = await window.privy.login()
-        setUser(privyUser)
-        setIsConnected(true)
-      }
+      await privyLogin()
     } catch (error) {
       console.error('Privy login failed:', error)
       throw error
@@ -80,11 +69,7 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
 
   const logout = async () => {
     try {
-      if (typeof window !== 'undefined' && window.privy) {
-        await window.privy.logout()
-        setUser(null)
-        setIsConnected(false)
-      }
+      await privyLogout()
     } catch (error) {
       console.error('Privy logout failed:', error)
       throw error
@@ -96,9 +81,9 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
       const response = await fetch('/api/privy/balance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          address,
-          network: process.env.NODE_ENV === 'production' ? 'base' : 'base-sepolia',
+        body: JSON.stringify({ 
+          address, 
+          network: process.env.NODE_ENV === 'production' ? 'base' : 'base-sepolia' 
         }),
       })
 
@@ -123,4 +108,31 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
   }
 
   return <PrivyContext.Provider value={value}>{children}</PrivyContext.Provider>
+}
+
+export function PrivyProvider({ children }: PrivyProviderProps) {
+  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID
+  
+  // If no valid Privy App ID, render children without Privy
+  if (!appId || appId === 'demo-app-id') {
+    return <>{children}</>
+  }
+
+  return (
+    <PrivySDKProvider
+      appId={appId}
+      config={{
+        loginMethods: ['email', 'google', 'twitter', 'wallet'],
+        appearance: {
+          theme: 'light',
+          accentColor: '#676FFF',
+        },
+        embeddedWallets: {
+          createOnLogin: 'users-without-wallets',
+        },
+      }}
+    >
+      <PrivyProviderInner>{children}</PrivyProviderInner>
+    </PrivySDKProvider>
+  )
 }

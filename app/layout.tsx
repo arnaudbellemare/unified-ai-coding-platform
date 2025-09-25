@@ -4,7 +4,7 @@ import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AppLayoutWrapper } from '@/components/app-layout-wrapper'
-import { PrivyProvider } from '@/components/privy-provider'
+import { PrivyProvider } from '@/components/privy-provider-fixed'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
