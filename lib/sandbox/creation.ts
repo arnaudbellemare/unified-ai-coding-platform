@@ -41,11 +41,20 @@ export async function createSandbox(config: SandboxConfig): Promise<SandboxResul
     if (!envValidation.valid) {
       throw new Error(envValidation.error!)
     }
-    logs.push('Environment variables validated')
+    
+    if (envValidation.warnings) {
+      logs.push(`Warning: ${envValidation.warnings}`)
+    } else {
+      logs.push('Environment variables validated')
+    }
 
-    // Handle private repository authentication
+    // Handle repository authentication (only for private repos)
     const authenticatedRepoUrl = createAuthenticatedRepoUrl(config.repoUrl)
-    logs.push('Added GitHub authentication to repository URL')
+    if (process.env.GITHUB_TOKEN) {
+      logs.push('Added GitHub authentication to repository URL')
+    } else {
+      logs.push('Using public repository access (no GitHub token provided)')
+    }
 
     // For initial clone, only use existing branch names, not AI-generated ones
     // AI-generated branch names will be created later inside the sandbox

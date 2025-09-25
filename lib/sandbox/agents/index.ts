@@ -25,7 +25,6 @@ export async function executeAgentInSandbox(
     case 'codex':
       return executeCodexInSandbox(sandbox, instruction, logger, selectedModel)
 
-
     case 'opencode':
       return executeOpenCodeInSandbox(sandbox, instruction, logger, selectedModel)
 

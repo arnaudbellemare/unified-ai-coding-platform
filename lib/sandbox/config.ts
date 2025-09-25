@@ -1,24 +1,26 @@
 export function validateEnvironmentVariables(selectedAgent: string = 'claude') {
   const errors: string[] = []
+  const warnings: string[] = []
 
   // Check for required environment variables based on selected agent
   if (selectedAgent === 'claude' && !process.env.ANTHROPIC_API_KEY) {
     errors.push('ANTHROPIC_API_KEY is required for Claude CLI')
   }
 
-
   if (selectedAgent === 'codex' && !process.env.OPENAI_API_KEY) {
     errors.push('OPENAI_API_KEY is required for Codex CLI')
   }
 
-  // Check for GitHub token for private repositories
+  // GitHub token is only required for private repositories
+  // For public repositories, we can work without it
   if (!process.env.GITHUB_TOKEN) {
-    errors.push('GITHUB_TOKEN is required for repository access')
+    warnings.push('GITHUB_TOKEN not provided - only public repositories will be accessible')
   }
 
   return {
     valid: errors.length === 0,
     error: errors.length > 0 ? errors.join(', ') : undefined,
+    warnings: warnings.length > 0 ? warnings.join(', ') : undefined,
   }
 }
 

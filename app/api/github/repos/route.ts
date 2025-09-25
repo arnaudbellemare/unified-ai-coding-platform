@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(request: NextRequest) {
   try {
     if (!process.env.GITHUB_TOKEN) {
-      return NextResponse.json({ error: 'GitHub token not configured' }, { status: 500 })
+      // Return empty list for public repositories when no token is provided
+      return NextResponse.json([])
     }
 
     const { searchParams } = new URL(request.url)

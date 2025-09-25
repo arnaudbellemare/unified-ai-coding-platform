@@ -3,7 +3,12 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     if (!process.env.GITHUB_TOKEN) {
-      return NextResponse.json({ error: 'GitHub token not configured' }, { status: 500 })
+      // Return a default user object when no token is provided
+      return NextResponse.json({
+        login: 'public-user',
+        name: 'Public User',
+        avatar_url: 'https://github.com/identicons/public-user.png',
+      })
     }
 
     const response = await fetch('https://api.github.com/user', {

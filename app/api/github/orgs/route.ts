@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     if (!process.env.GITHUB_TOKEN) {
-      return NextResponse.json({ error: 'GitHub token not configured' }, { status: 500 })
+      // Return empty list when no token is provided
+      return NextResponse.json([])
     }
 
     const response = await fetch('https://api.github.com/user/orgs', {
