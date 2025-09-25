@@ -5,14 +5,14 @@ import { getPrivyUser } from '@/lib/auth/privy-auth'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      agentId, 
+    const {
+      agentId,
       maxDailySpend = 10, // Default 10 USDC
       maxSingleTransaction = 2, // Default 2 USDC
       allowedServices = [],
       backupWallets = [],
       recoveryContacts = [],
-      isDemo = false
+      isDemo = false,
     } = body
 
     // For demo wallets, allow without authentication
@@ -32,23 +32,32 @@ export async function POST(request: NextRequest) {
     const maxSingleTransactionWei = Math.floor(maxSingleTransaction * 1000000) // Convert to USDC wei
 
     // Default allowed services if none provided
-    const defaultAllowedServices = allowedServices.length > 0 ? allowedServices : [
-      '0x0000000000000000000000000000000000000001', // OpenAI placeholder
-      '0x0000000000000000000000000000000000000002', // Anthropic placeholder
-      '0x0000000000000000000000000000000000000003', // Perplexity placeholder
-      '0x0000000000000000000000000000000000000004', // Vercel placeholder
-    ]
+    const defaultAllowedServices =
+      allowedServices.length > 0
+        ? allowedServices
+        : [
+            '0x0000000000000000000000000000000000000001', // OpenAI placeholder
+            '0x0000000000000000000000000000000000000002', // Anthropic placeholder
+            '0x0000000000000000000000000000000000000003', // Perplexity placeholder
+            '0x0000000000000000000000000000000000000004', // Vercel placeholder
+          ]
 
     // Default backup wallets if none provided (for demo)
-    const defaultBackupWallets = backupWallets.length > 0 ? backupWallets : [
-      '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Demo backup wallet 1
-      '0x8ba1f109551bD432803012645Hac136c1a8b5B2', // Demo backup wallet 2
-    ]
+    const defaultBackupWallets =
+      backupWallets.length > 0
+        ? backupWallets
+        : [
+            '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Demo backup wallet 1
+            '0x8ba1f109551bD432803012645Hac136c1a8b5B2', // Demo backup wallet 2
+          ]
 
     // Default recovery contacts if none provided (for demo)
-    const defaultRecoveryContacts = recoveryContacts.length > 0 ? recoveryContacts : [
-      '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Demo recovery contact
-    ]
+    const defaultRecoveryContacts =
+      recoveryContacts.length > 0
+        ? recoveryContacts
+        : [
+            '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Demo recovery contact
+          ]
 
     // Create smart contract wallet configuration
     const walletConfig = {
@@ -76,16 +85,15 @@ export async function POST(request: NextRequest) {
       isDemo,
       message: `Smart contract wallet created for agent: ${agentId}`,
     })
-
   } catch (error) {
     console.error('Smart wallet creation error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        details: 'Failed to create smart contract wallet'
+        details: 'Failed to create smart contract wallet',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -123,12 +131,11 @@ export async function GET(request: NextRequest) {
       default:
         return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
-
   } catch (error) {
     console.error('Smart wallet GET error:', error)
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

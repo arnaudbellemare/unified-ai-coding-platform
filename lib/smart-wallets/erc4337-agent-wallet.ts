@@ -75,18 +75,23 @@ export class ERC4337AgentWallet {
   private provider: ethers.Provider
   private factoryContract: any
   private wallets: Map<string, SmartAgentWallet> = new Map()
-  
+
   // Contract addresses (Base network)
-  private readonly FACTORY_ADDRESS = process.env.AGENT_WALLET_FACTORY_ADDRESS || '0x...' // Deploy this
+  private readonly FACTORY_ADDRESS = process.env.AGENT_WALLET_FACTORY_ADDRESS || '0x0000000000000000000000000000000000000000' // Placeholder - deploy this
   private readonly USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' // USDC on Base
   private readonly ENTRY_POINT_ADDRESS = '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789' // ERC-4337 EntryPoint
-  
+
   constructor() {
     // Initialize Ethereum provider (Base network)
     this.provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL || 'https://mainnet.base.org')
-    
-    // Initialize factory contract
-    this.factoryContract = AgentWalletFactory__factory.connect(this.FACTORY_ADDRESS, this.provider)
+
+    // Initialize factory contract only if we have a valid address
+    if (this.FACTORY_ADDRESS !== '0x0000000000000000000000000000000000000000') {
+      this.factoryContract = AgentWalletFactory__factory.connect(this.FACTORY_ADDRESS, this.provider)
+    } else {
+      // Use a mock contract for development
+      this.factoryContract = null
+    }
   }
 
   /**
@@ -96,6 +101,44 @@ export class ERC4337AgentWallet {
     console.log(`🤖 Creating smart contract wallet for agent: ${config.agentId}`)
 
     try {
+      // For development/demo, simulate wallet creation
+      if (!this.factoryContract) {
+        console.log('📝 Using simulated wallet creation for development')
+        const walletAddress = `0x${Math.random().toString(16).substr(2, 40)}`
+        
+        // Create wallet instance
+        const smartWallet: SmartAgentWallet = {
+          agentId: config.agentId,
+          walletAddress,
+          balance: {
+            usdc: 0,
+            eth: 0,
+          },
+          spendingRule: {
+            isActive: true,
+            maxDailySpend: config.maxDailySpend,
+            maxSingleTransaction: config.maxSingleTransaction,
+            dailySpent: 0,
+            lastResetDate: new Date(),
+            allowedServices: config.allowedServices,
+          },
+          security: {
+            backupWallets: config.backupWallets,
+            requiredApprovals: config.requiredApprovals,
+            recoveryContacts: config.recoveryContacts,
+            recoveryDelay: config.recoveryDelay,
+            isPaused: false,
+          },
+          transactionHistory: [],
+          createdAt: new Date(),
+          lastUsed: new Date(),
+        }
+
+        this.wallets.set(config.agentId, smartWallet)
+        console.log(`✅ Simulated smart agent wallet created: ${walletAddress}`)
+        return smartWallet
+      }
+
       // Create wallet using factory contract
       const tx = await this.factoryContract.createAgentWallet(
         config.agentId,
@@ -105,7 +148,7 @@ export class ERC4337AgentWallet {
         config.backupWallets,
         config.requiredApprovals,
         config.recoveryContacts,
-        config.recoveryDelay
+        config.recoveryDelay,
       )
 
       const receipt = await tx.wait()
@@ -145,7 +188,6 @@ export class ERC4337AgentWallet {
       this.wallets.set(config.agentId, smartWallet)
       console.log(`✅ Smart agent wallet created: ${walletAddress}`)
       return smartWallet
-
     } catch (error) {
       console.error(`❌ Failed to create smart wallet:`, error)
       throw new Error(`Failed to create smart wallet: ${error}`)
@@ -192,7 +234,6 @@ export class ERC4337AgentWallet {
 
       console.log(`✅ Smart wallet funded. New balance: $${smartWallet.balance.usdc} USDC`)
       return true
-
     } catch (error) {
       console.error(`❌ Failed to fund smart wallet:`, error)
       return false
@@ -250,14 +291,59 @@ export class ERC4337AgentWallet {
         }
       }
 
+      // For development/demo, simulate transaction execution
+      if (!this.factoryContract) {
+        console.log('📝 Using simulated transaction execution for development')
+        const transactionHash = `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        
+        // Update wallet state
+        smartWallet.balance.usdc -= request.value
+        smartWallet.spendingRule.dailySpent += request.value
+        smartWallet.lastUsed = new Date()
+
+        // Add transaction to history
+        const transaction: AgentTransaction = {
+          id: transactionHash,
+          agentId: request.agentId,
+          userId: 'autonomous',
+          type: 'payment',
+          amount: request.value,
+          currency: 'USDC',
+          status: 'completed',
+          description: request.description,
+          metadata: {
+            ...request.metadata,
+            transactionHash,
+            gasUsed: '100000', // Simulated gas usage
+            timestamp: new Date().toISOString(),
+          },
+          createdAt: new Date(),
+          completedAt: new Date(),
+        }
+
+        smartWallet.transactionHistory.push(transaction)
+
+        console.log(`✅ Simulated transaction successful: ${transactionHash}`)
+        console.log(`💰 Agent balance: $${smartWallet.balance.usdc} USDC`)
+
+        return {
+          success: true,
+          transactionHash,
+          amount: request.value,
+          fees: 0, // Gas fees handled by account abstraction
+          gasUsed: 100000, // Simulated gas usage
+          timestamp: new Date(),
+        }
+      }
+
       // Execute transaction on smart contract
       const walletContract = AgentWallet__factory.connect(smartWallet.walletAddress, this.provider)
-      
+
       const tx = await walletContract.executeTransaction(
         request.to,
         BigInt(request.value),
         request.data || '0x',
-        BigInt(request.gasLimit || 100000)
+        BigInt(request.gasLimit || 100000),
       )
 
       // For now, simulate transaction execution since we don't have deployed contracts
@@ -301,7 +387,6 @@ export class ERC4337AgentWallet {
         gasUsed: 100000, // Simulated gas usage
         timestamp: new Date(),
       }
-
     } catch (error) {
       console.error(`❌ Smart transaction failed:`, error)
       return {
@@ -321,7 +406,7 @@ export class ERC4337AgentWallet {
    */
   async executeBatchTransactions(
     agentId: string,
-    transactions: Omit<SmartTransactionRequest, 'agentId'>[]
+    transactions: Omit<SmartTransactionRequest, 'agentId'>[],
   ): Promise<SmartTransactionResponse[]> {
     const smartWallet = this.wallets.get(agentId)
     if (!smartWallet) {
@@ -332,15 +417,20 @@ export class ERC4337AgentWallet {
 
     try {
       // Prepare batch transaction data
-      const tos = transactions.map(tx => tx.to)
-      const values = transactions.map(tx => tx.value)
-      const datas = transactions.map(tx => tx.data || '0x')
-      const gasLimits = transactions.map(tx => tx.gasLimit || 100000)
+      const tos = transactions.map((tx) => tx.to)
+      const values = transactions.map((tx) => tx.value)
+      const datas = transactions.map((tx) => tx.data || '0x')
+      const gasLimits = transactions.map((tx) => tx.gasLimit || 100000)
 
       // Execute batch transaction on smart contract
       const walletContract = AgentWallet__factory.connect(smartWallet.walletAddress, this.provider)
-      
-      const tx = await walletContract.executeBatchTransactions(tos, values.map(v => BigInt(v)), datas, gasLimits.map(g => BigInt(g)))
+
+      const tx = await walletContract.executeBatchTransactions(
+        tos,
+        values.map((v) => BigInt(v)),
+        datas,
+        gasLimits.map((g) => BigInt(g)),
+      )
       // For now, simulate transaction execution since we don't have deployed contracts
       const receipt = { hash: `batch_${Date.now()}`, gasUsed: BigInt(100000) }
 
@@ -389,10 +479,9 @@ export class ERC4337AgentWallet {
 
       console.log(`✅ Batch transaction successful: ${receipt.hash}`)
       return results
-
     } catch (error) {
       console.error(`❌ Batch transaction failed:`, error)
-      return transactions.map(tx => ({
+      return transactions.map((tx) => ({
         success: false,
         transactionHash: '',
         amount: tx.value,
@@ -417,7 +506,7 @@ export class ERC4337AgentWallet {
     // Check single transaction limit
     if (request.value > smartWallet.spendingRule.maxSingleTransaction) {
       console.warn(
-        `⚠️ Transaction exceeds single transaction limit: $${request.value} > $${smartWallet.spendingRule.maxSingleTransaction}`
+        `⚠️ Transaction exceeds single transaction limit: $${request.value} > $${smartWallet.spendingRule.maxSingleTransaction}`,
       )
       return false
     }
@@ -425,7 +514,7 @@ export class ERC4337AgentWallet {
     // Check daily spending limit
     const today = new Date().toDateString()
     const lastResetDate = smartWallet.spendingRule.lastResetDate.toDateString()
-    
+
     if (today !== lastResetDate) {
       // Reset daily spending
       smartWallet.spendingRule.dailySpent = 0
@@ -434,7 +523,7 @@ export class ERC4337AgentWallet {
 
     if (smartWallet.spendingRule.dailySpent + request.value > smartWallet.spendingRule.maxDailySpend) {
       console.warn(
-        `⚠️ Transaction would exceed daily spending limit: $${smartWallet.spendingRule.dailySpent + request.value} > $${smartWallet.spendingRule.maxDailySpend}`
+        `⚠️ Transaction would exceed daily spending limit: $${smartWallet.spendingRule.dailySpent + request.value} > $${smartWallet.spendingRule.maxDailySpend}`,
       )
       return false
     }
@@ -455,7 +544,7 @@ export class ERC4337AgentWallet {
     agentId: string,
     maxDailySpend: number,
     maxSingleTransaction: number,
-    allowedServices: string[]
+    allowedServices: string[],
   ): Promise<boolean> {
     const smartWallet = this.wallets.get(agentId)
     if (!smartWallet) {
@@ -464,11 +553,11 @@ export class ERC4337AgentWallet {
 
     try {
       const walletContract = AgentWallet__factory.connect(smartWallet.walletAddress, this.provider)
-      
+
       const tx = await walletContract.updateSpendingRule(
         BigInt(maxDailySpend),
         BigInt(maxSingleTransaction),
-        allowedServices
+        allowedServices,
       )
 
       // For now, simulate transaction execution since we don't have deployed contracts
@@ -481,7 +570,6 @@ export class ERC4337AgentWallet {
 
       console.log(`✅ Spending rules updated for agent ${agentId}`)
       return true
-
     } catch (error) {
       console.error(`❌ Failed to update spending rules:`, error)
       return false
@@ -511,9 +599,7 @@ export class ERC4337AgentWallet {
       return []
     }
 
-    return smartWallet.transactionHistory
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice(0, limit)
+    return smartWallet.transactionHistory.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, limit)
   }
 
   /**
@@ -527,7 +613,7 @@ export class ERC4337AgentWallet {
 
     try {
       const walletContract = AgentWallet__factory.connect(smartWallet.walletAddress, this.provider)
-      
+
       const tx = await walletContract.emergencyPause()
       // For now, simulate transaction execution since we don't have deployed contracts
       console.log('Simulated emergency pause')
@@ -535,7 +621,6 @@ export class ERC4337AgentWallet {
       smartWallet.security.isPaused = true
       console.log(`✅ Wallet paused for agent ${agentId}`)
       return true
-
     } catch (error) {
       console.error(`❌ Failed to pause wallet:`, error)
       return false
@@ -553,7 +638,7 @@ export class ERC4337AgentWallet {
 
     try {
       const walletContract = AgentWallet__factory.connect(smartWallet.walletAddress, this.provider)
-      
+
       const tx = await walletContract.emergencyUnpause()
       // For now, simulate transaction execution since we don't have deployed contracts
       console.log('Simulated emergency unpause')
@@ -561,7 +646,6 @@ export class ERC4337AgentWallet {
       smartWallet.security.isPaused = false
       console.log(`✅ Wallet unpaused for agent ${agentId}`)
       return true
-
     } catch (error) {
       console.error(`❌ Failed to unpause wallet:`, error)
       return false

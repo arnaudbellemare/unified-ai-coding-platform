@@ -591,7 +591,9 @@ export function AgentKitNuxtInspired() {
                               <div>
                                 <div className="text-green-600 dark:text-green-400 font-medium">Savings</div>
                                 <div className="font-bold text-slate-900 dark:text-white">
-                                  {executionHistory[0].costOptimization.savings ? `${executionHistory[0].costOptimization.savings.toFixed(2)}%` : '0%'}
+                                  {executionHistory[0].costOptimization.savings
+                                    ? `${executionHistory[0].costOptimization.savings.toFixed(2)}%`
+                                    : '0%'}
                                 </div>
                               </div>
                               <div>

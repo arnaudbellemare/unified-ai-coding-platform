@@ -5,16 +5,7 @@ import { getPrivyUser } from '@/lib/auth/privy-auth'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      agentId,
-      to,
-      value,
-      data,
-      gasLimit,
-      description,
-      metadata,
-      isDemo = false
-    } = body
+    const { agentId, to, value, data, gasLimit, description, metadata, isDemo = false } = body
 
     // For demo wallets, allow without authentication
     if (!isDemo) {
@@ -25,10 +16,13 @@ export async function POST(request: NextRequest) {
     }
 
     if (!agentId || !to || value === undefined) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Agent ID, recipient address, and value are required' 
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agent ID, recipient address, and value are required',
+        },
+        { status: 400 },
+      )
     }
 
     // Convert value to USDC wei (6 decimals)
@@ -47,8 +41,8 @@ export async function POST(request: NextRequest) {
         serviceType: 'api_call' as const,
         priority: 'medium' as const,
         estimatedCost: value,
-        ...metadata
-      }
+        ...metadata,
+      },
     }
 
     console.log(`🤖 Executing smart transaction for agent: ${agentId}`)
@@ -62,20 +56,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: result.success,
       transaction: result,
-      message: result.success 
+      message: result.success
         ? `Smart transaction executed successfully: ${result.transactionHash}`
         : `Smart transaction failed: ${result.error}`,
     })
-
   } catch (error) {
     console.error('Smart transaction execution error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        details: 'Failed to execute smart transaction'
+        details: 'Failed to execute smart transaction',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -83,14 +76,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      action,
-      agentId,
-      maxDailySpend,
-      maxSingleTransaction,
-      allowedServices,
-      isDemo = false
-    } = body
+    const { action, agentId, maxDailySpend, maxSingleTransaction, allowedServices, isDemo = false } = body
 
     // For demo wallets, allow without authentication
     if (!isDemo) {
@@ -107,10 +93,13 @@ export async function PUT(request: NextRequest) {
     switch (action) {
       case 'update_spending_rules':
         if (maxDailySpend === undefined || maxSingleTransaction === undefined || !allowedServices) {
-          return NextResponse.json({ 
-            success: false, 
-            error: 'maxDailySpend, maxSingleTransaction, and allowedServices are required' 
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'maxDailySpend, maxSingleTransaction, and allowedServices are required',
+            },
+            { status: 400 },
+          )
         }
 
         // Convert amounts to USDC wei (6 decimals)
@@ -121,47 +110,40 @@ export async function PUT(request: NextRequest) {
           agentId,
           maxDailySpendWei,
           maxSingleTransactionWei,
-          allowedServices
+          allowedServices,
         )
 
         return NextResponse.json({
           success,
-          message: success 
-            ? 'Spending rules updated successfully'
-            : 'Failed to update spending rules',
+          message: success ? 'Spending rules updated successfully' : 'Failed to update spending rules',
         })
 
       case 'emergency_pause':
         const pauseSuccess = await erc4337AgentWallet.emergencyPauseWallet(agentId)
         return NextResponse.json({
           success: pauseSuccess,
-          message: pauseSuccess 
-            ? 'Wallet paused successfully'
-            : 'Failed to pause wallet',
+          message: pauseSuccess ? 'Wallet paused successfully' : 'Failed to pause wallet',
         })
 
       case 'emergency_unpause':
         const unpauseSuccess = await erc4337AgentWallet.emergencyUnpauseWallet(agentId)
         return NextResponse.json({
           success: unpauseSuccess,
-          message: unpauseSuccess 
-            ? 'Wallet unpaused successfully'
-            : 'Failed to unpause wallet',
+          message: unpauseSuccess ? 'Wallet unpaused successfully' : 'Failed to unpause wallet',
         })
 
       default:
         return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
-
   } catch (error) {
     console.error('Smart wallet update error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        details: 'Failed to update smart wallet'
+        details: 'Failed to update smart wallet',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

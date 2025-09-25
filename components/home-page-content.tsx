@@ -176,20 +176,20 @@ export function HomePageContent() {
                   <AgentKitNuxtInspired />
                 </TabsContent>
 
-              <TabsContent value="wallets" className="space-y-6">
-                <Tabs value="wallet-type" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="basic">Basic Wallets</TabsTrigger>
-                    <TabsTrigger value="smart">Smart Contract Wallets</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="basic" className="space-y-6">
-                    <AutonomousAgentWallet />
-                  </TabsContent>
-                  <TabsContent value="smart" className="space-y-6">
-                    <SmartAgentWallet />
-                  </TabsContent>
-                </Tabs>
-              </TabsContent>
+                <TabsContent value="wallets" className="space-y-6">
+                  <Tabs value="wallet-type" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="basic">Basic Wallets</TabsTrigger>
+                      <TabsTrigger value="smart">Smart Contract Wallets</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="basic" className="space-y-6">
+                      <AutonomousAgentWallet />
+                    </TabsContent>
+                    <TabsContent value="smart" className="space-y-6">
+                      <SmartAgentWallet />
+                    </TabsContent>
+                  </Tabs>
+                </TabsContent>
 
                 <TabsContent value="management" className="space-y-6">
                   <Card>

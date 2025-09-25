@@ -143,49 +143,49 @@ Get your API keys from:
         }
       }
 
-          // Prepare the full prompt for token counting
-          const fullPrompt = `You are a ${agentType} agent. ${instructions}${aiProvider === perplexity ? ' Use real-time information when relevant.' : ''}
+      // Prepare the full prompt for token counting
+      const fullPrompt = `You are a ${agentType} agent. ${instructions}${aiProvider === perplexity ? ' Use real-time information when relevant.' : ''}
 
 User input: ${input}`
-          
-          promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
-          console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
 
-          // Use AI SDK v5 with structured output for certain agent types
-          let result
-          if (agentType === 'analytics' || agentType === 'coding') {
-            // Use structured output for analytics and coding agents
-            const schema = z.object({
-              analysis: z.string().describe('The main analysis or response'),
-              recommendations: z.array(z.string()).optional().describe('Actionable recommendations'),
-              confidence: z.number().min(0).max(1).describe('Confidence level in the response'),
-              metadata: z
-                .object({
-                  processingTime: z.string().optional(),
-                  dataSources: z.array(z.string()).optional(),
-                })
-                .optional(),
-            })
+      promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
+      console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
 
-            const structuredResult = await generateObject({
-              model: aiProvider(modelName),
-              prompt: fullPrompt,
-              schema,
-              temperature,
+      // Use AI SDK v5 with structured output for certain agent types
+      let result
+      if (agentType === 'analytics' || agentType === 'coding') {
+        // Use structured output for analytics and coding agents
+        const schema = z.object({
+          analysis: z.string().describe('The main analysis or response'),
+          recommendations: z.array(z.string()).optional().describe('Actionable recommendations'),
+          confidence: z.number().min(0).max(1).describe('Confidence level in the response'),
+          metadata: z
+            .object({
+              processingTime: z.string().optional(),
+              dataSources: z.array(z.string()).optional(),
             })
+            .optional(),
+        })
 
-            // Format structured response for display
-            aiResponse = `${structuredResult.object.analysis}\n\n${structuredResult.object.recommendations?.length ? 'Recommendations:\n' + structuredResult.object.recommendations.map((rec) => `• ${rec}`).join('\n') : ''}\n\nConfidence: ${(structuredResult.object.confidence * 100).toFixed(1)}%`
-            result = { text: aiResponse }
-          } else {
-            // Use standard text generation for other agent types
-            result = await generateText({
-              model: aiProvider(modelName),
-              prompt: fullPrompt,
-              temperature,
-            })
-            aiResponse = result.text
-          }
+        const structuredResult = await generateObject({
+          model: aiProvider(modelName),
+          prompt: fullPrompt,
+          schema,
+          temperature,
+        })
+
+        // Format structured response for display
+        aiResponse = `${structuredResult.object.analysis}\n\n${structuredResult.object.recommendations?.length ? 'Recommendations:\n' + structuredResult.object.recommendations.map((rec) => `• ${rec}`).join('\n') : ''}\n\nConfidence: ${(structuredResult.object.confidence * 100).toFixed(1)}%`
+        result = { text: aiResponse }
+      } else {
+        // Use standard text generation for other agent types
+        result = await generateText({
+          model: aiProvider(modelName),
+          prompt: fullPrompt,
+          temperature,
+        })
+        aiResponse = result.text
+      }
 
       // Count tokens after API call
       completionTokens = TokenCounter.countTokens(aiResponse, modelName)

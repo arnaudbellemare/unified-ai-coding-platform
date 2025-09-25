@@ -8,19 +8,19 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Wallet, 
-  Plus, 
-  Settings, 
-  History, 
-  Shield, 
-  Zap, 
+import {
+  Wallet,
+  Plus,
+  Settings,
+  History,
+  Shield,
+  Zap,
   DollarSign,
   AlertTriangle,
   CheckCircle,
   XCircle,
   Pause,
-  Play
+  Play,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -55,12 +55,12 @@ export function SmartAgentWallet() {
   const [smartWallets, setSmartWallets] = useState<SmartAgentWallet[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('wallets')
-  
+
   // Create wallet form state
   const [newAgentId, setNewAgentId] = useState('')
   const [maxDailySpend, setMaxDailySpend] = useState(10)
   const [maxSingleTransaction, setMaxSingleTransaction] = useState(2)
-  
+
   // Transaction form state
   const [selectedWallet, setSelectedWallet] = useState('')
   const [recipientAddress, setRecipientAddress] = useState('')
@@ -251,27 +251,17 @@ export function SmartAgentWallet() {
                     </CardTitle>
                     <div className="flex gap-2">
                       {wallet.security.isPaused ? (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => emergencyUnpause(wallet.agentId)}
-                        >
+                        <Button size="sm" variant="outline" onClick={() => emergencyUnpause(wallet.agentId)}>
                           <Play className="h-4 w-4" />
                         </Button>
                       ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => emergencyPause(wallet.agentId)}
-                        >
+                        <Button size="sm" variant="outline" onClick={() => emergencyPause(wallet.agentId)}>
                           <Pause className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
                   </div>
-                  <CardDescription className="text-xs font-mono">
-                    {wallet.walletAddress}
-                  </CardDescription>
+                  <CardDescription className="text-xs font-mono">{wallet.walletAddress}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="grid grid-cols-2 gap-2 text-sm">
@@ -284,7 +274,7 @@ export function SmartAgentWallet() {
                       <div className="font-semibold">{wallet.balance.eth.toFixed(6)}</div>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Daily Limit</span>
@@ -312,7 +302,7 @@ export function SmartAgentWallet() {
                         Inactive
                       </Badge>
                     )}
-                    
+
                     {wallet.security.isPaused ? (
                       <Badge variant="outline" className="text-orange-600 border-orange-600">
                         <AlertTriangle className="h-3 w-3 mr-1" />
@@ -364,7 +354,7 @@ export function SmartAgentWallet() {
                   onChange={(e) => setNewAgentId(e.target.value)}
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="maxDailySpend">Max Daily Spend (USDC)</Label>
@@ -400,11 +390,7 @@ export function SmartAgentWallet() {
                 </AlertDescription>
               </Alert>
 
-              <Button 
-                onClick={createSmartWallet} 
-                disabled={isLoading || !newAgentId.trim()}
-                className="w-full"
-              >
+              <Button onClick={createSmartWallet} disabled={isLoading || !newAgentId.trim()} className="w-full">
                 {isLoading ? 'Creating...' : 'Create Smart Wallet'}
               </Button>
             </CardContent>
@@ -468,8 +454,8 @@ export function SmartAgentWallet() {
                 />
               </div>
 
-              <Button 
-                onClick={executeTransaction} 
+              <Button
+                onClick={executeTransaction}
                 disabled={isLoading || !selectedWallet || !recipientAddress || !transactionAmount}
                 className="w-full"
               >
