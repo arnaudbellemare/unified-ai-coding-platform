@@ -50,12 +50,12 @@ interface CostOptimizationResult {
   verbosityLevel: 'small' | 'medium' | 'complex'
 }
 
-interface AgentKitProps {
+interface AgentHubProps {
   onAgentCreate?: (config: AgentConfig) => void
   onAgentExecute?: (agentId: string, input: string) => void
 }
 
-export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
+export function AgentHub({ onAgentCreate, onAgentExecute }: AgentHubProps) {
   const [selectedTab, setSelectedTab] = useState('create')
   const [agentConfig, setAgentConfig] = useState<AgentConfig>({
     name: '',
@@ -262,7 +262,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
 
       // Step 1: Optimize the input for cost savings (with timeout)
       console.log('🔍 Optimizing input for cost savings...')
-      
+
       const optimizationPromise = optimizeInput(agentInput, agent.type)
       const timeoutPromise = new Promise<CostOptimizationResult>((resolve) => {
         setTimeout(() => {
@@ -274,7 +274,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
           const originalCost = (originalTokens / 1000) * costPer1K
           const optimizedCost = (optimizedTokens / 1000) * costPer1K
           const savings = originalCost - optimizedCost
-          
+
           resolve({
             originalCost,
             optimizedCost,
@@ -289,7 +289,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
           })
         }, 3000) // 3 second timeout
       })
-      
+
       const optimizationResult = await Promise.race([optimizationPromise, timeoutPromise])
       setCostOptimization(optimizationResult)
 
@@ -311,10 +311,10 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
 
       // Step 3: Simulate agent execution with optimized input (with timeout)
       const executionPromise = new Promise((resolve) => setTimeout(resolve, 2000))
-      const executionTimeout = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Execution timeout')), 10000)
+      const executionTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Execution timeout')), 10000),
       )
-      
+
       await Promise.race([executionPromise, executionTimeout])
 
       // Generate a realistic response based on agent type (using optimized input)
@@ -563,9 +563,9 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Bot className="h-6 w-6" />
-          AgentKit - AI Agent Builder
+          AgentHub - AI Agent Builder
         </CardTitle>
-        <CardDescription>Create, configure, and deploy custom AI agents for specific tasks</CardDescription>
+        <CardDescription>Create, configure, and deploy custom AI agents with cost optimization</CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
@@ -823,7 +823,10 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
             {costOptimization && (
               <Card className="border-green-200 bg-green-50">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm flex items-center gap-2 text-black !text-black" style={{ color: 'black' }}>
+                  <CardTitle
+                    className="text-sm flex items-center gap-2 text-black !text-black"
+                    style={{ color: 'black' }}
+                  >
                     <DollarSign className="h-4 w-4 text-green-600" />
                     Cost Optimization Results
                   </CardTitle>
@@ -831,7 +834,9 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                 <CardContent className="pt-0">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <div className="text-muted-foreground text-black !text-black" style={{ color: 'black' }}>Token Reduction</div>
+                      <div className="text-muted-foreground text-black !text-black" style={{ color: 'black' }}>
+                        Token Reduction
+                      </div>
                       <div className="font-semibold text-green-600 text-black !text-black" style={{ color: 'black' }}>
                         {typeof costOptimization.tokenReduction === 'number'
                           ? costOptimization.tokenReduction.toFixed(1)
@@ -840,15 +845,25 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                       </div>
                     </div>
                     <div>
-                      <div className="text-muted-foreground text-black !text-black" style={{ color: 'black' }}>Cost Savings</div>
-                      <div className="font-semibold text-green-600 text-black !text-black" style={{ color: 'black' }}>${costOptimization.savings.toFixed(4)}</div>
+                      <div className="text-muted-foreground text-black !text-black" style={{ color: 'black' }}>
+                        Cost Savings
+                      </div>
+                      <div className="font-semibold text-green-600 text-black !text-black" style={{ color: 'black' }}>
+                        ${costOptimization.savings.toFixed(4)}
+                      </div>
                     </div>
                     <div>
-                      <div className="text-muted-foreground text-black !text-black" style={{ color: 'black' }}>Optimization</div>
-                      <div className="font-semibold text-black !text-black" style={{ color: 'black' }}>✅ Active</div>
+                      <div className="text-muted-foreground text-black !text-black" style={{ color: 'black' }}>
+                        Optimization
+                      </div>
+                      <div className="font-semibold text-black !text-black" style={{ color: 'black' }}>
+                        ✅ Active
+                      </div>
                     </div>
                     <div>
-                      <div className="text-muted-foreground text-black !text-black" style={{ color: 'black' }}>Efficiency</div>
+                      <div className="text-muted-foreground text-black !text-black" style={{ color: 'black' }}>
+                        Efficiency
+                      </div>
                       <div className="font-semibold text-black !text-black" style={{ color: 'black' }}>
                         {(() => {
                           const reduction =
@@ -862,15 +877,32 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                   </div>
                   {costOptimization.strategies.length > 0 && (
                     <div className="mt-3">
-                      <div className="text-muted-foreground text-xs mb-1 text-black !text-black" style={{ color: 'black' }}>Optimization Applied</div>
+                      <div
+                        className="text-muted-foreground text-xs mb-1 text-black !text-black"
+                        style={{ color: 'black' }}
+                      >
+                        Optimization Applied
+                      </div>
                       <div className="flex flex-wrap gap-1">
-                        <Badge variant="secondary" className="text-xs text-black !text-black" style={{ color: 'black' }}>
+                        <Badge
+                          variant="secondary"
+                          className="text-xs text-black !text-black"
+                          style={{ color: 'black' }}
+                        >
                           Smart Optimization
                         </Badge>
-                        <Badge variant="secondary" className="text-xs text-black !text-black" style={{ color: 'black' }}>
+                        <Badge
+                          variant="secondary"
+                          className="text-xs text-black !text-black"
+                          style={{ color: 'black' }}
+                        >
                           Cost Reduction
                         </Badge>
-                        <Badge variant="secondary" className="text-xs text-black !text-black" style={{ color: 'black' }}>
+                        <Badge
+                          variant="secondary"
+                          className="text-xs text-black !text-black"
+                          style={{ color: 'black' }}
+                        >
                           Token Efficiency
                         </Badge>
                       </div>

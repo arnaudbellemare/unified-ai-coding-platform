@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { TaskForm } from '@/components/task-form'
 import { HomePageHeader } from '@/components/home-page-header'
 import { CostOptimization } from '@/components/cost-optimization'
-import { AgentKit } from '@/components/agent-kit'
+import { AgentHub } from '@/components/agent-hub'
 import { X402Payment } from '@/components/x402-payment'
 import { AdvancedOptimizationDashboard } from '@/components/advanced-optimization-dashboard'
 import { toast } from 'sonner'
@@ -106,7 +106,7 @@ export function HomePageContent() {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              AgentKit
+              AgentHub
             </button>
             <button
               onClick={() => setActiveTab('payment')}
@@ -147,7 +147,7 @@ export function HomePageContent() {
 
         {activeTab === 'agents' && (
           <div className="max-w-6xl mx-auto">
-            <AgentKit
+            <AgentHub
               onAgentCreate={(config) => {
                 toast.success(`Agent "${config.name}" created successfully!`)
               }}
