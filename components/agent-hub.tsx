@@ -852,8 +852,8 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                     This input requires premium optimization. Please complete payment to continue.
                   </div>
                   <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       onClick={() => {
                         // Redirect to payment page or open payment modal
                         window.open('/#payment', '_blank')
@@ -862,11 +862,7 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                       <DollarSign className="h-4 w-4 mr-2" />
                       Pay with X402
                     </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => setRequiresPayment(false)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => setRequiresPayment(false)}>
                       Continue without optimization
                     </Button>
                   </div>

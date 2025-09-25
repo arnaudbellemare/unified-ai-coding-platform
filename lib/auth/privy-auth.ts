@@ -26,21 +26,21 @@ export async function verifyPrivyAuth(request: NextRequest): Promise<PrivyAuthRe
   try {
     const authHeader = request.headers.get('authorization')
     const privyAppId = request.headers.get('privy-app-id')
-    
+
     if (!authHeader || !privyAppId) {
       return {
         isValid: false,
-        error: 'Missing Privy authentication headers'
+        error: 'Missing Privy authentication headers',
       }
     }
 
     // Extract token from Bearer format
     const token = authHeader.replace('Bearer ', '')
-    
+
     if (!token) {
       return {
         isValid: false,
-        error: 'Invalid authorization format'
+        error: 'Invalid authorization format',
       }
     }
 
@@ -51,29 +51,29 @@ export async function verifyPrivyAuth(request: NextRequest): Promise<PrivyAuthRe
     //     'privy-app-id': privyAppId,
     //   }
     // })
-    
+
     // For now, simulate validation
     const mockUser: PrivyUser = {
       id: `privy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       wallet: {
         address: '0x' + Math.random().toString(16).substr(2, 40),
-        chainId: '8453' // Base mainnet
+        chainId: '8453', // Base mainnet
       },
       email: {
-        address: `user_${Math.random().toString(36).substr(2, 8)}@example.com`
+        address: `user_${Math.random().toString(36).substr(2, 8)}@example.com`,
       },
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     }
 
     return {
       isValid: true,
-      user: mockUser
+      user: mockUser,
     }
   } catch (error) {
     console.error('Privy auth verification error:', error)
     return {
       isValid: false,
-      error: 'Authentication verification failed'
+      error: 'Authentication verification failed',
     }
   }
 }
@@ -84,17 +84,17 @@ export async function verifyPrivyAuth(request: NextRequest): Promise<PrivyAuthRe
 export function requirePrivyAuth(handler: (request: NextRequest, user: PrivyUser) => Promise<Response>) {
   return async (request: NextRequest): Promise<Response> => {
     const authResult = await verifyPrivyAuth(request)
-    
+
     if (!authResult.isValid || !authResult.user) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: authResult.error || 'Privy authentication required',
-          requiresAuth: true 
-        }), 
-        { 
+          requiresAuth: true,
+        }),
+        {
           status: 401,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' },
+        },
       )
     }
 

@@ -20,28 +20,36 @@ export async function POST(request: NextRequest) {
 
     // Get Privy user for authentication
     const privyUser = await getPrivyUser(request)
-    
+
     // Check if x402 payment is provided and valid
     if (!x402Payment || x402Payment.status !== 'completed') {
-      return NextResponse.json({ 
-        error: 'X402 payment required for agent execution',
-        requiresPayment: true,
-        estimatedCost: 0.05, // $0.05 for agent execution
-        paymentMethods: ['x402', 'credit_card', 'crypto'],
-        privyUser: privyUser ? {
-          id: privyUser.id,
-          walletAddress: privyUser.wallet?.address
-        } : null
-      }, { status: 402 }) // 402 Payment Required
+      return NextResponse.json(
+        {
+          error: 'X402 payment required for agent execution',
+          requiresPayment: true,
+          estimatedCost: 0.05, // $0.05 for agent execution
+          paymentMethods: ['x402', 'credit_card', 'crypto'],
+          privyUser: privyUser
+            ? {
+                id: privyUser.id,
+                walletAddress: privyUser.wallet?.address,
+              }
+            : null,
+        },
+        { status: 402 },
+      ) // 402 Payment Required
     }
 
     // Verify payment amount is sufficient
     if (x402Payment.amount < 0.05) {
-      return NextResponse.json({ 
-        error: 'Insufficient payment amount',
-        requiredAmount: 0.05,
-        providedAmount: x402Payment.amount
-      }, { status: 402 })
+      return NextResponse.json(
+        {
+          error: 'Insufficient payment amount',
+          requiredAmount: 0.05,
+          providedAmount: x402Payment.amount,
+        },
+        { status: 402 },
+      )
     }
 
     // Simulate agent execution with payment verification
@@ -56,15 +64,15 @@ export async function POST(request: NextRequest) {
         optimizedCost: 0.05,
         savings: 0.03,
         tokenReduction: 15.5,
-        strategies: ['x402_payment_optimization', 'cost_aware_execution']
+        strategies: ['x402_payment_optimization', 'cost_aware_execution'],
       },
       payment: {
         transactionId: x402Payment.transactionId,
         amount: x402Payment.amount,
         currency: x402Payment.currency,
         network: x402Payment.network,
-        status: 'completed'
-      }
+        status: 'completed',
+      },
     }
 
     // Log execution for analytics
@@ -80,7 +88,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       result: executionResult,
-      message: 'Agent executed successfully with x402 payment'
+      message: 'Agent executed successfully with x402 payment',
     })
   } catch (error) {
     console.error('Agent execution error:', error)

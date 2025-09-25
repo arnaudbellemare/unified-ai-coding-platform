@@ -22,7 +22,7 @@ import {
   Coins,
   Link,
 } from 'lucide-react'
-import { PrivyWalletConnection } from './privy-wallet-connection'
+import { PrivyWalletConnection } from './privy-wallet-connection-simple'
 
 interface PricingTier {
   id: string
@@ -224,7 +224,7 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
       if (selectedPaymentMethod === 'x402' && x402Wallet) {
         // Process x402 payment
         const paymentResult = await processX402Payment(selectedTier, x402Wallet)
-        
+
         onPaymentComplete?.({
           tier: selectedTier,
           paymentMethod: selectedPaymentMethod,
@@ -396,12 +396,12 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
                       </span>
                     </div>
                     <div className="text-sm text-blue-700 dark:text-blue-300">
-                      <div>Address: {x402Wallet.address.slice(0, 6)}...{x402Wallet.address.slice(-4)}</div>
+                      <div>
+                        Address: {x402Wallet.address.slice(0, 6)}...{x402Wallet.address.slice(-4)}
+                      </div>
                       <div>Balance: {x402Wallet.balance} USDC</div>
                       <div>Network: {x402Wallet.network}</div>
-                      {privyWallet?.privyUserId && (
-                        <div>Privy User ID: {privyWallet.privyUserId.slice(0, 8)}...</div>
-                      )}
+                      {privyWallet?.privyUserId && <div>Privy User ID: {privyWallet.privyUserId.slice(0, 8)}...</div>}
                     </div>
                   </div>
                 )}
@@ -434,9 +434,7 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
                               </div>
                               <div className="text-sm text-muted-foreground">{method.description}</div>
                               {method.x402Enabled && !x402Connected && (
-                                <div className="text-xs text-orange-600 mt-1">
-                                  X402 wallet not connected
-                                </div>
+                                <div className="text-xs text-orange-600 mt-1">X402 wallet not connected</div>
                               )}
                             </div>
                           </div>

@@ -22,19 +22,24 @@ export async function POST(request: NextRequest) {
 
     // Get Privy user for authentication and wallet info
     const privyUser = await getPrivyUser(request)
-    
+
     // Check if x402 payment is required for premium optimization
     const requiresPayment = prompt.length > 500 || selectedAgent === 'premium'
     if (requiresPayment && !x402Payment) {
-      return NextResponse.json({ 
-        error: 'X402 payment required for premium optimization',
-        requiresPayment: true,
-        estimatedCost: 0.01, // $0.01 for premium optimization
-        privyUser: privyUser ? {
-          id: privyUser.id,
-          walletAddress: privyUser.wallet?.address
-        } : null
-      }, { status: 402 }) // 402 Payment Required
+      return NextResponse.json(
+        {
+          error: 'X402 payment required for premium optimization',
+          requiresPayment: true,
+          estimatedCost: 0.01, // $0.01 for premium optimization
+          privyUser: privyUser
+            ? {
+                id: privyUser.id,
+                walletAddress: privyUser.wallet?.address,
+              }
+            : null,
+        },
+        { status: 402 },
+      ) // 402 Payment Required
     }
 
     const config = getEnvironmentConfig()
