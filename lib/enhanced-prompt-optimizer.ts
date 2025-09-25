@@ -73,7 +73,7 @@ export class EnhancedPromptOptimizer {
   // NEW: Dynamic strategy weighting based on prompt characteristics
   private calculateDynamicWeights(prompt: string): OptimizationStrategy[] {
     const promptLength = prompt.length
-    const wordCount = prompt.split(/\s+/).length
+    // const wordCount = prompt.split(/\s+/).length
     const hasQuestions = prompt.includes('?')
     const hasPoliteness = /please|kindly|thank you|could you|would you/i.test(prompt)
     const hasRepetition = /(.+)\s+\1/i.test(prompt)
@@ -292,7 +292,7 @@ export class EnhancedPromptOptimizer {
 
   private punctuationOptimization(prompt: string): OptimizationResult {
     // Enhanced punctuation optimization
-    let optimized = prompt
+    const optimized = prompt
       .replace(/[.,!?;:]\s*/g, '. ') // Standardize punctuation
       .replace(/\s+/g, ' ') // Remove extra spaces
       .replace(/\.\s*\./g, '.') // Remove double periods
@@ -345,7 +345,7 @@ export class EnhancedPromptOptimizer {
 
   private lemmatization(prompt: string): OptimizationResult {
     // Enhanced lemmatization
-    let optimized = prompt
+    const optimized = prompt
       .replace(/ing\b/g, '')
       .replace(/ed\b/g, '')
       .replace(/ly\b/g, '')
@@ -418,7 +418,7 @@ export class EnhancedPromptOptimizer {
   }
 
   private removeRedundancy(prompt: string): OptimizationResult {
-    let optimized = prompt
+    const optimized = prompt
       .replace(/(.+)\s+\1/gi, '$1') // Remove repeated phrases
       .replace(/\s+/g, ' ')
       .trim()

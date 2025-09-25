@@ -13,7 +13,7 @@ export async function GET() {
         acc[agent] = getMinimalConfigForAgent(agent)
         return acc
       },
-      {} as Record<string, any>,
+      {} as Record<string, unknown>,
     )
 
     const health = {
@@ -42,7 +42,7 @@ export async function GET() {
       agents: agentConfigs,
       recommendations: {
         availableAgents: Object.keys(agentConfigs).filter((agent) => {
-          const agentConfig = agentConfigs[agent]
+          const agentConfig = agentConfigs[agent] as { required: string[] }
           return agentConfig.required.every((req: string) => {
             // Check if the required environment variable is available
             const envVar = req

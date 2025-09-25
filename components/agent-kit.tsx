@@ -43,14 +43,16 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
   const [isExecuting, setIsExecuting] = useState(false)
   const [executionResults, setExecutionResults] = useState<string>('')
   const [executionError, setExecutionError] = useState<string>('')
-  const [executionHistory, setExecutionHistory] = useState<Array<{
-    id: string
-    agent: string
-    input: string
-    output: string
-    timestamp: Date
-    status: 'success' | 'error'
-  }>>([])
+  const [executionHistory, setExecutionHistory] = useState<
+    Array<{
+      id: string
+      agent: string
+      input: string
+      output: string
+      timestamp: Date
+      status: 'success' | 'error'
+    }>
+  >([])
 
   const agentTypes = [
     { value: 'coding', label: 'Coding Agent', icon: Code, description: 'Specialized in programming tasks' },
@@ -120,20 +122,20 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
     setIsExecuting(true)
     setExecutionError('')
     setExecutionResults('')
-    
+
     try {
       // Call the parent callback if provided
       onAgentExecute?.(selectedAgent, agentInput)
-      
+
       // Simulate agent execution with realistic results
       await new Promise((resolve) => setTimeout(resolve, 2000))
-      
+
       // Generate a realistic response based on agent type
-      const agent = createdAgents.find(a => a.name === selectedAgent)
+      const agent = createdAgents.find((a) => a.name === selectedAgent)
       const simulatedResult = generateSimulatedResult(agent?.type || 'coding', agentInput)
-      
+
       setExecutionResults(simulatedResult)
-      
+
       // Add to execution history
       const newExecution = {
         id: Date.now().toString(),
@@ -141,14 +143,13 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
         input: agentInput,
         output: simulatedResult,
         timestamp: new Date(),
-        status: 'success' as const
+        status: 'success' as const,
       }
-      setExecutionHistory(prev => [newExecution, ...prev])
-      
+      setExecutionHistory((prev) => [newExecution, ...prev])
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
       setExecutionError(errorMessage)
-      
+
       // Add error to execution history
       const newExecution = {
         id: Date.now().toString(),
@@ -156,9 +157,9 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
         input: agentInput,
         output: errorMessage,
         timestamp: new Date(),
-        status: 'error' as const
+        status: 'error' as const,
       }
-      setExecutionHistory(prev => [newExecution, ...prev])
+      setExecutionHistory((prev) => [newExecution, ...prev])
     } finally {
       setIsExecuting(false)
     }
@@ -166,7 +167,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
 
   const generateSimulatedResult = (agentType: string, input: string): string => {
     const timestamp = new Date().toLocaleString()
-    
+
     switch (agentType) {
       case 'coding':
         return `🤖 **Coding Agent Response** (${timestamp})
@@ -201,7 +202,7 @@ This code demonstrates a function that capitalizes the first letter of each word
 - Test the function with different inputs
 - Add error handling if needed
 - Consider adding validation for edge cases`
-        
+
       case 'content':
         return `📝 **Content Agent Response** (${timestamp})
 
@@ -226,7 +227,7 @@ This is AI-generated content based on your request. The content has been optimiz
 - Include subheadings for better structure
 - Consider adding visual elements
 - Ensure content is scannable and accessible`
-        
+
       case 'analytics':
         return `📊 **Analytics Agent Response** (${timestamp})
 
@@ -266,7 +267,7 @@ Based on the analysis of your request, here are the key findings:
   ]
 }
 \`\`\``
-        
+
       case 'customer_service':
         return `🎧 **Customer Service Agent Response** (${timestamp})
 
@@ -297,7 +298,7 @@ Thank you for reaching out! I understand your concern about "${input}". Let me h
 - 📧 Email Support: support@example.com
 
 Is there anything specific about this issue I can help clarify right now?`
-        
+
       case 'search':
         return `🔍 **Search Agent Response** (${timestamp})
 
@@ -336,11 +337,11 @@ Is there anything specific about this issue I can help clarify right now?`
 - Cross-referenced information
 - Fact-checked against multiple sources
 - Updated within the last 24 hours`
-        
+
       default:
         return `🤖 **AI Agent Response** (${timestamp})
 
-**Input:** ${input}
+**Input:** {input}
 
 **Processing Complete:**
 Your request has been successfully processed by the AI agent. The agent analyzed your input and generated a comprehensive response based on its specialized training and capabilities.
@@ -527,7 +528,7 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
             <h3 className="text-lg font-semibold">Created Agents</h3>
             {createdAgents.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                No agents created yet. Create your first agent in the "Create Agent" tab.
+                No agents created yet. Create your first agent in the &quot;Create Agent&quot; tab.
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -623,7 +624,7 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                     </>
                   )}
                 </h4>
-                
+
                 {executionError && (
                   <Card className="border-red-200 bg-red-50">
                     <CardContent className="pt-6">
@@ -633,14 +634,12 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                     </CardContent>
                   </Card>
                 )}
-                
+
                 {executionResults && (
                   <Card className="border-green-200 bg-green-50">
                     <CardContent className="pt-6">
                       <div className="prose prose-sm max-w-none">
-                        <pre className="whitespace-pre-wrap text-sm leading-relaxed">
-                          {executionResults}
-                        </pre>
+                        <pre className="whitespace-pre-wrap text-sm leading-relaxed">{executionResults}</pre>
                       </div>
                     </CardContent>
                   </Card>
@@ -657,11 +656,12 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                 </h4>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {executionHistory.map((execution) => (
-                    <Card key={execution.id} className={`${
-                      execution.status === 'error' 
-                        ? 'border-red-200 bg-red-50' 
-                        : 'border-blue-200 bg-blue-50'
-                    }`}>
+                    <Card
+                      key={execution.id}
+                      className={`${
+                        execution.status === 'error' ? 'border-red-200 bg-red-50' : 'border-blue-200 bg-blue-50'
+                      }`}
+                    >
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -685,9 +685,7 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                             View {execution.status === 'error' ? 'Error' : 'Output'}
                           </summary>
                           <div className="mt-2 p-3 bg-white rounded border text-xs font-mono max-h-32 overflow-y-auto">
-                            <pre className="whitespace-pre-wrap">
-                              {execution.output}
-                            </pre>
+                            <pre className="whitespace-pre-wrap">{execution.output}</pre>
                           </div>
                         </details>
                       </CardContent>

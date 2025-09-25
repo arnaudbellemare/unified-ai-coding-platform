@@ -156,16 +156,16 @@ export function DeployToVercel({ taskId, repoUrl, branchName, sandboxUrl }: Depl
             <div className="text-xs text-gray-600 space-y-1">
               <p className="font-medium">Deployment Instructions:</p>
               <ol className="list-decimal list-inside space-y-1">
-                <li>Click "Deploy to Vercel" above</li>
+                <li>Click &quot;Deploy to Vercel&quot; above</li>
                 <li>Sign in to Vercel if prompted</li>
-                <li>Click "Deploy" on the Vercel page</li>
+                <li>Click &quot;Deploy&quot; on the Vercel page</li>
                 <li>This deploys from your forked repository with AI changes</li>
                 <li>Your fork contains all the modifications made by the AI</li>
               </ol>
               <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
                 <p className="font-medium text-yellow-800">⚠️ Important:</p>
                 <p className="text-yellow-700">
-                  After deployment, you'll need to configure environment variables in Vercel Settings → Environment
+                  After deployment, you&apos;ll need to configure environment variables in Vercel Settings → Environment
                   Variables. See the{' '}
                   <a href="/DEPLOYMENT_GUIDE.md" target="_blank" className="underline">
                     Deployment Guide

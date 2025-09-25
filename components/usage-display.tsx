@@ -61,10 +61,7 @@ export function UsageDisplay() {
           <p className="text-sm text-blue-800 mb-3">
             Sign in with GitHub to start creating AI-powered tasks and track your usage.
           </p>
-          <Button 
-            onClick={() => window.location.href = '/api/auth/github'}
-            className="w-full"
-          >
+          <Button onClick={() => (window.location.href = '/api/auth/github')} className="w-full">
             Sign in with GitHub
           </Button>
         </CardContent>
@@ -97,7 +94,9 @@ export function UsageDisplay() {
   const isAtLimit = usagePercentage >= 100
 
   return (
-    <Card className={`${isAtLimit ? 'border-red-200 bg-red-50' : isNearLimit ? 'border-yellow-200 bg-yellow-50' : 'border-green-200 bg-green-50'}`}>
+    <Card
+      className={`${isAtLimit ? 'border-red-200 bg-red-50' : isNearLimit ? 'border-yellow-200 bg-yellow-50' : 'border-green-200 bg-green-50'}`}
+    >
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center justify-between">
           <span className="flex items-center gap-2">
@@ -116,8 +115,8 @@ export function UsageDisplay() {
             <span>Tasks this month</span>
             <span className="font-medium">{userInfo.usage.remaining} remaining</span>
           </div>
-          <Progress 
-            value={usagePercentage} 
+          <Progress
+            value={usagePercentage}
             className="h-2"
             aria-label={`${userInfo.usage.used} of ${userInfo.usage.limit} tasks used`}
           />
@@ -125,11 +124,7 @@ export function UsageDisplay() {
 
         {/* User Info */}
         <div className="flex items-center gap-3 text-sm">
-          <img 
-            src={user?.avatar_url} 
-            alt={userInfo.username}
-            className="w-8 h-8 rounded-full"
-          />
+          <img src={user?.avatar_url} alt={userInfo.username} className="w-8 h-8 rounded-full" />
           <div>
             <div className="font-medium">{userInfo.username}</div>
             <div className="text-muted-foreground">Free Plan</div>
@@ -152,8 +147,8 @@ export function UsageDisplay() {
         )}
 
         {/* Upgrade Button */}
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="w-full"
           onClick={() => {
             // TODO: Implement upgrade flow

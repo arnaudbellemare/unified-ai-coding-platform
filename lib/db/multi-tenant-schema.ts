@@ -28,14 +28,18 @@ export const sessions = pgTable('sessions', {
 // Updated tasks table with user isolation
 export const tasks = pgTable('tasks', {
   id: text('id').primaryKey(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
   prompt: text('prompt').notNull(),
   repoUrl: text('repo_url'),
   selectedAgent: text('selected_agent').default('claude'),
   selectedModel: text('selected_model'),
   status: text('status', {
     enum: ['pending', 'processing', 'completed', 'error'],
-  }).notNull().default('pending'),
+  })
+    .notNull()
+    .default('pending'),
   progress: integer('progress').default(0),
   logs: jsonb('logs').$type<LogEntry[]>(),
   error: text('error'),
@@ -52,7 +56,9 @@ export const tasks = pgTable('tasks', {
 // Usage tracking
 export const usageLogs = pgTable('usage_logs', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
   taskId: text('task_id').references(() => tasks.id),
   action: text('action').notNull(), // 'task_created', 'api_call', 'sandbox_created'
   cost: integer('cost').default(0), // In cents
@@ -63,7 +69,9 @@ export const usageLogs = pgTable('usage_logs', {
 // API rate limiting
 export const rateLimits = pgTable('rate_limits', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
   endpoint: text('endpoint').notNull(),
   requests: integer('requests').default(0),
   windowStart: timestamp('window_start').notNull(),

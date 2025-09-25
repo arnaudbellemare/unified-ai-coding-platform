@@ -18,8 +18,8 @@ export class RateLimiter {
    * Check if user has exceeded rate limit
    */
   static async checkRateLimit(
-    userId: string, 
-    endpoint: string
+    userId: string,
+    endpoint: string,
   ): Promise<{ allowed: boolean; remaining: number; resetTime: Date }> {
     const config = this.RATE_LIMITS[endpoint]
     if (!config) {
@@ -27,22 +27,22 @@ export class RateLimiter {
     }
 
     const windowStart = new Date(Date.now() - config.windowMs)
-    
+
+    if (!db) {
+      return { allowed: true, remaining: Infinity, resetTime: new Date() }
+    }
+
     // Get current rate limit record
     const existing = await db
       .select()
       .from(rateLimits)
       .where(
-        and(
-          eq(rateLimits.userId, userId),
-          eq(rateLimits.endpoint, endpoint),
-          gte(rateLimits.windowStart, windowStart)
-        )
+        and(eq(rateLimits.userId, userId), eq(rateLimits.endpoint, endpoint), gte(rateLimits.windowStart, windowStart)),
       )
       .limit(1)
 
     const now = new Date()
-    
+
     if (existing.length === 0) {
       // No existing record, create new one
       await db.insert(rateLimits).values({
@@ -51,35 +51,35 @@ export class RateLimiter {
         requests: 1,
         windowStart: now,
       })
-      
+
       return {
         allowed: true,
         remaining: config.requests - 1,
-        resetTime: new Date(now.getTime() + config.windowMs)
+        resetTime: new Date(now.getTime() + config.windowMs),
       }
     }
 
     const record = existing[0]
-    
-    if (record.requests >= config.requests) {
+
+    if ((record.requests || 0) >= config.requests) {
       // Rate limit exceeded
       return {
         allowed: false,
         remaining: 0,
-        resetTime: new Date(record.windowStart.getTime() + config.windowMs)
+        resetTime: new Date(record.windowStart.getTime() + config.windowMs),
       }
     }
 
     // Increment request count
     await db
       .update(rateLimits)
-      .set({ requests: record.requests + 1 })
+      .set({ requests: (record.requests || 0) + 1 })
       .where(eq(rateLimits.id, record.id))
 
     return {
       allowed: true,
-      remaining: config.requests - (record.requests + 1),
-      resetTime: new Date(record.windowStart.getTime() + config.windowMs)
+      remaining: config.requests - ((record.requests || 0) + 1),
+      resetTime: new Date(record.windowStart.getTime() + config.windowMs),
     }
   }
 
@@ -93,16 +93,16 @@ export class RateLimiter {
     }
 
     const windowStart = new Date(Date.now() - config.windowMs)
-    
+
+    if (!db) {
+      return null
+    }
+
     const record = await db
       .select()
       .from(rateLimits)
       .where(
-        and(
-          eq(rateLimits.userId, userId),
-          eq(rateLimits.endpoint, endpoint),
-          gte(rateLimits.windowStart, windowStart)
-        )
+        and(eq(rateLimits.userId, userId), eq(rateLimits.endpoint, endpoint), gte(rateLimits.windowStart, windowStart)),
       )
       .limit(1)
 
@@ -110,15 +110,15 @@ export class RateLimiter {
       return {
         limit: config.requests,
         remaining: config.requests,
-        resetTime: new Date(Date.now() + config.windowMs)
+        resetTime: new Date(Date.now() + config.windowMs),
       }
     }
 
     const current = record[0]
     return {
       limit: config.requests,
-      remaining: Math.max(0, config.requests - current.requests),
-      resetTime: new Date(current.windowStart.getTime() + config.windowMs)
+      remaining: Math.max(0, config.requests - (current.requests || 0)),
+      resetTime: new Date(current.windowStart.getTime() + config.windowMs),
     }
   }
 }
@@ -127,17 +127,14 @@ export class RateLimiter {
  * Middleware for rate limiting
  */
 export function withRateLimit(endpoint: string) {
-  return async function rateLimitMiddleware(
-    request: Request,
-    userId: string
-  ): Promise<Response | null> {
+  return async function rateLimitMiddleware(request: Request, userId: string): Promise<Response | null> {
     const result = await RateLimiter.checkRateLimit(userId, endpoint)
-    
+
     if (!result.allowed) {
       return new Response(
         JSON.stringify({
           error: 'Rate limit exceeded',
-          retryAfter: Math.ceil((result.resetTime.getTime() - Date.now()) / 1000)
+          retryAfter: Math.ceil((result.resetTime.getTime() - Date.now()) / 1000),
         }),
         {
           status: 429,
@@ -146,9 +143,9 @@ export function withRateLimit(endpoint: string) {
             'X-RateLimit-Limit': result.remaining.toString(),
             'X-RateLimit-Remaining': '0',
             'X-RateLimit-Reset': result.resetTime.toISOString(),
-            'Retry-After': Math.ceil((result.resetTime.getTime() - Date.now()) / 1000).toString()
-          }
-        }
+            'Retry-After': Math.ceil((result.resetTime.getTime() - Date.now()) / 1000).toString(),
+          },
+        },
       )
     }
 

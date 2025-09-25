@@ -76,7 +76,7 @@ export function AdvancedOptimizationDashboard() {
   const [providerPerformance, setProviderPerformance] = useState<ProviderPerformance[]>([])
   const [optimizationHistory, setOptimizationHistory] = useState<OptimizationDecision[]>([])
   const [optimizationRules, setOptimizationRules] = useState<OptimizationRule[]>([])
-  const [priceData, setPriceData] = useState<any[]>([])
+  const [priceData, setPriceData] = useState<Record<string, unknown>[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
 
@@ -371,22 +371,22 @@ export function AdvancedOptimizationDashboard() {
                 {priceData.map((item, index) => (
                   <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-3">
-                      {getTrendIcon(item.trend)}
+                      {getTrendIcon(item.trend as string)}
                       <div>
-                        <div className="font-medium">{item.provider}</div>
-                        <div className="text-sm text-muted-foreground">${item.price.toFixed(4)} per request</div>
+                        <div className="font-medium">{item.provider as string}</div>
+                        <div className="text-sm text-muted-foreground">${(item.price as number).toFixed(4)} per request</div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className={`font-medium ${item.change >= 0 ? 'text-red-600' : 'text-green-600'}`}>
-                        {item.change >= 0 ? '+' : ''}
-                        {item.change.toFixed(1)}%
+                      <div className={`font-medium ${(item.change as number) >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                        {(item.change as number) >= 0 ? '+' : ''}
+                        {(item.change as number).toFixed(1)}%
                       </div>
                       <Badge
                         variant="outline"
-                        className={getRiskColor(item.change >= 2 ? 'high' : item.change >= 0 ? 'medium' : 'low')}
+                        className={getRiskColor((item.change as number) >= 2 ? 'high' : (item.change as number) >= 0 ? 'medium' : 'low')}
                       >
-                        {item.trend}
+                        {item.trend as string}
                       </Badge>
                     </div>
                   </div>

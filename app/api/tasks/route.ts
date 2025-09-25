@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   try {
     // Get current user
     const user = await getCurrentUser(request)
-    
+
     if (!db) {
       // Return fallback tasks for development (only if user is authenticated)
       if (!user) {
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
           message: 'Please sign in with GitHub to view your tasks',
         })
       }
-      
+
       const fallbackTasks = [
         {
           id: 'demo-task-1',
@@ -66,18 +66,14 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user's tasks only
-    const userTasks = await db
-      .select()
-      .from(tasks)
-      .where(eq(tasks.userId, user.id))
-      .orderBy(desc(tasks.createdAt))
+    const userTasks = await db.select().from(tasks).where(eq(tasks.userId, user.id)).orderBy(desc(tasks.createdAt))
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       tasks: userTasks,
       user: {
         username: user.username,
-        usage: SimpleUsageTracker.getUserUsage(user.id)
-      }
+        usage: SimpleUsageTracker.getUserUsage(user.id),
+      },
     })
   } catch (error) {
     console.error('Error fetching tasks:', error)
@@ -89,16 +85,19 @@ export async function POST(request: NextRequest) {
   try {
     // Require authentication
     const user = await requireAuth(request)
-    
+
     const body = await request.json()
 
     // Check usage limits
     const usageCheck = SimpleUsageTracker.canCreateTask(user.id)
     if (!usageCheck.allowed) {
-      return NextResponse.json({
-        error: usageCheck.reason,
-        usage: SimpleUsageTracker.getUserUsage(user.id)
-      }, { status: 429 })
+      return NextResponse.json(
+        {
+          error: usageCheck.reason,
+          usage: SimpleUsageTracker.getUserUsage(user.id),
+        },
+        { status: 429 },
+      )
     }
 
     // Use provided ID or generate a new one

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -39,12 +39,12 @@ interface PaymentMethod {
   id: string
   type: 'credit_card' | 'paypal' | 'crypto' | 'bank_transfer'
   name: string
-  icon: any
+  icon: React.ComponentType
   description: string
 }
 
 interface X402PaymentProps {
-  onPaymentComplete?: (paymentData: any) => void
+  onPaymentComplete?: (paymentData: Record<string, unknown>) => void
   onSubscriptionChange?: (tier: PricingTier) => void
 }
 
@@ -285,7 +285,9 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
                       >
                         <CardContent className="p-4">
                           <div className="flex items-center gap-3">
-                            <method.icon className="h-6 w-6" />
+                            <div className="h-6 w-6">
+                              {React.createElement(method.icon)}
+                            </div>
                             <div>
                               <div className="font-medium">{method.name}</div>
                               <div className="text-sm text-muted-foreground">{method.description}</div>

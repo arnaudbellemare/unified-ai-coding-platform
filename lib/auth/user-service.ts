@@ -1,6 +1,6 @@
 import { db } from '@/lib/db/client'
 import { users, sessions, tasks, usageLogs } from '@/lib/db/multi-tenant-schema'
-import { eq, and, gte, lt } from 'drizzle-orm'
+import { eq, and, gte, sql } from 'drizzle-orm'
 
 export interface GitHubUser {
   id: number
@@ -15,11 +15,11 @@ export class UserService {
    * Get or create user from GitHub OAuth
    */
   static async getOrCreateUser(githubUser: GitHubUser, githubToken: string) {
-    const existingUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.githubId, githubUser.id.toString()))
-      .limit(1)
+    if (!db) {
+      throw new Error('Database not available')
+    }
+    
+    const existingUser = await db.select().from(users).where(eq(users.githubId, githubUser.id.toString())).limit(1)
 
     if (existingUser.length > 0) {
       return existingUser[0]
@@ -46,8 +46,12 @@ export class UserService {
    * Create user session
    */
   static async createSession(userId: string, token: string, expiresInHours = 24) {
-    const expiresAt = new Date(Date.now() + expiresInHours * 60 * 60 * 1000)
+    if (!db) {
+      throw new Error('Database not available')
+    }
     
+    const expiresAt = new Date(Date.now() + expiresInHours * 60 * 60 * 1000)
+
     const [session] = await db
       .insert(sessions)
       .values({
@@ -64,6 +68,10 @@ export class UserService {
    * Validate session and get user
    */
   static async validateSession(token: string) {
+    if (!db) {
+      return null
+    }
+    
     const session = await db
       .select({
         user: users,
@@ -71,12 +79,7 @@ export class UserService {
       })
       .from(sessions)
       .innerJoin(users, eq(sessions.userId, users.id))
-      .where(
-        and(
-          eq(sessions.token, token),
-          gte(sessions.expiresAt, new Date())
-        )
-      )
+      .where(and(eq(sessions.token, token), gte(sessions.expiresAt, new Date())))
       .limit(1)
 
     return session[0] || null
@@ -86,23 +89,23 @@ export class UserService {
    * Check if user can create a task (usage limits)
    */
   static async canCreateTask(userId: string): Promise<{ allowed: boolean; reason?: string }> {
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1)
+    if (!db) {
+      return { allowed: false, reason: 'Database not available' }
+    }
+    
+    const user = await db.select().from(users).where(eq(users.id, userId)).limit(1)
 
     if (!user[0]) {
       return { allowed: false, reason: 'User not found' }
     }
 
-    const { usageCurrent, usageLimit, subscription } = user[0]
+    const { usageCurrent, usageLimit } = user[0]
 
     // Check monthly usage limit
-    if (usageCurrent >= usageLimit) {
-      return { 
-        allowed: false, 
-        reason: `Monthly limit reached (${usageLimit} tasks). Upgrade to Pro for more tasks.` 
+    if ((usageCurrent || 0) >= (usageLimit || 10)) {
+      return {
+        allowed: false,
+        reason: `Monthly limit reached (${usageLimit || 10} tasks). Upgrade to Pro for more tasks.`,
       }
     }
 
@@ -113,6 +116,10 @@ export class UserService {
    * Get user's tasks
    */
   static async getUserTasks(userId: string, limit = 50, offset = 0) {
+    if (!db) {
+      return []
+    }
+    
     return await db
       .select()
       .from(tasks)
@@ -125,13 +132,11 @@ export class UserService {
   /**
    * Log usage for billing and analytics
    */
-  static async logUsage(
-    userId: string, 
-    action: string, 
-    cost: number = 0, 
-    metadata?: any,
-    taskId?: string
-  ) {
+  static async logUsage(userId: string, action: string, cost: number = 0, metadata?: Record<string, unknown>, taskId?: string) {
+    if (!db) {
+      return
+    }
+    
     await db.insert(usageLogs).values({
       userId,
       taskId,
@@ -144,9 +149,9 @@ export class UserService {
     if (action === 'task_created') {
       await db
         .update(users)
-        .set({ 
-          usageCurrent: users.usageCurrent + 1,
-          updatedAt: new Date()
+        .set({
+          usageCurrent: sql`${users.usageCurrent} + 1`,
+          updatedAt: new Date(),
         })
         .where(eq(users.id, userId))
     }
@@ -156,11 +161,15 @@ export class UserService {
    * Reset monthly usage (run via cron job)
    */
   static async resetMonthlyUsage() {
+    if (!db) {
+      return
+    }
+    
     await db
       .update(users)
-      .set({ 
+      .set({
         usageCurrent: 0,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(users.subscription, 'free'))
   }
@@ -169,16 +178,13 @@ export class UserService {
    * Get user statistics
    */
   static async getUserStats(userId: string) {
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1)
+    if (!db) {
+      return null
+    }
+    
+    const user = await db.select().from(users).where(eq(users.id, userId)).limit(1)
 
-    const taskCount = await db
-      .select({ count: tasks.id })
-      .from(tasks)
-      .where(eq(tasks.userId, userId))
+    const taskCount = await db.select({ count: tasks.id }).from(tasks).where(eq(tasks.userId, userId))
 
     const monthlyUsage = await db
       .select({ count: usageLogs.id })
@@ -186,8 +192,8 @@ export class UserService {
       .where(
         and(
           eq(usageLogs.userId, userId),
-          gte(usageLogs.createdAt, new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-        )
+          gte(usageLogs.createdAt, new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
+        ),
       )
 
     return {

@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       return new Response(
         JSON.stringify({
           error: 'Rate limit exceeded',
-          retryAfter: Math.ceil((rateLimitResult.resetTime.getTime() - Date.now()) / 1000)
+          retryAfter: Math.ceil((rateLimitResult.resetTime.getTime() - Date.now()) / 1000),
         }),
         {
           status: 429,
@@ -33,9 +33,9 @@ export async function GET(request: NextRequest) {
             'X-RateLimit-Limit': '10',
             'X-RateLimit-Remaining': '0',
             'X-RateLimit-Reset': rateLimitResult.resetTime.toISOString(),
-            'Retry-After': Math.ceil((rateLimitResult.resetTime.getTime() - Date.now()) / 1000).toString()
-          }
-        }
+            'Retry-After': Math.ceil((rateLimitResult.resetTime.getTime() - Date.now()) / 1000).toString(),
+          },
+        },
       )
     }
 
@@ -54,10 +54,9 @@ export async function GET(request: NextRequest) {
       pagination: {
         limit,
         offset,
-        hasMore: tasks.length === limit
-      }
+        hasMore: tasks.length === limit,
+      },
     })
-
   } catch (error) {
     console.error('Error fetching user tasks:', error)
     return NextResponse.json({ error: 'Failed to fetch tasks' }, { status: 500 })

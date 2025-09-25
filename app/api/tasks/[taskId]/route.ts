@@ -55,11 +55,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Get task and verify user ownership
-    const task = await db
-      .select()
-      .from(tasks)
-      .where(eq(tasks.id, taskId))
-      .limit(1)
+    const task = await db.select().from(tasks).where(eq(tasks.id, taskId)).limit(1)
 
     if (!task[0]) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })

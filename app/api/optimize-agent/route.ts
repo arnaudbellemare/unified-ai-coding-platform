@@ -20,9 +20,12 @@ export async function POST(request: NextRequest) {
     const optimizationResult = await costOptimizer.optimizePromptWithAnalysis(prompt)
 
     // Check if user's selected agent is available and cost-effective
-    const availableAgents = Object.keys(config.features).filter(
-      (key) => config.features[key as keyof typeof config.features],
-    )
+    const availableAgents = [
+      config.hasAnthropic && 'claude',
+      config.hasOpenAI && 'gpt',
+      config.hasPerplexity && 'perplexity',
+      config.hasAIGateway && 'ai_gateway'
+    ].filter(Boolean) as string[]
 
     const isSelectedAgentAvailable = availableAgents.includes(selectedAgent || '')
     const isSelectedAgentOptimal = agentRecommendation.recommended === selectedAgent
@@ -63,9 +66,12 @@ export async function POST(request: NextRequest) {
       },
       environment: {
         availableAgents: availableAgents,
-        missingVariables: Object.entries(config.features)
-          .filter(([_, available]) => !available)
-          .map(([feature, _]) => `${feature.toUpperCase()}_API_KEY`),
+        missingVariables: [
+          !config.hasAnthropic && 'ANTHROPIC_API_KEY',
+          !config.hasOpenAI && 'OPENAI_API_KEY',
+          !config.hasPerplexity && 'PERPLEXITY_API_KEY',
+          !config.hasAIGateway && 'AI_GATEWAY_API_KEY'
+        ].filter(Boolean) as string[],
       },
       costAnalysis: {
         originalCost: optimizationResult.originalCost,
@@ -85,13 +91,12 @@ export async function GET() {
     const config = getEnvironmentConfig()
 
     return NextResponse.json({
-      availableAgents: Object.entries(config.features)
-        .filter(([_, available]) => available)
-        .map(([agent, _]) => ({
-          name: agent,
-          available: true,
-          requiredVariables: getRequiredVariablesForAgent(agent),
-        })),
+      availableAgents: [
+        config.hasAnthropic && { name: 'claude', available: true, requiredVariables: ['ANTHROPIC_API_KEY'] },
+        config.hasOpenAI && { name: 'gpt', available: true, requiredVariables: ['OPENAI_API_KEY'] },
+        config.hasPerplexity && { name: 'perplexity', available: true, requiredVariables: ['PERPLEXITY_API_KEY'] },
+        config.hasAIGateway && { name: 'ai_gateway', available: true, requiredVariables: ['AI_GATEWAY_API_KEY'] }
+      ].filter(Boolean),
       costOptimization: {
         enabled: true,
         features: ['prompt_optimization', 'agent_recommendation', 'cost_estimation', 'savings_tracking'],

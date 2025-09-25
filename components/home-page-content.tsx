@@ -162,7 +162,7 @@ export function HomePageContent() {
           <div className="max-w-6xl mx-auto">
             <X402Payment
               onPaymentComplete={(paymentData) => {
-                toast.success(`Payment completed for ${paymentData.tier.name} plan!`)
+                toast.success(`Payment completed for ${(paymentData.tier as { name: string }).name} plan!`)
               }}
               onSubscriptionChange={(tier) => {
                 toast.info(`Subscription changed to ${tier.name} plan`)

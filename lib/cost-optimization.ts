@@ -4,7 +4,7 @@
  */
 
 import { enhancedPromptOptimizer, OptimizationResult } from './enhanced-prompt-optimizer'
-import { getEnvironmentConfig, getMinimalConfigForAgent } from './config/env'
+import { getEnvironmentConfig } from './config/env'
 
 export interface CostOptimizationResult {
   originalCost: number

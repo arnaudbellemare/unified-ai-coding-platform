@@ -194,6 +194,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
     const id = nanoid()
     const optimisticTask: Task = {
       id,
+      userId: null, // Will be set by the server
       prompt: taskData.prompt,
       repoUrl: taskData.repoUrl,
       selectedAgent: taskData.selectedAgent,
