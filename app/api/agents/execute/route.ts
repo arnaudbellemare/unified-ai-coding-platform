@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPrivyUser } from '@/lib/auth/privy-auth'
-import { generateText } from 'ai'
+import { generateText, generateObject, Chat } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { perplexity } from '@ai-sdk/perplexity'
 import { anthropic } from '@ai-sdk/anthropic'
 import { ap2Service } from '@/lib/ap2/service'
 import { PaymentIntent } from '@/lib/ap2/types'
 import { TokenCounter, type TokenUsage } from '@/lib/utils/token-counter'
+import { z } from 'zod'
 
 interface AgentExecutionRequest {
   agentId: string
@@ -142,25 +143,66 @@ Get your API keys from:
         }
       }
 
-      // Prepare the full prompt for token counting
-      const fullPrompt = `You are a ${agentType} agent. ${instructions}
-
-User Input: ${input}
-
-Please provide a comprehensive, helpful response based on your expertise in ${agentType}.${aiProvider === perplexity ? ' Use real-time information when relevant.' : ''}`
-
-      // Count tokens before API call
-      promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
-      console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
-
-      // Use real AI API call with selected provider
-      const result = await generateText({
+      // Create a Chat instance with the new AI SDK v5 message format
+      const chat = new Chat({
         model: aiProvider(modelName),
-        prompt: fullPrompt,
         temperature,
       })
 
-      aiResponse = result.text
+      // Add system message with agent instructions
+      chat.addMessage({
+        role: 'system',
+        content: `You are a ${agentType} agent. ${instructions}${aiProvider === perplexity ? ' Use real-time information when relevant.' : ''}`,
+      })
+
+      // Add user input as a message with parts
+      chat.addMessage({
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: input,
+          },
+        ],
+      })
+
+      // Count tokens before API call
+      const chatMessages = chat.getMessages()
+      const fullPrompt = chatMessages.map(msg => 
+        `${msg.role}: ${typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)}`
+      ).join('\n')
+      promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
+      console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
+
+      // Use the new AI SDK v5 Chat API with structured output for certain agent types
+      let result
+      if (agentType === 'analytics' || agentType === 'coding') {
+        // Use structured output for analytics and coding agents
+        const schema = z.object({
+          analysis: z.string().describe('The main analysis or response'),
+          recommendations: z.array(z.string()).optional().describe('Actionable recommendations'),
+          confidence: z.number().min(0).max(1).describe('Confidence level in the response'),
+          metadata: z.object({
+            processingTime: z.string().optional(),
+            dataSources: z.array(z.string()).optional(),
+          }).optional(),
+        })
+
+        const structuredResult = await generateObject({
+          model: aiProvider(modelName),
+          messages: chat.getMessages(),
+          schema,
+          temperature,
+        })
+
+        // Format structured response for display
+        aiResponse = `${structuredResult.object.analysis}\n\n${structuredResult.object.recommendations?.length ? 'Recommendations:\n' + structuredResult.object.recommendations.map(rec => `• ${rec}`).join('\n') : ''}\n\nConfidence: ${(structuredResult.object.confidence * 100).toFixed(1)}%`
+        result = { text: aiResponse }
+      } else {
+        // Use standard text generation for other agent types
+        result = await chat.generate()
+        aiResponse = result.text
+      }
 
       // Count tokens after API call
       completionTokens = TokenCounter.countTokens(aiResponse, modelName)

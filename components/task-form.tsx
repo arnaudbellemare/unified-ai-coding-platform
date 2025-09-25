@@ -50,6 +50,8 @@ const CODING_AGENTS = [
   { value: 'claude', label: 'Claude', icon: Claude },
   { value: 'opencode', label: 'opencode', icon: OpenCode },
   { value: 'perplexity', label: 'Perplexity', icon: Perplexity },
+  { value: 'perplexity-v5', label: 'Perplexity AI SDK v5', icon: Perplexity },
+  { value: 'openai-v5', label: 'OpenAI AI SDK v5', icon: Codex },
 ] as const
 
 // Model options for each agent
@@ -87,6 +89,15 @@ const AGENT_MODELS = {
     { value: 'perplexity/sonar', label: 'Sonar' },
     { value: 'perplexity/sonar-pro', label: 'Sonar Pro' },
   ],
+  'perplexity-v5': [
+    { value: 'perplexity/sonar', label: 'Sonar (AI SDK v5)' },
+    { value: 'perplexity/sonar-pro', label: 'Sonar Pro (AI SDK v5)' },
+  ],
+  'openai-v5': [
+    { value: 'gpt-4', label: 'GPT-4 (AI SDK v5)' },
+    { value: 'gpt-4-turbo', label: 'GPT-4 Turbo (AI SDK v5)' },
+    { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (AI SDK v5)' },
+  ],
 } as const
 
 // Default models for each agent
@@ -96,6 +107,8 @@ const DEFAULT_MODELS = {
   cursor: 'auto',
   opencode: 'gpt-5',
   perplexity: 'perplexity/sonar',
+  'perplexity-v5': 'perplexity/sonar',
+  'openai-v5': 'gpt-4',
 } as const
 
 export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
