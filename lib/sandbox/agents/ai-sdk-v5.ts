@@ -4,7 +4,7 @@ import { AgentExecutionResult } from '../types'
 import { redactSensitiveInfo, createCommandLog, createInfoLog, createErrorLog } from '@/lib/utils/logging'
 import { LogEntry } from '@/lib/db/schema'
 import { TaskLogger } from '@/lib/utils/task-logger'
-import { generateText, generateObject, Chat } from 'ai'
+import { generateText, generateObject } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { perplexity } from '@ai-sdk/perplexity'
 import { anthropic } from '@ai-sdk/anthropic'
@@ -69,7 +69,7 @@ export async function executePerplexityAgentV5(
     // Create a Node.js script that uses AI SDK v5
     const executionScript = `#!/usr/bin/env node
 
-const { generateText, generateObject, Chat } = require('ai');
+const { generateText, generateObject } = require('ai');
 const { perplexity } = require('@ai-sdk/perplexity');
 const { z } = require('zod');
 
@@ -242,7 +242,7 @@ export async function executeOpenAIAgentV5(
     // Create a Node.js script that uses AI SDK v5
     const executionScript = `#!/usr/bin/env node
 
-const { generateText, generateObject, Chat } = require('ai');
+const { generateText, generateObject } = require('ai');
 const { openai } = require('@ai-sdk/openai');
 const { z } = require('zod');
 

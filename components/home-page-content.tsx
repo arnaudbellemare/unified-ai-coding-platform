@@ -7,6 +7,7 @@ import { CostOptimization } from '@/components/cost-optimization'
 import { AgentHub } from '@/components/agent-hub'
 import { AgentKitNuxtInspired } from '@/components/agent-kit-nuxt-inspired'
 import { AutonomousAgentWallet } from '@/components/autonomous-agent-wallet'
+import { SmartAgentWallet } from '@/components/smart-agent-wallet'
 import { X402Payment } from '@/components/x402-payment'
 import { X402PaymentIntegration } from '@/components/x402-payment-integration'
 import { PaymentProtocolComparison } from '@/components/payment-protocol-comparison'
@@ -175,9 +176,20 @@ export function HomePageContent() {
                   <AgentKitNuxtInspired />
                 </TabsContent>
 
-                <TabsContent value="wallets" className="space-y-6">
-                  <AutonomousAgentWallet />
-                </TabsContent>
+              <TabsContent value="wallets" className="space-y-6">
+                <Tabs value="wallet-type" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="basic">Basic Wallets</TabsTrigger>
+                    <TabsTrigger value="smart">Smart Contract Wallets</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="basic" className="space-y-6">
+                    <AutonomousAgentWallet />
+                  </TabsContent>
+                  <TabsContent value="smart" className="space-y-6">
+                    <SmartAgentWallet />
+                  </TabsContent>
+                </Tabs>
+              </TabsContent>
 
                 <TabsContent value="management" className="space-y-6">
                   <Card>

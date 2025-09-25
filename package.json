@@ -17,6 +17,9 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@account-abstraction/contracts": "^0.8.0",
+    "@account-abstraction/sdk": "^0.6.0",
+    "@account-abstraction/utils": "^0.6.0",
     "@ai-sdk/anthropic": "^2.0.18",
     "@ai-sdk/openai": "^2.0.35",
     "@ai-sdk/perplexity": "^2.0.10",
@@ -24,6 +27,8 @@
     "@coinbase/cdp-sdk": "^1.38.2",
     "@coinbase/x402": "^0.6.4",
     "@neondatabase/serverless": "^0.10.1",
+    "@openzeppelin/contracts": "^5.4.0",
+    "@openzeppelin/contracts-upgradeable": "^5.4.0",
     "@privy-io/react-auth": "^3.0.1",
     "@privy-io/wagmi": "^2.0.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
