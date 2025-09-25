@@ -77,19 +77,26 @@ export class ERC4337AgentWallet {
   private wallets: Map<string, SmartAgentWallet> = new Map()
 
   // Contract addresses (Base network)
-  private readonly FACTORY_ADDRESS = process.env.AGENT_WALLET_FACTORY_ADDRESS || '0x0000000000000000000000000000000000000000' // Placeholder - deploy this
+  private readonly FACTORY_ADDRESS =
+    process.env.AGENT_WALLET_FACTORY_ADDRESS || '0x0000000000000000000000000000000000000000' // Placeholder - deploy this
   private readonly USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' // USDC on Base
   private readonly ENTRY_POINT_ADDRESS = '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789' // ERC-4337 EntryPoint
 
   constructor() {
-    // Initialize Ethereum provider (Base network)
-    this.provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL || 'https://mainnet.base.org')
+    try {
+      // Initialize Ethereum provider (Base network)
+      this.provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL || 'https://mainnet.base.org')
 
-    // Initialize factory contract only if we have a valid address
-    if (this.FACTORY_ADDRESS !== '0x0000000000000000000000000000000000000000') {
-      this.factoryContract = AgentWalletFactory__factory.connect(this.FACTORY_ADDRESS, this.provider)
-    } else {
-      // Use a mock contract for development
+      // Initialize factory contract only if we have a valid address
+      if (this.FACTORY_ADDRESS !== '0x0000000000000000000000000000000000000000') {
+        this.factoryContract = AgentWalletFactory__factory.connect(this.FACTORY_ADDRESS, this.provider)
+      } else {
+        // Use a mock contract for development
+        this.factoryContract = null
+      }
+    } catch (error) {
+      console.warn('Failed to initialize ethers provider, using mock mode:', error)
+      this.provider = null as any
       this.factoryContract = null
     }
   }
@@ -105,7 +112,7 @@ export class ERC4337AgentWallet {
       if (!this.factoryContract) {
         console.log('📝 Using simulated wallet creation for development')
         const walletAddress = `0x${Math.random().toString(16).substr(2, 40)}`
-        
+
         // Create wallet instance
         const smartWallet: SmartAgentWallet = {
           agentId: config.agentId,
@@ -295,7 +302,7 @@ export class ERC4337AgentWallet {
       if (!this.factoryContract) {
         console.log('📝 Using simulated transaction execution for development')
         const transactionHash = `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-        
+
         // Update wallet state
         smartWallet.balance.usdc -= request.value
         smartWallet.spendingRule.dailySpent += request.value
