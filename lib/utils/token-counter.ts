@@ -32,14 +32,14 @@ const MODEL_PRICING = {
   'gpt-4-turbo': { prompt: 0.01, completion: 0.03 },
   'gpt-3.5-turbo': { prompt: 0.0015, completion: 0.002 },
   'gpt-4o': { prompt: 0.005, completion: 0.015 },
-  
+
   // Anthropic Models
   'claude-3-opus-20240229': { prompt: 0.015, completion: 0.075 },
   'claude-3-sonnet-20240229': { prompt: 0.003, completion: 0.015 },
   'claude-3-5-sonnet-20241022': { prompt: 0.003, completion: 0.015 },
-  
+
   // Perplexity Models
-  'sonar': { prompt: 0.005, completion: 0.005 },
+  sonar: { prompt: 0.005, completion: 0.005 },
   'sonar-pro': { prompt: 0.005, completion: 0.005 },
   'llama-3.1-sonar-small-128k-online': { prompt: 0.005, completion: 0.005 },
   'llama-3.1-sonar-large-128k-online': { prompt: 0.005, completion: 0.005 },
@@ -71,9 +71,9 @@ export class TokenCounter {
     const pricing = MODEL_PRICING[model as keyof typeof MODEL_PRICING]
     if (!pricing) {
       console.warn(`No pricing found for model ${model}, using default rate`)
-      return tokens * 0.002 / 1000 // Default rate
+      return (tokens * 0.002) / 1000 // Default rate
     }
-    
+
     const rate = type === 'prompt' ? pricing.prompt : pricing.completion
     return (tokens * rate) / 1000
   }
@@ -81,11 +81,7 @@ export class TokenCounter {
   /**
    * Calculate comprehensive token usage and costs
    */
-  static calculateTokenUsage(
-    prompt: string,
-    completion: string,
-    model: string
-  ): TokenUsage {
+  static calculateTokenUsage(prompt: string, completion: string, model: string): TokenUsage {
     const promptTokens = this.countTokens(prompt, model)
     const completionTokens = this.countTokens(completion, model)
     const totalTokens = promptTokens + completionTokens
@@ -111,7 +107,7 @@ export class TokenCounter {
     originalPrompt: string,
     optimizedPrompt: string,
     completion: string,
-    model: string
+    model: string,
   ): OptimizationResult {
     const originalTokens = this.countTokens(originalPrompt, model)
     const optimizedTokens = this.countTokens(optimizedPrompt, model)
@@ -149,7 +145,7 @@ export class TokenCounter {
       'claude-3-opus-20240229': 'gpt-4', // Use GPT-4 encoding as approximation
       'claude-3-sonnet-20240229': 'gpt-4',
       'claude-3-5-sonnet-20241022': 'gpt-4',
-      'sonar': 'gpt-3.5-turbo', // Use GPT-3.5 encoding as approximation
+      sonar: 'gpt-3.5-turbo', // Use GPT-3.5 encoding as approximation
       'sonar-pro': 'gpt-3.5-turbo',
       'llama-3.1-sonar-small-128k-online': 'gpt-3.5-turbo',
       'llama-3.1-sonar-large-128k-online': 'gpt-3.5-turbo',

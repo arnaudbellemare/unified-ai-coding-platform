@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  // Skip static optimization for API routes to avoid build-time errors
+  skipTrailingSlashRedirect: true,
   images: {
     remotePatterns: [
       {
@@ -27,7 +29,17 @@ const nextConfig: NextConfig = {
     config.experiments = {
       ...config.experiments,
       asyncWebAssembly: true,
+      syncWebAssembly: true,
     }
+    
+    // Copy WASM files to the build output
+    config.module.rules.push({
+      test: /\.wasm$/,
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/wasm/[name].[hash][ext]',
+      },
+    })
     
     if (!isServer) {
       config.resolve.fallback = {

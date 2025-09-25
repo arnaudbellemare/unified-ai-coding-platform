@@ -29,7 +29,7 @@ export class AP2Service {
       id: 'stripe',
       name: 'Stripe',
       type: 'credit_card',
-      fees: { fixed: 0.30, percentage: 2.9 },
+      fees: { fixed: 0.3, percentage: 2.9 },
       supportedCurrencies: ['USD', 'EUR', 'GBP', 'CAD'],
       endpoint: 'https://api.stripe.com/v1/charges',
     },
@@ -52,10 +52,10 @@ export class AP2Service {
     amount: number,
     currency: string = 'USD',
     description: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
   ): Promise<PaymentIntent> {
     const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     const paymentIntent: PaymentIntent = {
       id: paymentId,
       agentId,
@@ -79,8 +79,8 @@ export class AP2Service {
    * Generate x402 HTTP response for payment required
    */
   generateX402Response(paymentIntent: PaymentIntent): X402PaymentRequest {
-    const supportedProviders = this.paymentProviders.filter(provider =>
-      provider.supportedCurrencies.includes(paymentIntent.currency)
+    const supportedProviders = this.paymentProviders.filter((provider) =>
+      provider.supportedCurrencies.includes(paymentIntent.currency),
     )
 
     return {
@@ -90,7 +90,7 @@ export class AP2Service {
         'X-Payment-Amount': paymentIntent.amount.toString(),
         'X-Payment-Currency': paymentIntent.currency,
         'X-Payment-Description': paymentIntent.description,
-        'X-Payment-Provider': supportedProviders.map(p => p.id).join(','),
+        'X-Payment-Provider': supportedProviders.map((p) => p.id).join(','),
       },
       body: {
         paymentId: paymentIntent.id,
@@ -110,7 +110,7 @@ export class AP2Service {
     paymentId: string,
     paymentMethod: PaymentMethod,
     amount: number,
-    currency: string
+    currency: string,
   ): Promise<PaymentResponse> {
     try {
       // Update payment intent status
@@ -124,7 +124,7 @@ export class AP2Service {
       }
 
       // Calculate fees based on payment method
-      const provider = this.paymentProviders.find(p => p.id === paymentMethod.provider)
+      const provider = this.paymentProviders.find((p) => p.id === paymentMethod.provider)
       if (!provider) {
         throw new Error('Payment provider not found')
       }
@@ -134,7 +134,7 @@ export class AP2Service {
 
       // Simulate payment processing (in real implementation, call actual payment provider)
       const transactionId = `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      
+
       // Update payment intent
       paymentIntent.status = 'completed'
       paymentIntent.updatedAt = new Date()
@@ -207,15 +207,15 @@ export class AP2Service {
    */
   private calculateFees(amount: number, feeStructure: { fixed?: number; percentage?: number }): number {
     let fees = 0
-    
+
     if (feeStructure.fixed) {
       fees += feeStructure.fixed
     }
-    
+
     if (feeStructure.percentage) {
       fees += (amount * feeStructure.percentage) / 100
     }
-    
+
     return Math.round(fees * 100) / 100 // Round to 2 decimal places
   }
 
@@ -267,7 +267,7 @@ export class AP2Service {
    */
   async handleWebhook(webhook: PaymentWebhook): Promise<void> {
     console.log('Received payment webhook:', webhook)
-    
+
     // In production, this would update the database based on the webhook
     // For now, we'll just log it
     switch (webhook.event) {

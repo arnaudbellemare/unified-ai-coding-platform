@@ -188,7 +188,9 @@ export function AgentHub() {
 
       // Handle x402 payment required response (Internet-native payments)
       if (executionResponse.status === 402 && result.requiresPayment) {
-        setExecutionError(`💰 Payment Required: $${result.amount} ${result.currency}\n\n${result.message}\n\nThis implements the x402 Foundation standard for Internet-native payments. Please complete payment to proceed with agent execution.`)
+        setExecutionError(
+          `💰 Payment Required: $${result.amount} ${result.currency}\n\n${result.message}\n\nThis implements the x402 Foundation standard for Internet-native payments. Please complete payment to proceed with agent execution.`,
+        )
         return
       }
 
@@ -541,16 +543,24 @@ export function AgentHub() {
                       <div>
                         <div className="text-green-600 dark:text-green-400 font-medium">Real Cost</div>
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
-                          ${(executionHistory[0].costOptimization.realApiCost || executionHistory[0].costOptimization.totalCost || 0).toFixed(6)}
+                          $
+                          {(
+                            executionHistory[0].costOptimization.realApiCost ||
+                            executionHistory[0].costOptimization.totalCost ||
+                            0
+                          ).toFixed(6)}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {executionHistory[0].costOptimization.promptTokens || 0} prompt + {executionHistory[0].costOptimization.completionTokens || 0} completion
+                          {executionHistory[0].costOptimization.promptTokens || 0} prompt +{' '}
+                          {executionHistory[0].costOptimization.completionTokens || 0} completion
                         </div>
                       </div>
                       <div>
                         <div className="text-green-600 dark:text-green-400 font-medium">Total Tokens</div>
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
-                          {executionHistory[0].costOptimization.totalTokens || (executionHistory[0].costOptimization.promptTokens || 0) + (executionHistory[0].costOptimization.completionTokens || 0)}
+                          {executionHistory[0].costOptimization.totalTokens ||
+                            (executionHistory[0].costOptimization.promptTokens || 0) +
+                              (executionHistory[0].costOptimization.completionTokens || 0)}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {executionHistory[0].costOptimization.model || 'Unknown model'}

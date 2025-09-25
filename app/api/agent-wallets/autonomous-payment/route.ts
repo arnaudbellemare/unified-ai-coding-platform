@@ -10,20 +10,13 @@ export async function POST(request: NextRequest) {
     // Get user for authentication
     const privyUser = await getPrivyUser(request)
     if (!privyUser) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
     }
 
     switch (action) {
       case 'create_wallet': {
         const { agentId, fundingSource, initialFunding } = data
-        const wallet = await autonomousAgentWallet.createAgentWallet(
-          agentId,
-          fundingSource,
-          initialFunding
-        )
+        const wallet = await autonomousAgentWallet.createAgentWallet(agentId, fundingSource, initialFunding)
         return NextResponse.json({ success: true, wallet })
       }
 
@@ -41,7 +34,7 @@ export async function POST(request: NextRequest) {
           amount,
           currency: 'USDC',
           description,
-          metadata
+          metadata,
         })
         return NextResponse.json({ success: true, paymentResponse })
       }
@@ -50,10 +43,7 @@ export async function POST(request: NextRequest) {
         const { agentId } = data
         const wallet = autonomousAgentWallet.getAgentWallet(agentId)
         if (!wallet) {
-          return NextResponse.json(
-            { success: false, error: 'Agent wallet not found' },
-            { status: 404 }
-          )
+          return NextResponse.json({ success: false, error: 'Agent wallet not found' }, { status: 404 })
         }
         return NextResponse.json({ success: true, wallet })
       }
@@ -76,22 +66,19 @@ export async function POST(request: NextRequest) {
           agentId,
           apiProvider,
           apiCost,
-          description
+          description,
         )
         return NextResponse.json({ success: true, paymentResponse })
       }
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('Autonomous agent wallet error:', error)
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -103,10 +90,7 @@ export async function GET(request: NextRequest) {
     const agentId = url.searchParams.get('agentId')
 
     if (!agentId) {
-      return NextResponse.json(
-        { success: false, error: 'Agent ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Agent ID is required' }, { status: 400 })
     }
 
     switch (action) {
@@ -124,16 +108,13 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ success: true, wallets: allWallets })
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('Autonomous agent wallet GET error:', error)
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

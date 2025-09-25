@@ -8,18 +8,18 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  ShoppingCart, 
-  CreditCard, 
-  Coins, 
-  DollarSign, 
-  Zap, 
-  Clock, 
+import {
+  ShoppingCart,
+  CreditCard,
+  Coins,
+  DollarSign,
+  Zap,
+  Clock,
   AlertTriangle,
   CheckCircle,
   TrendingUp,
   Wallet,
-  Settings
+  Settings,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -41,15 +41,15 @@ export function MicroEcommercePayment() {
     description: string
   } | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<'credits' | 'crypto' | 'fiat'>('credits')
-  const [creditBalance, setCreditBalance] = useState(15.50)
+  const [creditBalance, setCreditBalance] = useState(15.5)
   const [isProcessing, setIsProcessing] = useState(false)
 
   const products = [
     { name: 'Arduino Sensor Kit', price: 8.99, description: 'Complete sensor kit for IoT projects' },
-    { name: 'Raspberry Pi Case', price: 4.50, description: 'Protective case with cooling fan' },
+    { name: 'Raspberry Pi Case', price: 4.5, description: 'Protective case with cooling fan' },
     { name: 'USB-C Cable', price: 2.99, description: 'High-speed data cable' },
     { name: 'LED Strip', price: 6.75, description: 'WS2812B addressable LED strip' },
-    { name: 'Breadboard Kit', price: 3.25, description: '400-point breadboard with jumper wires' }
+    { name: 'Breadboard Kit', price: 3.25, description: '400-point breadboard with jumper wires' },
   ]
 
   const paymentMethods: PaymentMethod[] = [
@@ -61,7 +61,7 @@ export function MicroEcommercePayment() {
       speed: 'Instant',
       fees: '0% (prepaid)',
       description: 'Use prepaid credits - no per-transaction fees',
-      recommended: true
+      recommended: true,
     },
     {
       id: 'crypto',
@@ -70,7 +70,7 @@ export function MicroEcommercePayment() {
       cost: 'Low',
       speed: '5 min',
       fees: '0.5% + $0.01',
-      description: 'Direct crypto payment with minimal fees'
+      description: 'Direct crypto payment with minimal fees',
     },
     {
       id: 'fiat',
@@ -79,11 +79,11 @@ export function MicroEcommercePayment() {
       cost: 'Medium',
       speed: '1 hour',
       fees: '2.9% + $0.30',
-      description: 'Traditional payment with higher fees'
-    }
+      description: 'Traditional payment with higher fees',
+    },
   ]
 
-  const handleProductSelect = (product: typeof products[0]) => {
+  const handleProductSelect = (product: (typeof products)[0]) => {
     setSelectedProduct(product)
   }
 
@@ -91,7 +91,7 @@ export function MicroEcommercePayment() {
     if (!selectedProduct) return
 
     setIsProcessing(true)
-    
+
     // Simulate payment processing
     setTimeout(() => {
       toast.success(`Payment successful! ${selectedProduct.name} ordered for $${selectedProduct.price}`)
@@ -101,7 +101,7 @@ export function MicroEcommercePayment() {
   }
 
   const topUpCredits = () => {
-    setCreditBalance(prev => prev + 20)
+    setCreditBalance((prev) => prev + 20)
     toast.success('Credits topped up with $20')
   }
 
@@ -122,8 +122,8 @@ export function MicroEcommercePayment() {
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              <strong>Payment Overhead Solution:</strong> Use credit accounts to eliminate per-transaction 
-              fees. Pre-pay $20-50 in credits and make unlimited &lt;$10 purchases with zero additional fees.
+              <strong>Payment Overhead Solution:</strong> Use credit accounts to eliminate per-transaction fees. Pre-pay
+              $20-50 in credits and make unlimited &lt;$10 purchases with zero additional fees.
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -142,7 +142,7 @@ export function MicroEcommercePayment() {
                 {products.map((product) => (
                   <Button
                     key={product.name}
-                    variant={selectedProduct?.name === product.name ? "default" : "outline"}
+                    variant={selectedProduct?.name === product.name ? 'default' : 'outline'}
                     className="h-auto p-4 justify-start"
                     onClick={() => handleProductSelect(product)}
                   >
@@ -171,7 +171,7 @@ export function MicroEcommercePayment() {
                 return (
                   <Button
                     key={method.id}
-                    variant={paymentMethod === method.id ? "default" : "outline"}
+                    variant={paymentMethod === method.id ? 'default' : 'outline'}
                     className="w-full justify-start gap-3 h-auto p-4"
                     onClick={() => setPaymentMethod(method.id)}
                   >
@@ -180,7 +180,9 @@ export function MicroEcommercePayment() {
                       <div className="font-medium flex items-center gap-2">
                         {method.name}
                         {method.recommended && (
-                          <Badge variant="secondary" className="text-xs">Recommended</Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            Recommended
+                          </Badge>
                         )}
                       </div>
                       <div className="text-sm text-muted-foreground">
@@ -199,9 +201,7 @@ export function MicroEcommercePayment() {
               <CardContent className="pt-4">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium">Credit Balance</span>
-                  <span className="text-lg font-bold text-green-600">
-                    ${creditBalance.toFixed(2)}
-                  </span>
+                  <span className="text-lg font-bold text-green-600">${creditBalance.toFixed(2)}</span>
                 </div>
                 <Button onClick={topUpCredits} size="sm" className="w-full">
                   <DollarSign className="h-4 w-4 mr-2" />
@@ -231,37 +231,38 @@ export function MicroEcommercePayment() {
             <div className="border-t pt-4">
               <div className="flex items-center justify-between mb-2">
                 <span>Payment Method</span>
-                <span className="font-medium">
-                  {paymentMethods.find(m => m.id === paymentMethod)?.name}
-                </span>
+                <span className="font-medium">{paymentMethods.find((m) => m.id === paymentMethod)?.name}</span>
               </div>
               <div className="flex items-center justify-between mb-2">
                 <span>Fees</span>
                 <span className="font-medium">
-                  {paymentMethod === 'credits' ? '$0.00' :
-                   paymentMethod === 'crypto' ? `$${(selectedProduct.price * 0.005 + 0.01).toFixed(3)}` :
-                   `$${(selectedProduct.price * 0.029 + 0.30).toFixed(2)}`}
+                  {paymentMethod === 'credits'
+                    ? '$0.00'
+                    : paymentMethod === 'crypto'
+                      ? `$${(selectedProduct.price * 0.005 + 0.01).toFixed(3)}`
+                      : `$${(selectedProduct.price * 0.029 + 0.3).toFixed(2)}`}
                 </span>
               </div>
               <div className="flex items-center justify-between mb-2">
                 <span>Settlement Time</span>
                 <span className="font-medium">
-                  {paymentMethod === 'credits' ? 'Instant' :
-                   paymentMethod === 'crypto' ? '5 minutes' :
-                   '1 hour'}
+                  {paymentMethod === 'credits' ? 'Instant' : paymentMethod === 'crypto' ? '5 minutes' : '1 hour'}
                 </span>
               </div>
               <div className="flex items-center justify-between text-lg font-bold border-t pt-2">
                 <span>Total</span>
                 <span>
-                  ${paymentMethod === 'credits' ? selectedProduct.price.toFixed(2) :
-                    paymentMethod === 'crypto' ? (selectedProduct.price * 1.005 + 0.01).toFixed(2) :
-                    (selectedProduct.price * 1.029 + 0.30).toFixed(2)}
+                  $
+                  {paymentMethod === 'credits'
+                    ? selectedProduct.price.toFixed(2)
+                    : paymentMethod === 'crypto'
+                      ? (selectedProduct.price * 1.005 + 0.01).toFixed(2)
+                      : (selectedProduct.price * 1.029 + 0.3).toFixed(2)}
                 </span>
               </div>
             </div>
 
-            <Button 
+            <Button
               onClick={handlePayment}
               disabled={isProcessing || (paymentMethod === 'credits' && creditBalance < selectedProduct.price)}
               className="w-full"
@@ -283,9 +284,7 @@ export function MicroEcommercePayment() {
             {paymentMethod === 'credits' && creditBalance < selectedProduct.price && (
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>
-                  Insufficient credits. Top up your account to continue.
-                </AlertDescription>
+                <AlertDescription>Insufficient credits. Top up your account to continue.</AlertDescription>
               </Alert>
             )}
           </CardContent>
@@ -321,9 +320,11 @@ export function MicroEcommercePayment() {
                   <div className="flex justify-between">
                     <span>Best for:</span>
                     <span className="text-right">
-                      {method.id === 'credits' ? 'Frequent buyers' :
-                       method.id === 'crypto' ? 'Crypto users' :
-                       'One-time buyers'}
+                      {method.id === 'credits'
+                        ? 'Frequent buyers'
+                        : method.id === 'crypto'
+                          ? 'Crypto users'
+                          : 'One-time buyers'}
                     </span>
                   </div>
                 </div>

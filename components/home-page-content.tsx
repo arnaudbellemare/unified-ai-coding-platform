@@ -169,7 +169,7 @@ export function HomePageContent() {
                   <TabsTrigger value="wallets">Agent Wallets</TabsTrigger>
                   <TabsTrigger value="management">Manage Agents</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="create" className="space-y-6">
                   <AgentHub
                     onAgentCreate={(config) => {
@@ -180,11 +180,11 @@ export function HomePageContent() {
                     }}
                   />
                 </TabsContent>
-                
+
                 <TabsContent value="wallets" className="space-y-6">
                   <AutonomousAgentWallet />
                 </TabsContent>
-                
+
                 <TabsContent value="management" className="space-y-6">
                   <Card>
                     <CardHeader>
@@ -220,15 +220,15 @@ export function HomePageContent() {
                   <TabsTrigger value="x402">x402 Foundation</TabsTrigger>
                   <TabsTrigger value="subscription">Subscription Plans</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="micro-ecommerce" className="space-y-6">
                   <MicroEcommercePayment />
                 </TabsContent>
-                
+
                 <TabsContent value="protocol-analysis" className="space-y-6">
                   <X402ProtocolAnalysis />
                 </TabsContent>
-                
+
                 <TabsContent value="protocols" className="space-y-6">
                   <PaymentProtocolComparison
                     onProtocolSelect={(protocol) => {
@@ -236,11 +236,11 @@ export function HomePageContent() {
                     }}
                   />
                 </TabsContent>
-                
+
                 <TabsContent value="x402" className="space-y-6">
                   <X402PaymentIntegration />
                 </TabsContent>
-                
+
                 <TabsContent value="subscription" className="space-y-6">
                   <X402Payment
                     onPaymentComplete={(paymentData) => {

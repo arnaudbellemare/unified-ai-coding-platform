@@ -60,7 +60,7 @@ export class AutonomousAgentWallet {
   constructor() {
     // Initialize Ethereum provider (Base network for x402)
     this.provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL || 'https://mainnet.base.org')
-    
+
     // USDC contract on Base network
     const USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' // USDC on Base
     const USDC_ABI = [
@@ -68,9 +68,9 @@ export class AutonomousAgentWallet {
       'function balanceOf(address account) view returns (uint256)',
       'function approve(address spender, uint256 amount) returns (bool)',
       'function allowance(address owner, address spender) view returns (uint256)',
-      'function decimals() view returns (uint8)'
+      'function decimals() view returns (uint8)',
     ]
-    
+
     this.usdcContract = new ethers.Contract(USDC_ADDRESS, USDC_ABI, this.provider)
   }
 
@@ -80,7 +80,7 @@ export class AutonomousAgentWallet {
   async createAgentWallet(
     agentId: string,
     fundingSource: 'user' | 'autonomous' | 'hybrid' = 'hybrid',
-    initialFunding?: number
+    initialFunding?: number,
   ): Promise<AgentWallet> {
     console.log(`🤖 Creating autonomous wallet for agent: ${agentId}`)
 
@@ -93,7 +93,7 @@ export class AutonomousAgentWallet {
       walletAddress,
       balance: {
         usdc: initialFunding || 0,
-        eth: 0.01 // Small amount for gas
+        eth: 0.01, // Small amount for gas
       },
       fundingSource,
       autonomousSettings: {
@@ -101,16 +101,16 @@ export class AutonomousAgentWallet {
         maxSingleTransaction: 2, // $2 USDC per transaction
         allowedServices: ['openai', 'anthropic', 'perplexity', 'vercel', 'aws'],
         autoTopUp: true,
-        topUpThreshold: 1 // Auto-topup when below $1 USDC
+        topUpThreshold: 1, // Auto-topup when below $1 USDC
       },
       transactionHistory: [],
       isActive: true,
       createdAt: new Date(),
-      lastUsed: new Date()
+      lastUsed: new Date(),
     }
 
     this.wallets.set(agentId, agentWallet)
-    
+
     console.log(`✅ Agent wallet created: ${walletAddress}`)
     return agentWallet
   }
@@ -144,14 +144,14 @@ export class AutonomousAgentWallet {
       metadata: {
         transactionType: 'funding',
         source: fromUserWallet || 'user_wallet',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       createdAt: new Date(),
-      completedAt: new Date()
+      completedAt: new Date(),
     }
 
     agentWallet.transactionHistory.push(fundingTransaction)
-    
+
     console.log(`✅ Agent wallet funded. New balance: $${agentWallet.balance.usdc} USDC`)
     return true
   }
@@ -165,7 +165,9 @@ export class AutonomousAgentWallet {
       throw new Error(`Agent wallet not found: ${request.agentId}`)
     }
 
-    console.log(`🤖 Agent ${request.agentId} making autonomous payment: $${request.amount} USDC to ${request.serviceProvider}`)
+    console.log(
+      `🤖 Agent ${request.agentId} making autonomous payment: $${request.amount} USDC to ${request.serviceProvider}`,
+    )
 
     // Check autonomous spending limits
     if (!this.canMakePayment(agentWallet, request)) {
@@ -176,7 +178,7 @@ export class AutonomousAgentWallet {
         fees: 0,
         gasUsed: 0,
         timestamp: new Date(),
-        error: 'Payment exceeds autonomous spending limits'
+        error: 'Payment exceeds autonomous spending limits',
       }
     }
 
@@ -195,7 +197,7 @@ export class AutonomousAgentWallet {
           fees: 0,
           gasUsed: 0,
           timestamp: new Date(),
-          error: 'Insufficient USDC balance'
+          error: 'Insufficient USDC balance',
         }
       }
     }
@@ -208,7 +210,7 @@ export class AutonomousAgentWallet {
     try {
       // Simulate USDC transfer (in real implementation, this would be an actual blockchain transaction)
       const transactionId = `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      
+
       // Update wallet balance
       agentWallet.balance.usdc -= totalCost
       agentWallet.balance.eth -= gasFee
@@ -230,10 +232,10 @@ export class AutonomousAgentWallet {
           protocolFee,
           gasFee,
           transactionType: 'autonomous_payment',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
         createdAt: new Date(),
-        completedAt: new Date()
+        completedAt: new Date(),
       }
 
       agentWallet.transactionHistory.push(transaction)
@@ -247,9 +249,8 @@ export class AutonomousAgentWallet {
         amount: request.amount,
         fees: protocolFee,
         gasUsed: gasFee,
-        timestamp: new Date()
+        timestamp: new Date(),
       }
-
     } catch (error) {
       console.error(`❌ Autonomous payment failed:`, error)
       return {
@@ -259,7 +260,7 @@ export class AutonomousAgentWallet {
         fees: protocolFee,
         gasUsed: gasFee,
         timestamp: new Date(),
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       }
     }
   }
@@ -270,19 +271,23 @@ export class AutonomousAgentWallet {
   private canMakePayment(agentWallet: AgentWallet, request: AutonomousPaymentRequest): boolean {
     // Check single transaction limit
     if (request.amount > agentWallet.autonomousSettings.maxSingleTransaction) {
-      console.warn(`⚠️ Payment exceeds single transaction limit: $${request.amount} > $${agentWallet.autonomousSettings.maxSingleTransaction}`)
+      console.warn(
+        `⚠️ Payment exceeds single transaction limit: $${request.amount} > $${agentWallet.autonomousSettings.maxSingleTransaction}`,
+      )
       return false
     }
 
     // Check daily spending limit
     const today = new Date().toDateString()
     const todayTransactions = agentWallet.transactionHistory.filter(
-      tx => tx.createdAt.toDateString() === today && tx.status === 'completed'
+      (tx) => tx.createdAt.toDateString() === today && tx.status === 'completed',
     )
     const todaySpent = todayTransactions.reduce((sum, tx) => sum + tx.amount, 0)
-    
+
     if (todaySpent + request.amount > agentWallet.autonomousSettings.maxDailySpend) {
-      console.warn(`⚠️ Payment would exceed daily spending limit: $${todaySpent + request.amount} > $${agentWallet.autonomousSettings.maxDailySpend}`)
+      console.warn(
+        `⚠️ Payment would exceed daily spending limit: $${todaySpent + request.amount} > $${agentWallet.autonomousSettings.maxDailySpend}`,
+      )
       return false
     }
 
@@ -305,10 +310,7 @@ export class AutonomousAgentWallet {
   /**
    * Update autonomous settings for an agent
    */
-  updateAutonomousSettings(
-    agentId: string, 
-    settings: Partial<AgentWallet['autonomousSettings']>
-  ): boolean {
+  updateAutonomousSettings(agentId: string, settings: Partial<AgentWallet['autonomousSettings']>): boolean {
     const agentWallet = this.wallets.get(agentId)
     if (!agentWallet) {
       return false
@@ -316,7 +318,7 @@ export class AutonomousAgentWallet {
 
     agentWallet.autonomousSettings = {
       ...agentWallet.autonomousSettings,
-      ...settings
+      ...settings,
     }
 
     console.log(`⚙️ Updated autonomous settings for agent ${agentId}`)
@@ -339,9 +341,7 @@ export class AutonomousAgentWallet {
       return []
     }
 
-    return agentWallet.transactionHistory
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice(0, limit)
+    return agentWallet.transactionHistory.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, limit)
   }
 
   /**
@@ -351,7 +351,7 @@ export class AutonomousAgentWallet {
     agentId: string,
     apiProvider: string,
     apiCost: number,
-    description: string
+    description: string,
   ): Promise<AutonomousPaymentResponse> {
     const request: AutonomousPaymentRequest = {
       agentId,
@@ -362,8 +362,8 @@ export class AutonomousAgentWallet {
       metadata: {
         serviceType: 'api_call',
         priority: 'medium',
-        estimatedCost: apiCost
-      }
+        estimatedCost: apiCost,
+      },
     }
 
     return this.makeAutonomousPayment(request)

@@ -151,8 +151,16 @@ export async function POST(request: NextRequest) {
         // Calculate real token costs using actual token counting
         originalTokens: TokenCounter.countTokens(prompt, 'gpt-3.5-turbo'), // Use GPT-3.5 as baseline
         optimizedTokens: TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'),
-        originalCost: TokenCounter.calculateCost(TokenCounter.countTokens(prompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt'),
-        optimizedCost: TokenCounter.calculateCost(TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt'),
+        originalCost: TokenCounter.calculateCost(
+          TokenCounter.countTokens(prompt, 'gpt-3.5-turbo'),
+          'gpt-3.5-turbo',
+          'prompt',
+        ),
+        optimizedCost: TokenCounter.calculateCost(
+          TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'),
+          'gpt-3.5-turbo',
+          'prompt',
+        ),
         totalSavings: hybridResult.costReduction,
         estimatedMonthlySavings: hybridResult.costReduction * 30, // Estimate monthly savings
         tokenReduction: hybridResult.tokenReduction,
@@ -160,8 +168,16 @@ export async function POST(request: NextRequest) {
         optimizationEngine: hybridResult.optimizationEngine,
         strategies: hybridResult.strategies,
         verbosityLevel: hybridResult.verbosityLevel,
-        realTokenReduction: TokenCounter.countTokens(prompt, 'gpt-3.5-turbo') - TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'),
-        realCostSavings: TokenCounter.calculateCost(TokenCounter.countTokens(prompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt') - TokenCounter.calculateCost(TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt'),
+        realTokenReduction:
+          TokenCounter.countTokens(prompt, 'gpt-3.5-turbo') -
+          TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'),
+        realCostSavings:
+          TokenCounter.calculateCost(TokenCounter.countTokens(prompt, 'gpt-3.5-turbo'), 'gpt-3.5-turbo', 'prompt') -
+          TokenCounter.calculateCost(
+            TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo'),
+            'gpt-3.5-turbo',
+            'prompt',
+          ),
       },
     })
   } catch (error) {

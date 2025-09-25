@@ -6,20 +6,20 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Shield, 
-  Zap, 
-  DollarSign, 
-  Clock, 
-  Globe, 
-  AlertTriangle, 
-  CheckCircle, 
+import {
+  Shield,
+  Zap,
+  DollarSign,
+  Clock,
+  Globe,
+  AlertTriangle,
+  CheckCircle,
   XCircle,
   Info,
   TrendingUp,
   Building,
   Coins,
-  CreditCard
+  CreditCard,
 } from 'lucide-react'
 
 interface ProtocolComparisonProps {
@@ -47,17 +47,17 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
           'True micropayments support',
           'Developer-friendly APIs',
           'Global accessibility',
-          'Programmable payments'
+          'Programmable payments',
         ],
         disadvantages: [
           'Centralized around Coinbase infrastructure',
           'Irreversible transactions',
           'Smart contract risks',
-          'Limited consumer protection'
+          'Limited consumer protection',
         ],
         icon: Coins,
         color: 'blue',
-        centralizationConcern: 'Medium'
+        centralizationConcern: 'Medium',
       },
       {
         protocol: 'l402',
@@ -73,17 +73,17 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
           'Lowest transaction costs',
           'Bitcoin security',
           'Censorship resistance',
-          'No single point of failure'
+          'No single point of failure',
         ],
         disadvantages: [
           'High technical complexity',
           'Channel management overhead',
           'Routing failures possible',
-          'Bitcoin volatility'
+          'Bitcoin volatility',
         ],
         icon: Zap,
         color: 'orange',
-        centralizationConcern: 'Low'
+        centralizationConcern: 'Low',
       },
       {
         protocol: 'sepa',
@@ -99,18 +99,18 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
           'Regulatory compliance',
           'Familiar to European users',
           'Banking-grade security',
-          'Reversible transactions'
+          'Reversible transactions',
         ],
         disadvantages: [
           'Limited automation capabilities',
           'Slow settlement times',
           'High minimum amounts',
           'Complex regulatory requirements',
-          'EU-only reach'
+          'EU-only reach',
         ],
         icon: Building,
         color: 'green',
-        centralizationConcern: 'High'
+        centralizationConcern: 'High',
       },
       {
         protocol: 'stripe',
@@ -126,41 +126,61 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
           'Strong fraud protection',
           'Multiple payment methods',
           'Global reach',
-          'Chargeback protection'
+          'Chargeback protection',
         ],
         disadvantages: [
           'Higher fees for small transactions',
           'Limited micropayment support',
           'Centralized control',
-          'Processing delays'
+          'Processing delays',
         ],
         icon: CreditCard,
         color: 'purple',
-        centralizationConcern: 'High'
-      }
+        centralizationConcern: 'High',
+      },
     ]
     setComparison(mockComparison)
   }, [])
 
   const getDecentralizationIcon = (level: string) => {
     switch (level) {
-      case 'Decentralized': return <CheckCircle className="h-4 w-4 text-green-500" />
-      case 'Semi-Decentralized': return <AlertTriangle className="h-4 w-4 text-yellow-500" />
-      case 'Centralized': return <XCircle className="h-4 w-4 text-red-500" />
-      default: return <Info className="h-4 w-4 text-gray-500" />
+      case 'Decentralized':
+        return <CheckCircle className="h-4 w-4 text-green-500" />
+      case 'Semi-Decentralized':
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+      case 'Centralized':
+        return <XCircle className="h-4 w-4 text-red-500" />
+      default:
+        return <Info className="h-4 w-4 text-gray-500" />
     }
   }
 
   const getCentralizationBadge = (concern: string) => {
     switch (concern) {
-      case 'Low': return <Badge variant="outline" className="text-green-600 border-green-200">Low Risk</Badge>
-      case 'Medium': return <Badge variant="outline" className="text-yellow-600 border-yellow-200">Medium Risk</Badge>
-      case 'High': return <Badge variant="outline" className="text-red-600 border-red-200">High Risk</Badge>
-      default: return <Badge variant="outline">Unknown</Badge>
+      case 'Low':
+        return (
+          <Badge variant="outline" className="text-green-600 border-green-200">
+            Low Risk
+          </Badge>
+        )
+      case 'Medium':
+        return (
+          <Badge variant="outline" className="text-yellow-600 border-yellow-200">
+            Medium Risk
+          </Badge>
+        )
+      case 'High':
+        return (
+          <Badge variant="outline" className="text-red-600 border-red-200">
+            High Risk
+          </Badge>
+        )
+      default:
+        return <Badge variant="outline">Unknown</Badge>
     }
   }
 
-  const selectedProtocolData = comparison.find(p => p.protocol === selectedProtocol)
+  const selectedProtocolData = comparison.find((p) => p.protocol === selectedProtocol)
 
   return (
     <div className="space-y-6">
@@ -171,16 +191,14 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
             <Globe className="h-6 w-6 text-blue-600" />
             Payment Protocol Analysis
           </CardTitle>
-          <CardDescription>
-            Comprehensive comparison of payment protocols for AI agent systems
-          </CardDescription>
+          <CardDescription>Comprehensive comparison of payment protocols for AI agent systems</CardDescription>
         </CardHeader>
         <CardContent>
           <Alert>
             <Info className="h-4 w-4" />
             <AlertDescription>
-              <strong>Decentralization Trade-offs:</strong> Each protocol balances decentralization, 
-              automation, and user protection differently. Choose based on your specific requirements.
+              <strong>Decentralization Trade-offs:</strong> Each protocol balances decentralization, automation, and
+              user protection differently. Choose based on your specific requirements.
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -200,9 +218,11 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
                 return (
                   <Button
                     key={protocol.protocol}
-                    variant={selectedProtocol === protocol.protocol ? "default" : "outline"}
+                    variant={selectedProtocol === protocol.protocol ? 'default' : 'outline'}
                     className={`w-full justify-start gap-3 h-auto p-4 ${
-                      selectedProtocol === protocol.protocol ? `bg-${protocol.color}-100 border-${protocol.color}-300` : ''
+                      selectedProtocol === protocol.protocol
+                        ? `bg-${protocol.color}-100 border-${protocol.color}-300`
+                        : ''
                     }`}
                     onClick={() => setSelectedProtocol(protocol.protocol)}
                   >
@@ -230,9 +250,7 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
                     <selectedProtocolData.icon className="h-6 w-6" />
                     <div>
                       <CardTitle>{selectedProtocolData.name}</CardTitle>
-                      <CardDescription>
-                        {selectedProtocolData.protocol.toUpperCase()} Protocol Analysis
-                      </CardDescription>
+                      <CardDescription>{selectedProtocolData.protocol.toUpperCase()} Protocol Analysis</CardDescription>
                     </div>
                   </div>
                   {getCentralizationBadge(selectedProtocolData.centralizationConcern)}
@@ -308,8 +326,8 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
                   <Alert className="border-yellow-200 bg-yellow-50">
                     <AlertTriangle className="h-4 w-4 text-yellow-600" />
                     <AlertDescription className="text-yellow-800">
-                      <strong>Centralization Concern:</strong> This protocol has moderate centralization risks. 
-                      Consider implementing fallback mechanisms and monitoring infrastructure dependencies.
+                      <strong>Centralization Concern:</strong> This protocol has moderate centralization risks. Consider
+                      implementing fallback mechanisms and monitoring infrastructure dependencies.
                     </AlertDescription>
                   </Alert>
                 )}
@@ -318,7 +336,7 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
                   <Alert className="border-red-200 bg-red-50">
                     <XCircle className="h-4 w-4 text-red-600" />
                     <AlertDescription className="text-red-800">
-                      <strong>High Centralization Risk:</strong> This protocol relies heavily on centralized 
+                      <strong>High Centralization Risk:</strong> This protocol relies heavily on centralized
                       infrastructure. Ensure you have contingency plans and consider more decentralized alternatives.
                     </AlertDescription>
                   </Alert>
@@ -326,10 +344,7 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
 
                 {/* Action Button */}
                 <div className="pt-4 border-t">
-                  <Button 
-                    onClick={() => onProtocolSelect?.(selectedProtocol)}
-                    className="w-full"
-                  >
+                  <Button onClick={() => onProtocolSelect?.(selectedProtocol)} className="w-full">
                     <TrendingUp className="h-4 w-4 mr-2" />
                     Use {selectedProtocolData.name} for Payments
                   </Button>
@@ -344,31 +359,28 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
       <Card>
         <CardHeader>
           <CardTitle>Recommendations for AI Agent Systems</CardTitle>
-          <CardDescription>
-            Best practices for payment protocol selection based on your use case
-          </CardDescription>
+          <CardDescription>Best practices for payment protocol selection based on your use case</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <h4 className="font-semibold text-blue-800 mb-2">For Micropayments</h4>
               <p className="text-sm text-blue-700">
-                Use <strong>x402</strong> or <strong>L402</strong> for sub-cent transactions. 
-                Traditional payment systems have high minimum fees.
+                Use <strong>x402</strong> or <strong>L402</strong> for sub-cent transactions. Traditional payment
+                systems have high minimum fees.
               </p>
             </div>
             <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
               <h4 className="font-semibold text-green-800 mb-2">For Consumer Protection</h4>
               <p className="text-sm text-green-700">
-                Use <strong>SEPA</strong> or <strong>Stripe</strong> when reversibility 
-                and fraud protection are critical.
+                Use <strong>SEPA</strong> or <strong>Stripe</strong> when reversibility and fraud protection are
+                critical.
               </p>
             </div>
             <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
               <h4 className="font-semibold text-purple-800 mb-2">For Decentralization</h4>
               <p className="text-sm text-purple-700">
-                Use <strong>L402</strong> for maximum decentralization, 
-                though with higher technical complexity.
+                Use <strong>L402</strong> for maximum decentralization, though with higher technical complexity.
               </p>
             </div>
           </div>

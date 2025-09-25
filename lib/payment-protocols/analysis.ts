@@ -44,15 +44,15 @@ export const PAYMENT_PROTOCOLS: Record<string, PaymentProtocol> = {
     reversibility: {
       supported: true,
       timeframe: '8 weeks for direct debits, immediate for credit transfers',
-      conditions: ['authorized transactions', 'fraud protection', 'regulatory compliance']
+      conditions: ['authorized transactions', 'fraud protection', 'regulatory compliance'],
     },
     trustModel: {
       type: 'banking relationships and regulatory frameworks',
       dependencies: ['banking infrastructure', 'regulatory compliance', 'KYC/AML'],
-      risks: ['banking system failure', 'regulatory changes', 'currency fluctuations']
+      risks: ['banking system failure', 'regulatory changes', 'currency fluctuations'],
     },
     technicalRequirements: ['banking APIs', 'regulatory compliance systems', 'KYC/AML verification'],
-    regulatoryCompliance: ['GDPR', 'PSD2', 'AML directives', 'local banking regulations']
+    regulatoryCompliance: ['GDPR', 'PSD2', 'AML directives', 'local banking regulations'],
   },
 
   x402: {
@@ -69,15 +69,15 @@ export const PAYMENT_PROTOCOLS: Record<string, PaymentProtocol> = {
     reversibility: {
       supported: false,
       timeframe: 'irreversible',
-      conditions: ['cryptographic finality', 'smart contract execution']
+      conditions: ['cryptographic finality', 'smart contract execution'],
     },
     trustModel: {
       type: 'smart contracts and Layer 2 networks',
       dependencies: ['Base network (Coinbase L2)', 'USDC stablecoin', 'Coinbase facilitator services'],
-      risks: ['smart contract bugs', 'Layer 2 centralization', 'stablecoin depegging']
+      risks: ['smart contract bugs', 'Layer 2 centralization', 'stablecoin depegging'],
     },
     technicalRequirements: ['Ethereum wallet', 'Base network access', 'USDC tokens', 'smart contract interaction'],
-    regulatoryCompliance: ['crypto regulations', 'AML for crypto transactions', 'tax reporting requirements']
+    regulatoryCompliance: ['crypto regulations', 'AML for crypto transactions', 'tax reporting requirements'],
   },
 
   l402: {
@@ -94,15 +94,15 @@ export const PAYMENT_PROTOCOLS: Record<string, PaymentProtocol> = {
     reversibility: {
       supported: false,
       timeframe: 'irreversible',
-      conditions: ['Lightning Network routing', 'Bitcoin finality']
+      conditions: ['Lightning Network routing', 'Bitcoin finality'],
     },
     trustModel: {
-      type: 'Bitcoin\'s permissionless infrastructure',
+      type: "Bitcoin's permissionless infrastructure",
       dependencies: ['Bitcoin network', 'Lightning Network nodes', 'routing infrastructure'],
-      risks: ['routing failures', 'channel management', 'Bitcoin volatility']
+      risks: ['routing failures', 'channel management', 'Bitcoin volatility'],
     },
     technicalRequirements: ['Bitcoin wallet', 'Lightning node', 'channel management', 'routing optimization'],
-    regulatoryCompliance: ['crypto regulations', 'Bitcoin-specific compliance', 'cross-border payment regulations']
+    regulatoryCompliance: ['crypto regulations', 'Bitcoin-specific compliance', 'cross-border payment regulations'],
   },
 
   stripe: {
@@ -119,16 +119,16 @@ export const PAYMENT_PROTOCOLS: Record<string, PaymentProtocol> = {
     reversibility: {
       supported: true,
       timeframe: 'up to 120 days for disputes',
-      conditions: ['chargeback protection', 'fraud detection', 'merchant protection']
+      conditions: ['chargeback protection', 'fraud detection', 'merchant protection'],
     },
     trustModel: {
       type: 'traditional payment processor',
       dependencies: ['banking infrastructure', 'card networks', 'fraud detection systems'],
-      risks: ['payment processor failure', 'card network issues', 'regulatory changes']
+      risks: ['payment processor failure', 'card network issues', 'regulatory changes'],
     },
     technicalRequirements: ['Stripe API', 'webhook handling', 'payment processing systems'],
-    regulatoryCompliance: ['PCI DSS', 'GDPR', 'local payment regulations', 'fraud prevention']
-  }
+    regulatoryCompliance: ['PCI DSS', 'GDPR', 'local payment regulations', 'fraud prevention'],
+  },
 }
 
 export interface PaymentProtocolComparison {
@@ -150,25 +150,25 @@ export const PROTOCOL_COMPARISON: Record<string, PaymentProtocolComparison> = {
       'Familiar to European users',
       'Banking-grade security',
       'Reversible transactions',
-      'Strong fraud protection'
+      'Strong fraud protection',
     ],
     disadvantages: [
       'Limited automation capabilities',
       'Slow settlement times',
       'High minimum transaction amounts',
       'Complex regulatory requirements',
-      'Limited global reach'
+      'Limited global reach',
     ],
     bestUseCases: [
       'Large business transactions',
       'Consumer payments requiring protection',
       'Compliance-heavy industries',
-      'Traditional e-commerce'
+      'Traditional e-commerce',
     ],
     automationScore: 3,
     decentralizationScore: 2,
     costEfficiencyScore: 7,
-    technicalComplexityScore: 4
+    technicalComplexityScore: 4,
   },
 
   x402: {
@@ -179,26 +179,20 @@ export const PROTOCOL_COMPARISON: Record<string, PaymentProtocolComparison> = {
       'Fast settlement',
       'Programmable payments',
       'Global accessibility',
-      'Developer-friendly APIs'
+      'Developer-friendly APIs',
     ],
     disadvantages: [
       'Centralized around Coinbase infrastructure',
       'Irreversible transactions',
       'Smart contract risks',
       'Limited consumer protection',
-      'Regulatory uncertainty'
+      'Regulatory uncertainty',
     ],
-    bestUseCases: [
-      'AI agent payments',
-      'API monetization',
-      'Micropayments',
-      'Automated systems',
-      'Developer tools'
-    ],
+    bestUseCases: ['AI agent payments', 'API monetization', 'Micropayments', 'Automated systems', 'Developer tools'],
     automationScore: 10,
     decentralizationScore: 4,
     costEfficiencyScore: 9,
-    technicalComplexityScore: 6
+    technicalComplexityScore: 6,
   },
 
   l402: {
@@ -209,26 +203,26 @@ export const PROTOCOL_COMPARISON: Record<string, PaymentProtocolComparison> = {
       'Bitcoin security',
       'Censorship resistance',
       'No single point of failure',
-      'Excellent for micropayments'
+      'Excellent for micropayments',
     ],
     disadvantages: [
       'High technical complexity',
       'Channel management overhead',
       'Routing failures possible',
       'Bitcoin volatility',
-      'Limited liquidity'
+      'Limited liquidity',
     ],
     bestUseCases: [
       'Privacy-focused applications',
       'Decentralized systems',
       'Microtransactions',
       'Censorship-resistant payments',
-      'Bitcoin-native applications'
+      'Bitcoin-native applications',
     ],
     automationScore: 8,
     decentralizationScore: 10,
     costEfficiencyScore: 10,
-    technicalComplexityScore: 9
+    technicalComplexityScore: 9,
   },
 
   stripe: {
@@ -239,27 +233,27 @@ export const PROTOCOL_COMPARISON: Record<string, PaymentProtocolComparison> = {
       'Multiple payment methods',
       'Global reach',
       'Good developer experience',
-      'Chargeback protection'
+      'Chargeback protection',
     ],
     disadvantages: [
       'Higher fees for small transactions',
       'Limited micropayment support',
       'Centralized control',
       'Regulatory complexity',
-      'Processing delays'
+      'Processing delays',
     ],
     bestUseCases: [
       'Traditional e-commerce',
       'Subscription services',
       'Marketplace payments',
       'B2B transactions',
-      'Consumer applications'
+      'Consumer applications',
     ],
     automationScore: 6,
     decentralizationScore: 2,
     costEfficiencyScore: 6,
-    technicalComplexityScore: 3
-  }
+    technicalComplexityScore: 3,
+  },
 }
 
 export interface PaymentSystemRecommendation {
@@ -334,7 +328,7 @@ export class PaymentProtocolAnalyzer {
       fallbackProtocols,
       reasoning: this.generateReasoning(primaryProtocol, requirements),
       implementationNotes: this.getImplementationNotes(primaryProtocol),
-      riskMitigation: this.getRiskMitigation(primaryProtocol, fallbackProtocols)
+      riskMitigation: this.getRiskMitigation(primaryProtocol, fallbackProtocols),
     }
   }
 
@@ -365,29 +359,29 @@ export class PaymentProtocolAnalyzer {
         'Set up USDC token handling',
         'Configure smart contract interactions',
         'Add wallet connection (Privy/MetaMask)',
-        'Implement payment intent creation'
+        'Implement payment intent creation',
       ],
       l402: [
         'Set up Lightning Network node',
         'Implement channel management',
         'Add routing optimization',
         'Handle Bitcoin volatility',
-        'Configure multi-hop payments'
+        'Configure multi-hop payments',
       ],
       sepa: [
         'Integrate with banking APIs',
         'Implement KYC/AML verification',
         'Set up regulatory compliance',
         'Add fraud detection',
-        'Configure reversibility handling'
+        'Configure reversibility handling',
       ],
       stripe: [
         'Integrate Stripe API',
         'Set up webhook handling',
         'Implement fraud detection',
         'Add chargeback protection',
-        'Configure payment methods'
-      ]
+        'Configure payment methods',
+      ],
     }
 
     return notes[protocol] || []
@@ -399,31 +393,28 @@ export class PaymentProtocolAnalyzer {
         'Implement fallback to traditional payments for large amounts',
         'Add smart contract audit and monitoring',
         'Diversify stablecoin holdings beyond USDC',
-        'Monitor Base network health and alternatives'
+        'Monitor Base network health and alternatives',
       ],
       l402: [
         'Implement channel backup and recovery',
         'Add routing fallback mechanisms',
         'Monitor Bitcoin network congestion',
-        'Implement liquidity management'
+        'Implement liquidity management',
       ],
       sepa: [
         'Add real-time fraud monitoring',
         'Implement regulatory change detection',
         'Diversify banking relationships',
-        'Add compliance automation'
+        'Add compliance automation',
       ],
       stripe: [
         'Implement payment processor redundancy',
         'Add real-time fraud detection',
         'Monitor chargeback rates',
-        'Implement automated dispute handling'
-      ]
+        'Implement automated dispute handling',
+      ],
     }
 
-    return [
-      ...(mitigation[primary] || []),
-      `Fallback protocols: ${fallbacks.join(', ')}`
-    ]
+    return [...(mitigation[primary] || []), `Fallback protocols: ${fallbacks.join(', ')}`]
   }
 }

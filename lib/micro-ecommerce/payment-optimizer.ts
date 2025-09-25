@@ -10,7 +10,7 @@ export interface MicroPaymentConfig {
   settlementTime: number // <2 hours
   perPaymentCost: number // Low/zero cost
   percentageFee: number // Low % fee
-  
+
   // Optimization strategies
   creditPrepayment: boolean // Pre-pay credits to avoid per-request payments
   batchPayments: boolean // Batch multiple small payments
@@ -51,7 +51,7 @@ export class MicroEcommercePaymentOptimizer {
       creditPrepayment: true, // Default to credit system
       batchPayments: true,
       fiatBridge: true,
-      ...config
+      ...config,
     }
   }
 
@@ -63,9 +63,8 @@ export class MicroEcommercePaymentOptimizer {
     userId: string,
     amount: number,
     description: string,
-    preferCredits: boolean = true
+    preferCredits: boolean = true,
   ): Promise<MicroTransaction> {
-    
     if (amount > this.config.maxAmount) {
       throw new Error(`Payment exceeds maximum amount: $${amount} > $${this.config.maxAmount}`)
     }
@@ -90,14 +89,9 @@ export class MicroEcommercePaymentOptimizer {
    * Credit-based payment system
    * Solves the "why not prepay" question - this IS prepayment!
    */
-  private async processCreditPayment(
-    userId: string,
-    amount: number,
-    description: string
-  ): Promise<MicroTransaction> {
-    
+  private async processCreditPayment(userId: string, amount: number, description: string): Promise<MicroTransaction> {
     const creditAccount = this.getOrCreateCreditAccount(userId)
-    
+
     // Check balance
     if (creditAccount.balance < amount) {
       // Auto-topup if enabled
@@ -110,7 +104,7 @@ export class MicroEcommercePaymentOptimizer {
 
     // Deduct from credits
     creditAccount.balance -= amount
-    
+
     const transaction: MicroTransaction = {
       id: `credit_${Date.now()}`,
       userId,
@@ -120,7 +114,7 @@ export class MicroEcommercePaymentOptimizer {
       paymentMethod: 'credits',
       settlementTime: 0, // Instant with credits
       fees: 0, // No fees for credit payments
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     console.log(`✅ Credit payment completed instantly: $${amount}`)
@@ -134,11 +128,10 @@ export class MicroEcommercePaymentOptimizer {
   private async processDirectCryptoPayment(
     userId: string,
     amount: number,
-    description: string
+    description: string,
   ): Promise<MicroTransaction> {
-    
     // Calculate fees
-    const fees = this.config.perPaymentCost + (amount * this.config.percentageFee / 100)
+    const fees = this.config.perPaymentCost + (amount * this.config.percentageFee) / 100
     const totalAmount = amount + fees
 
     const transaction: MicroTransaction = {
@@ -150,13 +143,13 @@ export class MicroEcommercePaymentOptimizer {
       paymentMethod: 'direct_crypto',
       settlementTime: 300, // 5 minutes for crypto
       fees,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     // Simulate crypto payment processing
     // In real implementation, this would use x402 protocol
     await this.simulateCryptoPayment(totalAmount)
-    
+
     transaction.status = 'completed'
     console.log(`✅ Crypto payment completed: $${amount} + $${fees} fees`)
     return transaction
@@ -169,11 +162,10 @@ export class MicroEcommercePaymentOptimizer {
   private async processFiatBridgePayment(
     userId: string,
     amount: number,
-    description: string
+    description: string,
   ): Promise<MicroTransaction> {
-    
     // Higher fees for fiat bridge, but still competitive
-    const fees = 0.30 + (amount * 0.029) // Stripe-like fees
+    const fees = 0.3 + amount * 0.029 // Stripe-like fees
     const totalAmount = amount + fees
 
     const transaction: MicroTransaction = {
@@ -185,12 +177,12 @@ export class MicroEcommercePaymentOptimizer {
       paymentMethod: 'direct_fiat',
       settlementTime: 3600, // 1 hour for fiat
       fees,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     // Simulate fiat payment processing
     await this.simulateFiatPayment(totalAmount)
-    
+
     transaction.status = 'completed'
     console.log(`✅ Fiat bridge payment completed: $${amount} + $${fees} fees`)
     return transaction
@@ -207,7 +199,7 @@ export class MicroEcommercePaymentOptimizer {
         autoTopUp: true,
         topUpThreshold: 5, // Auto-topup when below $5
         topUpAmount: 20, // Topup with $20
-        paymentMethod: 'credit_card'
+        paymentMethod: 'credit_card',
       }
       this.creditAccounts.set(userId, account)
     }
@@ -224,17 +216,17 @@ export class MicroEcommercePaymentOptimizer {
     }
 
     console.log(`💰 Topping up credits: $${amount} for user ${userId}`)
-    
+
     // Simulate payment processing for topup
-    const fees = 0.30 + (amount * 0.029) // Stripe fees for topup
+    const fees = 0.3 + amount * 0.029 // Stripe fees for topup
     const success = await this.simulateFiatPayment(amount + fees)
-    
+
     if (success) {
       account.balance += amount
       console.log(`✅ Credits topped up. New balance: $${account.balance}`)
       return true
     }
-    
+
     return false
   }
 
@@ -243,12 +235,12 @@ export class MicroEcommercePaymentOptimizer {
    */
   async batchMicroPayments(
     userId: string,
-    payments: Array<{ amount: number; description: string }>
+    payments: Array<{ amount: number; description: string }>,
   ): Promise<MicroTransaction[]> {
-    
     const totalAmount = payments.reduce((sum, payment) => sum + payment.amount, 0)
-    
-    if (totalAmount > this.config.maxAmount * 10) { // Batch limit
+
+    if (totalAmount > this.config.maxAmount * 10) {
+      // Batch limit
       throw new Error('Batch total exceeds limit')
     }
 
@@ -258,7 +250,7 @@ export class MicroEcommercePaymentOptimizer {
     const batchTransaction = await this.processCreditPayment(
       userId,
       totalAmount,
-      `Batch payment: ${payments.length} items`
+      `Batch payment: ${payments.length} items`,
     )
 
     // Split into individual transactions for tracking
@@ -266,36 +258,38 @@ export class MicroEcommercePaymentOptimizer {
       ...batchTransaction,
       id: `${batchTransaction.id}_${index}`,
       amount: payment.amount,
-      description: payment.description
+      description: payment.description,
     }))
   }
 
   /**
    * Get payment recommendations based on user behavior
    */
-  getPaymentRecommendation(userId: string, averageMonthlySpend: number): {
+  getPaymentRecommendation(
+    userId: string,
+    averageMonthlySpend: number,
+  ): {
     recommendedMethod: 'credits' | 'direct_crypto' | 'direct_fiat'
     reasoning: string
     estimatedMonthlyFees: number
   } {
-    
     if (averageMonthlySpend > 50) {
       return {
         recommendedMethod: 'credits',
         reasoning: 'High volume - credits eliminate per-transaction fees',
-        estimatedMonthlyFees: averageMonthlySpend * 0.029 // Just topup fees
+        estimatedMonthlyFees: averageMonthlySpend * 0.029, // Just topup fees
       }
     } else if (this.hasCryptoWallet(userId)) {
       return {
         recommendedMethod: 'direct_crypto',
         reasoning: 'Low volume + crypto wallet = minimal fees',
-        estimatedMonthlyFees: averageMonthlySpend * 0.005 // 0.5% crypto fees
+        estimatedMonthlyFees: averageMonthlySpend * 0.005, // 0.5% crypto fees
       }
     } else {
       return {
         recommendedMethod: 'direct_fiat',
         reasoning: 'No crypto wallet - fiat bridge with standard fees',
-        estimatedMonthlyFees: averageMonthlySpend * 0.029 + 0.30 // Stripe-like fees
+        estimatedMonthlyFees: averageMonthlySpend * 0.029 + 0.3, // Stripe-like fees
       }
     }
   }
@@ -313,7 +307,7 @@ export class MicroEcommercePaymentOptimizer {
    */
   private async simulateCryptoPayment(amount: number): Promise<boolean> {
     // Simulate 5-second crypto transaction
-    await new Promise(resolve => setTimeout(resolve, 5000))
+    await new Promise((resolve) => setTimeout(resolve, 5000))
     return true
   }
 
@@ -322,7 +316,7 @@ export class MicroEcommercePaymentOptimizer {
    */
   private async simulateFiatPayment(amount: number): Promise<boolean> {
     // Simulate 30-second fiat transaction
-    await new Promise(resolve => setTimeout(resolve, 30000))
+    await new Promise((resolve) => setTimeout(resolve, 30000))
     return true
   }
 
@@ -337,10 +331,7 @@ export class MicroEcommercePaymentOptimizer {
   /**
    * Update credit account settings
    */
-  updateCreditSettings(
-    userId: string,
-    settings: Partial<CreditAccount>
-  ): boolean {
+  updateCreditSettings(userId: string, settings: Partial<CreditAccount>): boolean {
     const account = this.creditAccounts.get(userId)
     if (!account) {
       return false

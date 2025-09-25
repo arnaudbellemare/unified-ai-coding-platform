@@ -66,7 +66,7 @@ export class MultiProtocolPaymentService {
   private initializeProtocols() {
     // Initialize available payment protocols based on configuration
     console.log('🔧 Initializing multi-protocol payment service...')
-    
+
     // x402 Foundation Protocol
     if (this.isProtocolAvailable('x402')) {
       console.log('✅ x402 Foundation Protocol: Available')
@@ -120,22 +120,22 @@ export class MultiProtocolPaymentService {
       reversibilityRequired: request.preferences?.requireReversibility || false,
       micropayments: request.context?.isMicropayment || request.amount < 0.01,
       globalReach: request.context?.requiresGlobalReach || false,
-      regulatoryCompliance: 'medium' as 'low' | 'medium' | 'high'
+      regulatoryCompliance: 'medium' as 'low' | 'medium' | 'high',
     }
 
     const recommendation = PaymentProtocolAnalyzer.analyzeRequirements(requirements)
-    
+
     // Filter to only supported protocols
     const supportedAlternatives = recommendation.fallbackProtocols
-      .filter(protocol => this.supportedProtocols.has(protocol))
-      .map(protocol => this.getProtocolCapability(protocol, request))
+      .filter((protocol) => this.supportedProtocols.has(protocol))
+      .map((protocol) => this.getProtocolCapability(protocol, request))
 
     return {
-      recommendedProtocol: this.supportedProtocols.has(recommendation.primaryProtocol) 
-        ? recommendation.primaryProtocol 
+      recommendedProtocol: this.supportedProtocols.has(recommendation.primaryProtocol)
+        ? recommendation.primaryProtocol
         : supportedAlternatives[0]?.protocol || 'stripe',
       alternatives: supportedAlternatives,
-      reasoning: recommendation.reasoning
+      reasoning: recommendation.reasoning,
     }
   }
 
@@ -157,8 +157,8 @@ export class MultiProtocolPaymentService {
           reversibility: false,
           micropayments: false,
           automation: false,
-          globalReach: false
-        }
+          globalReach: false,
+        },
       }
     }
 
@@ -172,8 +172,8 @@ export class MultiProtocolPaymentService {
         reversibility: protocolInfo.reversibility.supported,
         micropayments: protocolInfo.micropayments === 'excellent',
         automation: protocolInfo.automation === 'excellent',
-        globalReach: protocol !== 'sepa' // SEPA is EU-only
-      }
+        globalReach: protocol !== 'sepa', // SEPA is EU-only
+      },
     }
   }
 
@@ -182,7 +182,7 @@ export class MultiProtocolPaymentService {
    */
   private calculateEstimatedCost(protocol: string, amount: number): number {
     const protocolInfo = PAYMENT_PROTOCOLS[protocol]
-    
+
     switch (protocol) {
       case 'x402':
         // x402: ~0.5% + gas fees
@@ -192,10 +192,10 @@ export class MultiProtocolPaymentService {
         return amount * 0.0001 + 0.0001
       case 'stripe':
         // Stripe: 2.9% + $0.30
-        return amount * 0.029 + 0.30
+        return amount * 0.029 + 0.3
       case 'sepa':
         // SEPA: ~$0.10-0.50 depending on amount
-        return amount < 10 ? 0.10 : 0.50
+        return amount < 10 ? 0.1 : 0.5
       default:
         return amount * 0.03 // 3% default
     }
@@ -248,19 +248,19 @@ export class MultiProtocolPaymentService {
   private async processX402Payment(request: PaymentRequest): Promise<PaymentResponse> {
     // Import AP2 service dynamically to avoid circular dependencies
     const { ap2Service } = await import('../ap2/service')
-    
+
     const paymentIntent = await ap2Service.createPaymentRequest(
       `agent_${request.context?.agentType || 'unknown'}`,
       request.recipient,
       request.amount,
       request.currency,
       request.description,
-      request.metadata || {}
+      request.metadata || {},
     )
 
     // Simulate payment processing
     const fees = this.calculateEstimatedCost('x402', request.amount)
-    
+
     return {
       id: `x402_${Date.now()}`,
       requestId: request.id,
@@ -275,9 +275,9 @@ export class MultiProtocolPaymentService {
       metadata: {
         paymentIntent: paymentIntent.id,
         network: 'base',
-        token: 'usdc'
+        token: 'usdc',
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     }
   }
 
@@ -287,7 +287,7 @@ export class MultiProtocolPaymentService {
   private async processStripePayment(request: PaymentRequest): Promise<PaymentResponse> {
     // Simulate Stripe payment processing
     const fees = this.calculateEstimatedCost('stripe', request.amount)
-    
+
     return {
       id: `stripe_${Date.now()}`,
       requestId: request.id,
@@ -301,9 +301,9 @@ export class MultiProtocolPaymentService {
       finality: 'reversible',
       metadata: {
         paymentMethod: 'card',
-        processor: 'stripe'
+        processor: 'stripe',
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     }
   }
 
@@ -325,7 +325,7 @@ export class MultiProtocolPaymentService {
    * Get available protocols and their capabilities
    */
   getAvailableProtocols(): ProtocolCapability[] {
-    return Array.from(this.supportedProtocols).map(protocol => ({
+    return Array.from(this.supportedProtocols).map((protocol) => ({
       protocol,
       supported: true,
       estimatedCost: 0,
@@ -334,8 +334,8 @@ export class MultiProtocolPaymentService {
         reversibility: PAYMENT_PROTOCOLS[protocol]?.reversibility.supported || false,
         micropayments: PAYMENT_PROTOCOLS[protocol]?.micropayments === 'excellent',
         automation: PAYMENT_PROTOCOLS[protocol]?.automation === 'excellent',
-        globalReach: protocol !== 'sepa'
-      }
+        globalReach: protocol !== 'sepa',
+      },
     }))
   }
 
@@ -354,7 +354,7 @@ export class MultiProtocolPaymentService {
     advantages: string[]
     disadvantages: string[]
   }> {
-    return Object.values(PROTOCOL_COMPARISON).map(comparison => ({
+    return Object.values(PROTOCOL_COMPARISON).map((comparison) => ({
       protocol: comparison.protocol.id,
       name: comparison.protocol.name,
       decentralization: comparison.protocol.decentralization,
@@ -364,7 +364,7 @@ export class MultiProtocolPaymentService {
       reversibility: comparison.protocol.reversibility.supported ? 'Yes' : 'No',
       micropayments: comparison.protocol.micropayments,
       advantages: comparison.advantages,
-      disadvantages: comparison.disadvantages
+      disadvantages: comparison.disadvantages,
     }))
   }
 }

@@ -52,7 +52,7 @@ export function AP2PaymentModal({ isOpen, onClose, paymentIntent, onPaymentSucce
 
   const handleProviderSelect = (providerId: string) => {
     setSelectedProvider(providerId)
-    const provider = providers.find(p => p.id === providerId)
+    const provider = providers.find((p) => p.id === providerId)
     if (provider) {
       setPaymentMethod({
         type: provider.type,
@@ -134,9 +134,7 @@ export function AP2PaymentModal({ isOpen, onClose, paymentIntent, onPaymentSucce
             <DollarSign className="h-5 w-5" />
             Payment Required
           </DialogTitle>
-          <DialogDescription>
-            Complete payment to proceed with your AI agent execution
-          </DialogDescription>
+          <DialogDescription>Complete payment to proceed with your AI agent execution</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -148,11 +146,11 @@ export function AP2PaymentModal({ isOpen, onClose, paymentIntent, onPaymentSucce
             <CardContent className="space-y-2">
               <div className="flex justify-between">
                 <span>Agent Execution</span>
-                <span className="font-medium">${paymentIntent.amount} {paymentIntent.currency}</span>
+                <span className="font-medium">
+                  ${paymentIntent.amount} {paymentIntent.currency}
+                </span>
               </div>
-              <div className="text-sm text-muted-foreground">
-                {paymentIntent.description}
-              </div>
+              <div className="text-sm text-muted-foreground">{paymentIntent.description}</div>
             </CardContent>
           </Card>
 
@@ -170,9 +168,7 @@ export function AP2PaymentModal({ isOpen, onClose, paymentIntent, onPaymentSucce
                       {getProviderIcon(provider)}
                       <div>
                         <div className="font-medium">{provider.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {getProviderDescription(provider)}
-                        </div>
+                        <div className="text-sm text-muted-foreground">{getProviderDescription(provider)}</div>
                       </div>
                     </div>
                   </SelectItem>
@@ -186,7 +182,7 @@ export function AP2PaymentModal({ isOpen, onClose, paymentIntent, onPaymentSucce
             <Card>
               <CardContent className="pt-4">
                 {(() => {
-                  const provider = providers.find(p => p.id === selectedProvider)
+                  const provider = providers.find((p) => p.id === selectedProvider)
                   if (!provider) return null
 
                   return (
@@ -195,9 +191,11 @@ export function AP2PaymentModal({ isOpen, onClose, paymentIntent, onPaymentSucce
                         {getProviderIcon(provider)}
                         <span className="font-medium">{provider.name}</span>
                       </div>
-                      
+
                       <div className="text-sm text-muted-foreground">
-                        <div>Fees: {provider.fees.percentage}% + ${provider.fees.fixed}</div>
+                        <div>
+                          Fees: {provider.fees.percentage}% + ${provider.fees.fixed}
+                        </div>
                         <div>Supported: {provider.supportedCurrencies.join(', ')}</div>
                       </div>
 
@@ -224,11 +222,7 @@ export function AP2PaymentModal({ isOpen, onClose, paymentIntent, onPaymentSucce
             <Button variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <Button 
-              onClick={handlePayment} 
-              disabled={!selectedProvider || isProcessing}
-              className="flex-1"
-            >
+            <Button onClick={handlePayment} disabled={!selectedProvider || isProcessing} className="flex-1">
               {isProcessing ? 'Processing...' : `Pay $${paymentIntent.amount}`}
             </Button>
           </div>

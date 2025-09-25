@@ -16,19 +16,14 @@ export async function POST(request: NextRequest) {
           amount,
           currency,
           description,
-          metadata
+          metadata,
         )
         return NextResponse.json({ success: true, paymentIntent })
       }
 
       case 'process_payment': {
         const { paymentId, paymentMethod, amount, currency } = data
-        const paymentResponse = await ap2Service.processPayment(
-          paymentId,
-          paymentMethod,
-          amount,
-          currency
-        )
+        const paymentResponse = await ap2Service.processPayment(paymentId, paymentMethod, amount, currency)
         return NextResponse.json({ success: true, paymentResponse })
       }
 
@@ -44,16 +39,13 @@ export async function POST(request: NextRequest) {
       }
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('AP2 Payment API Error:', error)
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -71,25 +63,19 @@ export async function GET(request: NextRequest) {
       case 'capabilities':
         const agentId = url.searchParams.get('agentId')
         if (!agentId) {
-          return NextResponse.json(
-            { success: false, error: 'Agent ID is required' },
-            { status: 400 }
-          )
+          return NextResponse.json({ success: false, error: 'Agent ID is required' }, { status: 400 })
         }
         const capabilities = ap2Service.getAgentCapabilities(agentId)
         return NextResponse.json({ success: true, capabilities })
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('AP2 Payment API Error:', error)
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

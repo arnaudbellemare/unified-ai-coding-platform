@@ -28,9 +28,7 @@ export function X402PaymentIntegration({ onPaymentSuccess }: X402PaymentIntegrat
               Internet-Native Money
             </Badge>
           </CardTitle>
-          <CardDescription>
-            Powered by the x402 Foundation standard for autonomous agent payments
-          </CardDescription>
+          <CardDescription>Powered by the x402 Foundation standard for autonomous agent payments</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -66,9 +64,7 @@ export function X402PaymentIntegration({ onPaymentSuccess }: X402PaymentIntegrat
             <DollarSign className="h-5 w-5" />
             Supported Payment Methods
           </CardTitle>
-          <CardDescription>
-            Multiple payment options following x402 Foundation standards
-          </CardDescription>
+          <CardDescription>Multiple payment options following x402 Foundation standards</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -127,9 +123,7 @@ export function X402PaymentIntegration({ onPaymentSuccess }: X402PaymentIntegrat
       <Card>
         <CardHeader>
           <CardTitle>Agent Execution Pricing</CardTitle>
-          <CardDescription>
-            Transparent pricing based on agent complexity and x402 Foundation standards
-          </CardDescription>
+          <CardDescription>Transparent pricing based on agent complexity and x402 Foundation standards</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -155,7 +149,7 @@ export function X402PaymentIntegration({ onPaymentSuccess }: X402PaymentIntegrat
                 <div className="text-sm text-muted-foreground">per execution</div>
               </div>
             </div>
-            
+
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="text-sm text-blue-800">
                 <strong>💡 Internet-Native Money Benefits:</strong>

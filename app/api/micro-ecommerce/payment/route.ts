@@ -10,21 +10,18 @@ export async function POST(request: NextRequest) {
     // Get user for authentication
     const privyUser = await getPrivyUser(request)
     if (!privyUser) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
     }
 
     switch (action) {
       case 'process_payment': {
         const { amount, description, paymentMethod } = data
-        
+
         // Validate amount
         if (amount > 10) {
           return NextResponse.json(
             { success: false, error: 'Amount exceeds $10 limit for micro payments' },
-            { status: 400 }
+            { status: 400 },
           )
         }
 
@@ -32,47 +29,41 @@ export async function POST(request: NextRequest) {
           privyUser.id,
           amount,
           description,
-          paymentMethod === 'credits'
+          paymentMethod === 'credits',
         )
 
-        return NextResponse.json({ 
-          success: true, 
+        return NextResponse.json({
+          success: true,
           transaction,
-          message: `Payment processed successfully. Settlement time: ${transaction.settlementTime}s`
+          message: `Payment processed successfully. Settlement time: ${transaction.settlementTime}s`,
         })
       }
 
       case 'topup_credits': {
         const { amount } = data
         const success = await microEcommerceOptimizer.topUpCredits(privyUser.id, amount)
-        
-        return NextResponse.json({ 
-          success, 
+
+        return NextResponse.json({
+          success,
           message: success ? `Credits topped up with $${amount}` : 'Top-up failed',
-          newBalance: success ? microEcommerceOptimizer.getCreditBalance(privyUser.id) : null
+          newBalance: success ? microEcommerceOptimizer.getCreditBalance(privyUser.id) : null,
         })
       }
 
       case 'batch_payments': {
         const { payments } = data
-        const transactions = await microEcommerceOptimizer.batchMicroPayments(
-          privyUser.id,
-          payments
-        )
+        const transactions = await microEcommerceOptimizer.batchMicroPayments(privyUser.id, payments)
 
-        return NextResponse.json({ 
-          success: true, 
+        return NextResponse.json({
+          success: true,
           transactions,
-          message: `Batch processed: ${payments.length} payments`
+          message: `Batch processed: ${payments.length} payments`,
         })
       }
 
       case 'get_recommendation': {
         const { monthlySpend } = data
-        const recommendation = microEcommerceOptimizer.getPaymentRecommendation(
-          privyUser.id,
-          monthlySpend
-        )
+        const recommendation = microEcommerceOptimizer.getPaymentRecommendation(privyUser.id, monthlySpend)
 
         return NextResponse.json({ success: true, recommendation })
       }
@@ -83,16 +74,13 @@ export async function POST(request: NextRequest) {
       }
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('Micro e-commerce payment error:', error)
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -105,10 +93,7 @@ export async function GET(request: NextRequest) {
     // Get user for authentication
     const privyUser = await getPrivyUser(request)
     if (!privyUser) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
     }
 
     switch (action) {
@@ -118,23 +103,17 @@ export async function GET(request: NextRequest) {
 
       case 'recommendation':
         const monthlySpend = parseFloat(url.searchParams.get('monthlySpend') || '20')
-        const recommendation = microEcommerceOptimizer.getPaymentRecommendation(
-          privyUser.id,
-          monthlySpend
-        )
+        const recommendation = microEcommerceOptimizer.getPaymentRecommendation(privyUser.id, monthlySpend)
         return NextResponse.json({ success: true, recommendation })
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('Micro e-commerce GET error:', error)
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

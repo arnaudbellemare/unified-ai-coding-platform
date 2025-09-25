@@ -10,19 +10,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Wallet, 
-  Plus, 
-  DollarSign, 
-  Settings, 
-  History, 
-  Zap, 
-  Shield, 
+import {
+  Wallet,
+  Plus,
+  DollarSign,
+  Settings,
+  History,
+  Zap,
+  Shield,
   AlertTriangle,
   CheckCircle,
   Bot,
   TrendingUp,
-  Clock
+  Clock,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -91,8 +91,8 @@ export function AutonomousAgentWallet() {
           action: 'create_wallet',
           agentId,
           fundingSource: 'hybrid',
-          initialFunding: 5 // Start with $5 USDC
-        })
+          initialFunding: 5, // Start with $5 USDC
+        }),
       })
 
       const data = await response.json()
@@ -119,8 +119,8 @@ export function AutonomousAgentWallet() {
         body: JSON.stringify({
           action: 'fund_wallet',
           agentId,
-          amount
-        })
+          amount,
+        }),
       })
 
       const data = await response.json()
@@ -149,8 +149,8 @@ export function AutonomousAgentWallet() {
           agentId,
           apiProvider: provider,
           apiCost: cost,
-          description: `API call to ${provider}`
-        })
+          description: `API call to ${provider}`,
+        }),
       })
 
       const data = await response.json()
@@ -181,7 +181,7 @@ export function AutonomousAgentWallet() {
     }
   }
 
-  const selectedWallet = agentWallets.find(w => w.agentId === selectedAgent)
+  const selectedWallet = agentWallets.find((w) => w.agentId === selectedAgent)
 
   return (
     <div className="space-y-6">
@@ -200,9 +200,9 @@ export function AutonomousAgentWallet() {
           <Alert>
             <Shield className="h-4 w-4" />
             <AlertDescription>
-              <strong>A2A x402 Extension:</strong> Your agents can now autonomously pay for APIs, 
-              data access, and services using their own USDC wallets. They operate within your 
-              defined spending limits and security settings.
+              <strong>A2A x402 Extension:</strong> Your agents can now autonomously pay for APIs, data access, and
+              services using their own USDC wallets. They operate within your defined spending limits and security
+              settings.
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -221,10 +221,7 @@ export function AutonomousAgentWallet() {
                 <div className="text-center py-8">
                   <Bot className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground mb-4">No agent wallets created yet</p>
-                  <Button 
-                    onClick={() => createAgentWallet('demo-agent-1')}
-                    disabled={isLoading}
-                  >
+                  <Button onClick={() => createAgentWallet('demo-agent-1')} disabled={isLoading}>
                     <Plus className="h-4 w-4 mr-2" />
                     Create Demo Agent Wallet
                   </Button>
@@ -233,7 +230,7 @@ export function AutonomousAgentWallet() {
                 agentWallets.map((wallet) => (
                   <Button
                     key={wallet.agentId}
-                    variant={selectedAgent === wallet.agentId ? "default" : "outline"}
+                    variant={selectedAgent === wallet.agentId ? 'default' : 'outline'}
                     className="w-full justify-start gap-3 h-auto p-4"
                     onClick={() => {
                       setSelectedAgent(wallet.agentId)
@@ -243,12 +240,10 @@ export function AutonomousAgentWallet() {
                     <Wallet className="h-5 w-5" />
                     <div className="text-left">
                       <div className="font-medium">{wallet.agentId}</div>
-                      <div className="text-sm text-muted-foreground">
-                        ${wallet.balance.usdc.toFixed(2)} USDC
-                      </div>
+                      <div className="text-sm text-muted-foreground">${wallet.balance.usdc.toFixed(2)} USDC</div>
                     </div>
-                    <Badge variant={wallet.isActive ? "default" : "secondary"}>
-                      {wallet.isActive ? "Active" : "Inactive"}
+                    <Badge variant={wallet.isActive ? 'default' : 'secondary'}>
+                      {wallet.isActive ? 'Active' : 'Inactive'}
                     </Badge>
                   </Button>
                 ))
@@ -285,9 +280,7 @@ export function AutonomousAgentWallet() {
                         <div className="text-sm text-muted-foreground">USDC Balance</div>
                       </div>
                       <div className="text-center p-4 bg-muted/30 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">
-                          {selectedWallet.balance.eth.toFixed(4)}
-                        </div>
+                        <div className="text-2xl font-bold text-blue-600">{selectedWallet.balance.eth.toFixed(4)}</div>
                         <div className="text-sm text-muted-foreground">ETH (Gas)</div>
                       </div>
                       <div className="text-center p-4 bg-muted/30 rounded-lg">
@@ -317,10 +310,7 @@ export function AutonomousAgentWallet() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">Auto Top-up</span>
-                        <Switch 
-                          checked={selectedWallet.autonomousSettings.autoTopUp}
-                          disabled
-                        />
+                        <Switch checked={selectedWallet.autonomousSettings.autoTopUp} disabled />
                       </div>
                     </div>
                   </CardContent>
@@ -331,9 +321,7 @@ export function AutonomousAgentWallet() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Fund Agent Wallet</CardTitle>
-                    <CardDescription>
-                      Add USDC to your agent's wallet for autonomous payments
-                    </CardDescription>
+                    <CardDescription>Add USDC to your agent's wallet for autonomous payments</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
@@ -346,7 +334,7 @@ export function AutonomousAgentWallet() {
                         onChange={(e) => setFundingAmount(e.target.value)}
                       />
                     </div>
-                    <Button 
+                    <Button
                       onClick={() => fundAgentWallet(selectedWallet.agentId, parseFloat(fundingAmount))}
                       disabled={!fundingAmount || isLoading}
                       className="w-full"
@@ -362,9 +350,7 @@ export function AutonomousAgentWallet() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Test Autonomous Payments</CardTitle>
-                    <CardDescription>
-                      Simulate your agent making payments for API services
-                    </CardDescription>
+                    <CardDescription>Simulate your agent making payments for API services</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -393,7 +379,7 @@ export function AutonomousAgentWallet() {
                         Test Anthropic API ($0.08)
                       </Button>
                       <Button
-                        onClick={() => simulateAPICall(selectedWallet.agentId, 'vercel', 0.10)}
+                        onClick={() => simulateAPICall(selectedWallet.agentId, 'vercel', 0.1)}
                         disabled={isLoading}
                         variant="outline"
                       >
@@ -409,9 +395,7 @@ export function AutonomousAgentWallet() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Transaction History</CardTitle>
-                    <CardDescription>
-                      View your agent's autonomous payment history
-                    </CardDescription>
+                    <CardDescription>View your agent's autonomous payment history</CardDescription>
                   </CardHeader>
                   <CardContent>
                     {transactionHistory.length === 0 ? (
@@ -424,29 +408,33 @@ export function AutonomousAgentWallet() {
                         {transactionHistory.map((tx) => (
                           <div key={tx.id} className="flex items-center justify-between p-3 border rounded-lg">
                             <div className="flex items-center gap-3">
-                              <div className={`p-2 rounded-full ${
-                                tx.status === 'completed' ? 'bg-green-100 text-green-600' :
-                                tx.status === 'failed' ? 'bg-red-100 text-red-600' :
-                                'bg-yellow-100 text-yellow-600'
-                              }`}>
-                                {tx.status === 'completed' ? <CheckCircle className="h-4 w-4" /> :
-                                 tx.status === 'failed' ? <AlertTriangle className="h-4 w-4" /> :
-                                 <Clock className="h-4 w-4" />}
+                              <div
+                                className={`p-2 rounded-full ${
+                                  tx.status === 'completed'
+                                    ? 'bg-green-100 text-green-600'
+                                    : tx.status === 'failed'
+                                      ? 'bg-red-100 text-red-600'
+                                      : 'bg-yellow-100 text-yellow-600'
+                                }`}
+                              >
+                                {tx.status === 'completed' ? (
+                                  <CheckCircle className="h-4 w-4" />
+                                ) : tx.status === 'failed' ? (
+                                  <AlertTriangle className="h-4 w-4" />
+                                ) : (
+                                  <Clock className="h-4 w-4" />
+                                )}
                               </div>
                               <div>
                                 <div className="font-medium">{tx.description}</div>
-                                <div className="text-sm text-muted-foreground">
-                                  {tx.createdAt.toLocaleString()}
-                                </div>
+                                <div className="text-sm text-muted-foreground">{tx.createdAt.toLocaleString()}</div>
                               </div>
                             </div>
                             <div className="text-right">
                               <div className="font-medium">
                                 {tx.type === 'payment' ? '-' : '+'}${tx.amount.toFixed(2)}
                               </div>
-                              <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'}>
-                                {tx.status}
-                              </Badge>
+                              <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'}>{tx.status}</Badge>
                             </div>
                           </div>
                         ))}
@@ -461,9 +449,7 @@ export function AutonomousAgentWallet() {
               <CardContent className="text-center py-12">
                 <Bot className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Select an Agent</h3>
-                <p className="text-muted-foreground">
-                  Choose an agent from the list to manage its autonomous wallet
-                </p>
+                <p className="text-muted-foreground">Choose an agent from the list to manage its autonomous wallet</p>
               </CardContent>
             </Card>
           )}
