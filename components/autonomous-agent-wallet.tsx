@@ -92,12 +92,13 @@ export function AutonomousAgentWallet() {
           agentId,
           fundingSource: 'hybrid',
           initialFunding: 5, // Start with $5 USDC
+          isDemo: true, // Mark as demo wallet to allow creation without authentication
         }),
       })
 
       const data = await response.json()
       if (data.success) {
-        toast.success(`Autonomous wallet created for agent: ${agentId}`)
+        toast.success(`Demo autonomous wallet created for agent: ${agentId}`)
         await fetchAgentWallets()
       } else {
         toast.error(data.error || 'Failed to create agent wallet')
@@ -223,7 +224,7 @@ export function AutonomousAgentWallet() {
                   <p className="text-muted-foreground mb-4">No agent wallets created yet</p>
                   <Button onClick={() => createAgentWallet('demo-agent-1')} disabled={isLoading}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Create Demo Agent Wallet
+                    Create Demo Agent Wallet (No Auth Required)
                   </Button>
                 </div>
               ) : (
@@ -242,9 +243,16 @@ export function AutonomousAgentWallet() {
                       <div className="font-medium">{wallet.agentId}</div>
                       <div className="text-sm text-muted-foreground">${wallet.balance.usdc.toFixed(2)} USDC</div>
                     </div>
-                    <Badge variant={wallet.isActive ? 'default' : 'secondary'}>
-                      {wallet.isActive ? 'Active' : 'Inactive'}
-                    </Badge>
+                    <div className="flex gap-1">
+                      <Badge variant={wallet.isActive ? 'default' : 'secondary'}>
+                        {wallet.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                      {wallet.agentId.includes('demo') && (
+                        <Badge variant="outline" className="text-xs">
+                          Demo
+                        </Badge>
+                      )}
+                    </div>
                   </Button>
                 ))
               )}

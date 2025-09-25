@@ -7,8 +7,18 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { action, ...data } = body
 
-    // Get user for authentication
+    // Get user for authentication (optional for demo wallets)
     const privyUser = await getPrivyUser(request)
+    
+    // For demo wallet creation, allow without authentication
+    if (action === 'create_wallet' && data.isDemo) {
+      // Create demo wallet without authentication
+      const { agentId, fundingSource, initialFunding } = data
+      const wallet = await autonomousAgentWallet.createAgentWallet(agentId, fundingSource, initialFunding)
+      return NextResponse.json({ success: true, wallet, isDemo: true })
+    }
+    
+    // For other actions, require authentication
     if (!privyUser) {
       return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
     }

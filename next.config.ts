@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
       asyncWebAssembly: true,
       syncWebAssembly: true,
     }
-    
+
     // Copy WASM files to the build output
     config.module.rules.push({
       test: /\.wasm$/,
@@ -40,7 +40,7 @@ const nextConfig: NextConfig = {
         filename: 'static/wasm/[name].[hash][ext]',
       },
     })
-    
+
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -49,7 +49,7 @@ const nextConfig: NextConfig = {
         crypto: false,
       }
     }
-    
+
     return config
   },
 }
