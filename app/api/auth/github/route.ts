@@ -9,8 +9,16 @@ export async function GET(request: NextRequest) {
     if (!code) {
       // Redirect to GitHub OAuth
       const clientId = process.env.GITHUB_CLIENT_ID
-      if (!clientId) {
-        return NextResponse.json({ error: 'GitHub OAuth not configured' }, { status: 500 })
+      const clientSecret = process.env.GITHUB_CLIENT_SECRET
+      
+      if (!clientId || !clientSecret) {
+        console.error('GitHub OAuth configuration missing:', {
+          clientId: !!clientId,
+          clientSecret: !!clientSecret,
+        })
+        return NextResponse.json({ 
+          error: 'GitHub OAuth not configured. Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET environment variables.' 
+        }, { status: 500 })
       }
 
       const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/github`
@@ -36,14 +44,21 @@ export async function GET(request: NextRequest) {
     })
 
     if (!tokenResponse.ok) {
-      throw new Error('Failed to exchange code for token')
+      const errorText = await tokenResponse.text()
+      console.error('GitHub token exchange failed:', {
+        status: tokenResponse.status,
+        statusText: tokenResponse.statusText,
+        body: errorText,
+      })
+      throw new Error(`Failed to exchange code for token: ${tokenResponse.status} ${tokenResponse.statusText}`)
     }
 
     const tokenData = await tokenResponse.json()
     const accessToken = tokenData.access_token
 
     if (!accessToken) {
-      throw new Error('No access token received')
+      console.error('No access token in response:', tokenData)
+      throw new Error('No access token received from GitHub')
     }
 
     // Get user info
@@ -55,7 +70,13 @@ export async function GET(request: NextRequest) {
     })
 
     if (!userResponse.ok) {
-      throw new Error('Failed to fetch user info')
+      const errorText = await userResponse.text()
+      console.error('GitHub user info fetch failed:', {
+        status: userResponse.status,
+        statusText: userResponse.statusText,
+        body: errorText,
+      })
+      throw new Error(`Failed to fetch user info: ${userResponse.status} ${userResponse.statusText}`)
     }
 
     const user = await userResponse.json()

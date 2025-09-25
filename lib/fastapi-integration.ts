@@ -60,9 +60,7 @@ class FastAPIClient {
   constructor(baseUrl: string = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000') {
     // In production (Vercel), use the Next.js API route instead of separate FastAPI server
     this.baseUrl =
-      process.env.NODE_ENV === 'production' 
-        ? 'https://unified-ai-coding-platform.vercel.app/api/optimize' 
-        : baseUrl
+      process.env.NODE_ENV === 'production' ? 'https://unified-ai-coding-platform.vercel.app/api/optimize' : baseUrl
   }
 
   /**

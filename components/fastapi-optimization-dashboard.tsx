@@ -95,7 +95,10 @@ export function FastAPIOptimizationDashboard({ className }: FastAPIOptimizationD
             original_tokens: data.costOptimization.originalTokens,
             optimized_tokens: data.costOptimization.optimizedTokens,
             token_reduction: data.costOptimization.originalTokens - data.costOptimization.optimizedTokens,
-            reduction_percentage: ((data.costOptimization.originalTokens - data.costOptimization.optimizedTokens) / data.costOptimization.originalTokens) * 100,
+            reduction_percentage:
+              ((data.costOptimization.originalTokens - data.costOptimization.optimizedTokens) /
+                data.costOptimization.originalTokens) *
+              100,
           },
           ml_insights: {
             predicted_cost_reduction: data.costOptimization.savings,
