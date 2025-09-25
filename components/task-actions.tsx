@@ -20,16 +20,15 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { VERCEL_DEPLOY_URL } from '@/lib/constants'
 import { useTasks } from '@/components/app-layout'
-import { Claude, Codex, Cursor, OpenCode } from '@/components/logos'
+import { Claude, Codex, OpenCode } from '@/components/logos'
 
 interface TaskActionsProps {
   task: Task
 }
 
 const CODING_AGENTS = [
-  { value: 'claude', label: 'Claude', icon: Claude },
   { value: 'codex', label: 'Codex', icon: Codex },
-  { value: 'cursor', label: 'Cursor', icon: Cursor },
+  { value: 'claude', label: 'Claude', icon: Claude },
   { value: 'opencode', label: 'opencode', icon: OpenCode },
 ] as const
 
@@ -76,7 +75,7 @@ export function TaskActions({ task }: TaskActionsProps) {
   const [showTryAgainDialog, setShowTryAgainDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isTryingAgain, setIsTryingAgain] = useState(false)
-  const [selectedAgent, setSelectedAgent] = useState(task.selectedAgent || 'claude')
+  const [selectedAgent, setSelectedAgent] = useState(task.selectedAgent || 'codex')
   const [selectedModel, setSelectedModel] = useState<string>(task.selectedModel || DEFAULT_MODELS.claude)
   const router = useRouter()
   const { refreshTasks } = useTasks()

@@ -6,9 +6,6 @@ export function validateEnvironmentVariables(selectedAgent: string = 'claude') {
     errors.push('ANTHROPIC_API_KEY is required for Claude CLI')
   }
 
-  if (selectedAgent === 'cursor' && !process.env.CURSOR_API_KEY) {
-    errors.push('CURSOR_API_KEY is required for Cursor CLI')
-  }
 
   if (selectedAgent === 'codex' && !process.env.OPENAI_API_KEY) {
     errors.push('OPENAI_API_KEY is required for Codex CLI')

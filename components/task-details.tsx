@@ -7,7 +7,7 @@ import { ExternalLink, GitBranch, Clock, CheckCircle, AlertCircle, Loader2, Copy
 import { cn } from '@/lib/utils'
 import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
-import { Claude, Codex, Cursor, OpenCode } from '@/components/logos'
+import { Claude, Codex, OpenCode } from '@/components/logos'
 
 interface TaskDetailsProps {
   task: Task
@@ -28,8 +28,6 @@ export function TaskDetails({ task }: TaskDetailsProps) {
         return Claude
       case 'codex':
         return Codex
-      case 'cursor':
-        return Cursor
       case 'opencode':
         return OpenCode
       default:

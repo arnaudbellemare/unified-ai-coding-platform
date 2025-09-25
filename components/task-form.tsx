@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Loader2, ArrowUp, Lock } from 'lucide-react'
-import { Claude, Codex, Cursor, OpenCode } from '@/components/logos'
+import { Claude, Codex, OpenCode } from '@/components/logos'
 
 interface GitHubOwner {
   login: string
@@ -30,9 +30,8 @@ interface TaskFormProps {
 }
 
 const CODING_AGENTS = [
-  { value: 'claude', label: 'Claude', icon: Claude },
   { value: 'codex', label: 'Codex', icon: Codex },
-  { value: 'cursor', label: 'Cursor', icon: Cursor },
+  { value: 'claude', label: 'Claude', icon: Claude },
   { value: 'opencode', label: 'opencode', icon: OpenCode },
 ] as const
 
@@ -79,8 +78,8 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
   const [prompt, setPrompt] = useState('')
   const [selectedOwner, setSelectedOwner] = useState('')
   const [selectedRepo, setSelectedRepo] = useState('')
-  const [selectedAgent, setSelectedAgent] = useState('claude')
-  const [selectedModel, setSelectedModel] = useState<string>(DEFAULT_MODELS.claude)
+  const [selectedAgent, setSelectedAgent] = useState('codex')
+  const [selectedModel, setSelectedModel] = useState<string>(DEFAULT_MODELS.codex)
   const [repoFilter, setRepoFilter] = useState('')
   const [owners, setOwners] = useState<GitHubOwner[]>([])
   const [repos, setRepos] = useState<GitHubRepo[]>([])
