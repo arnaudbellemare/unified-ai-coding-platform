@@ -14,12 +14,12 @@ export async function POST(request: NextRequest) {
     if (!repoMatch) {
       return NextResponse.json({ error: 'Invalid GitHub repository URL' }, { status: 400 })
     }
-    
+
     const [, owner, repo] = repoMatch
     const repoName = repo.replace('.git', '')
 
-    // Generate Vercel deployment URL
-    const vercelDeployUrl = `https://vercel.com/new/git/github/${owner}/${repoName}?branch=${branchName}&env=NODE_ENV=production&env=TASK_ID=${taskId}&env=DEPLOYED_FROM=unified-ai-coding-platform`
+    // Generate Vercel deployment URL - use main branch since the feature branch may not exist in the remote repo
+    const vercelDeployUrl = `https://vercel.com/new/git/github/${owner}/${repoName}?env=NODE_ENV=production&env=TASK_ID=${taskId}&env=DEPLOYED_FROM=unified-ai-coding-platform`
 
     // For now, return a success response with the deployment URL
     // This allows users to click and deploy manually to Vercel
@@ -29,13 +29,13 @@ export async function POST(request: NextRequest) {
       status: 'ready',
       message: 'Ready to deploy! Click the link to deploy to Vercel.',
       instructions: [
-        'Click the "View Live Project" button below',
+        'Click "Deploy to Vercel" above to open Vercel',
         'Sign in to Vercel if prompted',
         'Click "Deploy" on the Vercel page',
-        'Your project will be deployed automatically'
-      ]
+        'Note: This deploys the main branch of the repository',
+        'The AI-generated changes were made in the sandbox environment'
+      ],
     })
-
   } catch (error) {
     console.error('Deployment error:', error)
     return NextResponse.json({ error: 'Internal server error during deployment' }, { status: 500 })
