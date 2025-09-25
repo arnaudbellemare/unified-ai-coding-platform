@@ -41,7 +41,7 @@ export async function createSandbox(config: SandboxConfig): Promise<SandboxResul
     if (!envValidation.valid) {
       throw new Error(envValidation.error!)
     }
-
+    
     if (envValidation.warnings) {
       logs.push(`Warning: ${envValidation.warnings}`)
     } else {
@@ -66,16 +66,11 @@ export async function createSandbox(config: SandboxConfig): Promise<SandboxResul
         type: 'git' as const,
         url: authenticatedRepoUrl,
         revision: branchNameForEnv || 'main',
-        depth: 1, // Shallow clone for faster setup
       },
       timeout: config.timeout ? parseInt(config.timeout.replace(/\D/g, '')) * 60 * 1000 : 5 * 60 * 1000, // Convert to milliseconds
       ports: config.ports || [3000],
       runtime: config.runtime || 'node22',
       resources: { vcpus: config.resources?.vcpus || 4 },
-      // Credentials for authentication
-      teamId: process.env.VERCEL_TEAM_ID!,
-      projectId: process.env.VERCEL_PROJECT_ID!,
-      token: process.env.VERCEL_TOKEN!,
     }
 
     logs.push(
@@ -97,7 +92,12 @@ export async function createSandbox(config: SandboxConfig): Promise<SandboxResul
 
     let sandbox: Sandbox
     try {
-      sandbox = await Sandbox.create(sandboxConfig)
+      sandbox = await Sandbox.create({
+        ...sandboxConfig,
+        teamId: process.env.VERCEL_TEAM_ID!,
+        projectId: process.env.VERCEL_PROJECT_ID!,
+        token: process.env.VERCEL_TOKEN!,
+      })
       logs.push('Sandbox created successfully')
 
       // Call progress callback after sandbox creation

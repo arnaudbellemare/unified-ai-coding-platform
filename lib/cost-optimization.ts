@@ -4,6 +4,7 @@
  */
 
 import { enhancedPromptOptimizer, OptimizationResult } from './enhanced-prompt-optimizer'
+import { getEnvironmentConfig, getMinimalConfigForAgent } from './config/env'
 
 export interface CostOptimizationResult {
   originalCost: number
@@ -18,6 +19,13 @@ export interface CostOptimizationResult {
   optimizedPrompt: string
   optimizationApplied: boolean
   estimatedMonthlySavings?: number
+  recommendedAgent?: string
+  agentReasoning?: string
+  alternativeAgents?: Array<{
+    agent: string
+    estimatedCost: number
+    reasoning: string
+  }>
 }
 
 export class CostOptimization {
@@ -27,6 +35,166 @@ export class CostOptimization {
   constructor() {
     this.perplexityApiKey = process.env.PERPLEXITY_API_KEY || ''
     this.openaiApiKey = process.env.OPENAI_API_KEY || ''
+  }
+
+  /**
+   * Recommend the most cost-effective agent for a given prompt
+   */
+  async recommendAgent(prompt: string, availableAgents: string[] = []): Promise<{
+    recommended: string
+    reasoning: string
+    alternatives: Array<{
+      agent: string
+      estimatedCost: number
+      reasoning: string
+    }>
+  }> {
+    const config = getEnvironmentConfig()
+    
+    // Default available agents if none provided
+    const agents = availableAgents.length > 0 ? availableAgents : [
+      ...(config.hasPerplexity ? ['perplexity'] : []),
+      ...(config.hasOpenAI ? ['codex'] : []),
+      ...(config.hasAnthropic ? ['claude'] : []),
+      ...(config.hasCursor ? ['cursor'] : []),
+      'opencode' // Always available
+    ]
+
+    // Analyze prompt characteristics
+    const promptAnalysis = this.analyzePrompt(prompt)
+    
+    // Calculate costs for each agent
+    const agentCosts = await Promise.all(
+      agents.map(async (agent) => ({
+        agent,
+        cost: await this.estimateAgentCost(agent, prompt, promptAnalysis),
+        reasoning: this.getAgentReasoning(agent, promptAnalysis)
+      }))
+    )
+
+    // Sort by cost (ascending)
+    agentCosts.sort((a, b) => a.cost - b.cost)
+    
+    const recommended = agentCosts[0]
+    const alternatives = agentCosts.slice(1)
+
+    return {
+      recommended: recommended.agent,
+      reasoning: recommended.reasoning,
+      alternatives: alternatives.map(alt => ({
+        agent: alt.agent,
+        estimatedCost: alt.cost,
+        reasoning: alt.reasoning
+      }))
+    }
+  }
+
+  /**
+   * Analyze prompt characteristics for agent recommendation
+   */
+  private analyzePrompt(prompt: string): {
+    length: number
+    complexity: 'simple' | 'medium' | 'complex'
+    type: 'coding' | 'research' | 'analysis' | 'general'
+    requiresWebSearch: boolean
+    requiresCodeGeneration: boolean
+    requiresRealTimeData: boolean
+  } {
+    const lowerPrompt = prompt.toLowerCase()
+    const wordCount = prompt.split(/\s+/).length
+
+    // Determine complexity
+    let complexity: 'simple' | 'medium' | 'complex' = 'simple'
+    if (wordCount > 100) complexity = 'complex'
+    else if (wordCount > 50) complexity = 'medium'
+
+    // Determine type
+    let type: 'coding' | 'research' | 'analysis' | 'general' = 'general'
+    if (/code|function|class|variable|debug|implement|create.*app|build.*app/i.test(lowerPrompt)) {
+      type = 'coding'
+    } else if (/search|find|look up|current|latest|news|recent|today|now/i.test(lowerPrompt)) {
+      type = 'research'
+    } else if (/analyze|compare|evaluate|assess|review|examine/i.test(lowerPrompt)) {
+      type = 'analysis'
+    }
+
+    // Determine requirements
+    const requiresWebSearch = /search|find|look up|current|latest|news|recent|today|now|web|internet/i.test(lowerPrompt)
+    const requiresCodeGeneration = /code|function|class|variable|debug|implement|create|build|write.*code/i.test(lowerPrompt)
+    const requiresRealTimeData = /current|latest|news|recent|today|now|live|real.*time/i.test(lowerPrompt)
+
+    return {
+      length: wordCount,
+      complexity,
+      type,
+      requiresWebSearch,
+      requiresCodeGeneration,
+      requiresRealTimeData
+    }
+  }
+
+  /**
+   * Estimate cost for a specific agent
+   */
+  private async estimateAgentCost(
+    agent: string, 
+    prompt: string, 
+    analysis: ReturnType<CostOptimization['analyzePrompt']>
+  ): Promise<number> {
+    // Base costs per 1K tokens (approximate)
+    const agentCosts = {
+      opencode: 0, // Free
+      perplexity: 0.0005, // $0.50 per 1M tokens
+      claude: 0.003, // $3 per 1M tokens
+      codex: 0.002, // $2 per 1M tokens (via AI Gateway)
+      cursor: 0.001 // $1 per 1M tokens (estimated)
+    }
+
+    // Estimate token usage based on prompt complexity
+    let estimatedTokens = Math.max(100, analysis.length * 1.3) // Rough estimate
+    
+    // Adjust for complexity
+    if (analysis.complexity === 'complex') estimatedTokens *= 1.5
+    else if (analysis.complexity === 'medium') estimatedTokens *= 1.2
+
+    // Adjust for agent type
+    if (agent === 'perplexity' && analysis.requiresWebSearch) {
+      estimatedTokens *= 1.3 // Web search adds overhead
+    }
+
+    const baseCost = agentCosts[agent as keyof typeof agentCosts] || 0
+    return (estimatedTokens / 1000) * baseCost
+  }
+
+  /**
+   * Get reasoning for agent recommendation
+   */
+  private getAgentReasoning(
+    agent: string, 
+    analysis: ReturnType<CostOptimization['analyzePrompt']>
+  ): string {
+    const reasons = {
+      opencode: "Free open-source agent, best for simple coding tasks",
+      perplexity: "Cost-effective for research and web search tasks",
+      claude: "High-quality for complex analysis and coding",
+      codex: "Optimized for coding with AI Gateway integration",
+      cursor: "Specialized for code completion and generation"
+    }
+
+    let reasoning = reasons[agent as keyof typeof reasons] || "General purpose agent"
+
+    // Add specific reasoning based on prompt analysis
+    if (agent === 'perplexity' && analysis.requiresWebSearch) {
+      reasoning += " (optimal for web search requirements)"
+    } else if (agent === 'codex' && analysis.requiresCodeGeneration) {
+      reasoning += " (optimized for code generation)"
+    } else if (agent === 'opencode' && analysis.type === 'coding') {
+      reasoning += " (free option for coding tasks)"
+    } else if (agent === 'claude' && analysis.complexity === 'complex') {
+      reasoning += " (best for complex tasks)"
+    }
+
+    return reasoning
   }
 
   /**
@@ -44,7 +212,16 @@ export class CostOptimization {
   async optimizePromptWithAnalysis(originalPrompt: string): Promise<CostOptimizationResult> {
     const optimizedPrompt = await this.optimizePrompt(originalPrompt)
     const costAnalysis = await this.calculateCostOptimization(originalPrompt, optimizedPrompt)
-    return costAnalysis
+    
+    // Get agent recommendation
+    const agentRecommendation = await this.recommendAgent(originalPrompt)
+    
+    return {
+      ...costAnalysis,
+      recommendedAgent: agentRecommendation.recommended,
+      agentReasoning: agentRecommendation.reasoning,
+      alternativeAgents: agentRecommendation.alternatives
+    }
   }
 
   /**

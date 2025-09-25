@@ -79,6 +79,19 @@ export async function POST(request: NextRequest) {
     // Use provided ID or generate a new one
     const taskId = body.id || generateId(12)
 
+    // Get user's GitHub token from cookies
+    const userToken = request.cookies.get('github_token')?.value
+    const serverToken = process.env.GITHUB_TOKEN
+
+    // Use user token if available, fallback to server token
+    const githubToken = userToken || serverToken
+
+    if (!githubToken) {
+      return NextResponse.json({ 
+        error: 'GitHub authentication required. Please connect your GitHub account first.' 
+      }, { status: 401 })
+    }
+
     // Check repository access and fork if necessary
     let finalRepoUrl = body.repoUrl
     let forkInfo = null
@@ -86,26 +99,38 @@ export async function POST(request: NextRequest) {
     if (body.repoUrl) {
       try {
         console.log('[Task Creation] Checking repository access...')
-        
+
         // Check if we have access to the repository
-        const accessResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/check-repo-access`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ repoUrl: body.repoUrl }),
-        })
+        const accessResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/check-repo-access`,
+          {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${githubToken}`,
+            },
+            body: JSON.stringify({ repoUrl: body.repoUrl }),
+          },
+        )
 
         if (accessResponse.ok) {
           const accessData = await accessResponse.json()
-          
+
           if (!accessData.canPush && accessData.canFork) {
             console.log('[Task Creation] Repository needs forking, creating fork...')
-            
+
             // Fork the repository
-            const forkResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/fork-repository`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ repoUrl: body.repoUrl, taskId }),
-            })
+            const forkResponse = await fetch(
+              `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/fork-repository`,
+              {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${githubToken}`,
+                },
+                body: JSON.stringify({ repoUrl: body.repoUrl, taskId }),
+              },
+            )
 
             if (forkResponse.ok) {
               const forkData = await forkResponse.json()

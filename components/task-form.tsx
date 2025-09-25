@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Loader2, ArrowUp, Lock } from 'lucide-react'
+import { Loader2, ArrowUp, Lock, Lightbulb, DollarSign, CheckCircle } from 'lucide-react'
 import { Claude, Codex, OpenCode, Perplexity } from '@/components/logos'
+import { Badge } from '@/components/ui/badge'
 
 interface GitHubOwner {
   login: string
@@ -27,6 +28,21 @@ interface GitHubRepo {
 interface TaskFormProps {
   onSubmit: (data: { prompt: string; repoUrl: string; selectedAgent: string; selectedModel: string }) => void
   isSubmitting: boolean
+}
+
+interface AgentRecommendation {
+  recommended: string
+  reasoning: string
+  alternatives: Array<{
+    agent: string
+    estimatedCost: number
+    reasoning: string
+  }>
+  userSelected: string
+  isSelectedAvailable: boolean
+  isSelectedOptimal: boolean
+  potentialSavings: number
+  recommendation: string
 }
 
 const CODING_AGENTS = [
@@ -96,6 +112,8 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
   const [loadingOwners, setLoadingOwners] = useState(true)
   const [loadingRepos, setLoadingRepos] = useState(false)
   const [repoDropdownOpen, setRepoDropdownOpen] = useState(false)
+  const [agentRecommendation, setAgentRecommendation] = useState<AgentRecommendation | null>(null)
+  const [isGettingRecommendation, setIsGettingRecommendation] = useState(false)
 
   // Ref for the textarea to focus it programmatically
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -112,6 +130,41 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
       textareaRef.current.focus()
     }
   }
+
+  // Get agent recommendation based on prompt
+  const getAgentRecommendation = async (promptText: string, currentAgent: string) => {
+    if (!promptText.trim() || promptText.length < 10) {
+      setAgentRecommendation(null)
+      return
+    }
+
+    setIsGettingRecommendation(true)
+    try {
+      const response = await fetch('/api/optimize-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: promptText, selectedAgent: currentAgent })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setAgentRecommendation(data.agentRecommendation)
+      }
+    } catch (error) {
+      console.error('Failed to get agent recommendation:', error)
+    } finally {
+      setIsGettingRecommendation(false)
+    }
+  }
+
+  // Debounced agent recommendation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getAgentRecommendation(prompt, selectedAgent)
+    }, 1000) // Wait 1 second after user stops typing
+
+    return () => clearTimeout(timer)
+  }, [prompt, selectedAgent])
 
   // Handle keyboard events in textarea
   const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -563,6 +616,38 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
                       ))}
                     </SelectContent>
                   </Select>
+
+                  {/* Agent Recommendation */}
+                  {agentRecommendation && (
+                    <div className="flex items-center gap-1 text-xs">
+                      {isGettingRecommendation ? (
+                        <div className="flex items-center gap-1 text-blue-600">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <span>Analyzing...</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1">
+                          {agentRecommendation.isSelectedOptimal ? (
+                            <div className="flex items-center gap-1 text-green-600">
+                              <CheckCircle className="h-3 w-3" />
+                              <span>Optimal choice!</span>
+                            </div>
+                          ) : agentRecommendation.potentialSavings > 0 ? (
+                            <div className="flex items-center gap-1 text-yellow-600">
+                              <Lightbulb className="h-3 w-3" />
+                              <span>Save ${agentRecommendation.potentialSavings.toFixed(4)}</span>
+                              <button
+                                onClick={() => setSelectedAgent(agentRecommendation.recommended)}
+                                className="text-blue-600 hover:underline"
+                              >
+                                Use {agentRecommendation.recommended}
+                              </button>
+                            </div>
+                          ) : null}
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Model Selection */}
                   <Select

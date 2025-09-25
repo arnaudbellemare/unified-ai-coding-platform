@@ -19,6 +19,7 @@ import { MoreHorizontal, RefreshCw, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { VERCEL_DEPLOY_URL } from '@/lib/constants'
+import { GitHubAuth } from '@/components/github-auth'
 
 export function HomePageHeader() {
   const { toggleSidebar, refreshTasks } = useTasks()
@@ -84,6 +85,9 @@ export function HomePageHeader() {
 
   const actions = (
     <div className="flex items-center gap-2">
+      {/* GitHub Authentication */}
+      <GitHubAuth />
+      
       {/* Deploy to Vercel Button */}
       <Button
         asChild

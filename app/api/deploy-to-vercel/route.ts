@@ -20,12 +20,10 @@ export async function POST(request: NextRequest) {
 
     // Check if this is a forked repository (contains task ID in name)
     const isForkedRepo = repoName.includes(`-ai-task-${taskId}`)
-    
+
     // Generate Vercel deployment URL
-    // If it's a forked repo, we can deploy from the specific branch
-    // Otherwise, use main branch for safety
-    const branchParam = isForkedRepo ? `&branch=${branchName}` : ''
-    const vercelDeployUrl = `https://vercel.com/new/git/github/${owner}/${repoName}?env=NODE_ENV=production&env=TASK_ID=${taskId}&env=DEPLOYED_FROM=unified-ai-coding-platform${branchParam}`
+    // Use the main Vercel "New Project" page
+    const vercelDeployUrl = `https://vercel.com/new`
 
     // For now, return a success response with the deployment URL
     // This allows users to click and deploy manually to Vercel
@@ -37,11 +35,18 @@ export async function POST(request: NextRequest) {
       instructions: [
         'Click "Deploy to Vercel" above to open Vercel',
         'Sign in to Vercel if prompted',
-        'Click "Deploy" on the Vercel page',
-        isForkedRepo 
+        'Click "Import Git Repository" on the Vercel page',
+        `Enter this repository URL: https://github.com/${owner}/${repoName}`,
+        isForkedRepo
           ? 'This deploys from your forked repository with AI changes'
           : 'This deploys the main branch of the original repository',
-        'AI changes were made in the sandbox environment',
+        isForkedRepo
+          ? `After import, switch to branch "${branchName}" in Vercel settings`
+          : 'AI changes were made in the sandbox environment',
+        'Click "Deploy" to deploy your project',
+        '⚠️ IMPORTANT: After deployment, configure environment variables in Vercel Settings → Environment Variables',
+        'Required variables: POSTGRES_URL, AI_GATEWAY_API_KEY, VERCEL_TOKEN, VERCEL_TEAM_ID, VERCEL_PROJECT_ID',
+        'See DEPLOYMENT_GUIDE.md for detailed setup instructions',
       ],
     })
   } catch (error) {

@@ -32,11 +32,11 @@ export function createAuthenticatedRepoUrl(repoUrl: string): string {
   try {
     const url = new URL(repoUrl)
     if (url.hostname === 'github.com') {
-      // Add GitHub token for authentication
-      url.username = process.env.GITHUB_TOKEN
-      url.password = 'x-oauth-basic'
+      // For public repositories, we don't need authentication
+      // The Vercel Sandbox API should handle public repos without auth
+      return repoUrl
     }
-    return url.toString()
+    return repoUrl
   } catch {
     // Failed to parse repository URL
     return repoUrl
