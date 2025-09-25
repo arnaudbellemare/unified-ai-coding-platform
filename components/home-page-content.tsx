@@ -14,6 +14,7 @@ import { PaymentProtocolComparison } from '@/components/payment-protocol-compari
 import { MicroEcommercePayment } from '@/components/micro-ecommerce-payment'
 import { X402ProtocolAnalysis } from '@/components/x402-protocol-analysis'
 import { AdvancedOptimizationDashboard } from '@/components/advanced-optimization-dashboard'
+import { FastAPIOptimizationDashboard } from '@/components/fastapi-optimization-dashboard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Bot } from 'lucide-react'
@@ -148,8 +149,19 @@ export function HomePageContent() {
 
         {activeTab === 'optimization' && (
           <div className="flex justify-center items-start min-h-screen py-8">
-            <div className="max-w-4xl w-full px-4">
-              <CostOptimization />
+            <div className="max-w-6xl w-full px-4">
+              <Tabs defaultValue="fastapi" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="fastapi">FastAPI ML Optimization</TabsTrigger>
+                  <TabsTrigger value="basic">Basic Optimization</TabsTrigger>
+                </TabsList>
+                <TabsContent value="fastapi" className="space-y-6">
+                  <FastAPIOptimizationDashboard />
+                </TabsContent>
+                <TabsContent value="basic" className="space-y-6">
+                  <CostOptimization />
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         )}
