@@ -152,7 +152,8 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Savings</p>
                 <p className="text-lg font-semibold text-green-600">
-                  ${(result.costOptimization.savings || 0).toFixed(4)} ({result.costOptimization.savingsPercentage || '0%'})
+                  ${(result.costOptimization.savings || 0).toFixed(4)} (
+                  {result.costOptimization.savingsPercentage || '0%'})
                 </p>
               </div>
             </div>
