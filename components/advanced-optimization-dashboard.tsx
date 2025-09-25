@@ -374,17 +374,23 @@ export function AdvancedOptimizationDashboard() {
                       {getTrendIcon(item.trend as string)}
                       <div>
                         <div className="font-medium">{item.provider as string}</div>
-                        <div className="text-sm text-muted-foreground">${(item.price as number).toFixed(4)} per request</div>
+                        <div className="text-sm text-muted-foreground">
+                          ${(item.price as number).toFixed(4)} per request
+                        </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className={`font-medium ${(item.change as number) >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                      <div
+                        className={`font-medium ${(item.change as number) >= 0 ? 'text-red-600' : 'text-green-600'}`}
+                      >
                         {(item.change as number) >= 0 ? '+' : ''}
                         {(item.change as number).toFixed(1)}%
                       </div>
                       <Badge
                         variant="outline"
-                        className={getRiskColor((item.change as number) >= 2 ? 'high' : (item.change as number) >= 0 ? 'medium' : 'low')}
+                        className={getRiskColor(
+                          (item.change as number) >= 2 ? 'high' : (item.change as number) >= 0 ? 'medium' : 'low',
+                        )}
                       >
                         {item.trend as string}
                       </Badge>

@@ -285,9 +285,7 @@ export function X402Payment({ onPaymentComplete, onSubscriptionChange }: X402Pay
                       >
                         <CardContent className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="h-6 w-6">
-                              {React.createElement(method.icon)}
-                            </div>
+                            <div className="h-6 w-6">{React.createElement(method.icon)}</div>
                             <div>
                               <div className="font-medium">{method.name}</div>
                               <div className="text-sm text-muted-foreground">{method.description}</div>

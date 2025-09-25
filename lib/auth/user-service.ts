@@ -18,7 +18,7 @@ export class UserService {
     if (!db) {
       throw new Error('Database not available')
     }
-    
+
     const existingUser = await db.select().from(users).where(eq(users.githubId, githubUser.id.toString())).limit(1)
 
     if (existingUser.length > 0) {
@@ -49,7 +49,7 @@ export class UserService {
     if (!db) {
       throw new Error('Database not available')
     }
-    
+
     const expiresAt = new Date(Date.now() + expiresInHours * 60 * 60 * 1000)
 
     const [session] = await db
@@ -71,7 +71,7 @@ export class UserService {
     if (!db) {
       return null
     }
-    
+
     const session = await db
       .select({
         user: users,
@@ -92,7 +92,7 @@ export class UserService {
     if (!db) {
       return { allowed: false, reason: 'Database not available' }
     }
-    
+
     const user = await db.select().from(users).where(eq(users.id, userId)).limit(1)
 
     if (!user[0]) {
@@ -119,7 +119,7 @@ export class UserService {
     if (!db) {
       return []
     }
-    
+
     return await db
       .select()
       .from(tasks)
@@ -132,11 +132,17 @@ export class UserService {
   /**
    * Log usage for billing and analytics
    */
-  static async logUsage(userId: string, action: string, cost: number = 0, metadata?: Record<string, unknown>, taskId?: string) {
+  static async logUsage(
+    userId: string,
+    action: string,
+    cost: number = 0,
+    metadata?: Record<string, unknown>,
+    taskId?: string,
+  ) {
     if (!db) {
       return
     }
-    
+
     await db.insert(usageLogs).values({
       userId,
       taskId,
@@ -164,7 +170,7 @@ export class UserService {
     if (!db) {
       return
     }
-    
+
     await db
       .update(users)
       .set({
@@ -181,7 +187,7 @@ export class UserService {
     if (!db) {
       return null
     }
-    
+
     const user = await db.select().from(users).where(eq(users.id, userId)).limit(1)
 
     const taskCount = await db.select({ count: tasks.id }).from(tasks).where(eq(tasks.userId, userId))

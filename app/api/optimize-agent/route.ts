@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       config.hasAnthropic && 'claude',
       config.hasOpenAI && 'gpt',
       config.hasPerplexity && 'perplexity',
-      config.hasAIGateway && 'ai_gateway'
+      config.hasAIGateway && 'ai_gateway',
     ].filter(Boolean) as string[]
 
     const isSelectedAgentAvailable = availableAgents.includes(selectedAgent || '')
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
           !config.hasAnthropic && 'ANTHROPIC_API_KEY',
           !config.hasOpenAI && 'OPENAI_API_KEY',
           !config.hasPerplexity && 'PERPLEXITY_API_KEY',
-          !config.hasAIGateway && 'AI_GATEWAY_API_KEY'
+          !config.hasAIGateway && 'AI_GATEWAY_API_KEY',
         ].filter(Boolean) as string[],
       },
       costAnalysis: {
@@ -95,7 +95,7 @@ export async function GET() {
         config.hasAnthropic && { name: 'claude', available: true, requiredVariables: ['ANTHROPIC_API_KEY'] },
         config.hasOpenAI && { name: 'gpt', available: true, requiredVariables: ['OPENAI_API_KEY'] },
         config.hasPerplexity && { name: 'perplexity', available: true, requiredVariables: ['PERPLEXITY_API_KEY'] },
-        config.hasAIGateway && { name: 'ai_gateway', available: true, requiredVariables: ['AI_GATEWAY_API_KEY'] }
+        config.hasAIGateway && { name: 'ai_gateway', available: true, requiredVariables: ['AI_GATEWAY_API_KEY'] },
       ].filter(Boolean),
       costOptimization: {
         enabled: true,

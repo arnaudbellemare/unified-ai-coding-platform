@@ -639,7 +639,7 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                   <Card className="border-green-200 bg-green-50">
                     <CardContent className="pt-6">
                       <div className="prose prose-sm max-w-none">
-                        <pre className="whitespace-pre-wrap text-sm leading-relaxed">{executionResults}</pre>
+                        <pre className="whitespace-pre-wrap text-sm leading-relaxed text-black">{executionResults}</pre>
                       </div>
                     </CardContent>
                   </Card>
@@ -668,7 +668,7 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                             <Badge variant={execution.status === 'error' ? 'destructive' : 'default'}>
                               {execution.status}
                             </Badge>
-                            <span className="font-medium">{execution.agent}</span>
+                            <span className="font-medium text-black">{execution.agent}</span>
                           </div>
                           <span className="text-xs text-muted-foreground">
                             {execution.timestamp.toLocaleTimeString()}
@@ -681,11 +681,11 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                       </CardHeader>
                       <CardContent>
                         <details className="cursor-pointer">
-                          <summary className="text-sm font-medium mb-2">
+                          <summary className="text-sm font-medium mb-2 text-black">
                             View {execution.status === 'error' ? 'Error' : 'Output'}
                           </summary>
                           <div className="mt-2 p-3 bg-white rounded border text-xs font-mono max-h-32 overflow-y-auto">
-                            <pre className="whitespace-pre-wrap">{execution.output}</pre>
+                            <pre className="whitespace-pre-wrap text-black">{execution.output}</pre>
                           </div>
                         </details>
                       </CardContent>
