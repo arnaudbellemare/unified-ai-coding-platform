@@ -60,12 +60,17 @@ export async function POST(request: NextRequest) {
 
       case 'toggle_rule':
         if (ruleId) {
-          await engine.toggleOptimizationRule(ruleId)
-          return NextResponse.json({
-            success: true,
-            message: `Rule ${ruleId} toggled`,
-            timestamp: new Date().toISOString(),
-          })
+          // Get current rule state and toggle it
+          const rules = engine.getOptimizationRules()
+          const rule = rules.find(r => r.id === ruleId)
+          if (rule) {
+            engine.toggleOptimizationRule(ruleId, !rule.enabled)
+            return NextResponse.json({
+              success: true,
+              message: `Rule ${ruleId} ${!rule.enabled ? 'enabled' : 'disabled'}`,
+              timestamp: new Date().toISOString(),
+            })
+          }
         }
         break
 
