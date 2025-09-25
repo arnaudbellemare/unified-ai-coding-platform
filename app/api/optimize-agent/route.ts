@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { CostOptimization } from '@/lib/cost-optimization'
 import { getEnvironmentConfig } from '@/lib/config/env'
+import { hybridOptimizer } from '@/lib/hybrid-optimizer'
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt, selectedAgent } = await request.json()
+    const { prompt, selectedAgent, taskDescription } = await request.json()
 
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 })
@@ -12,6 +13,18 @@ export async function POST(request: NextRequest) {
 
     const config = getEnvironmentConfig()
     const costOptimizer = new CostOptimization()
+
+    // Use hybrid optimization system
+    const hybridResult = await hybridOptimizer.optimize(
+      prompt,
+      taskDescription || {
+        domain: selectedAgent === 'coding' ? 'coding' : selectedAgent === 'analytics' ? 'analysis' : 'general',
+        complexity: prompt.length > 200 ? 'complex' : prompt.length > 100 ? 'medium' : 'simple',
+        requirements: [],
+        constraints: []
+      },
+      []
+    )
 
     // Get agent recommendation with cost analysis
     const agentRecommendation = await costOptimizer.recommendAgent(prompt)
@@ -45,10 +58,19 @@ export async function POST(request: NextRequest) {
       success: true,
       prompt: {
         original: prompt,
-        optimized: optimizationResult.optimizedPrompt,
-        optimizationApplied: optimizationResult.optimizationApplied,
-        tokenReduction: optimizationResult.savingsPercentage,
-        estimatedSavings: optimizationResult.savings,
+        optimized: hybridResult.optimizedPrompt,
+        optimizationApplied: hybridResult.optimizationApplied,
+        tokenReduction: hybridResult.tokenReduction,
+        estimatedSavings: hybridResult.costReduction,
+      },
+      hybridOptimization: {
+        optimizationEngine: hybridResult.optimizationEngine,
+        verbosityLevel: hybridResult.verbosityLevel,
+        strategies: hybridResult.strategies,
+        performanceScore: hybridResult.performanceScore,
+        racingScore: hybridResult.racingScore,
+        paretoOptimal: hybridResult.paretoOptimal,
+        evaluationsUsed: hybridResult.evaluationsUsed,
       },
       agentRecommendation: {
         recommended: agentRecommendation.recommended,
@@ -74,10 +96,15 @@ export async function POST(request: NextRequest) {
         ].filter(Boolean) as string[],
       },
       costAnalysis: {
-        originalCost: optimizationResult.originalCost,
-        optimizedCost: optimizationResult.optimizedCost,
-        totalSavings: optimizationResult.savings,
-        estimatedMonthlySavings: optimizationResult.estimatedMonthlySavings,
+        originalCost: hybridResult.originalCost,
+        optimizedCost: hybridResult.optimizedCost,
+        totalSavings: hybridResult.savings,
+        estimatedMonthlySavings: hybridResult.estimatedMonthlySavings,
+        tokenReduction: hybridResult.tokenReduction,
+        costReduction: hybridResult.costReduction,
+        optimizationEngine: hybridResult.optimizationEngine,
+        strategies: hybridResult.strategies,
+        verbosityLevel: hybridResult.verbosityLevel,
       },
     })
   } catch (error) {

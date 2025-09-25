@@ -4,67 +4,67 @@
  */
 
 export interface OptimizationResult {
-  optimizedPrompt: string;
-  strategies: string[];
-  tokenReduction: number;
-  costReduction: number;
-  accuracyMaintained: number;
-  performanceScore: number;
-  costScore: number;
-  paretoOptimal: boolean;
-  racingScore: number;
+  optimizedPrompt: string
+  strategies: string[]
+  tokenReduction: number
+  costReduction: number
+  accuracyMaintained: number
+  performanceScore: number
+  costScore: number
+  paretoOptimal: boolean
+  racingScore: number
 }
 
 export interface FewShotExample {
-  input: string;
-  output: string;
-  quality: number;
+  input: string
+  output: string
+  quality: number
 }
 
 export interface TaskDescription {
-  domain: string;
-  complexity: 'simple' | 'medium' | 'complex';
-  requirements: string[];
-  constraints: string[];
+  domain: string
+  complexity: 'simple' | 'medium' | 'complex'
+  requirements: string[]
+  constraints: string[]
 }
 
 export class CAPOEnhancedOptimizer {
-  private optimizationHistory: Map<string, OptimizationResult[]> = new Map();
-  private racingThreshold = 0.1; // 10% performance difference to stop racing
-  private maxEvaluations = 50;
-  private currentEvaluations = 0;
+  private optimizationHistory: Map<string, OptimizationResult[]> = new Map()
+  private racingThreshold = 0.1 // 10% performance difference to stop racing
+  private maxEvaluations = 50
+  private currentEvaluations = 0
 
   /**
    * CAPO Racing Algorithm - Stop evaluation early if one prompt clearly wins
    */
   async raceOptimizations(
-    prompts: string[], 
+    prompts: string[],
     taskDescription: TaskDescription,
-    fewShotExamples: FewShotExample[] = []
+    fewShotExamples: FewShotExample[] = [],
   ): Promise<OptimizationResult> {
-    const results: OptimizationResult[] = [];
-    this.currentEvaluations = 0;
+    const results: OptimizationResult[] = []
+    this.currentEvaluations = 0
 
     for (const prompt of prompts) {
-      if (this.currentEvaluations >= this.maxEvaluations) break;
+      if (this.currentEvaluations >= this.maxEvaluations) break
 
-      const result = await this.optimizeWithCAPO(prompt, taskDescription, fewShotExamples);
-      results.push(result);
-      this.currentEvaluations++;
+      const result = await this.optimizeWithCAPO(prompt, taskDescription, fewShotExamples)
+      results.push(result)
+      this.currentEvaluations++
 
       // Racing: Stop if we have a clear winner
       if (results.length >= 2) {
-        const best = this.findBestResult(results);
-        const secondBest = this.findSecondBestResult(results);
-        
+        const best = this.findBestResult(results)
+        const secondBest = this.findSecondBestResult(results)
+
         if (this.isSignificantlyBetter(best, secondBest)) {
-          console.log(`🏁 Racing stopped early - clear winner found after ${this.currentEvaluations} evaluations`);
-          return best;
+          console.log(`🏁 Racing stopped early - clear winner found after ${this.currentEvaluations} evaluations`)
+          return best
         }
       }
     }
 
-    return this.findBestResult(results);
+    return this.findBestResult(results)
   }
 
   /**
@@ -73,28 +73,24 @@ export class CAPOEnhancedOptimizer {
   async optimizeWithCAPO(
     prompt: string,
     taskDescription: TaskDescription,
-    fewShotExamples: FewShotExample[] = []
+    fewShotExamples: FewShotExample[] = [],
   ): Promise<OptimizationResult> {
     // Step 1: Optimize instruction
-    const optimizedInstruction = await this.optimizeInstruction(prompt, taskDescription);
-    
+    const optimizedInstruction = await this.optimizeInstruction(prompt, taskDescription)
+
     // Step 2: Optimize few-shot examples
-    const optimizedExamples = await this.optimizeFewShotExamples(fewShotExamples, taskDescription);
-    
+    const optimizedExamples = await this.optimizeFewShotExamples(fewShotExamples, taskDescription)
+
     // Step 3: Optimize task description
-    const optimizedTaskDescription = await this.optimizeTaskDescription(taskDescription);
-    
+    const optimizedTaskDescription = await this.optimizeTaskDescription(taskDescription)
+
     // Step 4: Combine all optimizations
-    const finalPrompt = this.combineOptimizations(
-      optimizedInstruction,
-      optimizedExamples,
-      optimizedTaskDescription
-    );
+    const finalPrompt = this.combineOptimizations(optimizedInstruction, optimizedExamples, optimizedTaskDescription)
 
     // Step 5: Calculate multi-objective scores
-    const performanceScore = await this.calculatePerformanceScore(finalPrompt, taskDescription);
-    const costScore = this.calculateCostScore(finalPrompt);
-    const paretoOptimal = this.isParetoOptimal(performanceScore, costScore);
+    const performanceScore = await this.calculatePerformanceScore(finalPrompt, taskDescription)
+    const costScore = this.calculateCostScore(finalPrompt)
+    const paretoOptimal = this.isParetoOptimal(performanceScore, costScore)
 
     return {
       optimizedPrompt: finalPrompt,
@@ -105,36 +101,36 @@ export class CAPOEnhancedOptimizer {
       performanceScore,
       costScore,
       paretoOptimal,
-      racingScore: this.calculateRacingScore(performanceScore, costScore)
-    };
+      racingScore: this.calculateRacingScore(performanceScore, costScore),
+    }
   }
 
   /**
    * Optimize instruction using CAPO principles
    */
   private async optimizeInstruction(prompt: string, taskDescription: TaskDescription): Promise<string> {
-    let optimized = prompt;
+    let optimized = prompt
 
     // Apply context-aware optimization based on task complexity
     switch (taskDescription.complexity) {
       case 'simple':
         // Light optimization for simple tasks
-        optimized = this.applyLightOptimization(prompt);
-        break;
+        optimized = this.applyLightOptimization(prompt)
+        break
       case 'medium':
         // Medium optimization with entropy-based removal
-        optimized = this.applyMediumOptimization(prompt);
-        break;
+        optimized = this.applyMediumOptimization(prompt)
+        break
       case 'complex':
         // Aggressive optimization for complex tasks
-        optimized = this.applyAggressiveOptimization(prompt);
-        break;
+        optimized = this.applyAggressiveOptimization(prompt)
+        break
     }
 
     // Apply domain-specific optimization
-    optimized = this.applyDomainOptimization(optimized, taskDescription.domain);
+    optimized = this.applyDomainOptimization(optimized, taskDescription.domain)
 
-    return optimized;
+    return optimized
   }
 
   /**
@@ -142,19 +138,19 @@ export class CAPOEnhancedOptimizer {
    */
   private async optimizeFewShotExamples(
     examples: FewShotExample[],
-    taskDescription: TaskDescription
+    taskDescription: TaskDescription,
   ): Promise<FewShotExample[]> {
-    if (examples.length === 0) return examples;
+    if (examples.length === 0) return examples
 
     // Select best examples based on quality and diversity
-    const selectedExamples = this.selectBestExamples(examples, 3);
-    
+    const selectedExamples = this.selectBestExamples(examples, 3)
+
     // Optimize each example
-    return selectedExamples.map(example => ({
+    return selectedExamples.map((example) => ({
       ...example,
       input: this.optimizeExampleInput(example.input, taskDescription),
-      output: this.optimizeExampleOutput(example.output, taskDescription)
-    }));
+      output: this.optimizeExampleOutput(example.output, taskDescription),
+    }))
   }
 
   /**
@@ -163,13 +159,9 @@ export class CAPOEnhancedOptimizer {
   private async optimizeTaskDescription(taskDescription: TaskDescription): Promise<TaskDescription> {
     return {
       ...taskDescription,
-      requirements: taskDescription.requirements.map(req => 
-        this.optimizeRequirement(req)
-      ),
-      constraints: taskDescription.constraints.map(constraint => 
-        this.optimizeConstraint(constraint)
-      )
-    };
+      requirements: taskDescription.requirements.map((req) => this.optimizeRequirement(req)),
+      constraints: taskDescription.constraints.map((constraint) => this.optimizeConstraint(constraint)),
+    }
   }
 
   /**
@@ -180,7 +172,7 @@ export class CAPOEnhancedOptimizer {
       .replace(/\b(please|kindly|would you|could you)\b/gi, '')
       .replace(/\b(very|really|quite|rather)\b/gi, '')
       .replace(/\s+/g, ' ')
-      .trim();
+      .trim()
   }
 
   /**
@@ -194,7 +186,7 @@ export class CAPOEnhancedOptimizer {
       .replace(/\b(comprehensive|detailed|thorough|extensive)\b/gi, 'complete')
       .replace(/\b(optimization|improvement|enhancement)\b/gi, 'optimize')
       .replace(/\s+/g, ' ')
-      .trim();
+      .trim()
   }
 
   /**
@@ -202,7 +194,10 @@ export class CAPOEnhancedOptimizer {
    */
   private applyAggressiveOptimization(prompt: string): string {
     return prompt
-      .replace(/\b(please|kindly|would you|could you|I would like you to|I would really appreciate it if you could)\b/gi, '')
+      .replace(
+        /\b(please|kindly|would you|could you|I would like you to|I would really appreciate it if you could)\b/gi,
+        '',
+      )
       .replace(/\b(very|really|quite|rather|somewhat|pretty|fairly|absolutely|definitely)\b/gi, '')
       .replace(/\b(the|a|an|and|or|but|in|on|at|to|for|of|with|by|is|are|was|were|be|been|being)\b/gi, '') // Entropy removal
       .replace(/\b(comprehensive|detailed|thorough|extensive|complete|full)\b/gi, 'complete')
@@ -212,7 +207,7 @@ export class CAPOEnhancedOptimizer {
       .replace(/\b(application|app|system|platform)\b/gi, 'app')
       .replace(/\b(component|module|part|section)\b/gi, 'comp')
       .replace(/\s+/g, ' ')
-      .trim();
+      .trim()
   }
 
   /**
@@ -224,22 +219,22 @@ export class CAPOEnhancedOptimizer {
         return prompt
           .replace(/\b(function|method|procedure|routine)\b/gi, 'func')
           .replace(/\b(variable|parameter|argument)\b/gi, 'var')
-          .replace(/\b(implementation|execution|development)\b/gi, 'impl');
-      
+          .replace(/\b(implementation|execution|development)\b/gi, 'impl')
+
       case 'analysis':
         return prompt
           .replace(/\b(analyze|examine|evaluate|assess)\b/gi, 'analyze')
           .replace(/\b(performance|efficiency|effectiveness)\b/gi, 'perf')
-          .replace(/\b(recommendation|suggestion|advice)\b/gi, 'rec');
-      
+          .replace(/\b(recommendation|suggestion|advice)\b/gi, 'rec')
+
       case 'documentation':
         return prompt
           .replace(/\b(documentation|document|doc)\b/gi, 'doc')
           .replace(/\b(explanation|description|details)\b/gi, 'explain')
-          .replace(/\b(example|instance|case)\b/gi, 'ex');
-      
+          .replace(/\b(example|instance|case)\b/gi, 'ex')
+
       default:
-        return prompt;
+        return prompt
     }
   }
 
@@ -248,35 +243,33 @@ export class CAPOEnhancedOptimizer {
    */
   private selectBestExamples(examples: FewShotExample[], maxCount: number): FewShotExample[] {
     // Sort by quality score
-    const sorted = examples.sort((a, b) => b.quality - a.quality);
-    
+    const sorted = examples.sort((a, b) => b.quality - a.quality)
+
     // Select diverse examples (simple diversity check)
-    const selected: FewShotExample[] = [];
+    const selected: FewShotExample[] = []
     for (const example of sorted) {
-      if (selected.length >= maxCount) break;
-      
+      if (selected.length >= maxCount) break
+
       // Check if example is different enough from already selected ones
-      const isDiverse = selected.every(selected => 
-        this.calculateSimilarity(example.input, selected.input) < 0.7
-      );
-      
+      const isDiverse = selected.every((selected) => this.calculateSimilarity(example.input, selected.input) < 0.7)
+
       if (isDiverse) {
-        selected.push(example);
+        selected.push(example)
       }
     }
-    
-    return selected;
+
+    return selected
   }
 
   /**
    * Calculate similarity between two strings
    */
   private calculateSimilarity(str1: string, str2: string): number {
-    const words1 = str1.toLowerCase().split(/\s+/);
-    const words2 = str2.toLowerCase().split(/\s+/);
-    const intersection = words1.filter(word => words2.includes(word));
-    const union = [...new Set([...words1, ...words2])];
-    return intersection.length / union.length;
+    const words1 = str1.toLowerCase().split(/\s+/)
+    const words2 = str2.toLowerCase().split(/\s+/)
+    const intersection = words1.filter((word) => words2.includes(word))
+    const union = [...new Set([...words1, ...words2])]
+    return intersection.length / union.length
   }
 
   /**
@@ -284,20 +277,20 @@ export class CAPOEnhancedOptimizer {
    */
   private async calculatePerformanceScore(prompt: string, taskDescription: TaskDescription): Promise<number> {
     // Simulate performance calculation based on prompt quality
-    const baseScore = 0.8;
-    const lengthPenalty = Math.max(0, (prompt.length - 200) / 1000) * 0.1;
-    const complexityBonus = taskDescription.complexity === 'complex' ? 0.1 : 0;
-    
-    return Math.min(1.0, baseScore - lengthPenalty + complexityBonus);
+    const baseScore = 0.8
+    const lengthPenalty = Math.max(0, (prompt.length - 200) / 1000) * 0.1
+    const complexityBonus = taskDescription.complexity === 'complex' ? 0.1 : 0
+
+    return Math.min(1.0, baseScore - lengthPenalty + complexityBonus)
   }
 
   /**
    * Calculate cost score (lower is better)
    */
   private calculateCostScore(prompt: string): number {
-    const tokens = Math.ceil(prompt.length / 4);
-    const costPer1K = 0.03;
-    return (tokens / 1000) * costPer1K;
+    const tokens = Math.ceil(prompt.length / 4)
+    const costPer1K = 0.03
+    return (tokens / 1000) * costPer1K
   }
 
   /**
@@ -305,7 +298,7 @@ export class CAPOEnhancedOptimizer {
    */
   private isParetoOptimal(performance: number, cost: number): boolean {
     // Simple Pareto optimality check
-    return performance > 0.8 && cost < 0.01;
+    return performance > 0.8 && cost < 0.01
   }
 
   /**
@@ -313,50 +306,48 @@ export class CAPOEnhancedOptimizer {
    */
   private calculateRacingScore(performance: number, cost: number): number {
     // Higher score = better (performance - cost)
-    return performance - (cost * 100); // Scale cost to performance units
+    return performance - cost * 100 // Scale cost to performance units
   }
 
   /**
    * Find best result based on racing score
    */
   private findBestResult(results: OptimizationResult[]): OptimizationResult {
-    return results.reduce((best, current) => 
-      current.racingScore > best.racingScore ? current : best
-    );
+    return results.reduce((best, current) => (current.racingScore > best.racingScore ? current : best))
   }
 
   /**
    * Find second best result
    */
   private findSecondBestResult(results: OptimizationResult[]): OptimizationResult {
-    const sorted = results.sort((a, b) => b.racingScore - a.racingScore);
-    return sorted[1] || sorted[0];
+    const sorted = results.sort((a, b) => b.racingScore - a.racingScore)
+    return sorted[1] || sorted[0]
   }
 
   /**
    * Check if one result is significantly better
    */
   private isSignificantlyBetter(best: OptimizationResult, secondBest: OptimizationResult): boolean {
-    const difference = best.racingScore - secondBest.racingScore;
-    return difference > this.racingThreshold;
+    const difference = best.racingScore - secondBest.racingScore
+    return difference > this.racingThreshold
   }
 
   /**
    * Calculate token reduction percentage
    */
   private calculateTokenReduction(original: string, optimized: string): number {
-    const originalTokens = Math.ceil(original.length / 4);
-    const optimizedTokens = Math.ceil(optimized.length / 4);
-    return ((originalTokens - optimizedTokens) / originalTokens) * 100;
+    const originalTokens = Math.ceil(original.length / 4)
+    const optimizedTokens = Math.ceil(optimized.length / 4)
+    return ((originalTokens - optimizedTokens) / originalTokens) * 100
   }
 
   /**
    * Calculate cost reduction
    */
   private calculateCostReduction(original: string, optimized: string): number {
-    const originalCost = this.calculateCostScore(original);
-    const optimizedCost = this.calculateCostScore(optimized);
-    return originalCost - optimizedCost;
+    const originalCost = this.calculateCostScore(original)
+    const optimizedCost = this.calculateCostScore(optimized)
+    return originalCost - optimizedCost
   }
 
   /**
@@ -365,51 +356,51 @@ export class CAPOEnhancedOptimizer {
   private combineOptimizations(
     instruction: string,
     examples: FewShotExample[],
-    taskDescription: TaskDescription
+    taskDescription: TaskDescription,
   ): string {
-    let combined = instruction;
-    
+    let combined = instruction
+
     if (examples.length > 0) {
-      const examplesText = examples.map(ex => `Input: ${ex.input}\nOutput: ${ex.output}`).join('\n\n');
-      combined += `\n\nExamples:\n${examplesText}`;
+      const examplesText = examples.map((ex) => `Input: ${ex.input}\nOutput: ${ex.output}`).join('\n\n')
+      combined += `\n\nExamples:\n${examplesText}`
     }
-    
+
     if (taskDescription.requirements.length > 0) {
-      const requirementsText = taskDescription.requirements.join(', ');
-      combined += `\n\nRequirements: ${requirementsText}`;
+      const requirementsText = taskDescription.requirements.join(', ')
+      combined += `\n\nRequirements: ${requirementsText}`
     }
-    
-    return combined;
+
+    return combined
   }
 
   /**
    * Optimize example input
    */
   private optimizeExampleInput(input: string, taskDescription: TaskDescription): string {
-    return this.applyDomainOptimization(input, taskDescription.domain);
+    return this.applyDomainOptimization(input, taskDescription.domain)
   }
 
   /**
    * Optimize example output
    */
   private optimizeExampleOutput(output: string, taskDescription: TaskDescription): string {
-    return this.applyDomainOptimization(output, taskDescription.domain);
+    return this.applyDomainOptimization(output, taskDescription.domain)
   }
 
   /**
    * Optimize requirement
    */
   private optimizeRequirement(requirement: string): string {
-    return this.applyLightOptimization(requirement);
+    return this.applyLightOptimization(requirement)
   }
 
   /**
    * Optimize constraint
    */
   private optimizeConstraint(constraint: string): string {
-    return this.applyLightOptimization(constraint);
+    return this.applyLightOptimization(constraint)
   }
 }
 
 // Export singleton instance
-export const capoEnhancedOptimizer = new CAPOEnhancedOptimizer();
+export const capoEnhancedOptimizer = new CAPOEnhancedOptimizer()

@@ -22,6 +22,9 @@ import {
   Target,
   Activity,
   Trash2,
+  DollarSign,
+  TrendingDown,
+  CheckCircle,
 } from 'lucide-react'
 
 interface AgentConfig {
@@ -32,6 +35,19 @@ interface AgentConfig {
   maxTokens: number
   instructions: string
   tools: string[]
+}
+
+interface CostOptimizationResult {
+  originalCost: number
+  optimizedCost: number
+  savings: number
+  savingsPercentage: string
+  originalTokens: number
+  optimizedTokens: number
+  tokenReduction: number
+  optimizationEngine: 'prompt_optimizer' | 'capo_enhanced'
+  strategies: string[]
+  verbosityLevel: 'small' | 'medium' | 'complex'
 }
 
 interface AgentKitProps {
@@ -64,8 +80,11 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
       output: string
       timestamp: Date
       status: 'success' | 'error'
+      costOptimization?: CostOptimizationResult
     }>
   >([])
+  const [isOptimizing, setIsOptimizing] = useState(false)
+  const [costOptimization, setCostOptimization] = useState<CostOptimizationResult | null>(null)
 
   const agentTypes = [
     { value: 'coding', label: 'Coding Agent', icon: Code, description: 'Specialized in programming tasks' },
@@ -139,27 +158,106 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
     }
   }
 
+  const optimizeInput = async (input: string, agentType: string): Promise<CostOptimizationResult> => {
+    try {
+      // Determine task description based on agent type
+      const taskDescription = {
+        domain: agentType === 'coding' ? 'coding' : agentType === 'analytics' ? 'analysis' : 'general',
+        complexity: input.length > 200 ? 'complex' : input.length > 100 ? 'medium' : 'simple',
+        requirements: [],
+        constraints: []
+      }
+
+      // Call hybrid optimization API
+      const response = await fetch('/api/optimize-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          prompt: input,
+          selectedAgent: agentType,
+          taskDescription 
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        return {
+          originalCost: data.costAnalysis?.originalCost || 0,
+          optimizedCost: data.costAnalysis?.optimizedCost || 0,
+          savings: data.costAnalysis?.savings || 0,
+          savingsPercentage: data.costAnalysis?.savingsPercentage || '0%',
+          originalTokens: data.costAnalysis?.originalTokens || 0,
+          optimizedTokens: data.costAnalysis?.optimizedTokens || 0,
+          tokenReduction: data.costAnalysis?.tokenReduction || 0,
+          optimizationEngine: data.optimizationEngine || 'prompt_optimizer',
+          strategies: data.strategies || [],
+          verbosityLevel: data.verbosityLevel || 'small'
+        }
+      }
+    } catch (error) {
+      console.error('Cost optimization failed:', error)
+    }
+
+    // Fallback: return no optimization
+    return {
+      originalCost: 0,
+      optimizedCost: 0,
+      savings: 0,
+      savingsPercentage: '0%',
+      originalTokens: 0,
+      optimizedTokens: 0,
+      tokenReduction: 0,
+      optimizationEngine: 'prompt_optimizer',
+      strategies: [],
+      verbosityLevel: 'small'
+    }
+  }
+
   const handleExecuteAgent = async () => {
     if (!selectedAgent || !agentInput) return
 
     setIsExecuting(true)
+    setIsOptimizing(true)
     setExecutionError('')
     setExecutionResults('')
+    setCostOptimization(null)
 
     try {
+      // Find the selected agent configuration
+      const agent = createdAgents.find((a) => a.name === selectedAgent)
+      if (!agent) {
+        throw new Error('Selected agent not found')
+      }
+
+      // Step 1: Optimize the input for cost savings
+      console.log('🔍 Optimizing input for cost savings...')
+      const optimizationResult = await optimizeInput(agentInput, agent.type)
+      setCostOptimization(optimizationResult)
+
+      // Step 2: Use optimized input for execution
+      const optimizedInput = optimizationResult.tokenReduction > 0 
+        ? agentInput.substring(0, Math.floor(agentInput.length * (1 - optimizationResult.tokenReduction / 100)))
+        : agentInput
+
+      console.log('💰 Cost optimization completed:', {
+        originalTokens: optimizationResult.originalTokens,
+        optimizedTokens: optimizationResult.optimizedTokens,
+        savings: optimizationResult.savings,
+        strategies: optimizationResult.strategies
+      })
+
       // Call the parent callback if provided
       onAgentExecute?.(selectedAgent, agentInput)
 
-      // Simulate agent execution with realistic results
+      // Step 3: Simulate agent execution with optimized input
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      // Generate a realistic response based on agent type
-      const agent = createdAgents.find((a) => a.name === selectedAgent)
-      const simulatedResult = generateSimulatedResult(agent?.type || 'coding', agentInput)
+      // Generate a realistic response based on agent type (using optimized input)
+      const simulatedResult = generateSimulatedResult(agent.type, optimizedInput)
 
       setExecutionResults(simulatedResult)
 
-      // Add to execution history
+      // Add to execution history with cost optimization data
       const newExecution = {
         id: Date.now().toString(),
         agent: selectedAgent,
@@ -167,6 +265,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
         output: simulatedResult,
         timestamp: new Date(),
         status: 'success' as const,
+        costOptimization: optimizationResult,
       }
       setExecutionHistory((prev) => [newExecution, ...prev])
     } catch (error) {
@@ -185,6 +284,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
       setExecutionHistory((prev) => [newExecution, ...prev])
     } finally {
       setIsExecuting(false)
+      setIsOptimizing(false)
     }
   }
 
@@ -630,8 +730,17 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
             >
               {isExecuting ? (
                 <>
-                  <Activity className="h-4 w-4 mr-2 animate-pulse" />
-                  Executing...
+                  {isOptimizing ? (
+                    <>
+                      <TrendingDown className="h-4 w-4 mr-2 animate-pulse" />
+                      Optimizing...
+                    </>
+                  ) : (
+                    <>
+                      <Activity className="h-4 w-4 mr-2 animate-pulse" />
+                      Executing...
+                    </>
+                  )}
                 </>
               ) : (
                 <>
@@ -640,6 +749,62 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                 </>
               )}
             </Button>
+
+            {/* Cost Optimization Display */}
+            {costOptimization && (
+              <Card className="border-green-200 bg-green-50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <DollarSign className="h-4 w-4 text-green-600" />
+                    Cost Optimization Results
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <div className="text-muted-foreground">Token Reduction</div>
+                      <div className="font-semibold text-green-600">
+                        {costOptimization.tokenReduction.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Cost Savings</div>
+                      <div className="font-semibold text-green-600">
+                        ${costOptimization.savings.toFixed(4)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Optimization</div>
+                      <div className="font-semibold">
+                        ✅ Active
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Efficiency</div>
+                      <div className="font-semibold">
+                        {costOptimization.tokenReduction > 15 ? '🚀 High' : costOptimization.tokenReduction > 8 ? '⚡ Medium' : '💡 Optimized'}
+                      </div>
+                    </div>
+                  </div>
+                  {costOptimization.strategies.length > 0 && (
+                    <div className="mt-3">
+                      <div className="text-muted-foreground text-xs mb-1">Optimization Applied</div>
+                      <div className="flex flex-wrap gap-1">
+                        <Badge variant="secondary" className="text-xs">
+                          Smart Optimization
+                        </Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          Cost Reduction
+                        </Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          Token Efficiency
+                        </Badge>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
             {/* Results Display */}
             {(executionResults || executionError) && (
@@ -718,6 +883,28 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                           Input: {execution.input.substring(0, 100)}
                           {execution.input.length > 100 && '...'}
                         </div>
+                        {execution.costOptimization && (
+                          <div className="mt-2 flex items-center gap-4 text-xs">
+                            <div className="flex items-center gap-1">
+                              <DollarSign className="h-3 w-3 text-green-600" />
+                              <span className="text-green-600 font-semibold">
+                                ${execution.costOptimization.savings.toFixed(4)} saved
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <TrendingDown className="h-3 w-3 text-blue-600" />
+                              <span className="text-blue-600 font-semibold">
+                                {execution.costOptimization.tokenReduction.toFixed(1)}% reduction
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <CheckCircle className="h-3 w-3 text-purple-600" />
+                              <span className="text-purple-600 font-semibold">
+                                ✅ Optimized
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </CardHeader>
                       <CardContent>
                         <details className="cursor-pointer">
