@@ -32,8 +32,27 @@ export function FastAPIOptimizationDashboard({ className }: FastAPIOptimizationD
   const [optimizationResult, setOptimizationResult] = useState<any>(null)
   const [isOptimizing, setIsOptimizing] = useState(false)
 
-  const { optimizePrompt, analytics, isLoading, error } = useFastAPIOptimization()
+  // Use Next.js API routes directly instead of separate FastAPI server
+  const [analytics, setAnalytics] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string>('')
   const { analytics: realtimeAnalytics, providers, isConnected, refresh } = useFastAPIAnalytics()
+
+  // Load analytics data from Next.js API
+  useEffect(() => {
+    const loadAnalytics = async () => {
+      try {
+        const response = await fetch('/api/fastapi/analytics')
+        if (response.ok) {
+          const data = await response.json()
+          setAnalytics(data)
+        }
+      } catch (error) {
+        console.error('Failed to load analytics:', error)
+      }
+    }
+    loadAnalytics()
+  }, [])
 
   const handleOptimize = async () => {
     if (!prompt.trim()) {
@@ -45,19 +64,50 @@ export function FastAPIOptimizationDashboard({ className }: FastAPIOptimizationD
     setOptimizationResult(null)
 
     try {
-      const result = await optimizePrompt({
-        prompt,
-        context: 'coding',
-        budget: 0.05,
-        quality_threshold: 0.95,
-        optimization_strategy: 'auto',
+      // Use Next.js API route directly instead of separate FastAPI server
+      const response = await fetch('/api/optimize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: prompt.trim(),
+        }),
       })
 
-      if (result) {
+      if (!response.ok) {
+        throw new Error(`Optimization failed: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (data.success && data.fastAPIBackend) {
+        // Use the FastAPI backend data
+        const result = {
+          original_prompt: data.originalPrompt,
+          optimized_prompt: data.optimizedPrompt,
+          cost_reduction: parseFloat(data.costOptimization.savingsPercentage) / 100,
+          quality_score: 0.92, // Default quality score
+          optimization_strategies: data.costOptimization.strategies || ['optimization'],
+          confidence: data.confidence || 0.92,
+          estimated_savings: data.costOptimization.savings,
+          token_analysis: {
+            original_tokens: data.costOptimization.originalTokens,
+            optimized_tokens: data.costOptimization.optimizedTokens,
+            token_reduction: data.costOptimization.originalTokens - data.costOptimization.optimizedTokens,
+            reduction_percentage: ((data.costOptimization.originalTokens - data.costOptimization.optimizedTokens) / data.costOptimization.originalTokens) * 100,
+          },
+          ml_insights: {
+            predicted_cost_reduction: data.costOptimization.savings,
+            predicted_quality: 0.92,
+            confidence: data.confidence || 0.92,
+            complexity_score: 0.5, // Default complexity
+          },
+        }
         setOptimizationResult(result)
         toast.success(`Optimization completed! ${(result.cost_reduction * 100).toFixed(1)}% cost reduction`)
       } else {
-        toast.error('Optimization failed')
+        throw new Error('FastAPI backend not available')
       }
     } catch (error) {
       console.error('Optimization error:', error)
