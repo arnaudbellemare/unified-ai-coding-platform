@@ -4,3 +4,35 @@ export const VERCEL_DEPLOY_URL =
 
 // Vercel button URL for markdown
 export const VERCEL_DEPLOY_BUTTON_URL = `[![Deploy with Vercel](https://vercel.com/button)](${VERCEL_DEPLOY_URL})`
+
+// Example repositories for testing
+export const EXAMPLE_REPOSITORIES = [
+  {
+    name: 'Next.js Starter',
+    owner: 'vercel',
+    repo: 'next.js',
+    description: 'Perfect for web app development',
+    exampleTask: 'Add a contact form with email validation'
+  },
+  {
+    name: 'React Todo App',
+    owner: 'facebook',
+    repo: 'create-react-app',
+    description: 'Simple, well-documented React app',
+    exampleTask: 'Add dark mode toggle and local storage'
+  },
+  {
+    name: 'Express API',
+    owner: 'expressjs',
+    repo: 'express',
+    description: 'Great for API development',
+    exampleTask: 'Add JWT authentication middleware'
+  },
+  {
+    name: 'Vue.js App',
+    owner: 'vuejs',
+    repo: 'vue',
+    description: 'Alternative frontend framework',
+    exampleTask: 'Add Vue Router and state management'
+  }
+] as const

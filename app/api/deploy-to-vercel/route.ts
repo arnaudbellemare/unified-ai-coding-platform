@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
         'Sign in to Vercel if prompted',
         'Click "Deploy" on the Vercel page',
         'Note: This deploys the main branch of the repository',
-        'The AI-generated changes were made in the sandbox environment'
+        'The AI-generated changes were made in the sandbox environment',
       ],
     })
   } catch (error) {

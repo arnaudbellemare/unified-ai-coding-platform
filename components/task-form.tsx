@@ -426,7 +426,7 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
             <Textarea
               ref={textareaRef}
               id="prompt"
-              placeholder="Describe what you want the AI agent to do..."
+              placeholder="Example: Create a simple todo app with React, or add authentication to this Next.js project..."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={handleTextareaKeyDown}
