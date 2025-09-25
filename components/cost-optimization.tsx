@@ -15,6 +15,19 @@ interface CostOptimizationResult {
   optimizedTokens: number
   apiCalls: number
   realApiCost: number
+  originalPrompt: string
+  optimizedPrompt: string
+  optimizationApplied: boolean
+  estimatedMonthlySavings?: number
+}
+
+interface EnhancedOptimizationResult {
+  optimizedPrompt: string
+  strategies: string[]
+  tokenReduction: number
+  costReduction: number
+  accuracyMaintained: number
+  totalSavings: number
 }
 
 interface CostOptimizationProps {
@@ -28,6 +41,7 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
     originalPrompt: string
     optimizedPrompt: string
     costOptimization: CostOptimizationResult
+    enhancedOptimization?: EnhancedOptimizationResult
   } | null>(null)
 
   const handleOptimize = async () => {
@@ -37,19 +51,39 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
     setResult(null)
 
     try {
-      const response = await fetch('/api/optimize', {
+      // Use the new test optimizer API for enhanced optimization
+      const response = await fetch('/api/test-optimizer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, testAllStrategies: false }),
       })
 
       const data = await response.json()
 
       if (data.success) {
-        setResult(data)
-        onOptimizationComplete?.(data.costOptimization)
+        const resultData = {
+          originalPrompt: data.originalPrompt,
+          optimizedPrompt: data.enhancedOptimization.optimizedPrompt,
+          costOptimization: data.costAnalysis,
+          enhancedOptimization: data.enhancedOptimization
+        }
+        setResult(resultData)
+        onOptimizationComplete?.(data.costAnalysis)
       } else {
-        console.error('Optimization failed:', data.error)
+        console.error('Enhanced optimization failed:', data.error)
+        
+        // Fallback to original optimization
+        const fallbackResponse = await fetch('/api/optimize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt }),
+        })
+        
+        const fallbackData = await fallbackResponse.json()
+        if (fallbackData.success) {
+          setResult(fallbackData)
+          onOptimizationComplete?.(fallbackData.costOptimization)
+        }
       }
     } catch (error) {
       console.error('Optimization error:', error)
@@ -127,6 +161,53 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
               <Badge variant="outline">{result.costOptimization.apiCalls} API calls made</Badge>
               <Badge variant="outline">Real cost: ${result.costOptimization.realApiCost.toFixed(4)}</Badge>
             </div>
+
+            {/* Enhanced Optimization Details */}
+            {result.enhancedOptimization && (
+              <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="font-medium mb-3 text-blue-900 dark:text-blue-100">
+                  🚀 Enhanced Optimization Applied
+                </h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-blue-700 dark:text-blue-300 font-medium">Strategies Used:</p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {result.enhancedOptimization.strategies.map((strategy, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {strategy.replace(/_/g, ' ')}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-blue-700 dark:text-blue-300 font-medium">Optimization Metrics:</p>
+                    <div className="mt-1 space-y-1">
+                      <div className="flex justify-between">
+                        <span>Token Reduction:</span>
+                        <span className="font-medium">{(result.enhancedOptimization.tokenReduction * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Accuracy Maintained:</span>
+                        <span className="font-medium">{(result.enhancedOptimization.accuracyMaintained * 100).toFixed(1)}%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Monthly Savings Estimate */}
+            {result.costOptimization.estimatedMonthlySavings && (
+              <div className="mt-4 p-3 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
+                  <span className="font-medium">💰 Estimated Monthly Savings:</span>
+                  <span className="font-bold">${result.costOptimization.estimatedMonthlySavings.toFixed(2)}</span>
+                </div>
+                <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                  Based on 100 similar tasks per month
+                </p>
+              </div>
+            )}
           </div>
         )}
       </CardContent>

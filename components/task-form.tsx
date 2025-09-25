@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Loader2, ArrowUp, Lock } from 'lucide-react'
-import { Claude, Codex, OpenCode } from '@/components/logos'
+import { Claude, Codex, OpenCode, Perplexity } from '@/components/logos'
 
 interface GitHubOwner {
   login: string
@@ -33,6 +33,7 @@ const CODING_AGENTS = [
   { value: 'codex', label: 'Codex', icon: Codex },
   { value: 'claude', label: 'Claude', icon: Claude },
   { value: 'opencode', label: 'opencode', icon: OpenCode },
+  { value: 'perplexity', label: 'Perplexity', icon: Perplexity },
 ] as const
 
 // Model options for each agent
@@ -46,6 +47,9 @@ const AGENT_MODELS = {
     { value: 'openai/gpt-5-mini', label: 'GPT-5 Mini' },
     { value: 'openai/gpt-5-nano', label: 'GPT-5 Nano' },
     { value: 'openai/gpt-4.1', label: 'GPT-4.1' },
+    { value: 'perplexity-sonar-small', label: 'Perplexity Sonar Small' },
+    { value: 'perplexity-sonar-medium', label: 'Perplexity Sonar Medium' },
+    { value: 'perplexity-sonar-large', label: 'Perplexity Sonar Large' },
   ],
   cursor: [
     { value: 'auto', label: 'Auto' },
@@ -64,6 +68,11 @@ const AGENT_MODELS = {
     { value: 'claude-sonnet-4-20250514', label: 'Sonnet 4' },
     { value: 'claude-opus-4-1-20250805', label: 'Opus 4.1' },
   ],
+  perplexity: [
+    { value: 'perplexity-sonar-small', label: 'Sonar Small' },
+    { value: 'perplexity-sonar-medium', label: 'Sonar Medium' },
+    { value: 'perplexity-sonar-large', label: 'Sonar Large' },
+  ],
 } as const
 
 // Default models for each agent
@@ -72,6 +81,7 @@ const DEFAULT_MODELS = {
   codex: 'openai/gpt-5',
   cursor: 'auto',
   opencode: 'gpt-5',
+  perplexity: 'perplexity-sonar-medium',
 } as const
 
 export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
@@ -432,7 +442,7 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
             {/* Mobile: Two-line layout */}
             <div className="flex flex-col gap-3 lg:hidden">
               {/* Repository Selection Row */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Select
                   value={selectedOwner}
                   onValueChange={(value) => {
@@ -527,8 +537,8 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
               </div>
 
               {/* Agent, Model Selection and Submit Button Row */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap">
                   {/* Agent Selection */}
                   <Select
                     value={selectedAgent}
@@ -590,8 +600,8 @@ export function TaskForm({ onSubmit, isSubmitting }: TaskFormProps) {
             </div>
 
             {/* Desktop: Single-line layout */}
-            <div className="hidden lg:flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="hidden lg:flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap">
                 <Select
                   value={selectedOwner}
                   onValueChange={(value) => {

@@ -204,6 +204,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
       error: null,
       branchName: null,
       sandboxUrl: null,
+      costOptimization: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       completedAt: null,

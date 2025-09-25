@@ -62,9 +62,6 @@ export async function createSandbox(config: SandboxConfig): Promise<SandboxResul
 
     // Create sandbox with proper source configuration
     const sandboxConfig = {
-      teamId: process.env.VERCEL_TEAM_ID!,
-      projectId: process.env.VERCEL_PROJECT_ID!,
-      token: process.env.VERCEL_TOKEN!,
       source: {
         type: 'git' as const,
         url: authenticatedRepoUrl,
@@ -75,6 +72,10 @@ export async function createSandbox(config: SandboxConfig): Promise<SandboxResul
       ports: config.ports || [3000],
       runtime: config.runtime || 'node22',
       resources: { vcpus: config.resources?.vcpus || 4 },
+      // Credentials for authentication
+      teamId: process.env.VERCEL_TEAM_ID!,
+      projectId: process.env.VERCEL_PROJECT_ID!,
+      token: process.env.VERCEL_TOKEN!,
     }
 
     logs.push(

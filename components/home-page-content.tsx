@@ -4,12 +4,16 @@ import { useState } from 'react'
 import { TaskForm } from '@/components/task-form'
 import { HomePageHeader } from '@/components/home-page-header'
 import { CostOptimization } from '@/components/cost-optimization'
+import { AgentKit } from '@/components/agent-kit'
+import { X402Payment } from '@/components/x402-payment'
+import { AdvancedOptimizationDashboard } from '@/components/advanced-optimization-dashboard'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { useTasks } from '@/components/app-layout'
 
 export function HomePageContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [activeTab, setActiveTab] = useState('tasks')
   const router = useRouter()
   const { refreshTasks, addTaskOptimistically } = useTasks()
 
@@ -61,14 +65,111 @@ export function HomePageContent() {
       <div className="mx-auto p-3">
         <HomePageHeader />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          <div className="space-y-6">
-            <TaskForm onSubmit={handleTaskSubmit} isSubmitting={isSubmitting} />
-          </div>
-          <div className="space-y-6">
-            <CostOptimization />
+        {/* Navigation Tabs */}
+        <div className="flex justify-center mb-8">
+          <div className="flex space-x-1 bg-muted p-1 rounded-lg">
+            <button
+              onClick={() => setActiveTab('tasks')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'tasks'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              AI Tasks
+            </button>
+            <button
+              onClick={() => setActiveTab('optimization')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'optimization'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Cost Optimization
+            </button>
+            <button
+              onClick={() => setActiveTab('advanced')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'advanced'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Advanced Engine
+            </button>
+            <button
+              onClick={() => setActiveTab('agents')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'agents'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              AgentKit
+            </button>
+            <button
+              onClick={() => setActiveTab('payment')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'payment'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              X402 Payment
+            </button>
           </div>
         </div>
+
+        {/* Tab Content */}
+        {activeTab === 'tasks' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            <div className="space-y-6">
+              <TaskForm onSubmit={handleTaskSubmit} isSubmitting={isSubmitting} />
+            </div>
+            <div className="space-y-6">
+              <CostOptimization />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'optimization' && (
+          <div className="max-w-4xl mx-auto">
+            <CostOptimization />
+          </div>
+        )}
+
+        {activeTab === 'advanced' && (
+          <div className="max-w-7xl mx-auto">
+            <AdvancedOptimizationDashboard />
+          </div>
+        )}
+
+        {activeTab === 'agents' && (
+          <div className="max-w-6xl mx-auto">
+            <AgentKit 
+              onAgentCreate={(config) => {
+                toast.success(`Agent "${config.name}" created successfully!`)
+              }}
+              onAgentExecute={(agentId, input) => {
+                toast.info(`Executing agent "${agentId}" with input: ${input.substring(0, 50)}...`)
+              }}
+            />
+          </div>
+        )}
+
+        {activeTab === 'payment' && (
+          <div className="max-w-6xl mx-auto">
+            <X402Payment 
+              onPaymentComplete={(paymentData) => {
+                toast.success(`Payment completed for ${paymentData.tier.name} plan!`)
+              }}
+              onSubscriptionChange={(tier) => {
+                toast.info(`Subscription changed to ${tier.name} plan`)
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   )

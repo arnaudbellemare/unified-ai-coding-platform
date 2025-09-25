@@ -3,6 +3,8 @@
  * Integrates with Perplexity and OpenAI for real cost savings
  */
 
+import { enhancedPromptOptimizer, OptimizationResult } from './enhanced-prompt-optimizer'
+
 export interface CostOptimizationResult {
   originalCost: number
   optimizedCost: number
@@ -12,6 +14,10 @@ export interface CostOptimizationResult {
   optimizedTokens: number
   apiCalls: number
   realApiCost: number
+  originalPrompt: string
+  optimizedPrompt: string
+  optimizationApplied: boolean
+  estimatedMonthlySavings?: number
 }
 
 export class CostOptimization {
@@ -30,6 +36,47 @@ export class CostOptimization {
     // Use local optimization by default - it's more reliable and faster
     console.log('Using local optimization for cost reduction')
     return this.localOptimizePrompt(originalPrompt)
+  }
+
+  /**
+   * Optimize a prompt and return both the optimized prompt and cost analysis
+   */
+  async optimizePromptWithAnalysis(originalPrompt: string): Promise<CostOptimizationResult> {
+    const optimizedPrompt = await this.optimizePrompt(originalPrompt)
+    const costAnalysis = await this.calculateCostOptimization(originalPrompt, optimizedPrompt)
+    return costAnalysis
+  }
+
+  /**
+   * Optimize a prompt specifically for coding tasks using enhanced optimizer
+   */
+  async optimizeCodingPrompt(originalPrompt: string): Promise<string> {
+    const result = enhancedPromptOptimizer.optimize(originalPrompt, 4)
+    return result.optimizedPrompt
+  }
+
+  /**
+   * Optimize a prompt using the enhanced optimizer with full analysis
+   */
+  async optimizeWithEnhancedAnalysis(originalPrompt: string): Promise<{
+    optimizedPrompt: string
+    optimizationResult: OptimizationResult
+    costAnalysis: CostOptimizationResult
+  }> {
+    // Use enhanced optimizer
+    const optimizationResult = enhancedPromptOptimizer.optimize(originalPrompt, 4)
+    
+    // Calculate cost analysis
+    const costAnalysis = await this.calculateCostOptimization(
+      originalPrompt, 
+      optimizationResult.optimizedPrompt
+    )
+
+    return {
+      optimizedPrompt: optimizationResult.optimizedPrompt,
+      optimizationResult,
+      costAnalysis
+    }
   }
 
   /**
@@ -88,11 +135,26 @@ export class CostOptimization {
       const originalTokens = Math.ceil(originalPrompt.length / 4)
       const optimizedTokens = Math.ceil(optimizedPrompt.length / 4)
 
-      // Calculate costs using OpenAI pricing (GPT-4 pricing)
-      const originalCost = (originalTokens / 1000) * 0.03 // $0.03 per 1K input tokens
-      const optimizedCost = (optimizedTokens / 1000) * 0.03
+      // Calculate costs using current AI pricing
+      // Using GPT-4 pricing as baseline: $0.03 per 1K input tokens, $0.06 per 1K output tokens
+      // Assuming average output is 2x input tokens for coding tasks
+      const inputCostPer1K = 0.03
+      const outputCostPer1K = 0.06
+      const outputMultiplier = 2 // Assume 2x output tokens for coding tasks
+      
+      const originalInputCost = (originalTokens / 1000) * inputCostPer1K
+      const originalOutputCost = (originalTokens * outputMultiplier / 1000) * outputCostPer1K
+      const originalCost = originalInputCost + originalOutputCost
+
+      const optimizedInputCost = (optimizedTokens / 1000) * inputCostPer1K
+      const optimizedOutputCost = (optimizedTokens * outputMultiplier / 1000) * outputCostPer1K
+      const optimizedCost = optimizedInputCost + optimizedOutputCost
+
       const savings = originalCost - optimizedCost
       const savingsPercentage = originalCost > 0 ? ((savings / originalCost) * 100).toFixed(1) : '0.0'
+      
+      // Estimate monthly savings (assuming 100 similar tasks per month)
+      const estimatedMonthlySavings = savings * 100
 
       // Skip real API calls to avoid rate limits and errors
       const realApiCost = 0
@@ -106,6 +168,10 @@ export class CostOptimization {
         optimizedTokens,
         apiCalls: 2,
         realApiCost,
+        originalPrompt,
+        optimizedPrompt,
+        optimizationApplied: optimizedPrompt !== originalPrompt,
+        estimatedMonthlySavings,
       }
     } catch (error) {
       console.error('Cost calculation failed:', error)
@@ -118,6 +184,10 @@ export class CostOptimization {
         optimizedTokens: 0,
         apiCalls: 0,
         realApiCost: 0,
+        originalPrompt,
+        optimizedPrompt,
+        optimizationApplied: false,
+        estimatedMonthlySavings: 0,
       }
     }
   }

@@ -10,6 +10,24 @@ export const logEntrySchema = z.object({
 
 export type LogEntry = z.infer<typeof logEntrySchema>
 
+// Cost optimization types
+export const costOptimizationSchema = z.object({
+  originalCost: z.number(),
+  optimizedCost: z.number(),
+  savings: z.number(),
+  savingsPercentage: z.string(),
+  originalTokens: z.number(),
+  optimizedTokens: z.number(),
+  apiCalls: z.number(),
+  realApiCost: z.number(),
+  originalPrompt: z.string(),
+  optimizedPrompt: z.string(),
+  optimizationApplied: z.boolean(),
+  estimatedMonthlySavings: z.number().optional(),
+})
+
+export type CostOptimization = z.infer<typeof costOptimizationSchema>
+
 export const tasks = pgTable('tasks', {
   id: text('id').primaryKey(),
   prompt: text('prompt').notNull(),
@@ -26,6 +44,7 @@ export const tasks = pgTable('tasks', {
   error: text('error'),
   branchName: text('branch_name'),
   sandboxUrl: text('sandbox_url'),
+  costOptimization: jsonb('cost_optimization').$type<CostOptimization>(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   completedAt: timestamp('completed_at'),
@@ -36,7 +55,7 @@ export const insertTaskSchema = z.object({
   id: z.string().optional(),
   prompt: z.string().min(1, 'Prompt is required'),
   repoUrl: z.string().url('Must be a valid URL').optional(),
-  selectedAgent: z.enum(['claude', 'codex', 'cursor', 'opencode']).default('claude'),
+  selectedAgent: z.enum(['claude', 'codex', 'cursor', 'opencode', 'perplexity']).default('claude'),
   selectedModel: z.string().optional(),
   status: z.enum(['pending', 'processing', 'completed', 'error']).default('pending'),
   progress: z.number().min(0).max(100).default(0),
@@ -44,6 +63,7 @@ export const insertTaskSchema = z.object({
   error: z.string().optional(),
   branchName: z.string().optional(),
   sandboxUrl: z.string().optional(),
+  costOptimization: costOptimizationSchema.optional(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
   completedAt: z.date().optional(),
@@ -61,6 +81,7 @@ export const selectTaskSchema = z.object({
   error: z.string().nullable(),
   branchName: z.string().nullable(),
   sandboxUrl: z.string().nullable(),
+  costOptimization: costOptimizationSchema.nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
   completedAt: z.date().nullable(),

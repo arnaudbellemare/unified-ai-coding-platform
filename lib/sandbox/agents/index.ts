@@ -3,9 +3,10 @@ import { AgentExecutionResult } from '../types'
 import { executeClaudeInSandbox } from './claude'
 import { executeCodexInSandbox } from './codex'
 import { executeOpenCodeInSandbox } from './opencode'
+import { executePerplexityInSandbox } from './perplexity'
 import { TaskLogger } from '@/lib/utils/task-logger'
 
-export type AgentType = 'claude' | 'codex' | 'opencode'
+export type AgentType = 'claude' | 'codex' | 'opencode' | 'perplexity'
 
 // Re-export types
 export type { AgentExecutionResult } from '../types'
@@ -27,6 +28,9 @@ export async function executeAgentInSandbox(
 
     case 'opencode':
       return executeOpenCodeInSandbox(sandbox, instruction, logger, selectedModel)
+
+    case 'perplexity':
+      return executePerplexityInSandbox(sandbox, instruction, logger, selectedModel)
 
     default:
       return {

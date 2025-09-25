@@ -10,6 +10,7 @@ import { eq, desc, or } from 'drizzle-orm'
 import { createInfoLog } from '@/lib/utils/logging'
 import { createTaskLogger } from '@/lib/utils/task-logger'
 import { generateBranchName, createFallbackBranchName } from '@/lib/utils/branch-name-generator'
+import { costOptimization } from '@/lib/cost-optimization'
 
 export async function GET() {
   try {
@@ -77,8 +78,34 @@ export async function POST(request: NextRequest) {
 
     // Use provided ID or generate a new one
     const taskId = body.id || generateId(12)
+    
+    // Optimize the prompt using enhanced optimizer before creating the task
+    let optimizedPrompt = body.prompt
+    let costOptimizationData = null
+    
+    if (body.prompt) {
+      try {
+        console.log('[Task Creation] Optimizing prompt with enhanced optimizer...')
+        const optimizationResult = await costOptimization.optimizeWithEnhancedAnalysis(body.prompt)
+        optimizedPrompt = optimizationResult.optimizedPrompt
+        costOptimizationData = optimizationResult.costAnalysis
+        
+        console.log('[Task Creation] Prompt optimization completed:', {
+          originalLength: body.prompt.length,
+          optimizedLength: optimizedPrompt.length,
+          savings: optimizationResult.costAnalysis.savingsPercentage,
+          strategies: optimizationResult.optimizationResult.strategies
+        })
+      } catch (error) {
+        console.error('[Task Creation] Prompt optimization failed:', error)
+        // Continue with original prompt if optimization fails
+      }
+    }
+
     const validatedData = insertTaskSchema.parse({
       ...body,
+      prompt: optimizedPrompt, // Use optimized prompt
+      costOptimization: costOptimizationData, // Include cost optimization data
       id: taskId,
       status: 'pending',
       progress: 0,
@@ -188,10 +215,10 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Process the task asynchronously with timeout
+    // Process the task asynchronously with timeout (using optimized prompt)
     processTaskWithTimeout(
       newTask.id,
-      validatedData.prompt,
+      optimizedPrompt, // Use the optimized prompt for execution
       validatedData.repoUrl || '',
       validatedData.selectedAgent || 'claude',
       validatedData.selectedModel,
@@ -211,24 +238,24 @@ async function processTaskWithTimeout(
   selectedAgent: string = 'claude',
   selectedModel?: string,
 ) {
-  const TASK_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes in milliseconds
+  const TASK_TIMEOUT_MS = 8 * 60 * 1000 // 8 minutes in milliseconds
 
-  // Add a warning at 4 minutes
+  // Add a warning at 6 minutes
   const warningTimeout = setTimeout(
     async () => {
       try {
         const warningLogger = createTaskLogger(taskId)
-        await warningLogger.info('Task is taking longer than expected (4+ minutes). Will timeout in 1 minute.')
+        await warningLogger.info('Task is taking longer than expected (6+ minutes). Will timeout in 2 minutes.')
       } catch (error) {
         console.error('Failed to add timeout warning:', error)
       }
     },
-    4 * 60 * 1000,
-  ) // 4 minutes
+    6 * 60 * 1000,
+  ) // 6 minutes
 
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => {
-      reject(new Error('Task execution timed out after 5 minutes'))
+      reject(new Error('Task execution timed out after 8 minutes'))
     }, TASK_TIMEOUT_MS)
   })
 
@@ -241,15 +268,15 @@ async function processTaskWithTimeout(
     // Clear the warning timeout on any error
     clearTimeout(warningTimeout)
     // Handle timeout specifically
-    if (error instanceof Error && error.message?.includes('timed out after 5 minutes')) {
+    if (error instanceof Error && error.message?.includes('timed out after 8 minutes')) {
       console.error('Task timed out:', taskId)
 
       // Use logger for timeout error
       const timeoutLogger = createTaskLogger(taskId)
-      await timeoutLogger.error('Task execution timed out after 5 minutes')
+      await timeoutLogger.error('Task execution timed out after 8 minutes')
       await timeoutLogger.updateStatus(
         'error',
-        'Task execution timed out after 5 minutes. The operation took too long to complete.',
+        'Task execution timed out after 8 minutes. The operation took too long to complete.',
       )
     } else {
       // Re-throw other errors to be handled by the original error handler
@@ -312,10 +339,10 @@ async function processTask(
 
     await logger.updateProgress(15, 'Creating sandbox environment...')
 
-    // Create sandbox with progress callback and 5-minute timeout
+    // Create sandbox with progress callback and 8-minute timeout
     const sandboxResult = await createSandbox({
       repoUrl,
-      timeout: '5m',
+      timeout: '8m',
       ports: [3000],
       runtime: 'node22',
       resources: { vcpus: 4 },
@@ -372,12 +399,14 @@ async function processTask(
     const getAgentTimeout = (agent: string) => {
       switch (agent) {
         case 'cursor':
-          return 5 * 60 * 1000 // 5 minutes for cursor (needs more time)
-        case 'claude':
+          return 8 * 60 * 1000 // 8 minutes for cursor (needs more time)
         case 'codex':
+          return 6 * 60 * 1000 // 6 minutes for codex (build tasks take longer)
+        case 'claude':
         case 'opencode':
+        case 'perplexity':
         default:
-          return 3 * 60 * 1000 // 3 minutes for other agents
+          return 4 * 60 * 1000 // 4 minutes for other agents
       }
     }
 
