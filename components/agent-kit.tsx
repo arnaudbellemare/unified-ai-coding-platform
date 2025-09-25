@@ -129,10 +129,22 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
   ]
 
   const handleCreateAgent = () => {
-    if (!agentConfig.name || !agentConfig.instructions) return
+    console.log('Creating agent with config:', agentConfig)
+    
+    if (!agentConfig.name || !agentConfig.instructions) {
+      console.log('Validation failed:', { name: agentConfig.name, instructions: agentConfig.instructions })
+      return
+    }
 
     const newAgent = { ...agentConfig }
-    setCreatedAgents((prev) => [...prev, newAgent])
+    console.log('Adding new agent:', newAgent)
+    
+    setCreatedAgents((prev) => {
+      const updated = [...prev, newAgent]
+      console.log('Updated agents list:', updated)
+      return updated
+    })
+    
     setSelectedAgent(newAgent.name)
     onAgentCreate?.(newAgent)
 
@@ -146,16 +158,21 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
       instructions: '',
       tools: [],
     })
+    
+    console.log('Agent created successfully')
   }
 
   const handleDeleteAgent = (index: number) => {
-    setCreatedAgents((prev) => prev.filter((_, i) => i !== index))
-
-    // If the deleted agent was selected, clear the selection
+    // Get the agent to be deleted before filtering
     const deletedAgent = createdAgents[index]
+    
+    // If the deleted agent was selected, clear the selection
     if (selectedAgent === deletedAgent?.name) {
       setSelectedAgent('')
     }
+    
+    // Remove the agent from the list
+    setCreatedAgents((prev) => prev.filter((_, i) => i !== index))
   }
 
   const optimizeInput = async (input: string, agentType: string): Promise<CostOptimizationResult> => {
@@ -165,17 +182,17 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
         domain: agentType === 'coding' ? 'coding' : agentType === 'analytics' ? 'analysis' : 'general',
         complexity: input.length > 200 ? 'complex' : input.length > 100 ? 'medium' : 'simple',
         requirements: [],
-        constraints: []
+        constraints: [],
       }
 
       // Call hybrid optimization API
       const response = await fetch('/api/optimize-agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           prompt: input,
           selectedAgent: agentType,
-          taskDescription 
+          taskDescription,
         }),
       })
 
@@ -191,7 +208,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
           tokenReduction: data.costAnalysis?.tokenReduction || 0,
           optimizationEngine: data.optimizationEngine || 'prompt_optimizer',
           strategies: data.strategies || [],
-          verbosityLevel: data.verbosityLevel || 'small'
+          verbosityLevel: data.verbosityLevel || 'small',
         }
       }
     } catch (error) {
@@ -209,7 +226,7 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
       tokenReduction: 0,
       optimizationEngine: 'prompt_optimizer',
       strategies: [],
-      verbosityLevel: 'small'
+      verbosityLevel: 'small',
     }
   }
 
@@ -235,15 +252,16 @@ export function AgentKit({ onAgentCreate, onAgentExecute }: AgentKitProps) {
       setCostOptimization(optimizationResult)
 
       // Step 2: Use optimized input for execution
-      const optimizedInput = optimizationResult.tokenReduction > 0 
-        ? agentInput.substring(0, Math.floor(agentInput.length * (1 - optimizationResult.tokenReduction / 100)))
-        : agentInput
+      const optimizedInput =
+        optimizationResult.tokenReduction > 0
+          ? agentInput.substring(0, Math.floor(agentInput.length * (1 - optimizationResult.tokenReduction / 100)))
+          : agentInput
 
       console.log('💰 Cost optimization completed:', {
         originalTokens: optimizationResult.originalTokens,
         optimizedTokens: optimizationResult.optimizedTokens,
         savings: optimizationResult.savings,
-        strategies: optimizationResult.strategies
+        strategies: optimizationResult.strategies,
       })
 
       // Call the parent callback if provided
@@ -641,9 +659,16 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
               />
             </div>
 
-            <Button onClick={handleCreateAgent} className="w-full">
+            <Button 
+              onClick={handleCreateAgent} 
+              disabled={!agentConfig.name || !agentConfig.instructions}
+              className="w-full"
+            >
               <Bot className="h-4 w-4 mr-2" />
-              Create Agent
+              {!agentConfig.name || !agentConfig.instructions 
+                ? 'Fill in name and instructions' 
+                : 'Create Agent'
+              }
             </Button>
           </TabsContent>
 
@@ -763,26 +788,24 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <div className="text-muted-foreground">Token Reduction</div>
-                      <div className="font-semibold text-green-600">
-                        {costOptimization.tokenReduction.toFixed(1)}%
-                      </div>
+                      <div className="font-semibold text-green-600">{costOptimization.tokenReduction.toFixed(1)}%</div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Cost Savings</div>
-                      <div className="font-semibold text-green-600">
-                        ${costOptimization.savings.toFixed(4)}
-                      </div>
+                      <div className="font-semibold text-green-600">${costOptimization.savings.toFixed(4)}</div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Optimization</div>
-                      <div className="font-semibold">
-                        ✅ Active
-                      </div>
+                      <div className="font-semibold">✅ Active</div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Efficiency</div>
                       <div className="font-semibold">
-                        {costOptimization.tokenReduction > 15 ? '🚀 High' : costOptimization.tokenReduction > 8 ? '⚡ Medium' : '💡 Optimized'}
+                        {costOptimization.tokenReduction > 15
+                          ? '🚀 High'
+                          : costOptimization.tokenReduction > 8
+                            ? '⚡ Medium'
+                            : '💡 Optimized'}
                       </div>
                     </div>
                   </div>
@@ -899,9 +922,7 @@ Based on your input "${input}", I've analyzed the request and prepared a detaile
                             </div>
                             <div className="flex items-center gap-1">
                               <CheckCircle className="h-3 w-3 text-purple-600" />
-                              <span className="text-purple-600 font-semibold">
-                                ✅ Optimized
-                              </span>
+                              <span className="text-purple-600 font-semibold">✅ Optimized</span>
                             </div>
                           </div>
                         )}
