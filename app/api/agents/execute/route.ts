@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     console.log(`🤖 Executing agent ${agentId} (${agentType}) with input: ${input.substring(0, 100)}...`)
 
     // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     // Generate real AI response based on agent type
     let aiResponse = ''
@@ -68,28 +68,29 @@ export async function POST(request: NextRequest) {
         strategies: ['entropy_optimization', 'synonym_replacement'],
         verbosityLevel: input.length > 200 ? 'complex' : input.length > 100 ? 'medium' : 'small',
       },
-      privyUser: privyUser ? {
-        id: privyUser.id,
-        wallet: privyUser.wallet?.address
-      } : null
+      privyUser: privyUser
+        ? {
+            id: privyUser.id,
+            wallet: privyUser.wallet?.address,
+          }
+        : null,
     })
-
   } catch (error) {
     console.error('Agent execution error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: error instanceof Error ? error.message : 'Agent execution failed',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
 
 async function generateCodingResponse(input: string, instructions: string, model: string): Promise<string> {
   const timestamp = new Date().toLocaleString()
-  
+
   return `🤖 **Coding Agent Response** (${timestamp})
 
 **Input Analysis:**
@@ -148,7 +149,7 @@ console.log(processUserInput("test input")); // "Test Input"
 
 async function generateContentResponse(input: string, instructions: string, model: string): Promise<string> {
   const timestamp = new Date().toLocaleString()
-  
+
   return `📝 **Content Agent Response** (${timestamp})
 
 **Content Analysis:**
@@ -194,7 +195,7 @@ This content has been optimized for:
 
 async function generateAnalyticsResponse(input: string, instructions: string, model: string): Promise<string> {
   const timestamp = new Date().toLocaleString()
-  
+
   return `📊 **Analytics Agent Response** (${timestamp})
 
 **Query Analysis:**
@@ -257,7 +258,7 @@ Based on comprehensive analysis of your request, here are the key findings:
 async function generateCustomerServiceResponse(input: string, instructions: string, model: string): Promise<string> {
   const timestamp = new Date().toLocaleString()
   const ticketId = Math.floor(Math.random() * 10000)
-  
+
   return `🎧 **Customer Service Agent Response** (${timestamp})
 
 **Customer Inquiry:**
@@ -306,7 +307,7 @@ Thank you for reaching out! I understand your concern about "${input}". Let me h
 
 async function generateSearchResponse(input: string, instructions: string, model: string): Promise<string> {
   const timestamp = new Date().toLocaleString()
-  
+
   return `🔍 **Search Agent Response** (${timestamp})
 
 **Search Query:**

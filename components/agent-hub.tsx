@@ -330,7 +330,7 @@ export function AgentHub({ onAgentCreate, onAgentExecute }: AgentHubProps) {
 
       // Step 3: Execute agent with real AI API call
       console.log('🤖 Executing agent with real AI API...')
-      
+
       const executionResponse = await fetch('/api/agents/execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -351,7 +351,7 @@ export function AgentHub({ onAgentCreate, onAgentExecute }: AgentHubProps) {
       }
 
       const executionData = await executionResponse.json()
-      
+
       if (!executionData.success) {
         throw new Error(executionData.error || 'Agent execution failed')
       }
