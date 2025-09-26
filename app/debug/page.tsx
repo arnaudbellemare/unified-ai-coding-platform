@@ -12,15 +12,15 @@ export default function DebugPage() {
         // Test health endpoint
         const healthResponse = await fetch('/api/health')
         const healthData = await healthResponse.json()
-        
+
         // Test GitHub OAuth simple endpoint
         const githubResponse = await fetch('/api/auth/github/simple')
         const githubData = await githubResponse.json()
-        
+
         setData({
           health: healthData,
           github: githubData,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
         setStatus('Success')
       } catch (error) {
@@ -40,17 +40,19 @@ export default function DebugPage() {
       </div>
       <div className="mb-4">
         <strong>Data:</strong>
-        <pre className="bg-gray-100 p-4 rounded mt-2 overflow-auto">
-          {JSON.stringify(data, null, 2)}
-        </pre>
+        <pre className="bg-gray-100 p-4 rounded mt-2 overflow-auto">{JSON.stringify(data, null, 2)}</pre>
       </div>
       <div className="mb-4">
         <strong>Environment Variables (Client-side):</strong>
         <pre className="bg-gray-100 p-4 rounded mt-2">
-          {JSON.stringify({
-            NODE_ENV: process.env.NODE_ENV,
-            NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-          }, null, 2)}
+          {JSON.stringify(
+            {
+              NODE_ENV: process.env.NODE_ENV,
+              NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+            },
+            null,
+            2,
+          )}
         </pre>
       </div>
     </div>
