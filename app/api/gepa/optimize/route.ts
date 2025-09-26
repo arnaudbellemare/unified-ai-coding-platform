@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     // Require authentication
     const user = await requireAuth(request)
-    
+
     const body = await request.json()
     const { prompt, targetModel = 'gpt-4o-mini', qualityThreshold = 0.8, parameters } = body
 
@@ -21,11 +21,11 @@ export async function POST(request: NextRequest) {
     const results = await gepaOptimizer.optimizePrompt(prompt, targetModel, qualityThreshold)
 
     // Calculate savings
-    const originalTokens = await import('@/lib/utils/token-counter').then(m => 
-      m.TokenCounter.countTokens(prompt, targetModel)
+    const originalTokens = await import('@/lib/utils/token-counter').then((m) =>
+      m.TokenCounter.countTokens(prompt, targetModel),
     )
-    const originalCost = await import('@/lib/utils/token-counter').then(m => 
-      m.TokenCounter.calculateCost(originalTokens, targetModel, 'prompt')
+    const originalCost = await import('@/lib/utils/token-counter').then((m) =>
+      m.TokenCounter.calculateCost(originalTokens, targetModel, 'prompt'),
     )
 
     const tokenReduction = originalTokens - results.bestSolution.tokens
@@ -75,11 +75,11 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('GEPA optimization error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'GEPA optimization failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      }, 
-      { status: 500 }
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 },
     )
   }
 }

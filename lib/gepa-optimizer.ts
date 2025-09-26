@@ -79,7 +79,7 @@ export class GEPACostOptimizer {
     qualityThreshold: number = 0.8,
   ): Promise<GEPAResults> {
     console.log('🧬 Starting GEPA cost optimization...')
-    
+
     const config = getEnvironmentConfig()
     if (!config.hasOpenAI && !config.hasAnthropic) {
       throw new Error('No AI provider available for GEPA optimization')
@@ -87,48 +87,49 @@ export class GEPACostOptimizer {
 
     // Initialize population with variations of the original prompt
     let population = await this.initializePopulation(originalPrompt, targetModel)
-    
+
     let bestSolution = population[0]
     let totalCost = 0
 
     for (let generation = 0; generation < this.parameters.generations; generation++) {
       console.log(`🧬 Generation ${generation + 1}/${this.parameters.generations}`)
-      
+
       // Evaluate fitness for all solutions
       population = await this.evaluatePopulation(population, targetModel, qualityThreshold)
-      
+
       // Sort by fitness (higher is better)
       population.sort((a, b) => b.fitness - a.fitness)
-      
+
       // Update best solution
       if (population[0].fitness > bestSolution.fitness) {
         bestSolution = population[0]
       }
-      
+
       // Calculate generation statistics
       const avgCost = population.reduce((sum, sol) => sum + sol.cost, 0) / population.length
       const costReduction = ((population[0].cost - avgCost) / population[0].cost) * 100
-      
+
       this.optimizationHistory.push({
         generation: generation + 1,
         bestFitness: population[0].fitness,
         averageCost: avgCost,
         costReduction,
       })
-      
+
       totalCost += population.reduce((sum, sol) => sum + sol.cost, 0)
-      
+
       console.log(`📊 Best fitness: ${population[0].fitness.toFixed(3)}, Avg cost: $${avgCost.toFixed(4)}`)
-      
+
       // Create next generation
       if (generation < this.parameters.generations - 1) {
         population = await this.createNextGeneration(population, targetModel)
       }
     }
 
-    const costSavings = bestSolution.cost < (await TokenCounter.countTokens(originalPrompt, targetModel)) * 0.002 / 1000
-      ? (await TokenCounter.countTokens(originalPrompt, targetModel)) * 0.002 / 1000 - bestSolution.cost
-      : 0
+    const costSavings =
+      bestSolution.cost < ((await TokenCounter.countTokens(originalPrompt, targetModel)) * 0.002) / 1000
+        ? ((await TokenCounter.countTokens(originalPrompt, targetModel)) * 0.002) / 1000 - bestSolution.cost
+        : 0
 
     return {
       bestSolution,
@@ -145,7 +146,7 @@ export class GEPACostOptimizer {
    */
   private async initializePopulation(originalPrompt: string, targetModel: string): Promise<GEPASolution[]> {
     const population: GEPASolution[] = []
-    
+
     // Add original prompt
     const originalTokens = await TokenCounter.countTokens(originalPrompt, targetModel)
     population.push({
@@ -162,7 +163,7 @@ export class GEPACostOptimizer {
     for (let i = 1; i < this.parameters.populationSize; i++) {
       const variation = await this.generatePromptVariation(originalPrompt, i)
       const tokens = await TokenCounter.countTokens(variation, targetModel)
-      
+
       population.push({
         id: `variation_${i}`,
         prompt: variation,
@@ -189,7 +190,7 @@ export class GEPACostOptimizer {
     ]
 
     const reflectionPrompt = reflectionPrompts[variationIndex % reflectionPrompts.length]
-    
+
     try {
       // Use cost-effective model for reflection
       const response = await fetch('/api/openrouter/generate', {
@@ -212,7 +213,7 @@ export class GEPACostOptimizer {
     }
 
     // Fallback: simple truncation
-    return originalPrompt.length > 100 
+    return originalPrompt.length > 100
       ? originalPrompt.substring(0, Math.floor(originalPrompt.length * 0.8)) + '...'
       : originalPrompt
   }
@@ -230,10 +231,10 @@ export class GEPACostOptimizer {
         // Recalculate tokens and cost
         const tokens = await TokenCounter.countTokens(solution.prompt, targetModel)
         const cost = TokenCounter.calculateCost(tokens, targetModel, 'prompt')
-        
+
         // Evaluate quality using reflection
         const quality = await this.evaluateQuality(solution.prompt, targetModel)
-        
+
         return {
           ...solution,
           tokens,
@@ -241,7 +242,7 @@ export class GEPACostOptimizer {
           quality,
           fitness: this.calculateFitness(tokens, quality, targetModel),
         }
-      })
+      }),
     )
 
     return evaluated
@@ -253,7 +254,7 @@ export class GEPACostOptimizer {
   private async evaluateQuality(prompt: string, targetModel: string): Promise<number> {
     try {
       const qualityPrompt = `Rate the quality of this prompt on a scale of 0.0 to 1.0, considering clarity, specificity, and effectiveness. Respond with only a number between 0.0 and 1.0.\n\nPrompt: ${prompt}`
-      
+
       const response = await fetch('/api/openrouter/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -283,7 +284,7 @@ export class GEPACostOptimizer {
   private calculateFitness(tokens: number, quality: number, targetModel: string): number {
     const cost = TokenCounter.calculateCost(tokens, targetModel, 'prompt')
     const maxCost = 0.01 // Maximum acceptable cost
-    
+
     // Fitness = quality * (1 - normalized_cost)
     const normalizedCost = Math.min(cost / maxCost, 1)
     return quality * (1 - normalizedCost)
@@ -292,12 +293,9 @@ export class GEPACostOptimizer {
   /**
    * Create next generation using genetic operations
    */
-  private async createNextGeneration(
-    currentPopulation: GEPASolution[],
-    targetModel: string,
-  ): Promise<GEPASolution[]> {
+  private async createNextGeneration(currentPopulation: GEPASolution[], targetModel: string): Promise<GEPASolution[]> {
     const nextGeneration: GEPASolution[] = []
-    
+
     // Elitism: keep best solutions
     for (let i = 0; i < this.parameters.eliteSize; i++) {
       nextGeneration.push({
@@ -310,7 +308,7 @@ export class GEPACostOptimizer {
     while (nextGeneration.length < this.parameters.populationSize) {
       const parent1 = this.selectParent(currentPopulation)
       const parent2 = this.selectParent(currentPopulation)
-      
+
       if (Math.random() < this.parameters.crossoverRate) {
         const offspring = await this.crossover(parent1, parent2, targetModel)
         nextGeneration.push(offspring)
@@ -330,33 +328,27 @@ export class GEPACostOptimizer {
   private selectParent(population: GEPASolution[]): GEPASolution {
     const tournamentSize = 3
     const tournament = []
-    
+
     for (let i = 0; i < tournamentSize; i++) {
       tournament.push(population[Math.floor(Math.random() * population.length)])
     }
-    
-    return tournament.reduce((best, current) => 
-      current.fitness > best.fitness ? current : best
-    )
+
+    return tournament.reduce((best, current) => (current.fitness > best.fitness ? current : best))
   }
 
   /**
    * Crossover operation
    */
-  private async crossover(
-    parent1: GEPASolution,
-    parent2: GEPASolution,
-    targetModel: string,
-  ): Promise<GEPASolution> {
+  private async crossover(parent1: GEPASolution, parent2: GEPASolution, targetModel: string): Promise<GEPASolution> {
     // Simple crossover: combine parts of both prompts
     const prompt1 = parent1.prompt
     const prompt2 = parent2.prompt
-    
+
     const crossoverPoint = Math.floor(Math.random() * Math.min(prompt1.length, prompt2.length))
     const offspringPrompt = prompt1.substring(0, crossoverPoint) + prompt2.substring(crossoverPoint)
-    
+
     const tokens = await TokenCounter.countTokens(offspringPrompt, targetModel)
-    
+
     return {
       id: `crossover_${Date.now()}`,
       prompt: offspringPrompt,
@@ -379,7 +371,7 @@ export class GEPACostOptimizer {
 
     // Apply mutation using reflection
     const mutationPrompt = `Apply a small improvement to this prompt while keeping it concise: ${solution.prompt}`
-    
+
     try {
       const response = await fetch('/api/openrouter/generate', {
         method: 'POST',
@@ -396,7 +388,7 @@ export class GEPACostOptimizer {
         const data = await response.json()
         const mutatedPrompt = data.text || solution.prompt
         const tokens = await TokenCounter.countTokens(mutatedPrompt, targetModel)
-        
+
         return {
           id: `mutation_${Date.now()}`,
           prompt: mutatedPrompt,
@@ -426,10 +418,11 @@ export class GEPACostOptimizer {
     averageCostReduction: number
     totalCostSavings: number
   } {
-    const bestFitness = Math.max(...this.optimizationHistory.map(h => h.bestFitness))
-    const avgCostReduction = this.optimizationHistory.length > 0
-      ? this.optimizationHistory.reduce((sum, h) => sum + h.costReduction, 0) / this.optimizationHistory.length
-      : 0
+    const bestFitness = Math.max(...this.optimizationHistory.map((h) => h.bestFitness))
+    const avgCostReduction =
+      this.optimizationHistory.length > 0
+        ? this.optimizationHistory.reduce((sum, h) => sum + h.costReduction, 0) / this.optimizationHistory.length
+        : 0
 
     return {
       totalGenerations: this.parameters.generations,

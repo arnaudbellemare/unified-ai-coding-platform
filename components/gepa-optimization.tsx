@@ -8,16 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Dna, 
-  TrendingDown, 
-  DollarSign, 
-  Target, 
-  Zap, 
-  BarChart3,
-  Sparkles,
-  CheckCircle
-} from 'lucide-react'
+import { Dna, TrendingDown, DollarSign, Target, Zap, BarChart3, Sparkles, CheckCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface GEPAResults {
@@ -82,7 +73,7 @@ export function GEPAOptimization() {
     try {
       // Simulate progress updates
       const progressInterval = setInterval(() => {
-        setOptimizationProgress(prev => Math.min(prev + 10, 90))
+        setOptimizationProgress((prev) => Math.min(prev + 10, 90))
       }, 1000)
 
       const response = await fetch('/api/gepa/optimize', {
@@ -143,11 +134,7 @@ export function GEPAOptimization() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Target Model</label>
-              <Input
-                value={targetModel}
-                onChange={(e) => setTargetModel(e.target.value)}
-                placeholder="gpt-4o-mini"
-              />
+              <Input value={targetModel} onChange={(e) => setTargetModel(e.target.value)} placeholder="gpt-4o-mini" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Quality Threshold (0.0 - 1.0)</label>
@@ -162,11 +149,7 @@ export function GEPAOptimization() {
             </div>
           </div>
 
-          <Button 
-            onClick={handleOptimize} 
-            disabled={isOptimizing || !prompt.trim()}
-            className="w-full"
-          >
+          <Button onClick={handleOptimize} disabled={isOptimizing || !prompt.trim()} className="w-full">
             {isOptimizing ? (
               <>
                 <Sparkles className="h-4 w-4 mr-2 animate-spin" />
@@ -211,7 +194,7 @@ export function GEPAOptimization() {
                   </div>
                   <div className="text-sm text-gray-600">Token Reduction</div>
                 </div>
-                
+
                 <div className="text-center p-4 bg-green-50 rounded-lg">
                   <DollarSign className="h-8 w-8 mx-auto text-green-600 mb-2" />
                   <div className="text-2xl font-bold text-green-600">
@@ -219,20 +202,16 @@ export function GEPAOptimization() {
                   </div>
                   <div className="text-sm text-gray-600">Cost Reduction</div>
                 </div>
-                
+
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
                   <Target className="h-8 w-8 mx-auto text-purple-600 mb-2" />
-                  <div className="text-2xl font-bold text-purple-600">
-                    {results.optimized.quality.toFixed(2)}
-                  </div>
+                  <div className="text-2xl font-bold text-purple-600">{results.optimized.quality.toFixed(2)}</div>
                   <div className="text-sm text-gray-600">Quality Score</div>
                 </div>
-                
+
                 <div className="text-center p-4 bg-orange-50 rounded-lg">
                   <Zap className="h-8 w-8 mx-auto text-orange-600 mb-2" />
-                  <div className="text-2xl font-bold text-orange-600">
-                    {results.optimized.fitness.toFixed(3)}
-                  </div>
+                  <div className="text-2xl font-bold text-orange-600">{results.optimized.fitness.toFixed(3)}</div>
                   <div className="text-sm text-gray-600">Fitness Score</div>
                 </div>
               </div>
@@ -257,9 +236,7 @@ export function GEPAOptimization() {
                   <CardContent>
                     <div className="space-y-2">
                       <div className="text-sm text-gray-600">Prompt:</div>
-                      <div className="p-3 bg-gray-50 rounded text-sm">
-                        {results.original.prompt}
-                      </div>
+                      <div className="p-3 bg-gray-50 rounded text-sm">{results.original.prompt}</div>
                       <div className="flex justify-between">
                         <span>Tokens: {results.original.tokens}</span>
                         <span>Cost: ${results.original.cost.toFixed(6)}</span>
@@ -275,9 +252,7 @@ export function GEPAOptimization() {
                   <CardContent>
                     <div className="space-y-2">
                       <div className="text-sm text-gray-600">Prompt:</div>
-                      <div className="p-3 bg-green-50 rounded text-sm">
-                        {results.optimized.prompt}
-                      </div>
+                      <div className="p-3 bg-green-50 rounded text-sm">{results.optimized.prompt}</div>
                       <div className="flex justify-between">
                         <span>Tokens: {results.optimized.tokens}</span>
                         <span>Cost: ${results.optimized.cost.toFixed(6)}</span>
@@ -294,9 +269,7 @@ export function GEPAOptimization() {
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">
-                        {results.savings.tokenReduction}
-                      </div>
+                      <div className="text-2xl font-bold text-blue-600">{results.savings.tokenReduction}</div>
                       <div className="text-sm text-gray-600">Tokens Saved</div>
                     </div>
                     <div className="text-center">
@@ -312,9 +285,7 @@ export function GEPAOptimization() {
                       <div className="text-sm text-gray-600">Monthly Savings</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-orange-600">
-                        {results.optimization.totalGenerations}
-                      </div>
+                      <div className="text-2xl font-bold text-orange-600">{results.optimization.totalGenerations}</div>
                       <div className="text-sm text-gray-600">Generations</div>
                     </div>
                   </div>
@@ -326,15 +297,11 @@ export function GEPAOptimization() {
               <Card>
                 <CardHeader>
                   <CardTitle>Optimized Prompt</CardTitle>
-                  <CardDescription>
-                    This is the best solution found by GEPA optimization
-                  </CardDescription>
+                  <CardDescription>This is the best solution found by GEPA optimization</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="p-4 bg-green-50 rounded-lg">
-                    <pre className="whitespace-pre-wrap text-sm">
-                      {results.optimized.prompt}
-                    </pre>
+                    <pre className="whitespace-pre-wrap text-sm">{results.optimized.prompt}</pre>
                   </div>
                   <div className="mt-4 flex gap-2">
                     <Button
@@ -344,12 +311,8 @@ export function GEPAOptimization() {
                     >
                       Copy Prompt
                     </Button>
-                    <Badge variant="secondary">
-                      Quality: {results.optimized.quality.toFixed(2)}
-                    </Badge>
-                    <Badge variant="secondary">
-                      Fitness: {results.optimized.fitness.toFixed(3)}
-                    </Badge>
+                    <Badge variant="secondary">Quality: {results.optimized.quality.toFixed(2)}</Badge>
+                    <Badge variant="secondary">Fitness: {results.optimized.fitness.toFixed(3)}</Badge>
                   </div>
                 </CardContent>
               </Card>
@@ -359,9 +322,7 @@ export function GEPAOptimization() {
               <Card>
                 <CardHeader>
                   <CardTitle>Top Solutions</CardTitle>
-                  <CardDescription>
-                    Best solutions from the final population
-                  </CardDescription>
+                  <CardDescription>Best solutions from the final population</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -370,20 +331,12 @@ export function GEPAOptimization() {
                         <div className="flex justify-between items-start mb-2">
                           <div className="font-medium">Solution #{index + 1}</div>
                           <div className="flex gap-2">
-                            <Badge variant="outline">
-                              {solution.tokens} tokens
-                            </Badge>
-                            <Badge variant="outline">
-                              ${solution.cost.toFixed(6)}
-                            </Badge>
-                            <Badge variant="outline">
-                              Q: {solution.quality.toFixed(2)}
-                            </Badge>
+                            <Badge variant="outline">{solution.tokens} tokens</Badge>
+                            <Badge variant="outline">${solution.cost.toFixed(6)}</Badge>
+                            <Badge variant="outline">Q: {solution.quality.toFixed(2)}</Badge>
                           </div>
                         </div>
-                        <div className="text-sm text-gray-600 mb-2">
-                          {solution.prompt}
-                        </div>
+                        <div className="text-sm text-gray-600 mb-2">{solution.prompt}</div>
                       </div>
                     ))}
                   </div>
@@ -395,9 +348,7 @@ export function GEPAOptimization() {
               <Card>
                 <CardHeader>
                   <CardTitle>Evolution History</CardTitle>
-                  <CardDescription>
-                    How the optimization progressed through generations
-                  </CardDescription>
+                  <CardDescription>How the optimization progressed through generations</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -405,15 +356,11 @@ export function GEPAOptimization() {
                       <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                         <div className="flex items-center gap-4">
                           <div className="font-medium">Generation {gen.generation}</div>
-                          <div className="text-sm text-gray-600">
-                            Best Fitness: {gen.bestFitness.toFixed(3)}
-                          </div>
+                          <div className="text-sm text-gray-600">Best Fitness: {gen.bestFitness.toFixed(3)}</div>
                         </div>
                         <div className="flex gap-4 text-sm">
                           <div>Avg Cost: ${gen.averageCost.toFixed(6)}</div>
-                          <div className="text-green-600">
-                            Reduction: {gen.costReduction.toFixed(1)}%
-                          </div>
+                          <div className="text-green-600">Reduction: {gen.costReduction.toFixed(1)}%</div>
                         </div>
                       </div>
                     ))}
