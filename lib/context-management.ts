@@ -44,7 +44,7 @@ export class ContextManager {
       return compactedMessages
     } catch (error) {
       console.error('❌ Context compaction failed:', error)
-      
+
       // Fallback: simple truncation keeping most recent messages
       const fallbackMessages = this.simpleTruncation(messages)
       console.log(`⚠️ Using fallback truncation: ${fallbackMessages.length} messages`)
@@ -57,16 +57,16 @@ export class ContextManager {
    */
   private simpleTruncation(messages: CoreMessage[]): CoreMessage[] {
     const { maxMessages, preserveSystemMessages } = this.config
-    
+
     if (preserveSystemMessages) {
       // Keep system messages and recent messages
-      const systemMessages = messages.filter(msg => msg.role === 'system')
-      const otherMessages = messages.filter(msg => msg.role !== 'system')
+      const systemMessages = messages.filter((msg) => msg.role === 'system')
+      const otherMessages = messages.filter((msg) => msg.role !== 'system')
       const recentMessages = otherMessages.slice(-(maxMessages - systemMessages.length))
-      
+
       return [...systemMessages, ...recentMessages]
     }
-    
+
     // Simple truncation: keep the most recent messages
     return messages.slice(-maxMessages)
   }

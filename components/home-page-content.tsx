@@ -15,9 +15,11 @@ import { MicroEcommercePayment } from '@/components/micro-ecommerce-payment'
 import { X402ProtocolAnalysis } from '@/components/x402-protocol-analysis'
 import { AdvancedOptimizationDashboard } from '@/components/advanced-optimization-dashboard'
 import { ContextManagementDashboard } from '@/components/context-management-dashboard'
-import { ExaWebSearchDemo } from '@/components/exa-websearch-demo'
+import { ExaWebSearch } from '@/components/exa-websearch'
+import { OpenRouterIntegration } from '@/components/openrouter-integration'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Bot } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -131,6 +133,16 @@ export function HomePageContent() {
               Exa Web Search
             </button>
             <button
+              onClick={() => setActiveTab('openrouter')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'openrouter'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              OpenRouter AI
+            </button>
+            <button
               onClick={() => setActiveTab('agents')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'agents'
@@ -195,7 +207,23 @@ export function HomePageContent() {
         {activeTab === 'exa' && (
           <div className="flex justify-center items-start min-h-screen py-8">
             <div className="max-w-6xl w-full px-4">
-              <ExaWebSearchDemo />
+              <ExaWebSearch />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'openrouter' && (
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-7xl w-full px-4">
+              <OpenRouterIntegration
+                isAuthenticated={true} // Real authentication required
+                userCredits={0} // Real credits from user account
+                onModelSelect={(model) => {
+                  console.log('Selected model:', model)
+                  toast.success(`Selected ${model.name}`)
+                }}
+                selectedModel={undefined} // This would come from state
+              />
             </div>
           </div>
         )}

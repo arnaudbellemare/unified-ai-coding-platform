@@ -1,7 +1,7 @@
-import { tool } from 'ai'
-
-export const exaWebSearchTool = tool({
-  description: 'Run a search query to search the internet for results. Use this to look up latest information or find documentation.',
+// Exa web search tools for AI SDK v5
+export const exaWebSearchTool = {
+  description:
+    'Run a search query to search the internet for results. Use this to look up latest information or find documentation.',
   parameters: {
     query: {
       type: 'string',
@@ -12,7 +12,7 @@ export const exaWebSearchTool = tool({
       description: 'Number of results to return (default: 5)',
     },
   },
-  execute: async ({ query, numResults = 5 }) => {
+  execute: async ({ query, numResults = 5 }: { query: string; numResults?: number }) => {
     try {
       if (!process.env.EXA_API_KEY) {
         throw new Error('EXA_API_KEY environment variable is required')
@@ -25,18 +25,14 @@ export const exaWebSearchTool = tool({
         useAutoprompt: 'true',
       })
 
-      // Add domain filters if provided
-      if (includeDomains.length > 0) {
-        searchParams.append('includeDomains', includeDomains.join(','))
-      }
-      if (excludeDomains.length > 0) {
-        searchParams.append('excludeDomains', excludeDomains.join(','))
-      }
+      // Add domain filters if provided (optional)
+      // searchParams.append('includeDomains', 'example.com')
+      // searchParams.append('excludeDomains', 'spam.com')
 
       const response = await fetch(`https://api.exa.ai/search?${searchParams}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${process.env.EXA_API_KEY}`,
+          Authorization: `Bearer ${process.env.EXA_API_KEY}`,
           'Content-Type': 'application/json',
         },
       })
@@ -46,7 +42,7 @@ export const exaWebSearchTool = tool({
       }
 
       const data = await response.json()
-      
+
       return {
         success: true,
         results: data.results || [],
@@ -62,11 +58,12 @@ export const exaWebSearchTool = tool({
         results: [],
       }
     }
-  },
-})
+  }
+}
 
-export const exaCodeSearchTool = tool({
-  description: 'Search for code examples, documentation, and implementation patterns from open source repositories and documentation sites.',
+export const exaCodeSearchTool = {
+  description:
+    'Search for code examples, documentation, and implementation patterns from open source repositories and documentation sites.',
   parameters: {
     query: {
       type: 'string',
@@ -77,7 +74,7 @@ export const exaCodeSearchTool = tool({
       description: 'Number of results to return (default: 5)',
     },
   },
-  execute: async ({ query, numResults = 5 }) => {
+  execute: async ({ query, numResults = 5 }: { query: string; numResults?: number }) => {
     try {
       if (!process.env.EXA_API_KEY) {
         throw new Error('EXA_API_KEY environment variable is required')
@@ -91,14 +88,15 @@ export const exaCodeSearchTool = tool({
         includeDomains: 'github.com,stackoverflow.com,dev.to,medium.com,mdn.io,docs.python.org,reactjs.org,nodejs.org',
       })
 
-      if (language) {
-        searchParams.append('query', `${query} ${language}`)
-      }
+      // Language filter can be added if needed
+      // if (language) {
+      //   searchParams.append('query', `${query} ${language}`)
+      // }
 
       const response = await fetch(`https://api.exa.ai/search?${searchParams}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${process.env.EXA_API_KEY}`,
+          Authorization: `Bearer ${process.env.EXA_API_KEY}`,
           'Content-Type': 'application/json',
         },
       })
@@ -108,12 +106,11 @@ export const exaCodeSearchTool = tool({
       }
 
       const data = await response.json()
-      
+
       return {
         success: true,
         results: data.results || [],
         query,
-        language,
         totalResults: data.results?.length || 0,
       }
     } catch (error) {
@@ -125,11 +122,12 @@ export const exaCodeSearchTool = tool({
         results: [],
       }
     }
-  },
-})
+  }
+}
 
-export const exaCompanyResearchTool = tool({
-  description: 'Research companies and gather comprehensive information about businesses, their products, and market position.',
+export const exaCompanyResearchTool = {
+  description:
+    'Research companies and gather comprehensive information about businesses, their products, and market position.',
   parameters: {
     company: {
       type: 'string',
@@ -140,7 +138,7 @@ export const exaCompanyResearchTool = tool({
       description: 'Number of results to return (default: 10)',
     },
   },
-  execute: async ({ company, numResults = 10 }) => {
+  execute: async ({ company, numResults = 10 }: { company: string; numResults?: number }) => {
     try {
       if (!process.env.EXA_API_KEY) {
         throw new Error('EXA_API_KEY environment variable is required')
@@ -156,7 +154,7 @@ export const exaCompanyResearchTool = tool({
       const response = await fetch(`https://api.exa.ai/search?${searchParams}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${process.env.EXA_API_KEY}`,
+          Authorization: `Bearer ${process.env.EXA_API_KEY}`,
           'Content-Type': 'application/json',
         },
       })
@@ -166,7 +164,7 @@ export const exaCompanyResearchTool = tool({
       }
 
       const data = await response.json()
-      
+
       return {
         success: true,
         results: data.results || [],
@@ -182,11 +180,12 @@ export const exaCompanyResearchTool = tool({
         results: [],
       }
     }
-  },
-})
+  }
+}
 
-export const exaCrawlingTool = tool({
-  description: 'Extract content from specific URLs, useful for reading articles, documentation, or any web page when you have the exact URL.',
+export const exaCrawlingTool = {
+  description:
+    'Extract content from specific URLs, useful for reading articles, documentation, or any web page when you have the exact URL.',
   parameters: {
     url: {
       type: 'string',
@@ -197,7 +196,7 @@ export const exaCrawlingTool = tool({
       description: 'Maximum length of content to extract (default: 10000)',
     },
   },
-  execute: async ({ url, maxLength = 10000 }) => {
+  execute: async ({ url, maxLength = 10000 }: { url: string; maxLength?: number }) => {
     try {
       if (!process.env.EXA_API_KEY) {
         throw new Error('EXA_API_KEY environment variable is required')
@@ -206,7 +205,7 @@ export const exaCrawlingTool = tool({
       const response = await fetch('https://api.exa.ai/crawl', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.EXA_API_KEY}`,
+          Authorization: `Bearer ${process.env.EXA_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -220,7 +219,7 @@ export const exaCrawlingTool = tool({
       }
 
       const data = await response.json()
-      
+
       return {
         success: true,
         content: data.content || '',
@@ -237,5 +236,5 @@ export const exaCrawlingTool = tool({
         content: '',
       }
     }
-  },
-})
+  }
+}

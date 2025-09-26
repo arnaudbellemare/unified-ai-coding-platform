@@ -5,17 +5,11 @@ export async function POST(request: NextRequest) {
     const { query, type = 'web', numResults = 5 } = await request.json()
 
     if (!query) {
-      return NextResponse.json(
-        { error: 'Query is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Query is required' }, { status: 400 })
     }
 
     if (!process.env.EXA_API_KEY) {
-      return NextResponse.json(
-        { error: 'EXA_API_KEY environment variable is required' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'EXA_API_KEY environment variable is required' }, { status: 500 })
     }
 
     let searchParams = new URLSearchParams({
@@ -28,7 +22,10 @@ export async function POST(request: NextRequest) {
     // Add domain filters based on search type
     switch (type) {
       case 'code':
-        searchParams.append('includeDomains', 'github.com,stackoverflow.com,dev.to,medium.com,mdn.io,docs.python.org,reactjs.org,nodejs.org,typescriptlang.org')
+        searchParams.append(
+          'includeDomains',
+          'github.com,stackoverflow.com,dev.to,medium.com,mdn.io,docs.python.org,reactjs.org,nodejs.org,typescriptlang.org',
+        )
         break
       case 'company':
         searchParams.append('includeDomains', 'linkedin.com,crunchbase.com,bloomberg.com,reuters.com,techcrunch.com')
@@ -42,7 +39,7 @@ export async function POST(request: NextRequest) {
     const response = await fetch(`https://api.exa.ai/search?${searchParams}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${process.env.EXA_API_KEY}`,
+        Authorization: `Bearer ${process.env.EXA_API_KEY}`,
         'Content-Type': 'application/json',
       },
     })
@@ -50,14 +47,11 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       const errorText = await response.text()
       console.error('Exa API error:', response.status, errorText)
-      return NextResponse.json(
-        { error: `Exa API error: ${response.status}` },
-        { status: response.status }
-      )
+      return NextResponse.json({ error: `Exa API error: ${response.status}` }, { status: response.status })
     }
 
     const data = await response.json()
-    
+
     return NextResponse.json({
       success: true,
       results: data.results || [],
@@ -67,9 +61,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Exa search error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+

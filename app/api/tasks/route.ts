@@ -19,42 +19,10 @@ export async function GET(request: NextRequest) {
     const user = await getCurrentUser(request)
 
     if (!db) {
-      // Return fallback tasks for development (only if user is authenticated)
-      if (!user) {
-        return NextResponse.json({
-          tasks: [],
-          message: 'Please sign in with GitHub to view your tasks',
-        })
-      }
-
-      const fallbackTasks = [
-        {
-          id: 'demo-task-1',
-          userId: user.id,
-          prompt: 'Create a React component with TypeScript',
-          repoUrl: 'https://github.com/example/demo-repo',
-          selectedAgent: 'codex',
-          selectedModel: 'gpt-5',
-          status: 'completed' as const,
-          progress: 100,
-          logs: [
-            {
-              type: 'info' as const,
-              message: 'Task completed successfully (demo mode)',
-              timestamp: new Date().toISOString(),
-            },
-          ],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          sandboxUrl: 'https://demo-sandbox.vercel.app',
-          branchName: 'feature/demo-component',
-        },
-      ]
-
       return NextResponse.json({
-        tasks: fallbackTasks,
-        message: 'Database not available - showing demo tasks',
-      })
+        error: 'Database not available',
+        message: 'Please ensure database is properly configured',
+      }, { status: 503 })
     }
 
     // If no user, return empty tasks
@@ -218,31 +186,12 @@ export async function POST(request: NextRequest) {
       logs: [createInfoLog('Task created, preparing to start...')],
     })
 
-    // Handle case when database is not available
+    // Database is required for task creation
     if (!db) {
-      const fallbackTask = {
-        ...validatedData,
-        id: taskId,
-        status: 'pending' as const,
-        progress: 0,
-        logs: [createInfoLog('Task created (database not available - using fallback mode)')],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
-
-      // Process the task asynchronously without database
-      processTaskWithTimeout(
-        taskId,
-        validatedData.prompt,
-        validatedData.repoUrl || '',
-        validatedData.selectedAgent || 'claude',
-        validatedData.selectedModel,
-      )
-
-      // Record usage for billing/analytics (fallback mode)
-      SimpleUsageTracker.recordTaskCreation(user.id)
-
-      return NextResponse.json({ task: fallbackTask })
+      return NextResponse.json({
+        error: 'Database not available',
+        message: 'Please ensure database is properly configured',
+      }, { status: 503 })
     }
 
     // Insert the task into the database - ensure id is definitely present

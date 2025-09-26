@@ -288,7 +288,13 @@ executeAgent();
     // Install AI SDK v5 dependencies with context management
     logs.push(createInfoLog('📦 Installing AI SDK v5 dependencies with context management'))
     await runAndLogCommand(sandbox, 'npm', ['init', '-y'], logs, logger)
-    await runAndLogCommand(sandbox, 'npm', ['install', 'ai@^5.0.0', '@ai-sdk/perplexity@^2.0.0', 'zod', 'ctx-zip'], logs, logger)
+    await runAndLogCommand(
+      sandbox,
+      'npm',
+      ['install', 'ai@^5.0.0', '@ai-sdk/perplexity@^2.0.0', 'zod', 'ctx-zip'],
+      logs,
+      logger,
+    )
 
     // Execute the AI SDK v5 agent
     logs.push(createInfoLog('🚀 Executing AI SDK v5 Chat agent'))

@@ -8,25 +8,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Wallet address is required' }, { status: 400 })
     }
 
-    // Simulate balance fetching
-    // In a real implementation, this would use Privy API or blockchain RPC
-    const mockBalance = (Math.random() * 100).toFixed(4) // Random balance for demo
+    // Fetch real balance from blockchain
+    try {
+      const { RealX402PaymentService } = await import('@/lib/x402/real-x402-payments')
+      const paymentService = new RealX402PaymentService()
+      const walletBalance = await paymentService.getWalletBalance(address)
 
-    // Log balance request for analytics
-    console.log('Privy balance request:', {
-      address,
-      network: network || 'base-sepolia',
-      timestamp: new Date().toISOString(),
-    })
+      // Log balance request for analytics
+      console.log('Wallet balance fetched:', {
+        address,
+        network: network || 'base-sepolia',
+        ethBalance: walletBalance.eth,
+        usdcBalance: walletBalance.usdc,
+        timestamp: new Date().toISOString(),
+      })
 
-    return NextResponse.json({
-      success: true,
-      address,
-      network: network || 'base-sepolia',
-      balance: mockBalance,
-      currency: 'USDC',
-      timestamp: new Date().toISOString(),
-    })
+      return NextResponse.json({
+        success: true,
+        address,
+        network: network || 'base-sepolia',
+        balance: walletBalance.usdc,
+        ethBalance: walletBalance.eth,
+        currency: 'USDC',
+        timestamp: new Date().toISOString(),
+      })
+    } catch (error) {
+      console.error('Failed to fetch real wallet balance:', error)
+      return NextResponse.json({
+        error: 'Failed to fetch wallet balance',
+        message: 'Please ensure wallet is connected and has sufficient funds',
+      }, { status: 500 })
+    }
   } catch (error) {
     console.error('Privy balance error:', error)
     return NextResponse.json({ error: 'Failed to fetch wallet balance' }, { status: 500 })

@@ -12,15 +12,12 @@ export async function POST(request: NextRequest) {
       allowedServices = [],
       backupWallets = [],
       recoveryContacts = [],
-      isDemo = false,
     } = body
 
-    // For demo wallets, allow without authentication
-    if (!isDemo) {
-      const privyUser = await getPrivyUser(request)
-      if (!privyUser) {
-        return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
-      }
+    // Require authentication for all wallet creation
+    const privyUser = await getPrivyUser(request)
+    if (!privyUser) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
     }
 
     if (!agentId) {
@@ -42,22 +39,21 @@ export async function POST(request: NextRequest) {
             '0x0000000000000000000000000000000000000004', // Vercel placeholder
           ]
 
-    // Default backup wallets if none provided (for demo)
-    const defaultBackupWallets =
-      backupWallets.length > 0
-        ? backupWallets
-        : [
-            '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Demo backup wallet 1
-            '0x8ba1f109551bD432803012645Hac136c1a8b5B2', // Demo backup wallet 2
-          ]
+    // Require backup wallets to be provided
+    if (backupWallets.length === 0) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Backup wallets are required for security' 
+      }, { status: 400 })
+    }
 
-    // Default recovery contacts if none provided (for demo)
-    const defaultRecoveryContacts =
-      recoveryContacts.length > 0
-        ? recoveryContacts
-        : [
-            '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Demo recovery contact
-          ]
+    // Require recovery contacts to be provided
+    if (recoveryContacts.length === 0) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Recovery contacts are required for security' 
+      }, { status: 400 })
+    }
 
     // Create smart contract wallet configuration
     const walletConfig = {
@@ -65,9 +61,9 @@ export async function POST(request: NextRequest) {
       maxDailySpend: maxDailySpendWei,
       maxSingleTransaction: maxSingleTransactionWei,
       allowedServices: defaultAllowedServices,
-      backupWallets: defaultBackupWallets,
+      backupWallets: backupWallets,
       requiredApprovals: 2, // Require 2 of N backup wallets to approve
-      recoveryContacts: defaultRecoveryContacts,
+      recoveryContacts: recoveryContacts,
       recoveryDelay: 7 * 24 * 60 * 60, // 7 days in seconds
     }
 
@@ -82,7 +78,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       wallet: smartWallet,
-      isDemo,
       message: `Smart contract wallet created for agent: ${agentId}`,
     })
   } catch (error) {

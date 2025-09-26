@@ -34,14 +34,14 @@ export function ContextManagementDashboard() {
   useEffect(() => {
     if (isActive) {
       const interval = setInterval(() => {
-        setStats(prev => {
+        setStats((prev) => {
           const newTotal = prev.totalMessages + Math.floor(Math.random() * 3) + 1
           const newMax = 20
           const newCompressionRatio = newTotal > newMax ? newMax / newTotal : 1
           const newIsCompressed = newTotal > newMax
           const newTokensSaved = newIsCompressed ? Math.floor((newTotal - newMax) * 150) : 0
           const newCostSavings = newTokensSaved * 0.0001 // $0.0001 per token
-          const newResponseTime = newIsCompressed ? Math.max(200, 500 - (newTokensSaved * 0.1)) : 500
+          const newResponseTime = newIsCompressed ? Math.max(200, 500 - newTokensSaved * 0.1) : 500
 
           return {
             totalMessages: newTotal,
@@ -67,9 +67,7 @@ export function ContextManagementDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Context Management Dashboard</h2>
-          <p className="text-muted-foreground">
-            Real-time context compaction and token optimization
-          </p>
+          <p className="text-muted-foreground">Real-time context compaction and token optimization</p>
         </div>
         <Button
           onClick={() => setIsActive(!isActive)}
@@ -90,9 +88,7 @@ export function ContextManagementDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalMessages}</div>
-            <p className="text-xs text-muted-foreground">
-              Max: {stats.maxMessages} messages
-            </p>
+            <p className="text-xs text-muted-foreground">Max: {stats.maxMessages} messages</p>
             <div className="mt-2">
               <Progress value={Math.min((stats.totalMessages / stats.maxMessages) * 100, 100)} />
             </div>
@@ -135,9 +131,7 @@ export function ContextManagementDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(stats.costSavings)}</div>
-            <p className="text-xs text-muted-foreground">
-              Per request savings
-            </p>
+            <p className="text-xs text-muted-foreground">Per request savings</p>
             <div className="mt-2">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -162,7 +156,9 @@ export function ContextManagementDashboard() {
             </p>
             <div className="mt-2">
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${stats.responseTime < 300 ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                <div
+                  className={`w-2 h-2 rounded-full ${stats.responseTime < 300 ? 'bg-green-500' : 'bg-yellow-500'}`}
+                ></div>
                 <span className={`text-xs ${stats.responseTime < 300 ? 'text-green-600' : 'text-yellow-600'}`}>
                   {stats.responseTime < 300 ? 'Fast response' : 'Standard response'}
                 </span>
@@ -175,9 +171,7 @@ export function ContextManagementDashboard() {
         <Card className="md:col-span-2 lg:col-span-1">
           <CardHeader>
             <CardTitle className="text-sm font-medium">Context Management Benefits</CardTitle>
-            <CardDescription>
-              Real-time optimization features
-            </CardDescription>
+            <CardDescription>Real-time optimization features</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-2">
@@ -203,9 +197,7 @@ export function ContextManagementDashboard() {
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle className="text-sm font-medium">Technical Implementation</CardTitle>
-            <CardDescription>
-              Context management using ctx-zip and AI SDK v5
-            </CardDescription>
+            <CardDescription>Context management using ctx-zip and AI SDK v5</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
