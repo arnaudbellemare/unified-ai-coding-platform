@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     if (!code) {
       // Simple redirect to GitHub OAuth
       const clientId = process.env.GITHUB_CLIENT_ID
-      
+
       if (!clientId) {
         return NextResponse.json(
           {
