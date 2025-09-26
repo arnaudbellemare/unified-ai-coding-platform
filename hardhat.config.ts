@@ -20,6 +20,7 @@ const config: HardhatUserConfig = {
       accounts: process.env.BASE_PRIVATE_KEY ? [process.env.BASE_PRIVATE_KEY] : [],
       chainId: 8453,
       gasPrice: 'auto',
+      type: 'http',
     },
     // Base Sepolia Testnet
     'base-sepolia': {
@@ -27,10 +28,7 @@ const config: HardhatUserConfig = {
       accounts: process.env.BASE_PRIVATE_KEY ? [process.env.BASE_PRIVATE_KEY] : [],
       chainId: 84532,
       gasPrice: 'auto',
-    },
-    // Local development
-    hardhat: {
-      chainId: 31337,
+      type: 'http',
     },
   },
   etherscan: {

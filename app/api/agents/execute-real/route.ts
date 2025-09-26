@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
 
     // Initialize real Coinbase AgentKit
     const realAgentKit = new RealCoinbaseAgentKit({
-      apiKey: process.env.COINBASE_CDP_API_KEY!,
+      apiKeyId: process.env.COINBASE_CDP_API_KEY_ID!,
+      apiKeySecret: process.env.COINBASE_CDP_API_KEY_SECRET!,
+      walletSecret: process.env.COINBASE_CDP_WALLET_SECRET!,
       baseRpcUrl: process.env.BASE_RPC_URL!,
       walletPrivateKey: process.env.BASE_PRIVATE_KEY!,
       agentId,
@@ -37,10 +39,10 @@ export async function POST(request: NextRequest) {
 
     // Check if payment is required
     const requiresPayment = await checkRealPaymentRequirement(agentType, input, llmConfig)
-    
+
     if (requiresPayment) {
       // Generate real x402 payment request
-      const paymentRequest = x402Service.generateX402PaymentRequest({
+      const paymentRequest = await x402Service.generateX402PaymentRequest({
         amount: requiresPayment.amount,
         currency: 'USDC',
         recipient: process.env.X402_RECIPIENT_ADDRESS!,
@@ -79,7 +81,7 @@ User input: ${input}`,
         maxTokens,
         tools,
         llmConfig,
-      }
+      },
     )
 
     if (!executionResult.success) {
@@ -136,22 +138,24 @@ User input: ${input}`,
 async function checkRealPaymentRequirement(
   agentType: string,
   input: string,
-  llmConfig?: any
+  llmConfig?: any,
 ): Promise<{ amount: number } | null> {
   // Real payment logic based on agent type and input complexity
   const baseCost = 0.01 // $0.01 base cost
   const complexityMultiplier = Math.min(input.length / 1000, 5) // Max 5x multiplier
-  const agentTypeMultiplier = {
-    'claude': 1.0,
-    'openai': 0.8,
-    'perplexity': 1.2,
-    'codex': 0.6,
-  }[agentType] || 1.0
+  const agentTypeMultiplier =
+    {
+      claude: 1.0,
+      openai: 0.8,
+      perplexity: 1.2,
+      codex: 0.6,
+    }[agentType] || 1.0
 
   const totalCost = baseCost * complexityMultiplier * agentTypeMultiplier
 
   // Only require payment for expensive operations
-  if (totalCost > 0.05) { // $0.05 threshold
+  if (totalCost > 0.05) {
+    // $0.05 threshold
     return { amount: totalCost }
   }
 
