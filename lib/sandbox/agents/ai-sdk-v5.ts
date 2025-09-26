@@ -9,6 +9,8 @@ import { openai } from '@ai-sdk/openai'
 import { perplexity } from '@ai-sdk/perplexity'
 import { anthropic } from '@ai-sdk/anthropic'
 import { z } from 'zod'
+import { ContextManager, DEFAULT_CONTEXT_CONFIG, OPTIMIZED_CONTEXT_CONFIG } from '@/lib/context-management'
+import { exaWebSearchTool, exaCodeSearchTool, exaCompanyResearchTool, exaCrawlingTool } from '@/lib/tools/exa-websearch'
 
 // Helper function to run command and collect logs
 async function runAndLogCommand(
@@ -66,27 +68,141 @@ export async function executePerplexityAgentV5(
       }
     }
 
-    // Create a Node.js script that uses AI SDK v5
+    // Create a Node.js script that uses AI SDK v5 with context management and Exa tools
     const executionScript = `#!/usr/bin/env node
 
-const { generateText, generateObject } = require('ai');
+const { generateText, generateObject, tool } = require('ai');
 const { perplexity } = require('@ai-sdk/perplexity');
 const { z } = require('zod');
+const { compactMessages, createReadFileTool, createGrepAndSearchFileTool } = require('ctx-zip');
 
 async function executeAgent() {
   try {
-    console.log('🤖 Initializing AI SDK v5 Chat with Perplexity...');
+    console.log('🤖 Initializing AI SDK v5 Chat with Perplexity and Context Management...');
+    
+    // Context management configuration
+    const contextConfig = {
+      maxMessages: 20,
+      storage: 'blob:/',
+      boundary: { type: 'first-n-messages', count: 20 },
+      preserveSystemMessages: true,
+      preserveToolResults: true
+    };
+    
+    // Define Exa web search tools
+    const exaWebSearchTool = tool({
+      description: 'Run a search query to search the internet for results. Use this to look up latest information or find documentation.',
+      parameters: {
+        query: { type: 'string', description: 'The search query to execute' },
+        numResults: { type: 'number', description: 'Number of results to return (default: 5)', default: 5 }
+      },
+      execute: async ({ query, numResults = 5 }) => {
+        try {
+          if (!process.env.EXA_API_KEY) {
+            throw new Error('EXA_API_KEY environment variable is required');
+          }
+          
+          const response = await fetch(\`https://api.exa.ai/search?query=\${encodeURIComponent(query)}&numResults=\${numResults}&type=search&useAutoprompt=true\`, {
+            method: 'GET',
+            headers: {
+              'Authorization': \`Bearer \${process.env.EXA_API_KEY}\`,
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          if (!response.ok) {
+            throw new Error(\`Exa API error: \${response.status} \${response.statusText}\`);
+          }
+          
+          const data = await response.json();
+          return {
+            success: true,
+            results: data.results || [],
+            query,
+            totalResults: data.results?.length || 0,
+          };
+        } catch (error) {
+          return {
+            success: false,
+            error: error.message,
+            query,
+            results: [],
+          };
+        }
+      }
+    });
+    
+    const exaCodeSearchTool = tool({
+      description: 'Search for code examples, documentation, and implementation patterns from open source repositories.',
+      parameters: {
+        query: { type: 'string', description: 'The code search query (e.g., "React hooks useEffect", "Python async await")' },
+        numResults: { type: 'number', description: 'Number of results to return (default: 5)', default: 5 }
+      },
+      execute: async ({ query, numResults = 5 }) => {
+        try {
+          if (!process.env.EXA_API_KEY) {
+            throw new Error('EXA_API_KEY environment variable is required');
+          }
+          
+          const response = await fetch(\`https://api.exa.ai/search?query=\${encodeURIComponent(query)}&numResults=\${numResults}&type=search&useAutoprompt=true&includeDomains=github.com,stackoverflow.com,dev.to,medium.com,mdn.io,docs.python.org,reactjs.org,nodejs.org\`, {
+            method: 'GET',
+            headers: {
+              'Authorization': \`Bearer \${process.env.EXA_API_KEY}\`,
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          if (!response.ok) {
+            throw new Error(\`Exa API error: \${response.status} \${response.statusText}\`);
+          }
+          
+          const data = await response.json();
+          return {
+            success: true,
+            results: data.results || [],
+            query,
+            totalResults: data.results?.length || 0,
+          };
+        } catch (error) {
+          return {
+            success: false,
+            error: error.message,
+            query,
+            results: [],
+          };
+        }
+      }
+    });
     
     // Create a Chat instance with the new AI SDK v5 message format
     const chat = new Chat({
       model: perplexity(process.env.PERPLEXITY_API_KEY)('${modelToUse}'),
       temperature: 0.7,
+      tools: {
+        readFile: createReadFileTool({ storage: contextConfig.storage }),
+        grepAndSearchFile: createGrepAndSearchFileTool({ storage: contextConfig.storage }),
+        webSearch: exaWebSearchTool,
+        codeSearch: exaCodeSearchTool,
+      },
+      stopWhen: stepCountIs(20),
+      prepareStep: async ({ messages }) => {
+        const N = contextConfig.maxMessages;
+        if (messages.length > N) {
+          console.log(\`🧠 Context compaction: \${messages.length} → \${N} messages\`);
+          messages = await compactMessages(messages, {
+            storage: contextConfig.storage,
+            boundary: contextConfig.boundary,
+          });
+          console.log(\`✅ Context compacted: \${messages.length} messages retained\`);
+        }
+        return { messages };
+      }
     });
 
     // Add system message
     chat.addMessage({
       role: 'system',
-      content: 'You are an expert AI coding assistant with access to real-time information. Provide comprehensive, accurate, and helpful responses.',
+      content: 'You are an expert AI coding assistant with access to real-time information, web search, and code search capabilities. You can search the internet for latest information, find code examples from GitHub and documentation sites, and provide comprehensive, accurate, and helpful responses. Use the available tools to enhance your responses with up-to-date information.',
     });
 
     // Add user input as a message with parts
@@ -100,13 +216,13 @@ async function executeAgent() {
       ],
     });
 
-    console.log('📝 Chat messages prepared with new AI SDK v5 format');
+    console.log('📝 Chat messages prepared with new AI SDK v5 format and context management');
     console.log('💬 User input:', '${instruction.substring(0, 100)}...');
 
-    // Generate response using the new Chat API
+    // Generate response using the new Chat API with context management
     const result = await chat.generate();
     
-    console.log('✅ AI SDK v5 Chat generation completed');
+    console.log('✅ AI SDK v5 Chat generation completed with context management');
     console.log('📊 Response length:', result.text.length, 'characters');
     console.log('\\n--- AI Response ---');
     console.log(result.text);
@@ -169,10 +285,10 @@ executeAgent();
     // Make the script executable
     await runAndLogCommand(sandbox, 'chmod', ['+x', 'ai-sdk-v5-agent.js'], logs, logger)
 
-    // Install AI SDK v5 dependencies
-    logs.push(createInfoLog('📦 Installing AI SDK v5 dependencies'))
+    // Install AI SDK v5 dependencies with context management
+    logs.push(createInfoLog('📦 Installing AI SDK v5 dependencies with context management'))
     await runAndLogCommand(sandbox, 'npm', ['init', '-y'], logs, logger)
-    await runAndLogCommand(sandbox, 'npm', ['install', 'ai@^5.0.0', '@ai-sdk/perplexity@^2.0.0', 'zod'], logs, logger)
+    await runAndLogCommand(sandbox, 'npm', ['install', 'ai@^5.0.0', '@ai-sdk/perplexity@^2.0.0', 'zod', 'ctx-zip'], logs, logger)
 
     // Execute the AI SDK v5 agent
     logs.push(createInfoLog('🚀 Executing AI SDK v5 Chat agent'))

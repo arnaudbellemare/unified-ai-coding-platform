@@ -14,6 +14,8 @@ import { PaymentProtocolComparison } from '@/components/payment-protocol-compari
 import { MicroEcommercePayment } from '@/components/micro-ecommerce-payment'
 import { X402ProtocolAnalysis } from '@/components/x402-protocol-analysis'
 import { AdvancedOptimizationDashboard } from '@/components/advanced-optimization-dashboard'
+import { ContextManagementDashboard } from '@/components/context-management-dashboard'
+import { ExaWebSearchDemo } from '@/components/exa-websearch-demo'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Bot } from 'lucide-react'
@@ -109,6 +111,26 @@ export function HomePageContent() {
               Economy Engine
             </button>
             <button
+              onClick={() => setActiveTab('context')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'context'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Context Management
+            </button>
+            <button
+              onClick={() => setActiveTab('exa')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'exa'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Exa Web Search
+            </button>
+            <button
               onClick={() => setActiveTab('agents')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'agents'
@@ -158,6 +180,22 @@ export function HomePageContent() {
           <div className="flex justify-center items-start min-h-screen py-8">
             <div className="max-w-7xl w-full px-4">
               <AdvancedOptimizationDashboard />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'context' && (
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-7xl w-full px-4">
+              <ContextManagementDashboard />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'exa' && (
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-6xl w-full px-4">
+              <ExaWebSearchDemo />
             </div>
           </div>
         )}
