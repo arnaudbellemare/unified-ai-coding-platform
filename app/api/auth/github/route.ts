@@ -10,15 +10,19 @@ export async function GET(request: NextRequest) {
       // Redirect to GitHub OAuth
       const clientId = process.env.GITHUB_CLIENT_ID
       const clientSecret = process.env.GITHUB_CLIENT_SECRET
-      
+
       if (!clientId || !clientSecret) {
         console.error('GitHub OAuth configuration missing:', {
           clientId: !!clientId,
           clientSecret: !!clientSecret,
         })
-        return NextResponse.json({ 
-          error: 'GitHub OAuth not configured. Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET environment variables.' 
-        }, { status: 500 })
+        return NextResponse.json(
+          {
+            error:
+              'GitHub OAuth not configured. Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET environment variables.',
+          },
+          { status: 500 },
+        )
       }
 
       const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/github`

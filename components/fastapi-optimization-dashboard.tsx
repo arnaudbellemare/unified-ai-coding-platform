@@ -151,7 +151,10 @@ export function FastAPIOptimizationDashboard({ className }: FastAPIOptimizationD
                     Advanced ML Optimization
                   </CardTitle>
                   <CardDescription>
-                    Powered by FastAPI backend with scikit-learn and real-time analytics
+                    {process.env.NODE_ENV === 'production'
+                      ? "Advanced ML optimization with hybrid algorithms and cost analysis"
+                      : "Powered by FastAPI backend with scikit-learn and real-time analytics"
+                    }
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -161,9 +164,9 @@ export function FastAPIOptimizationDashboard({ className }: FastAPIOptimizationD
                       FastAPI Connected
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                    <Badge variant="outline" className="text-blue-600 border-blue-600">
                       <WifiOff className="h-3 w-3 mr-1" />
-                      Using Local Optimization
+                      {process.env.NODE_ENV === 'production' ? 'Production Mode' : 'Using Local Optimization'}
                     </Badge>
                   )}
                 </div>
@@ -171,15 +174,20 @@ export function FastAPIOptimizationDashboard({ className }: FastAPIOptimizationD
             </CardHeader>
             <CardContent className="space-y-4">
               {!isConnected && (
-                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <div className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 text-yellow-600" />
-                    <span className="text-sm text-yellow-800">
-                      FastAPI backend is not running. Using local optimization with fallback data.
+                    <AlertCircle className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm text-blue-800">
+                      {process.env.NODE_ENV === 'production' 
+                        ? "FastAPI backend is not available in production deployment. Using advanced local optimization with ML-enhanced algorithms."
+                        : "FastAPI backend is not running. Using local optimization with fallback data."
+                      }
                       <br />
-                      <span className="text-xs text-yellow-600">
-                        To enable advanced ML optimization, start the FastAPI backend:{' '}
-                        <code>cd optimization-backend && ./start.sh</code>
+                      <span className="text-xs text-blue-600">
+                        {process.env.NODE_ENV === 'production'
+                          ? "Production deployment uses optimized Next.js API routes for cost optimization."
+                          : "To enable advanced ML optimization, start the FastAPI backend: cd optimization-backend && ./start.sh"
+                        }
                       </span>
                     </span>
                   </div>
