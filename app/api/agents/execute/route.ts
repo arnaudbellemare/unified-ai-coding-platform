@@ -126,20 +126,29 @@ export async function POST(request: NextRequest) {
           modelName = 'claude-3-5-sonnet-20241022'
           console.log('🤖 Using optimized Anthropic Claude')
         } else {
-          throw new Error(`❌ No AI provider API keys configured!
+          // Fallback to simulated response when no API keys are available
+          console.log('⚠️ No API keys configured - using simulated response')
+          aiResponse = `[Simulated Response] As a ${agentType} agent, I would process your request: "${input}"
 
-To use AgentHub, please either:
-1. Configure your own API keys in the LLM Configuration tab, or
-2. Add one of these environment variables to your .env.local file:
+This is a simulated response because no AI provider API keys are configured. To get real AI responses, please add your API keys in the LLM Configuration tab or environment variables.
 
-🔍 PERPLEXITY_API_KEY=pplx-... (Recommended - real-time data)
-🤖 OPENAI_API_KEY=sk-... (OpenAI GPT models)
-🧠 ANTHROPIC_API_KEY=sk-ant-... (Claude models)
+Your request has been logged and would be processed with the following parameters:
+- Agent Type: ${agentType}
+- Model: ${model}
+- Temperature: ${temperature}
+- Max Tokens: ${maxTokens}
+- Instructions: ${instructions}`
 
-Get your API keys from:
-- Perplexity: https://www.perplexity.ai/settings/api
-- OpenAI: https://platform.openai.com/api-keys
-- Anthropic: https://console.anthropic.com/`)
+          // Set mock token counts
+          promptTokens = Math.floor(fullPrompt.length / 4)
+          completionTokens = Math.floor(aiResponse.length / 4)
+          totalTokens = promptTokens + completionTokens
+          modelName = 'simulated'
+          
+          // Calculate mock costs
+          promptCost = promptTokens * 0.000001
+          completionCost = completionTokens * 0.000002
+          totalCost = promptCost + completionCost
         }
       }
 
@@ -147,58 +156,76 @@ Get your API keys from:
       const fullPrompt = `You are a ${agentType} agent. ${instructions}${aiProvider === perplexity ? ' Use real-time information when relevant.' : ''}
 
 User input: ${input}`
+      
+      if (aiProvider && modelName !== 'simulated') {
+        // Use real AI provider
+        promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
+        console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
 
-      promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
-      console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
+        // Use AI SDK v5 with structured output for certain agent types
+        let result
+        if (agentType === 'analytics' || agentType === 'coding') {
+          // Use structured output for analytics and coding agents
+          const schema = z.object({
+            analysis: z.string().describe('The main analysis or response'),
+            recommendations: z.array(z.string()).optional().describe('Actionable recommendations'),
+            confidence: z.number().min(0).max(1).describe('Confidence level in the response'),
+            metadata: z
+              .object({
+                processingTime: z.string().optional(),
+                dataSources: z.array(z.string()).optional(),
+              })
+              .optional(),
+          })
 
-      // Use AI SDK v5 with structured output for certain agent types
-      let result
-      if (agentType === 'analytics' || agentType === 'coding') {
-        // Use structured output for analytics and coding agents
-        const schema = z.object({
-          analysis: z.string().describe('The main analysis or response'),
-          recommendations: z.array(z.string()).optional().describe('Actionable recommendations'),
-          confidence: z.number().min(0).max(1).describe('Confidence level in the response'),
-          metadata: z
-            .object({
-              processingTime: z.string().optional(),
-              dataSources: z.array(z.string()).optional(),
-            })
-            .optional(),
-        })
+          const structuredResult = await generateObject({
+            model: aiProvider(modelName),
+            prompt: fullPrompt,
+            schema,
+            temperature,
+          })
 
-        const structuredResult = await generateObject({
-          model: aiProvider(modelName),
-          prompt: fullPrompt,
-          schema,
-          temperature,
-        })
-
-        // Format structured response for display
-        aiResponse = `${structuredResult.object.analysis}\n\n${structuredResult.object.recommendations?.length ? 'Recommendations:\n' + structuredResult.object.recommendations.map((rec) => `• ${rec}`).join('\n') : ''}\n\nConfidence: ${(structuredResult.object.confidence * 100).toFixed(1)}%`
-        result = { text: aiResponse }
+          // Format structured response for display
+          aiResponse = `${structuredResult.object.analysis}\n\n${structuredResult.object.recommendations?.length ? 'Recommendations:\n' + structuredResult.object.recommendations.map((rec) => `• ${rec}`).join('\n') : ''}\n\nConfidence: ${(structuredResult.object.confidence * 100).toFixed(1)}%`
+          result = { text: aiResponse }
+        } else {
+          // Use standard text generation for other agent types
+          result = await generateText({
+            model: aiProvider(modelName),
+            prompt: fullPrompt,
+            temperature,
+          })
+          aiResponse = result.text
+        }
       } else {
-        // Use standard text generation for other agent types
-        result = await generateText({
-          model: aiProvider(modelName),
-          prompt: fullPrompt,
-          temperature,
-        })
-        aiResponse = result.text
+        // Use simulated response (already set above)
+        promptTokens = Math.floor(fullPrompt.length / 4)
+        console.log(`📊 Simulated input tokens: ${promptTokens}`)
       }
 
       // Count tokens after API call
-      completionTokens = TokenCounter.countTokens(aiResponse, modelName)
-      totalTokens = promptTokens + completionTokens
+      if (modelName !== 'simulated') {
+        completionTokens = TokenCounter.countTokens(aiResponse, modelName)
+        totalTokens = promptTokens + completionTokens
+        
+        // Calculate real costs
+        promptCost = TokenCounter.calculateCost(promptTokens, modelName, 'prompt')
+        completionCost = TokenCounter.calculateCost(completionTokens, modelName, 'completion')
+        totalCost = promptCost + completionCost
+      } else {
+        // For simulated responses, tokens are already calculated above
+        completionTokens = Math.floor(aiResponse.length / 4)
+        totalTokens = promptTokens + completionTokens
+        // Costs already calculated above for simulated responses
+      }
 
-      // Calculate real costs
-      promptCost = TokenCounter.calculateCost(promptTokens, modelName, 'prompt')
-      completionCost = TokenCounter.calculateCost(completionTokens, modelName, 'completion')
-      totalCost = promptCost + completionCost
-
-      console.log(
-        `✅ Real AI API call successful using ${aiProvider === perplexity ? 'Perplexity' : aiProvider === openai ? 'OpenAI' : 'Anthropic'}`,
-      )
+      if (modelName !== 'simulated') {
+        console.log(
+          `✅ Real AI API call successful using ${aiProvider === perplexity ? 'Perplexity' : aiProvider === openai ? 'OpenAI' : 'Anthropic'}`,
+        )
+      } else {
+        console.log(`✅ Simulated response generated (no API keys configured)`)
+      }
       console.log(`📊 Token usage: ${promptTokens} prompt + ${completionTokens} completion = ${totalTokens} total`)
       console.log(
         `💰 Real cost: $${totalCost.toFixed(6)} (prompt: $${promptCost.toFixed(6)}, completion: $${completionCost.toFixed(6)})`,
