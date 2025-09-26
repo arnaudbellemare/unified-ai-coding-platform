@@ -58,20 +58,14 @@ class FastAPIClient {
   private maxReconnectAttempts = 5
 
   constructor(baseUrl: string = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:8000') {
-    // In production (Vercel), disable FastAPI backend since it's not available
-    // The Next.js API routes will handle optimization with local fallback
-    this.baseUrl = process.env.NODE_ENV === 'production' ? '' : baseUrl
+    // Use the provided URL if available, otherwise fallback to localhost for development
+    this.baseUrl = baseUrl || 'http://localhost:8000'
   }
 
   /**
    * Optimize prompt using advanced ML backend
    */
   async optimizePrompt(request: FastAPIOptimizationRequest): Promise<FastAPIOptimizationResult> {
-    // In production (Vercel), FastAPI backend is not available
-    if (!this.baseUrl) {
-      throw new Error('FastAPI backend is not available in production deployment')
-    }
-
     try {
       // Add timeout to prevent hanging
       const controller = new AbortController()
@@ -114,11 +108,6 @@ class FastAPIClient {
    * Get real-time analytics from FastAPI backend
    */
   async getAnalytics(): Promise<FastAPIAnalytics> {
-    // In production (Vercel), FastAPI backend is not available
-    if (!this.baseUrl) {
-      throw new Error('FastAPI backend is not available in production deployment')
-    }
-
     try {
       // Add timeout to prevent hanging
       const controller = new AbortController()
@@ -149,11 +138,6 @@ class FastAPIClient {
    * Get provider performance metrics
    */
   async getProviderPerformance(): Promise<FastAPIProvider[]> {
-    // In production (Vercel), FastAPI backend is not available
-    if (!this.baseUrl) {
-      throw new Error('FastAPI backend is not available in production deployment')
-    }
-
     try {
       // Add timeout to prevent hanging
       const controller = new AbortController()

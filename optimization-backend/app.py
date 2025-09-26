@@ -40,19 +40,40 @@ app = FastAPI(
 )
 
 # CORS middleware
+allowed_origins = [
+    "http://localhost:3000", 
+    "http://localhost:3001",
+    "https://unified-ai-coding-platform.vercel.app",  # Production Vercel app
+    "https://unified-ai-coding-platform-git-main-arnaudbellemare.vercel.app",  # Preview deployments
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Redis for caching and real-time data
-redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
+# Redis for caching and real-time data (with fallback for production)
+import os
+try:
+    redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
+    redis_client = redis.from_url(redis_url, decode_responses=True)
+    redis_client.ping()  # Test connection
+    logger.info("Redis connected successfully")
+except Exception as e:
+    logger.warning(f"Redis not available: {e}")
+    redis_client = None
 
-# Celery for background tasks
-celery_app = Celery('optimization', broker='redis://localhost:6379/0')
+# Celery for background tasks (with fallback for production)
+try:
+    celery_broker = os.getenv('REDIS_URL', 'redis://localhost:6379')
+    celery_app = Celery('optimization', broker=celery_broker)
+    logger.info("Celery configured successfully")
+except Exception as e:
+    logger.warning(f"Celery not available: {e}")
+    celery_app = None
 
 # Global variables for WebSocket connections
 active_connections: List[WebSocket] = []
