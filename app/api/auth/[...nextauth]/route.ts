@@ -11,7 +11,7 @@ const handler = NextAuth({
           scope: 'repo user',
         },
       },
-    })
+    }),
   ],
   callbacks: {
     async jwt({ token, account }) {
@@ -24,7 +24,7 @@ const handler = NextAuth({
       // Add access token to session
       session.accessToken = token.accessToken
       return session
-    }
+    },
   },
   pages: {
     signIn: '/',
