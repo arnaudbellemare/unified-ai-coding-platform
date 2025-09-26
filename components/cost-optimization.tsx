@@ -99,7 +99,9 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>🚀 Advanced Cost Optimization</CardTitle>
-            <CardDescription>ML-powered prompt optimization with hybrid algorithms to reduce API costs while maintaining quality</CardDescription>
+            <CardDescription>
+              ML-powered prompt optimization with hybrid algorithms to reduce API costs while maintaining quality
+            </CardDescription>
           </div>
           <Badge variant="outline" className="text-green-600 border-green-600">
             Hybrid ML Engine
@@ -171,8 +173,11 @@ export function CostOptimization({ onOptimizationComplete }: CostOptimizationPro
               <Badge variant="outline">Real cost: ${(result.costOptimization.realApiCost || 0).toFixed(4)}</Badge>
               {result.optimizationEngine && (
                 <Badge variant="outline" className="text-blue-600 border-blue-600">
-                  {result.optimizationEngine === 'prompt_optimizer' ? 'Prompt Optimizer' : 
-                   result.optimizationEngine === 'capo_enhanced' ? 'CAPO Enhanced' : 'Hybrid Engine'}
+                  {result.optimizationEngine === 'prompt_optimizer'
+                    ? 'Prompt Optimizer'
+                    : result.optimizationEngine === 'capo_enhanced'
+                      ? 'CAPO Enhanced'
+                      : 'Hybrid Engine'}
                 </Badge>
               )}
             </div>

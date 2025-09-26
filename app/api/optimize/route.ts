@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
           requirements: [],
           constraints: [],
         },
-        []
+        [],
       )
 
       console.log('[Cost Optimization] Hybrid optimization completed:', {
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         originalPrompt: prompt,
         optimizedPrompt: hybridResult.optimizedPrompt,
         optimizationApplied: true,
-        estimatedMonthlySavings: (0.00405 * (hybridResult.costReduction / 100)) * 30,
+        estimatedMonthlySavings: 0.00405 * (hybridResult.costReduction / 100) * 30,
         // Hybrid optimization specific data
         mlInsights: {
           predicted_cost_reduction: hybridResult.costReduction / 100,
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       })
     } catch (hybridError) {
       console.warn('[Cost Optimization] Hybrid optimization failed, using basic optimization:', hybridError)
-      
+
       // Fallback to basic local optimization
       const optimizedPrompt = await costOptimization.optimizePrompt(prompt)
       const costResult = await costOptimization.calculateCostOptimization(prompt, optimizedPrompt)
