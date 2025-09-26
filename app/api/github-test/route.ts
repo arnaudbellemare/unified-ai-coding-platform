@@ -4,13 +4,16 @@ export async function GET(request: NextRequest) {
   try {
     const clientId = process.env.GITHUB_CLIENT_ID
     const clientSecret = process.env.GITHUB_CLIENT_SECRET
-    
+
     if (!clientId || !clientSecret) {
-      return NextResponse.json({
-        error: 'Missing GitHub OAuth credentials',
-        hasClientId: !!clientId,
-        hasClientSecret: !!clientSecret,
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Missing GitHub OAuth credentials',
+          hasClientId: !!clientId,
+          hasClientSecret: !!clientSecret,
+        },
+        { status: 400 },
+      )
     }
 
     // Just return the OAuth URL without redirecting
@@ -24,9 +27,12 @@ export async function GET(request: NextRequest) {
       hasCredentials: true,
     })
   } catch (error) {
-    return NextResponse.json({
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+      },
+      { status: 500 },
+    )
   }
 }
