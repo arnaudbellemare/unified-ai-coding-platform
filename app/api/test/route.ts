@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
         GITHUB_CLIENT_ID: !!process.env.GITHUB_CLIENT_ID,
         GITHUB_CLIENT_SECRET: !!process.env.GITHUB_CLIENT_SECRET,
         NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-      }
+      },
     })
   } catch (error) {
     console.error('Test API error:', error)
