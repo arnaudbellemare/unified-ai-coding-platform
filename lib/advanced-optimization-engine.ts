@@ -343,9 +343,7 @@ export class OptimizationEngine {
     recommendations.push(
       `Enable hybrid optimization to automatically switch between providers based on cost and performance`,
     )
-    recommendations.push(
-      `Monitor provider performance metrics to identify optimization opportunities`,
-    )
+    recommendations.push(`Monitor provider performance metrics to identify optimization opportunities`)
 
     return recommendations
   }
