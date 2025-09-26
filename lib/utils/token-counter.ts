@@ -3,7 +3,20 @@
  * Uses tiktoken for precise token counting across different models
  */
 
-import { encoding_for_model, type TiktokenModel } from 'tiktoken'
+// Dynamic import to avoid webpack issues with tiktoken WASM files
+let tiktokenModule: any = null
+
+async function getTiktoken() {
+  if (!tiktokenModule) {
+    try {
+      tiktokenModule = await import('tiktoken')
+    } catch (error) {
+      console.warn('Failed to load tiktoken, using fallback token counting:', error)
+      return null
+    }
+  }
+  return tiktokenModule
+}
 
 export interface TokenUsage {
   promptTokens: number
@@ -49,19 +62,31 @@ export class TokenCounter {
   /**
    * Count tokens in text using the appropriate encoding for the model
    */
-  static countTokens(text: string, model: string): number {
+  static async countTokens(text: string, model: string): Promise<number> {
     try {
+      const tiktoken = await getTiktoken()
+      if (!tiktoken) {
+        return this.approximateTokenCount(text)
+      }
+
       // Map model names to tiktoken model names
       const tiktokenModel = this.mapToTiktokenModel(model)
-      const encoding = encoding_for_model(tiktokenModel as TiktokenModel)
+      const encoding = tiktoken.encoding_for_model(tiktokenModel as any)
       const tokens = encoding.encode(text)
       encoding.free()
       return tokens.length
     } catch (error) {
       console.warn(`Failed to count tokens with tiktoken for model ${model}, using approximation:`, error)
-      // Fallback to approximation: ~4 characters per token
-      return Math.ceil(text.length / 4)
+      return this.approximateTokenCount(text)
     }
+  }
+
+  /**
+   * Approximate token count when tiktoken is not available
+   */
+  static approximateTokenCount(text: string): number {
+    // Fallback to approximation: ~4 characters per token
+    return Math.ceil(text.length / 4)
   }
 
   /**
@@ -81,9 +106,9 @@ export class TokenCounter {
   /**
    * Calculate comprehensive token usage and costs
    */
-  static calculateTokenUsage(prompt: string, completion: string, model: string): TokenUsage {
-    const promptTokens = this.countTokens(prompt, model)
-    const completionTokens = this.countTokens(completion, model)
+  static async calculateTokenUsage(prompt: string, completion: string, model: string): Promise<TokenUsage> {
+    const promptTokens = await this.countTokens(prompt, model)
+    const completionTokens = await this.countTokens(completion, model)
     const totalTokens = promptTokens + completionTokens
 
     const promptCost = this.calculateCost(promptTokens, model, 'prompt')
@@ -103,15 +128,15 @@ export class TokenCounter {
   /**
    * Calculate optimization results comparing original vs optimized
    */
-  static calculateOptimization(
+  static async calculateOptimization(
     originalPrompt: string,
     optimizedPrompt: string,
     completion: string,
     model: string,
-  ): OptimizationResult {
-    const originalTokens = this.countTokens(originalPrompt, model)
-    const optimizedTokens = this.countTokens(optimizedPrompt, model)
-    const completionTokens = this.countTokens(completion, model)
+  ): Promise<OptimizationResult> {
+    const originalTokens = await this.countTokens(originalPrompt, model)
+    const optimizedTokens = await this.countTokens(optimizedPrompt, model)
+    const completionTokens = await this.countTokens(completion, model)
 
     const tokenReduction = originalTokens - optimizedTokens
     const tokenReductionPercentage = originalTokens > 0 ? (tokenReduction / originalTokens) * 100 : 0

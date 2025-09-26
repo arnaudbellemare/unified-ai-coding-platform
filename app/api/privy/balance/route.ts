@@ -34,10 +34,13 @@ export async function POST(request: NextRequest) {
       })
     } catch (error) {
       console.error('Failed to fetch real wallet balance:', error)
-      return NextResponse.json({
-        error: 'Failed to fetch wallet balance',
-        message: 'Please ensure wallet is connected and has sufficient funds',
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          error: 'Failed to fetch wallet balance',
+          message: 'Please ensure wallet is connected and has sufficient funds',
+        },
+        { status: 500 },
+      )
     }
   } catch (error) {
     console.error('Privy balance error:', error)

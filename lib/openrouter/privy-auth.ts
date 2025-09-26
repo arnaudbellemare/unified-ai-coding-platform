@@ -36,15 +36,13 @@ export class PrivyOpenRouterAuth {
   async authenticateUser(accessToken: string): Promise<UserSession | null> {
     try {
       const user = await this.privy.verifyAuthToken(accessToken)
-      
+
       if (!user) {
         return null
       }
 
       // Get user's wallet address
-      const walletAddress = (user as any).linkedAccounts?.find(
-        (account: any) => account.type === 'wallet'
-      )?.address
+      const walletAddress = (user as any).linkedAccounts?.find((account: any) => account.type === 'wallet')?.address
 
       if (!walletAddress) {
         throw new Error('No wallet address found for user')
@@ -137,7 +135,7 @@ export class PrivyOpenRouterAuth {
   async processPayment(
     userId: string,
     amount: number,
-    description: string
+    description: string,
   ): Promise<{
     success: boolean
     transactionHash?: string
@@ -164,7 +162,7 @@ export class PrivyOpenRouterAuth {
 
       // In a real implementation, this would process a blockchain transaction
       const transactionHash = `0x${Math.random().toString(16).substr(2, 64)}`
-      
+
       return {
         success: true,
         transactionHash,

@@ -66,9 +66,7 @@ export function ExaWebSearch() {
             <Search className="h-5 w-5" />
             Exa Web Search
           </CardTitle>
-          <CardDescription>
-            Search the web with Exa's advanced AI-powered search capabilities
-          </CardDescription>
+          <CardDescription>Search the web with Exa's advanced AI-powered search capabilities</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
@@ -114,9 +112,7 @@ export function ExaWebSearch() {
                     </Badge>
                   </div>
 
-                  <p className="text-sm text-muted-foreground line-clamp-3">
-                    {result.content}
-                  </p>
+                  <p className="text-sm text-muted-foreground line-clamp-3">{result.content}</p>
 
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">
@@ -142,9 +138,7 @@ export function ExaWebSearch() {
           <CardContent className="p-8 text-center">
             <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">Start Your Search</h3>
-            <p className="text-muted-foreground">
-              Enter a query above to search the web with Exa's AI-powered search
-            </p>
+            <p className="text-muted-foreground">Enter a query above to search the web with Exa's AI-powered search</p>
           </CardContent>
         </Card>
       )}

@@ -58,7 +58,7 @@ export const exaWebSearchTool = {
         results: [],
       }
     }
-  }
+  },
 }
 
 export const exaCodeSearchTool = {
@@ -122,7 +122,7 @@ export const exaCodeSearchTool = {
         results: [],
       }
     }
-  }
+  },
 }
 
 export const exaCompanyResearchTool = {
@@ -180,7 +180,7 @@ export const exaCompanyResearchTool = {
         results: [],
       }
     }
-  }
+  },
 }
 
 export const exaCrawlingTool = {
@@ -236,5 +236,5 @@ export const exaCrawlingTool = {
         content: '',
       }
     }
-  }
+  },
 }

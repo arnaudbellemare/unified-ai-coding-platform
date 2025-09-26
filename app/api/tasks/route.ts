@@ -19,10 +19,13 @@ export async function GET(request: NextRequest) {
     const user = await getCurrentUser(request)
 
     if (!db) {
-      return NextResponse.json({
-        error: 'Database not available',
-        message: 'Please ensure database is properly configured',
-      }, { status: 503 })
+      return NextResponse.json(
+        {
+          error: 'Database not available',
+          message: 'Please ensure database is properly configured',
+        },
+        { status: 503 },
+      )
     }
 
     // If no user, return empty tasks
@@ -188,10 +191,13 @@ export async function POST(request: NextRequest) {
 
     // Database is required for task creation
     if (!db) {
-      return NextResponse.json({
-        error: 'Database not available',
-        message: 'Please ensure database is properly configured',
-      }, { status: 503 })
+      return NextResponse.json(
+        {
+          error: 'Database not available',
+          message: 'Please ensure database is properly configured',
+        },
+        { status: 503 },
+      )
     }
 
     // Insert the task into the database - ensure id is definitely present

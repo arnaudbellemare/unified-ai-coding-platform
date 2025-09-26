@@ -151,7 +151,7 @@ Get your API keys from:
       // fullPrompt is already declared above
 
       // Use real AI provider (no simulated responses)
-      promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
+      promptTokens = await TokenCounter.countTokens(fullPrompt, modelName)
       console.log(`📊 Input tokens: ${promptTokens} for model: ${modelName}`)
 
       // Use AI SDK v5 with structured output for certain agent types
@@ -191,7 +191,7 @@ Get your API keys from:
       }
 
       // Count tokens after API call
-      completionTokens = TokenCounter.countTokens(aiResponse, modelName)
+      completionTokens = await TokenCounter.countTokens(aiResponse, modelName)
       totalTokens = promptTokens + completionTokens
 
       // Calculate real costs

@@ -4,25 +4,14 @@ import { PrivyOpenRouterAuth } from '@/lib/openrouter/privy-auth'
 
 export async function POST(request: NextRequest) {
   try {
-    const { 
-      modelId, 
-      instruction, 
-      connectToOtherBots = true,
-      accessToken 
-    } = await request.json()
+    const { modelId, instruction, connectToOtherBots = true, accessToken } = await request.json()
 
     if (!modelId || !instruction || !accessToken) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
     }
 
     if (!process.env.OPENROUTER_API_KEY || !process.env.PRIVY_APP_ID || !process.env.PRIVY_APP_SECRET) {
-      return NextResponse.json(
-        { error: 'Required environment variables not configured' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Required environment variables not configured' }, { status: 500 })
     }
 
     // Authenticate user with Privy
@@ -34,10 +23,7 @@ export async function POST(request: NextRequest) {
 
     const userSession = await auth.authenticateUser(accessToken)
     if (!userSession) {
-      return NextResponse.json(
-        { error: 'Authentication failed' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Authentication failed' }, { status: 401 })
     }
 
     // Get OpenRouter client
@@ -54,39 +40,35 @@ export async function POST(request: NextRequest) {
         - Coordinate complex workflows
         - Handle errors gracefully
         
-        Return a JSON configuration for the agent.`
+        Return a JSON configuration for the agent.`,
       },
       {
         role: 'user',
-        content: `Create an AI agent with these instructions: ${instruction}`
-      }
+        content: `Create an AI agent with these instructions: ${instruction}`,
+      },
     ]
 
-    const result = await openRouter.generateText(
-      modelId,
-      messages,
-      {
-        temperature: 0.7,
-        max_tokens: 3000,
-      }
-    )
+    const result = await openRouter.generateText(modelId, messages, {
+      temperature: 0.7,
+      max_tokens: 3000,
+    })
 
     // Check if user has sufficient credits
     const hasCredits = await auth.hasSufficientCredits(userSession.userId, result.cost)
     if (!hasCredits) {
       return NextResponse.json(
-        { 
+        {
           error: 'Insufficient credits',
           requiredCredits: result.cost,
-          availableCredits: userSession.credits
+          availableCredits: userSession.credits,
         },
-        { status: 402 }
+        { status: 402 },
       )
     }
 
     // Generate agent ID and configuration
     const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     // Parse the agent response to extract configuration
     let agentConfig = null
     try {
@@ -112,28 +94,21 @@ export async function POST(request: NextRequest) {
         {
           agentId: 'agent_data_processor',
           status: 'connected',
-          capabilities: ['data_processing', 'analysis']
+          capabilities: ['data_processing', 'analysis'],
         },
         {
           agentId: 'agent_web_scraper',
           status: 'connected',
-          capabilities: ['web_scraping', 'data_extraction']
-        }
+          capabilities: ['web_scraping', 'data_extraction'],
+        },
       ]
     }
 
     // Process payment
-    const payment = await auth.processPayment(
-      userSession.userId,
-      result.cost,
-      `OpenRouter agent bot: ${agentId}`
-    )
+    const payment = await auth.processPayment(userSession.userId, result.cost, `OpenRouter agent bot: ${agentId}`)
 
     if (!payment.success) {
-      return NextResponse.json(
-        { error: `Payment failed: ${payment.error}` },
-        { status: 402 }
-      )
+      return NextResponse.json({ error: `Payment failed: ${payment.error}` }, { status: 402 })
     }
 
     return NextResponse.json({
@@ -151,9 +126,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Agent bot creation error:', error)
-    return NextResponse.json(
-      { error: 'Agent bot creation failed' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Agent bot creation failed' }, { status: 500 })
   }
 }

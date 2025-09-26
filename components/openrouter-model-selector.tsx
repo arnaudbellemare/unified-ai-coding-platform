@@ -33,7 +33,12 @@ interface ModelSelectorProps {
   userCredits: number
 }
 
-export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthenticated, userCredits }: ModelSelectorProps) {
+export function OpenRouterModelSelector({
+  onModelSelect,
+  selectedModel,
+  isAuthenticated,
+  userCredits,
+}: ModelSelectorProps) {
   const [models, setModels] = useState<OpenRouterModel[]>([])
   const [filteredModels, setFilteredModels] = useState<OpenRouterModel[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -71,15 +76,16 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
 
     // Search filter
     if (searchQuery) {
-      filtered = filtered.filter(model =>
-        model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        model.description.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (model) =>
+          model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          model.description.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     }
 
     // Category filter
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(model => {
+      filtered = filtered.filter((model) => {
         switch (selectedCategory) {
           case 'gpt':
             return model.name.toLowerCase().includes('gpt')
@@ -163,18 +169,14 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
             <AlertCircle className="h-5 w-5 text-yellow-500" />
             Wallet Connection Required
           </CardTitle>
-          <CardDescription>
-            Connect your wallet to access OpenRouter AI models and pay per use
-          </CardDescription>
+          <CardDescription>Connect your wallet to access OpenRouter AI models and pay per use</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center py-4">
-            <p className="text-muted-foreground mb-4">
-              Connect your wallet to start using OpenRouter AI models
-            </p>
-            
+            <p className="text-muted-foreground mb-4">Connect your wallet to start using OpenRouter AI models</p>
+
             <div className="space-y-3">
-              <Button 
+              <Button
                 onClick={() => {
                   // Simulate wallet connection for demo
                   toast.success('Wallet connected! (Demo mode)')
@@ -186,7 +188,7 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
                 <Brain className="h-5 w-5 mr-2" />
                 Connect Wallet
               </Button>
-              
+
               <div className="text-sm text-muted-foreground">
                 <p>Supported wallets:</p>
                 <div className="flex justify-center gap-4 mt-2">
@@ -197,7 +199,7 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
               </div>
             </div>
           </div>
-          
+
           <div className="border-t pt-4">
             <h4 className="font-semibold mb-2">What you'll get:</h4>
             <ul className="text-sm text-muted-foreground space-y-1">
@@ -218,9 +220,7 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">OpenRouter Model Selection</h2>
-          <p className="text-muted-foreground">
-            Choose your preferred LLM and pay only for what you use
-          </p>
+          <p className="text-muted-foreground">Choose your preferred LLM and pay only for what you use</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="flex items-center gap-1">
@@ -233,9 +233,7 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
       <Card>
         <CardHeader>
           <CardTitle>Model Search & Filter</CardTitle>
-          <CardDescription>
-            Find the perfect model for your needs
-          </CardDescription>
+          <CardDescription>Find the perfect model for your needs</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-4">
@@ -294,13 +292,9 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
                       <span className="text-2xl">{getModelIcon(model)}</span>
                       <h3 className="font-semibold text-lg">{model.name}</h3>
                       <Badge variant="outline">{getModelCategory(model)}</Badge>
-                      {selectedModel?.id === model.id && (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                      )}
+                      {selectedModel?.id === model.id && <CheckCircle className="h-5 w-5 text-green-500" />}
                     </div>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {model.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground mb-3">{model.description}</p>
                     <div className="flex items-center gap-4 text-sm">
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4" />
@@ -317,12 +311,8 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-muted-foreground">
-                      Est. cost for 1K prompt + 500 completion:
-                    </div>
-                    <div className="font-semibold">
-                      ${estimateCost(model, 1000, 500).toFixed(4)}
-                    </div>
+                    <div className="text-sm text-muted-foreground">Est. cost for 1K prompt + 500 completion:</div>
+                    <div className="font-semibold">${estimateCost(model, 1000, 500).toFixed(4)}</div>
                   </div>
                 </div>
               </CardContent>
@@ -335,9 +325,7 @@ export function OpenRouterModelSelector({ onModelSelect, selectedModel, isAuthen
         <div className="text-center py-12">
           <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold mb-2">No models found</h3>
-          <p className="text-muted-foreground">
-            Try adjusting your search criteria
-          </p>
+          <p className="text-muted-foreground">Try adjusting your search criteria</p>
         </div>
       )}
     </div>

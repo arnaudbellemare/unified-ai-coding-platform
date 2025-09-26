@@ -41,18 +41,24 @@ export async function POST(request: NextRequest) {
 
     // Require backup wallets to be provided
     if (backupWallets.length === 0) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Backup wallets are required for security' 
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Backup wallets are required for security',
+        },
+        { status: 400 },
+      )
     }
 
     // Require recovery contacts to be provided
     if (recoveryContacts.length === 0) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Recovery contacts are required for security' 
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Recovery contacts are required for security',
+        },
+        { status: 400 },
+      )
     }
 
     // Create smart contract wallet configuration

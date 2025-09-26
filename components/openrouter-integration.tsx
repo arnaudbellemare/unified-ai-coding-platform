@@ -32,11 +32,11 @@ interface OpenRouterIntegrationProps {
   selectedModel?: OpenRouterModel
 }
 
-export function OpenRouterIntegration({ 
-  isAuthenticated, 
-  userCredits, 
-  onModelSelect, 
-  selectedModel 
+export function OpenRouterIntegration({
+  isAuthenticated,
+  userCredits,
+  onModelSelect,
+  selectedModel,
 }: OpenRouterIntegrationProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationResult, setGenerationResult] = useState<any>(null)
@@ -147,9 +147,7 @@ export function OpenRouterIntegration({
                 <Code className="h-5 w-5" />
                 Vibe Code with Sandbox
               </CardTitle>
-              <CardDescription>
-                Generate code using your selected model and run it in a secure sandbox
-              </CardDescription>
+              <CardDescription>Generate code using your selected model and run it in a secure sandbox</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {selectedModel ? (
@@ -157,11 +155,9 @@ export function OpenRouterIntegration({
                   <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
                     <CheckCircle className="h-5 w-5 text-green-500" />
                     <span className="text-sm font-medium">Selected: {selectedModel.name}</span>
-                    <Badge variant="secondary">
-                      ${selectedModel.pricing.prompt.toFixed(2)}/1M tokens
-                    </Badge>
+                    <Badge variant="secondary">${selectedModel.pricing.prompt.toFixed(2)}/1M tokens</Badge>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Code Prompt</label>
                     <textarea
@@ -171,8 +167,8 @@ export function OpenRouterIntegration({
                       id="vibe-code-prompt"
                     />
                   </div>
-                  
-                  <Button 
+
+                  <Button
                     onClick={() => {
                       const prompt = (document.getElementById('vibe-code-prompt') as HTMLTextAreaElement)?.value
                       if (prompt) handleVibeCode(prompt)
@@ -196,9 +192,7 @@ export function OpenRouterIntegration({
               ) : (
                 <div className="text-center py-8">
                   <Brain className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">
-                    Please select a model first to generate code
-                  </p>
+                  <p className="text-muted-foreground">Please select a model first to generate code</p>
                 </div>
               )}
             </CardContent>
@@ -222,10 +216,11 @@ export function OpenRouterIntegration({
                       <span className="font-medium">Tokens:</span> {generationResult.usage?.total_tokens}
                     </div>
                     <div>
-                      <span className="font-medium">Sandbox:</span> {generationResult.sandboxResult ? 'Executed' : 'Not executed'}
+                      <span className="font-medium">Sandbox:</span>{' '}
+                      {generationResult.sandboxResult ? 'Executed' : 'Not executed'}
                     </div>
                   </div>
-                  
+
                   {generationResult.content && (
                     <div className="mt-4">
                       <h4 className="font-medium mb-2">Generated Code:</h4>
@@ -234,7 +229,7 @@ export function OpenRouterIntegration({
                       </pre>
                     </div>
                   )}
-                  
+
                   {generationResult.sandboxResult && (
                     <div className="mt-4">
                       <h4 className="font-medium mb-2">Sandbox Output:</h4>
@@ -256,9 +251,7 @@ export function OpenRouterIntegration({
                 <Bot className="h-5 w-5" />
                 Create Agent Bots
               </CardTitle>
-              <CardDescription>
-                Create AI agents that can connect and communicate with each other
-              </CardDescription>
+              <CardDescription>Create AI agents that can connect and communicate with each other</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {selectedModel ? (
@@ -266,11 +259,9 @@ export function OpenRouterIntegration({
                   <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
                     <CheckCircle className="h-5 w-5 text-green-500" />
                     <span className="text-sm font-medium">Selected: {selectedModel.name}</span>
-                    <Badge variant="secondary">
-                      ${selectedModel.pricing.prompt.toFixed(2)}/1M tokens
-                    </Badge>
+                    <Badge variant="secondary">${selectedModel.pricing.prompt.toFixed(2)}/1M tokens</Badge>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Agent Instructions</label>
                     <textarea
@@ -280,8 +271,8 @@ export function OpenRouterIntegration({
                       id="agent-instructions"
                     />
                   </div>
-                  
-                  <Button 
+
+                  <Button
                     onClick={() => {
                       const instruction = (document.getElementById('agent-instructions') as HTMLTextAreaElement)?.value
                       if (instruction) handleAgentKitBot(instruction)
@@ -305,9 +296,7 @@ export function OpenRouterIntegration({
               ) : (
                 <div className="text-center py-8">
                   <Bot className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">
-                    Please select a model first to create agent bots
-                  </p>
+                  <p className="text-muted-foreground">Please select a model first to create agent bots</p>
                 </div>
               )}
             </CardContent>
@@ -334,16 +323,14 @@ export function OpenRouterIntegration({
                       <span className="font-medium">Cost:</span> ${generationResult.cost?.toFixed(4)}
                     </div>
                   </div>
-                  
+
                   {generationResult.agentResponse && (
                     <div className="mt-4">
                       <h4 className="font-medium mb-2">Agent Response:</h4>
-                      <div className="bg-gray-100 p-4 rounded-lg">
-                        {generationResult.agentResponse}
-                      </div>
+                      <div className="bg-gray-100 p-4 rounded-lg">{generationResult.agentResponse}</div>
                     </div>
                   )}
-                  
+
                   {generationResult.connections && generationResult.connections.length > 0 && (
                     <div className="mt-4">
                       <h4 className="font-medium mb-2">Connected Agents:</h4>
@@ -371,9 +358,7 @@ export function OpenRouterIntegration({
                 <Zap className="h-5 w-5" />
                 Bot Network Connections
               </CardTitle>
-              <CardDescription>
-                Manage connections between your AI agents for collaborative tasks
-              </CardDescription>
+              <CardDescription>Manage connections between your AI agents for collaborative tasks</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-8">
@@ -394,7 +379,7 @@ export function OpenRouterIntegration({
                     <p className="text-sm text-muted-foreground">Reporting</p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p>• Agents can communicate and share data</p>
                   <p>• Each agent uses your selected OpenRouter model</p>

@@ -56,7 +56,7 @@ export class OpenRouterClient {
     try {
       const response = await fetch('https://openrouter.ai/api/v1/models', {
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
+          Authorization: `Bearer ${this.config.apiKey}`,
           'Content-Type': 'application/json',
         },
       })
@@ -79,7 +79,7 @@ export class OpenRouterClient {
   async getModelPricing(modelId: string): Promise<{ prompt: number; completion: number } | null> {
     try {
       const models = await this.getModels()
-      const model = models.find(m => m.id === modelId)
+      const model = models.find((m) => m.id === modelId)
       return model?.pricing || null
     } catch (error) {
       console.error('Error fetching model pricing:', error)
@@ -94,7 +94,7 @@ export class OpenRouterClient {
     modelId: string,
     promptTokens: number,
     completionTokens: number,
-    pricing?: { prompt: number; completion: number }
+    pricing?: { prompt: number; completion: number },
   ): number {
     if (!pricing) {
       // Default pricing if not available
@@ -118,7 +118,7 @@ export class OpenRouterClient {
       top_p?: number
       frequency_penalty?: number
       presence_penalty?: number
-    }
+    },
   ): Promise<{
     content: string
     usage: OpenRouterUsage
@@ -127,7 +127,7 @@ export class OpenRouterClient {
   }> {
     try {
       const pricing = await this.getModelPricing(modelId)
-      
+
       const response = await this.client.chat.completions.create({
         model: modelId,
         messages: messages as any,
@@ -143,7 +143,7 @@ export class OpenRouterClient {
         modelId,
         usage?.prompt_tokens || 0,
         usage?.completion_tokens || 0,
-        pricing || undefined
+        pricing || undefined,
       )
 
       return {
@@ -173,7 +173,7 @@ export class OpenRouterClient {
     options?: {
       temperature?: number
       max_tokens?: number
-    }
+    },
   ): Promise<{
     object: T
     usage: OpenRouterUsage
@@ -182,7 +182,7 @@ export class OpenRouterClient {
   }> {
     try {
       const pricing = await this.getModelPricing(modelId)
-      
+
       const response = await this.client.chat.completions.create({
         model: modelId,
         messages: [
@@ -202,7 +202,7 @@ export class OpenRouterClient {
         modelId,
         usage?.prompt_tokens || 0,
         usage?.completion_tokens || 0,
-        pricing || undefined
+        pricing || undefined,
       )
 
       const content = response.choices[0]?.message?.content || '{}'
