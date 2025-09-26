@@ -36,6 +36,11 @@ export async function POST(request: NextRequest) {
 
     console.log(`🤖 Executing agent ${agentId} (${agentType}) with input: ${input.substring(0, 100)}...`)
 
+    // Prepare the full prompt early for use in all code paths
+    const fullPrompt = `You are a ${agentType} agent. ${instructions}${agentType === 'search' ? ' Use real-time information when relevant.' : ''}
+
+User input: ${input}`
+
     // Check if payment is required for this agent execution
     const requiresPayment = await checkPaymentRequirement(agentType, input, llmConfig)
 
@@ -144,7 +149,7 @@ Your request has been logged and would be processed with the following parameter
           completionTokens = Math.floor(aiResponse.length / 4)
           totalTokens = promptTokens + completionTokens
           modelName = 'simulated'
-          
+
           // Calculate mock costs
           promptCost = promptTokens * 0.000001
           completionCost = completionTokens * 0.000002
@@ -152,11 +157,8 @@ Your request has been logged and would be processed with the following parameter
         }
       }
 
-      // Prepare the full prompt for token counting
-      const fullPrompt = `You are a ${agentType} agent. ${instructions}${aiProvider === perplexity ? ' Use real-time information when relevant.' : ''}
+      // fullPrompt is already declared above
 
-User input: ${input}`
-      
       if (aiProvider && modelName !== 'simulated') {
         // Use real AI provider
         promptTokens = TokenCounter.countTokens(fullPrompt, modelName)
@@ -207,7 +209,7 @@ User input: ${input}`
       if (modelName !== 'simulated') {
         completionTokens = TokenCounter.countTokens(aiResponse, modelName)
         totalTokens = promptTokens + completionTokens
-        
+
         // Calculate real costs
         promptCost = TokenCounter.calculateCost(promptTokens, modelName, 'prompt')
         completionCost = TokenCounter.calculateCost(completionTokens, modelName, 'completion')

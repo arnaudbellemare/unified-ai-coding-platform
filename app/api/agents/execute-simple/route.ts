@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         output: `This is a test response for agent ${agentId}. Input was: "${input.substring(0, 100)}..."`,
         executionTime: 150,
         tokensUsed: 25,
-        cost: 0.001
+        cost: 0.001,
       },
       costOptimization: {
         tokenReduction: 15.5,
@@ -38,8 +38,8 @@ export async function POST(request: NextRequest) {
         promptCost: 0.0006,
         completionCost: 0.0004,
         totalCost: 0.001,
-        model: model
-      }
+        model: model,
+      },
     }
 
     return NextResponse.json(response)
@@ -49,9 +49,9 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        details: 'Simple agent execution failed'
+        details: 'Simple agent execution failed',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
