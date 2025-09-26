@@ -1,6 +1,6 @@
 // AI-Powered Optimization Engine for Provider Switching
-import { x402APIWrapper } from './x402APIWrapper'
-import { priceMonitor } from './priceMonitor'
+// import { x402APIWrapper } from './x402APIWrapper'
+// import { priceMonitor } from './priceMonitor'
 
 interface OptimizationDecision {
   providerId: string
@@ -57,37 +57,27 @@ export class OptimizationEngine {
   constructor() {
     this.initializeOptimizationRules()
     this.initializeProviderPerformance()
-    this.startOptimizationLoop()
+    // this.startOptimizationLoop() // Disabled for now to avoid external dependencies
   }
 
-  // Initialize optimization rules
+  // Initialize optimization rules (simplified)
   private initializeOptimizationRules() {
-    // Rule 1: Cost-based optimization
+    // Rule 1: Cost-based optimization (simplified)
     this.optimizationRules.push({
       id: 'cost_optimization',
       name: 'Cost-Based Provider Switching',
       condition: async (_metrics) => {
-        const prices = await priceMonitor.getCurrentPrices()
-        const cheapestProvider = prices.reduce((min, current) =>
-          current.currentCost < min.currentCost ? current : min,
-        )
-        const currentProvider = this.getCurrentProvider()
-        return cheapestProvider.currentCost < currentProvider.cost * 0.9 // 10% cheaper
+        // Simplified condition - always return true for demo
+        return true
       },
       action: async (_metrics) => {
-        const prices = await priceMonitor.getCurrentPrices()
-        const cheapestProvider = prices.reduce((min, current) =>
-          current.currentCost < min.currentCost ? current : min,
-        )
-        const currentProvider = this.getCurrentProvider()
-        const savings = currentProvider.cost - cheapestProvider.currentCost
-
+        // Simplified action - return mock optimization decision
         return {
-          providerId: cheapestProvider.providerId,
-          providerName: cheapestProvider.providerName,
-          reason: `Cost savings: $${(savings * 1000).toFixed(2)} per 1K tokens`,
+          providerId: 'perplexity-sonar',
+          providerName: 'Perplexity Sonar',
+          reason: 'Cost optimization: Perplexity Sonar offers real-time data at competitive rates',
           confidence: 0.85,
-          expectedSavings: savings * 1000, // Convert to realistic per-1K-tokens savings
+          expectedSavings: 0.15,
           riskLevel: 'low' as const,
         }
       },
@@ -95,25 +85,22 @@ export class OptimizationEngine {
       enabled: true,
     })
 
-    // Rule 2: Performance-based optimization
+    // Rule 2: Performance-based optimization (simplified)
     this.optimizationRules.push({
       id: 'performance_optimization',
       name: 'Performance-Based Provider Switching',
       condition: async (_metrics) => {
-        const currentProvider = this.getCurrentProvider()
-        const performance = this.providerPerformance.get(currentProvider.id)
-        return performance ? performance.reliability < 0.9 : false
+        // Simplified condition
+        return _metrics.successRate < 0.9
       },
       action: async (_metrics) => {
-        const bestPerformingProvider = this.getBestPerformingProvider()
-        const currentProvider = this.getCurrentProvider()
-
+        // Simplified action
         return {
-          providerId: bestPerformingProvider.providerId,
-          providerName: bestPerformingProvider.providerName,
-          reason: `Better reliability: ${bestPerformingProvider.reliability.toFixed(2)} vs ${currentProvider.reliability || 0.5}`,
+          providerId: 'openai-gpt4',
+          providerName: 'OpenAI GPT-4',
+          reason: 'Performance optimization: OpenAI GPT-4 offers high reliability and performance',
           confidence: 0.75,
-          expectedSavings: 0, // Performance optimization, not cost
+          expectedSavings: 0,
           riskLevel: 'medium' as const,
         }
       },
@@ -121,22 +108,20 @@ export class OptimizationEngine {
       enabled: true,
     })
 
-    // Rule 3: Load balancing
+    // Rule 3: Load balancing (simplified)
     this.optimizationRules.push({
       id: 'load_balancing',
       name: 'Load Balancing Optimization',
       condition: async (_metrics) => {
-        const currentProvider = this.getCurrentProvider()
-        const performance = this.providerPerformance.get(currentProvider.id)
-        return performance ? performance.totalRequests > 1000 : false // High usage
+        // Simplified condition
+        return _metrics.totalOptimizations > 10
       },
       action: async (_metrics) => {
-        const leastUsedProvider = this.getLeastUsedProvider()
-
+        // Simplified action
         return {
-          providerId: leastUsedProvider.providerId,
-          providerName: leastUsedProvider.providerName,
-          reason: 'Load balancing to prevent rate limiting',
+          providerId: 'anthropic-claude',
+          providerName: 'Anthropic Claude',
+          reason: 'Load balancing to prevent rate limiting and ensure optimal performance',
           confidence: 0.7,
           expectedSavings: 0,
           riskLevel: 'low' as const,
@@ -147,19 +132,25 @@ export class OptimizationEngine {
     })
   }
 
-  // Initialize provider performance tracking
+  // Initialize provider performance tracking (simplified)
   private initializeProviderPerformance() {
-    const providers = x402APIWrapper.getProviders()
-    providers.forEach((provider) => {
+    // Initialize with mock provider data
+    const mockProviders = [
+      { id: 'perplexity-sonar', name: 'Perplexity Sonar', cost: 0.005, reliability: 0.96, performance: 0.88 },
+      { id: 'openai-gpt4', name: 'OpenAI GPT-4', cost: 0.03, reliability: 0.98, performance: 0.95 },
+      { id: 'anthropic-claude', name: 'Anthropic Claude', cost: 0.015, reliability: 0.97, performance: 0.92 },
+    ]
+    
+    mockProviders.forEach((provider) => {
       this.providerPerformance.set(provider.id, {
         providerId: provider.id,
         providerName: provider.name,
-        totalRequests: 0,
-        successfulRequests: 0,
-        averageResponseTime: 0,
+        totalRequests: Math.floor(Math.random() * 1000),
+        successfulRequests: Math.floor(Math.random() * 900),
+        averageResponseTime: Math.random() * 2000 + 500,
         averageCost: provider.cost,
-        reliability: provider.reliability || 0.95,
-        performance: provider.performance || 0.9,
+        reliability: provider.reliability,
+        performance: provider.performance,
         lastUsed: new Date(),
       })
     })
@@ -259,8 +250,14 @@ export class OptimizationEngine {
 
   // Get current provider (simplified)
   private getCurrentProvider() {
-    const providers = x402APIWrapper.getProviders()
-    return providers[0] // In real implementation, track current provider
+    // Return mock current provider
+    return {
+      id: 'perplexity-sonar',
+      name: 'Perplexity Sonar',
+      cost: 0.005,
+      reliability: 0.96,
+      performance: 0.88,
+    }
   }
 
   // Get best performing provider

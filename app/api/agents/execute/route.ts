@@ -193,7 +193,7 @@ Get your API keys from:
       // Count tokens after API call
       completionTokens = TokenCounter.countTokens(aiResponse, modelName)
       totalTokens = promptTokens + completionTokens
-      
+
       // Calculate real costs
       promptCost = TokenCounter.calculateCost(promptTokens, modelName, 'prompt')
       completionCost = TokenCounter.calculateCost(completionTokens, modelName, 'completion')
