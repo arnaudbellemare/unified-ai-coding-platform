@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
         // Calculate real token costs using actual token counting
         const originalTokens = await TokenCounter.countTokens(prompt, 'gpt-3.5-turbo')
         const optimizedTokens = await TokenCounter.countTokens(hybridResult.optimizedPrompt, 'gpt-3.5-turbo')
-        
+
         return {
           originalTokens,
           optimizedTokens,
@@ -165,7 +165,9 @@ export async function POST(request: NextRequest) {
           strategies: hybridResult.strategies,
           verbosityLevel: hybridResult.verbosityLevel,
           realTokenReduction: originalTokens - optimizedTokens,
-          realCostSavings: TokenCounter.calculateCost(originalTokens, 'gpt-3.5-turbo', 'prompt') - TokenCounter.calculateCost(optimizedTokens, 'gpt-3.5-turbo', 'prompt'),
+          realCostSavings:
+            TokenCounter.calculateCost(originalTokens, 'gpt-3.5-turbo', 'prompt') -
+            TokenCounter.calculateCost(optimizedTokens, 'gpt-3.5-turbo', 'prompt'),
         }
       })(),
     })

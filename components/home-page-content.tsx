@@ -17,6 +17,7 @@ import { AdvancedOptimizationDashboard } from '@/components/advanced-optimizatio
 import { ContextManagementDashboard } from '@/components/context-management-dashboard'
 import { ExaWebSearch } from '@/components/exa-websearch'
 import { OpenRouterIntegration } from '@/components/openrouter-integration'
+import { GEPAOptimization } from '@/components/gepa-optimization'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -103,6 +104,16 @@ export function HomePageContent() {
               Cost Optimization
             </button>
             <button
+              onClick={() => setActiveTab('gepa')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'gepa'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              GEPA Optimization
+            </button>
+            <button
               onClick={() => setActiveTab('advanced')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'advanced'
@@ -184,6 +195,14 @@ export function HomePageContent() {
           <div className="flex justify-center items-start min-h-screen py-8">
             <div className="max-w-6xl w-full px-4">
               <CostOptimization />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'gepa' && (
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-6xl w-full px-4">
+              <GEPAOptimization />
             </div>
           </div>
         )}
