@@ -31,7 +31,7 @@
     "@coinbase/cdp-sdk": "^1.38.2",
     "@coinbase/x402": "^0.6.4",
     "@neondatabase/serverless": "^0.10.1",
-    "@nomicfoundation/hardhat-ethers": "^3.1.0",
+    "@nomicfoundation/hardhat-ethers": "^4.0.1",
     "@nomicfoundation/hardhat-verify": "^2.1.1",
     "@openzeppelin/contracts": "^5.4.0",
     "@openzeppelin/contracts-upgradeable": "^5.4.0",
