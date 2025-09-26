@@ -1,6 +1,5 @@
 import { HardhatUserConfig } from 'hardhat/config'
-import '@nomicfoundation/hardhat-toolbox'
-import '@nomicfoundation/hardhat-verify'
+import '@nomicfoundation/hardhat-ethers'
 import 'dotenv/config'
 
 const config: HardhatUserConfig = {
@@ -31,34 +30,13 @@ const config: HardhatUserConfig = {
       type: 'http',
     },
   },
-  etherscan: {
-    apiKey: {
-      base: process.env.BASESCAN_API_KEY || '',
-      baseSepolia: process.env.BASESCAN_API_KEY || '',
-    },
-    customChains: [
-      {
-        network: 'base',
-        chainId: 8453,
-        urls: {
-          apiURL: 'https://api.basescan.org/api',
-          browserURL: 'https://basescan.org',
-        },
-      },
-      {
-        network: 'baseSepolia',
-        chainId: 84532,
-        urls: {
-          apiURL: 'https://api-sepolia.basescan.org/api',
-          browserURL: 'https://sepolia.basescan.org',
-        },
-      },
-    ],
-  },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: 'USD',
-  },
+  // Etherscan verification disabled for now to avoid dependency issues
+  // etherscan: {
+  //   apiKey: {
+  //     base: process.env.BASESCAN_API_KEY || '',
+  //     baseSepolia: process.env.BASESCAN_API_KEY || '',
+  //   },
+  // },
 }
 
 export default config

@@ -16,7 +16,9 @@
     "db:studio": "drizzle-kit studio",
     "prepare": "husky",
     "get-testnet-eth": "node scripts/get-base-sepolia-eth.js",
-    "deploy-contracts": "npx hardhat run scripts/deploy-base-contracts.js --network base-sepolia"
+    "deploy-contracts": "npx hardhat run scripts/deploy-base-contracts.js --network base-sepolia",
+    "hardhat:compile": "npx hardhat compile",
+    "hardhat:test": "npx hardhat test"
   },
   "dependencies": {
     "@account-abstraction/contracts": "^0.8.0",
@@ -29,6 +31,7 @@
     "@coinbase/cdp-sdk": "^1.38.2",
     "@coinbase/x402": "^0.6.4",
     "@neondatabase/serverless": "^0.10.1",
+    "@nomicfoundation/hardhat-ethers": "^4.0.1",
     "@openzeppelin/contracts": "^5.4.0",
     "@openzeppelin/contracts-upgradeable": "^5.4.0",
     "@privy-io/react-auth": "^3.0.1",
@@ -97,5 +100,6 @@
     "singleQuote": true,
     "printWidth": 120,
     "trailingComma": "all"
-  }
+  },
+  "type": "module"
 }

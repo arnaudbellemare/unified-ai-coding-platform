@@ -1,0 +1,43 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_19-f7f34b87e90457040f9db24861f01bd80478e284",
+  "solcVersion": "0.8.19",
+  "solcLongVersion": "0.8.19+commit.7dd6d404",
+  "userSourceNameMap": {
+    "contracts/AgentWallet.sol": "project/contracts/AgentWallet.sol",
+    "contracts/AgentWalletFactory.sol": "project/contracts/AgentWalletFactory.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "paris",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/AgentWallet.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.19;\n\n/**\n * @title AgentWallet\n * @dev Simple smart contract for agent wallets on Base Sepolia testnet\n */\ncontract AgentWallet {\n    address public owner;\n    mapping(address => uint256) public balances;\n    \n    event Deposit(address indexed agent, uint256 amount);\n    event Withdrawal(address indexed agent, uint256 amount);\n    \n    constructor() {\n        owner = msg.sender;\n    }\n    \n    function deposit(address agent) external payable {\n        require(msg.value > 0, \"Amount must be greater than 0\");\n        balances[agent] += msg.value;\n        emit Deposit(agent, msg.value);\n    }\n    \n    function withdraw(address agent, uint256 amount) external {\n        require(balances[agent] >= amount, \"Insufficient balance\");\n        balances[agent] -= amount;\n        payable(agent).transfer(amount);\n        emit Withdrawal(agent, amount);\n    }\n    \n    function getBalance(address agent) external view returns (uint256) {\n        return balances[agent];\n    }\n}\n"
+      },
+      "project/contracts/AgentWalletFactory.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.19;\n\nimport \"./AgentWallet.sol\";\n\n/**\n * @title AgentWalletFactory\n * @dev Factory contract for creating agent wallets on Base Sepolia testnet\n */\ncontract AgentWalletFactory {\n    mapping(address => address) public agentWallets;\n    address[] public allAgents;\n    \n    event AgentWalletCreated(address indexed agent, address indexed wallet);\n    \n    function createWallet(address agent) external returns (address) {\n        require(agentWallets[agent] == address(0), \"Wallet already exists\");\n        \n        AgentWallet wallet = new AgentWallet();\n        agentWallets[agent] = address(wallet);\n        allAgents.push(agent);\n        \n        emit AgentWalletCreated(agent, address(wallet));\n        return address(wallet);\n    }\n    \n    function getWallet(address agent) external view returns (address) {\n        return agentWallets[agent];\n    }\n    \n    function getAllAgents() external view returns (address[] memory) {\n        return allAgents;\n    }\n}\n"
+      }
+    }
+  }
+}
