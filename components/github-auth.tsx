@@ -1,46 +1,42 @@
 'use client'
 
-import { useGitHubAuth } from '@/lib/hooks/use-github-auth'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { LogOut, Github } from 'lucide-react'
 
-export function GitHubAuth() {
-  const { user, loading, login, logout, isAuthenticated } = useGitHubAuth()
+export default function GitHubAuth() {
+  const { data: session, status } = useSession()
 
-  if (loading) {
+  if (status === 'loading') {
     return (
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+        <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
         <span className="text-sm text-gray-600">Loading...</span>
       </div>
     )
   }
 
-  if (!isAuthenticated) {
+  if (session) {
     return (
-      <Button onClick={login} variant="outline" className="gap-2">
-        <Github className="h-4 w-4" />
-        Connect GitHub
-      </Button>
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+        <span className="text-sm text-gray-600">{session.user?.name}</span>
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => signOut()}
+        >
+          Sign out
+        </Button>
+      </div>
     )
   }
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex items-center gap-2">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={user?.avatar_url} alt={user?.name} />
-          <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
-        </Avatar>
-        <div className="text-sm">
-          <div className="font-medium">{user?.name}</div>
-          <div className="text-gray-500">@{user?.login}</div>
-        </div>
-      </div>
-      <Button onClick={logout} variant="ghost" size="sm">
-        <LogOut className="h-4 w-4" />
-      </Button>
-    </div>
+    <Button 
+      onClick={() => signIn('github')}
+      className="bg-gray-900 hover:bg-gray-800 text-white"
+    >
+      Connect GitHub
+    </Button>
   )
 }
