@@ -28,7 +28,7 @@ export class RealCoinbaseAgentKit {
       walletSecret: config.walletSecret,
     })
 
-    // Initialize real Base network provider
+    // Initialize real Base Sepolia testnet provider for development
     this.provider = new ethers.JsonRpcProvider(config.baseRpcUrl)
 
     // Initialize real wallet for agent transactions
@@ -126,8 +126,8 @@ export class RealCoinbaseAgentKit {
     usdcBalance: string
   }> {
     try {
-      // USDC contract on Base network
-      const USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+      // USDC contract on Base Sepolia testnet
+      const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' // Base Sepolia USDC
       const USDC_ABI = [
         'function transfer(address to, uint256 amount) returns (bool)',
         'function balanceOf(address account) view returns (uint256)',
@@ -171,8 +171,8 @@ export class RealCoinbaseAgentKit {
       // Get real ETH balance
       const ethBalance = await this.provider.getBalance(walletAddress)
 
-      // Get real USDC balance
-      const USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+      // Get real USDC balance on Base Sepolia testnet
+      const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' // Base Sepolia USDC
       const USDC_ABI = ['function balanceOf(address account) view returns (uint256)']
       const usdcContract = new ethers.Contract(USDC_ADDRESS, USDC_ABI, this.provider)
       const usdcBalance = await usdcContract.balanceOf(walletAddress)

@@ -24,12 +24,12 @@ export async function POST(request: NextRequest) {
 
     console.log(`🤖 Executing REAL Coinbase AgentKit agent: ${agentId}`)
 
-    // Initialize real Coinbase AgentKit
+    // Initialize real Coinbase AgentKit with Base Sepolia testnet
     const realAgentKit = new RealCoinbaseAgentKit({
       apiKeyId: process.env.COINBASE_CDP_API_KEY_ID!,
       apiKeySecret: process.env.COINBASE_CDP_API_KEY_SECRET!,
       walletSecret: process.env.COINBASE_CDP_WALLET_SECRET!,
-      baseRpcUrl: process.env.BASE_RPC_URL!,
+      baseRpcUrl: process.env.BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org',
       walletPrivateKey: process.env.BASE_PRIVATE_KEY!,
       agentId,
     })

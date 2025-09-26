@@ -6,7 +6,7 @@
 const { ethers } = require('hardhat')
 
 async function main() {
-  console.log('🚀 Deploying real smart contracts to Base network...')
+  console.log('🚀 Deploying real smart contracts to Base Sepolia testnet...')
 
   // Get the deployer account
   const [deployer] = await ethers.getSigners()
@@ -81,7 +81,7 @@ async function main() {
 
   // Save deployment info
   const deploymentInfo = {
-    network: 'base',
+    network: 'base-sepolia',
     timestamp: new Date().toISOString(),
     deployer: deployer.address,
     contracts: {
@@ -105,7 +105,7 @@ async function main() {
   console.log(`AGENT_WALLET_ADDRESS=${walletAddress}`)
   console.log(`X402_PAYMENT_GATEWAY_ADDRESS=${gatewayAddress}`)
 
-  console.log('🎉 Real smart contracts deployed to Base network!')
+  console.log('🎉 Real smart contracts deployed to Base Sepolia testnet!')
 }
 
 main()

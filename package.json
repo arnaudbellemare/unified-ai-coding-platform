@@ -14,7 +14,9 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "prepare": "husky"
+    "prepare": "husky",
+    "get-testnet-eth": "node scripts/get-base-sepolia-eth.js",
+    "deploy-contracts": "npx hardhat run scripts/deploy-base-contracts.js --network base-sepolia"
   },
   "dependencies": {
     "@account-abstraction/contracts": "^0.8.0",

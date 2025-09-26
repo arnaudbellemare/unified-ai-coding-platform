@@ -35,14 +35,14 @@ export class RealX402PaymentService {
   private usdcContract: ethers.Contract
 
   constructor() {
-    // Initialize real Base network provider
-    this.provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL || 'https://mainnet.base.org')
+    // Initialize real Base Sepolia testnet provider for development
+    this.provider = new ethers.JsonRpcProvider(process.env.BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org')
 
     // Initialize real wallet for payments
     this.wallet = new ethers.Wallet(process.env.BASE_PRIVATE_KEY!, this.provider)
 
-    // Initialize real USDC contract on Base
-    const USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+    // Initialize real USDC contract on Base Sepolia testnet
+    const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' // Base Sepolia USDC
     const USDC_ABI = [
       'function transfer(address to, uint256 amount) returns (bool)',
       'function balanceOf(address account) view returns (uint256)',
@@ -199,7 +199,7 @@ export class RealX402PaymentService {
       process.env.COINBASE_CDP_API_KEY_SECRET!,
       'POST',
       'api.coinbase.com',
-      '/v2/charges'
+      '/v2/charges',
     )
 
     return {
