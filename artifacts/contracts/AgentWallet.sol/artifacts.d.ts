@@ -16,12 +16,12 @@ export interface AgentWallet$Type {
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/AgentWallet.sol";
   readonly buildInfoId: "solc-0_8_19-f7f34b87e90457040f9db24861f01bd80478e284";
-};
+}
 
-import "hardhat/types/artifacts";
-declare module "hardhat/types/artifacts" {
+import 'hardhat/types/artifacts'
+declare module 'hardhat/types/artifacts' {
   interface ArtifactMap {
-    ["AgentWallet"]: AgentWallet$Type;
-    ["contracts/AgentWallet.sol:AgentWallet"]: AgentWallet$Type;
+    ['AgentWallet']: AgentWallet$Type
+    ['contracts/AgentWallet.sol:AgentWallet']: AgentWallet$Type
   }
 }
