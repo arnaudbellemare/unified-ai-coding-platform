@@ -4,23 +4,23 @@ import { OptimizationEngine } from '@/lib/advanced-optimization-engine'
 export async function GET(request: NextRequest) {
   try {
     console.log('🔍 Testing OptimizationEngine...')
-    
+
     const engine = new OptimizationEngine()
     console.log('✅ OptimizationEngine created successfully')
-    
+
     // Test basic methods
     const metrics = await engine.getOptimizationMetrics()
     console.log('✅ getOptimizationMetrics:', metrics)
-    
+
     const providerPerformance = await engine.getProviderPerformance()
     console.log('✅ getProviderPerformance:', providerPerformance.length, 'providers')
-    
+
     const optimizationHistory = await engine.getOptimizationHistory()
     console.log('✅ getOptimizationHistory:', optimizationHistory.length, 'entries')
-    
+
     const recommendations = await engine.getOptimizationRecommendations()
     console.log('✅ getOptimizationRecommendations:', recommendations.length, 'recommendations')
-    
+
     return NextResponse.json({
       success: true,
       metrics,

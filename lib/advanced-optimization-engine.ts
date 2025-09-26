@@ -140,7 +140,7 @@ export class OptimizationEngine {
       { id: 'openai-gpt4', name: 'OpenAI GPT-4', cost: 0.03, reliability: 0.98, performance: 0.95 },
       { id: 'anthropic-claude', name: 'Anthropic Claude', cost: 0.015, reliability: 0.97, performance: 0.92 },
     ]
-    
+
     mockProviders.forEach((provider) => {
       this.providerPerformance.set(provider.id, {
         providerId: provider.id,
@@ -321,16 +321,14 @@ export class OptimizationEngine {
     return await this.makeOptimizationDecision()
   }
 
-  // Get optimization recommendations
+  // Get optimization recommendations (simplified)
   async getOptimizationRecommendations(): Promise<string[]> {
     const recommendations: string[] = []
-    const prices = await priceMonitor.getCurrentPrices()
     const performances = this.getProviderPerformance()
 
-    // Cost recommendations
-    const cheapestProvider = prices.reduce((min, current) => (current.currentCost < min.currentCost ? current : min))
+    // Cost recommendations (simplified)
     recommendations.push(
-      `Consider switching to ${cheapestProvider.providerName} for ${((cheapestProvider.currentCost / prices[0].currentCost - 1) * 100).toFixed(1)}% cost savings`,
+      `Consider using Perplexity Sonar for real-time data at competitive rates ($${0.005}/1K tokens)`,
     )
 
     // Performance recommendations
@@ -339,6 +337,14 @@ export class OptimizationEngine {
     )
     recommendations.push(
       `Switch to ${bestPerformingProvider.providerName} for better reliability (${(bestPerformingProvider.reliability * 100).toFixed(1)}%)`,
+    )
+
+    // General recommendations
+    recommendations.push(
+      `Enable hybrid optimization to automatically switch between providers based on cost and performance`,
+    )
+    recommendations.push(
+      `Monitor provider performance metrics to identify optimization opportunities`,
     )
 
     return recommendations
