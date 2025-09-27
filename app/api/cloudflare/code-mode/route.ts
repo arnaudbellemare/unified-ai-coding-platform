@@ -4,6 +4,13 @@ import { getCurrentUser, requireAuth } from '@/lib/auth/simple-auth'
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if development mode is enabled
+    if (process.env.NEXT_PUBLIC_DEV_MODE === 'true') {
+      const { getMockOptimizationResult } = await import('@/lib/config/dev-config')
+      const mockResult = getMockOptimizationResult('cloudflare')
+      return NextResponse.json(mockResult)
+    }
+
     // Require authentication
     const user = await requireAuth(request)
 
