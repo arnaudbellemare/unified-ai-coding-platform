@@ -17,7 +17,7 @@ export interface SimpleUser {
  * Get user from GitHub token (simplified version)
  */
 export async function getCurrentUser(request: NextRequest): Promise<SimpleUser | null> {
-  // Check if development mode is enabled
+  // Check if development mode is enabled (only for local development)
   if (DevAuth.isDevMode()) {
     const devUser = DevAuth.getCurrentUser()
     return {
@@ -74,7 +74,7 @@ export function generateUserId(githubUser: SimpleUser): string {
  * Check if user is authenticated
  */
 export async function requireAuth(request: NextRequest): Promise<SimpleUser> {
-  // Check if development mode is enabled
+  // Check if development mode is enabled (only for local development)
   if (DevAuth.isDevMode()) {
     const devUser = DevAuth.getCurrentUser()
     return {

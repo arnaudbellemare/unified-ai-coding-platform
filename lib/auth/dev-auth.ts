@@ -29,9 +29,14 @@ export class DevAuth {
 
   /**
    * Check if development mode is enabled
+   * Only use dev mode for local development, not on Vercel
    */
   static isDevMode(): boolean {
-    return process.env.NEXT_PUBLIC_DEV_MODE === 'true'
+    // Use dev mode only for local development
+    // On Vercel, use real functionality with provided API keys
+    return process.env.NEXT_PUBLIC_DEV_MODE === 'true' && 
+           process.env.VERCEL !== '1' && 
+           process.env.NODE_ENV === 'development'
   }
 
   /**

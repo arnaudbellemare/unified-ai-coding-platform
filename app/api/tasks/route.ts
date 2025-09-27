@@ -15,8 +15,10 @@ import { getCurrentUser, requireAuth, SimpleUsageTracker } from '@/lib/auth/simp
 
 export async function GET(request: NextRequest) {
   try {
-    // Check if development mode is enabled
-    if (process.env.NEXT_PUBLIC_DEV_MODE === 'true') {
+    // Check if development mode is enabled (only for local development)
+    if (process.env.NEXT_PUBLIC_DEV_MODE === 'true' && 
+        process.env.VERCEL !== '1' && 
+        process.env.NODE_ENV === 'development') {
       const { getMockTasks } = await import('@/lib/config/dev-config')
       const mockTasks = getMockTasks()
       return NextResponse.json({ tasks: mockTasks })
