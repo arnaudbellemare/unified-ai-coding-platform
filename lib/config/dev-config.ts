@@ -72,6 +72,13 @@ export const devConfig = {
         },
         optimization: {
           totalGenerations: 5,
+          history: [
+            { generation: 1, fitness: 0.65, tokens: 80, improvement: 0.05 },
+            { generation: 2, fitness: 0.72, tokens: 65, improvement: 0.07 },
+            { generation: 3, fitness: 0.75, tokens: 55, improvement: 0.03 },
+            { generation: 4, fitness: 0.77, tokens: 52, improvement: 0.02 },
+            { generation: 5, fitness: 0.78, tokens: 50, improvement: 0.01 },
+          ],
         },
         totalGenerations: 5,
         population: [
@@ -88,7 +95,7 @@ export const devConfig = {
             prompt: 'Alternative optimized solution 2',
             tokens: 52,
             cost: 0.00009,
-            quality: 0.80,
+            quality: 0.8,
             fitness: 0.74,
           },
           {
