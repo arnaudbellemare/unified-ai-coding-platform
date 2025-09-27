@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { gepaOptimizer } from '@/lib/gepa-optimizer'
 import { getCurrentUser, requireAuth } from '@/lib/auth/simple-auth'
+import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Production mode - real optimization
+    // Check if development mode is enabled (when no API keys configured)
+    if (DevAuth.isDevMode()) {
+      const { getMockOptimizationResult } = await import('@/lib/config/dev-config')
+      const mockResult = getMockOptimizationResult('gepa')
+      return NextResponse.json(mockResult)
+    }
 
     // Require authentication
     const user = await requireAuth(request)

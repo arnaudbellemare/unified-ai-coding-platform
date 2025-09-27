@@ -1,9 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { OpenRouterClient } from '@/lib/openrouter/openrouter-client'
+import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function GET(request: NextRequest) {
   try {
-    // Production mode - real models
+    // Check if development mode is enabled (when no API keys configured)
+    if (DevAuth.isDevMode()) {
+      // Return mock models for development
+      return NextResponse.json([
+        {
+          id: 'openai/gpt-4o-mini',
+          name: 'GPT-4o Mini',
+          description: 'Fast and efficient model for most tasks',
+          pricing: { prompt: 0.15, completion: 0.6 },
+          context_length: 128000,
+          architecture: { modality: 'text', tokenizer: 'cl100k_base', instruct_type: 'chat' }
+        },
+        {
+          id: 'anthropic/claude-3.5-sonnet',
+          name: 'Claude 3.5 Sonnet',
+          description: 'Balanced performance and speed',
+          pricing: { prompt: 3.0, completion: 15.0 },
+          context_length: 200000,
+          architecture: { modality: 'text', tokenizer: 'claude', instruct_type: 'chat' }
+        },
+        {
+          id: 'google/gemini-pro-1.5',
+          name: 'Gemini Pro 1.5',
+          description: "Google's latest model with long context",
+          pricing: { prompt: 1.25, completion: 5.0 },
+          context_length: 1000000,
+          architecture: { modality: 'text', tokenizer: 'gemini', instruct_type: 'chat' }
+        }
+      ])
+    }
 
     if (!process.env.OPENROUTER_API_KEY) {
       return NextResponse.json({ error: 'OPENROUTER_API_KEY environment variable is required' }, { status: 500 })

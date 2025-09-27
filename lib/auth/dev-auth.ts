@@ -29,11 +29,15 @@ export class DevAuth {
 
   /**
    * Check if development mode is enabled
-   * DISABLED - Always use production mode
+   * Enable for UI testing when no API keys are configured
    */
   static isDevMode(): boolean {
-    // Always return false - use production mode everywhere
-    return false
+    // Enable dev mode if no API keys are configured (for UI testing)
+    const hasApiKeys = process.env.OPENAI_API_KEY || 
+                      process.env.ANTHROPIC_API_KEY || 
+                      process.env.PERPLEXITY_API_KEY ||
+                      process.env.OPENROUTER_API_KEY
+    return !hasApiKeys
   }
 
   /**

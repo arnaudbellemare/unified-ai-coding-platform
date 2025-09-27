@@ -12,10 +12,16 @@ import { createTaskLogger } from '@/lib/utils/task-logger'
 import { generateBranchName, createFallbackBranchName } from '@/lib/utils/branch-name-generator'
 import { costOptimization } from '@/lib/cost-optimization'
 import { getCurrentUser, requireAuth, SimpleUsageTracker } from '@/lib/auth/simple-auth'
+import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function GET(request: NextRequest) {
   try {
-    // Production mode - no mock data
+    // Check if development mode is enabled (when no API keys configured)
+    if (DevAuth.isDevMode()) {
+      const { getMockTasks } = await import('@/lib/config/dev-config')
+      const mockTasks = getMockTasks()
+      return NextResponse.json({ tasks: mockTasks })
+    }
 
     // Get current user
     const user = await getCurrentUser(request)

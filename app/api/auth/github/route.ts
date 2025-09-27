@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,6 +13,12 @@ export async function GET(request: NextRequest) {
       const clientSecret = process.env.GITHUB_CLIENT_SECRET
 
       if (!clientId || !clientSecret) {
+        // Check if in development mode
+        if (DevAuth.isDevMode()) {
+          // Redirect to home page with mock auth in development mode
+          return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`)
+        }
+        
         console.error('GitHub OAuth configuration missing:', {
           clientId: !!clientId,
           clientSecret: !!clientSecret,

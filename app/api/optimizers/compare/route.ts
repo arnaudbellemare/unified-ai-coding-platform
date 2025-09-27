@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { integratedOptimizerComparison } from '@/lib/integrated-optimizer-comparison'
 import { getCurrentUser, requireAuth } from '@/lib/auth/simple-auth'
+import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Production mode - real comparison
+    // Check if development mode is enabled (when no API keys configured)
+    if (DevAuth.isDevMode()) {
+      const { getMockComparisonResult } = await import('@/lib/config/dev-config')
+      const mockResult = getMockComparisonResult()
+      return NextResponse.json(mockResult)
+    }
 
     // Require authentication
     const user = await requireAuth(request)
