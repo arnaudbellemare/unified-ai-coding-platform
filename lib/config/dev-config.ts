@@ -73,50 +73,55 @@ export const devConfig = {
         optimization: {
           totalGenerations: 5,
           history: [
-            { 
-              generation: 1, 
-              fitness: 0.65, 
-              tokens: 80, 
+            {
+              generation: 1,
+              fitness: 0.65,
+              tokens: 80,
               improvement: 0.05,
               bestFitness: 0.68,
               averageCost: 0.0015,
-              diversity: 0.85
+              diversity: 0.85,
+              costReduction: 12.5,
             },
-            { 
-              generation: 2, 
-              fitness: 0.72, 
-              tokens: 65, 
+            {
+              generation: 2,
+              fitness: 0.72,
+              tokens: 65,
               improvement: 0.07,
               bestFitness: 0.74,
               averageCost: 0.0012,
-              diversity: 0.78
+              diversity: 0.78,
+              costReduction: 20.0,
             },
-            { 
-              generation: 3, 
-              fitness: 0.75, 
-              tokens: 55, 
+            {
+              generation: 3,
+              fitness: 0.75,
+              tokens: 55,
               improvement: 0.03,
               bestFitness: 0.77,
-              averageCost: 0.0010,
-              diversity: 0.72
+              averageCost: 0.001,
+              diversity: 0.72,
+              costReduction: 33.3,
             },
-            { 
-              generation: 4, 
-              fitness: 0.77, 
-              tokens: 52, 
+            {
+              generation: 4,
+              fitness: 0.77,
+              tokens: 52,
               improvement: 0.02,
               bestFitness: 0.79,
               averageCost: 0.0009,
-              diversity: 0.68
+              diversity: 0.68,
+              costReduction: 40.0,
             },
-            { 
-              generation: 5, 
-              fitness: 0.78, 
-              tokens: 50, 
+            {
+              generation: 5,
+              fitness: 0.78,
+              tokens: 50,
               improvement: 0.01,
-              bestFitness: 0.80,
+              bestFitness: 0.8,
               averageCost: 0.0008,
-              diversity: 0.65
+              diversity: 0.65,
+              costReduction: 46.7,
             },
           ],
         },
