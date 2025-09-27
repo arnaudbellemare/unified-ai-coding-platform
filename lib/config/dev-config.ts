@@ -68,6 +68,7 @@ export const devConfig = {
           costReduction: 0.0019,
           costReductionPercentage: 95.0,
           costSavings: 0.0005,
+          estimatedMonthlySavings: 125.50,
         },
         totalGenerations: 5,
         evolutionHistory: [
