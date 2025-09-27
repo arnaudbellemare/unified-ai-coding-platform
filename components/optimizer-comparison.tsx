@@ -8,19 +8,19 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Trophy, 
-  TrendingUp, 
-  DollarSign, 
-  Target, 
-  Zap, 
+import {
+  Trophy,
+  TrendingUp,
+  DollarSign,
+  Target,
+  Zap,
   Brain,
   Sparkles,
   CheckCircle,
   BarChart3,
   Clock,
   Shield,
-  Star
+  Star,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -89,7 +89,8 @@ export function OptimizerComparison() {
     {
       id: 'simple-coding',
       name: 'Simple Coding Task',
-      prompt: 'Write a function that takes two numbers and returns their sum. Make sure to handle edge cases and add proper error handling.',
+      prompt:
+        'Write a function that takes two numbers and returns their sum. Make sure to handle edge cases and add proper error handling.',
       taskDescription: 'Create a simple addition function with error handling',
       targetModel: 'gpt-4o-mini',
       expectedComplexity: 'simple',
@@ -98,7 +99,8 @@ export function OptimizerComparison() {
     {
       id: 'complex-analysis',
       name: 'Complex Analysis Task',
-      prompt: 'Analyze the performance of our machine learning model across different datasets. Consider accuracy, precision, recall, F1-score, and provide recommendations for improvement. Include statistical significance testing and confidence intervals.',
+      prompt:
+        'Analyze the performance of our machine learning model across different datasets. Consider accuracy, precision, recall, F1-score, and provide recommendations for improvement. Include statistical significance testing and confidence intervals.',
       taskDescription: 'Comprehensive ML model performance analysis',
       targetModel: 'gpt-4o',
       expectedComplexity: 'complex',
@@ -107,7 +109,8 @@ export function OptimizerComparison() {
     {
       id: 'medium-documentation',
       name: 'Medium Documentation Task',
-      prompt: 'Create comprehensive documentation for our API endpoints. Include request/response examples, error codes, authentication requirements, rate limiting, and usage guidelines for developers.',
+      prompt:
+        'Create comprehensive documentation for our API endpoints. Include request/response examples, error codes, authentication requirements, rate limiting, and usage guidelines for developers.',
       taskDescription: 'API documentation creation',
       targetModel: 'gpt-4o-mini',
       expectedComplexity: 'medium',
@@ -116,7 +119,8 @@ export function OptimizerComparison() {
     {
       id: 'long-conversational',
       name: 'Long Conversational Task',
-      prompt: 'I need you to act as an expert software architect and help me design a scalable microservices architecture for an e-commerce platform. Please consider factors like data consistency, service communication, load balancing, monitoring, security, and deployment strategies. Provide detailed explanations and examples.',
+      prompt:
+        'I need you to act as an expert software architect and help me design a scalable microservices architecture for an e-commerce platform. Please consider factors like data consistency, service communication, load balancing, monitoring, security, and deployment strategies. Provide detailed explanations and examples.',
       taskDescription: 'Software architecture consultation',
       targetModel: 'gpt-4o',
       expectedComplexity: 'complex',
@@ -343,12 +347,8 @@ export function OptimizerComparison() {
               </CardHeader>
               <CardContent>
                 <div className="text-center p-6 bg-yellow-50 rounded-lg">
-                  <div className="text-3xl font-bold text-yellow-600 mb-2">
-                    {overallStats.overallWinner}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Best average performance across all tests
-                  </div>
+                  <div className="text-3xl font-bold text-yellow-600 mb-2">{overallStats.overallWinner}</div>
+                  <div className="text-sm text-gray-600">Best average performance across all tests</div>
                 </div>
               </CardContent>
             </Card>

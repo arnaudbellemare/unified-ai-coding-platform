@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { DevAuth } from './dev-auth'
 
 /**
  * Simple user identification using GitHub OAuth
@@ -16,6 +17,17 @@ export interface SimpleUser {
  * Get user from GitHub token (simplified version)
  */
 export async function getCurrentUser(request: NextRequest): Promise<SimpleUser | null> {
+  // Check if development mode is enabled
+  if (DevAuth.isDevMode()) {
+    const devUser = DevAuth.getCurrentUser()
+    return {
+      id: devUser.id,
+      username: devUser.username,
+      name: devUser.name,
+      avatar_url: devUser.image || 'https://avatars.githubusercontent.com/u/1?v=4',
+    }
+  }
+
   try {
     // Try to get GitHub token from cookie
     const githubToken = request.cookies.get('github_token')?.value
@@ -62,6 +74,17 @@ export function generateUserId(githubUser: SimpleUser): string {
  * Check if user is authenticated
  */
 export async function requireAuth(request: NextRequest): Promise<SimpleUser> {
+  // Check if development mode is enabled
+  if (DevAuth.isDevMode()) {
+    const devUser = DevAuth.getCurrentUser()
+    return {
+      id: devUser.id,
+      username: devUser.username,
+      name: devUser.name,
+      avatar_url: devUser.image || 'https://avatars.githubusercontent.com/u/1?v=4',
+    }
+  }
+
   const user = await getCurrentUser(request)
 
   if (!user) {

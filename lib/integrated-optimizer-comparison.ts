@@ -65,7 +65,8 @@ export class IntegratedOptimizerComparison {
     {
       id: 'simple-coding',
       name: 'Simple Coding Task',
-      prompt: 'Write a function that takes two numbers and returns their sum. Make sure to handle edge cases and add proper error handling.',
+      prompt:
+        'Write a function that takes two numbers and returns their sum. Make sure to handle edge cases and add proper error handling.',
       taskDescription: 'Create a simple addition function with error handling',
       targetModel: 'gpt-4o-mini',
       expectedComplexity: 'simple',
@@ -74,7 +75,8 @@ export class IntegratedOptimizerComparison {
     {
       id: 'complex-analysis',
       name: 'Complex Analysis Task',
-      prompt: 'Analyze the performance of our machine learning model across different datasets. Consider accuracy, precision, recall, F1-score, and provide recommendations for improvement. Include statistical significance testing and confidence intervals.',
+      prompt:
+        'Analyze the performance of our machine learning model across different datasets. Consider accuracy, precision, recall, F1-score, and provide recommendations for improvement. Include statistical significance testing and confidence intervals.',
       taskDescription: 'Comprehensive ML model performance analysis',
       targetModel: 'gpt-4o',
       expectedComplexity: 'complex',
@@ -83,7 +85,8 @@ export class IntegratedOptimizerComparison {
     {
       id: 'medium-documentation',
       name: 'Medium Documentation Task',
-      prompt: 'Create comprehensive documentation for our API endpoints. Include request/response examples, error codes, authentication requirements, rate limiting, and usage guidelines for developers.',
+      prompt:
+        'Create comprehensive documentation for our API endpoints. Include request/response examples, error codes, authentication requirements, rate limiting, and usage guidelines for developers.',
       taskDescription: 'API documentation creation',
       targetModel: 'gpt-4o-mini',
       expectedComplexity: 'medium',
@@ -92,7 +95,8 @@ export class IntegratedOptimizerComparison {
     {
       id: 'long-conversational',
       name: 'Long Conversational Task',
-      prompt: 'I need you to act as an expert software architect and help me design a scalable microservices architecture for an e-commerce platform. Please consider factors like data consistency, service communication, load balancing, monitoring, security, and deployment strategies. Provide detailed explanations and examples.',
+      prompt:
+        'I need you to act as an expert software architect and help me design a scalable microservices architecture for an e-commerce platform. Please consider factors like data consistency, service communication, load balancing, monitoring, security, and deployment strategies. Provide detailed explanations and examples.',
       taskDescription: 'Software architecture consultation',
       targetModel: 'gpt-4o',
       expectedComplexity: 'complex',
@@ -101,7 +105,8 @@ export class IntegratedOptimizerComparison {
     {
       id: 'few-shot-example',
       name: 'Few-Shot Example Task',
-      prompt: 'Example 1: Convert "hello world" to uppercase -> "HELLO WORLD"\nExample 2: Convert "test case" to uppercase -> "TEST CASE"\nNow convert "optimization test" to uppercase.',
+      prompt:
+        'Example 1: Convert "hello world" to uppercase -> "HELLO WORLD"\nExample 2: Convert "test case" to uppercase -> "TEST CASE"\nNow convert "optimization test" to uppercase.',
       taskDescription: 'String conversion with examples',
       targetModel: 'gpt-3.5-turbo',
       expectedComplexity: 'simple',
@@ -114,17 +119,19 @@ export class IntegratedOptimizerComparison {
    */
   async runComprehensiveComparison(): Promise<OptimizationComparisonResult[]> {
     console.log('🔬 Starting comprehensive optimizer comparison...')
-    
+
     const results: OptimizationComparisonResult[] = []
 
     for (const testCase of this.testCases) {
       console.log(`\n📊 Testing: ${testCase.name}`)
       console.log(`Domain: ${testCase.expectedDomain}, Complexity: ${testCase.expectedComplexity}`)
-      
+
       const comparisonResult = await this.compareOptimizers(testCase)
       results.push(comparisonResult)
-      
-      console.log(`🏆 Winner: ${comparisonResult.winner.optimizer} (Score: ${comparisonResult.winner.score.toFixed(2)})`)
+
+      console.log(
+        `🏆 Winner: ${comparisonResult.winner.optimizer} (Score: ${comparisonResult.winner.score.toFixed(2)})`,
+      )
     }
 
     return results
@@ -135,7 +142,7 @@ export class IntegratedOptimizerComparison {
    */
   async compareOptimizers(testCase: TestCase): Promise<OptimizationComparisonResult> {
     const startTime = Date.now()
-    
+
     // Run all optimizers in parallel
     const [capoResult, gepaResult, researchResult, cloudflareResult] = await Promise.all([
       this.runCAPOHybrid(testCase),
@@ -172,7 +179,7 @@ export class IntegratedOptimizerComparison {
    */
   private async runCAPOHybrid(testCase: TestCase): Promise<OptimizationResult> {
     const startTime = Date.now()
-    
+
     try {
       const result = await hybridOptimizer.optimize(
         testCase.prompt,
@@ -182,13 +189,13 @@ export class IntegratedOptimizerComparison {
           requirements: ['accuracy', 'cost-efficiency'],
           constraints: ['token-limit', 'response-time'],
         },
-        []
+        [],
       )
 
       const executionTime = Date.now() - startTime
       const originalTokens = await TokenCounter.countTokens(testCase.prompt, testCase.targetModel)
       const optimizedTokens = await TokenCounter.countTokens(result.optimizedPrompt, testCase.targetModel)
-      
+
       return {
         optimizer: 'CAPO Hybrid Enhanced',
         optimizedPrompt: result.optimizedPrompt,
@@ -205,10 +212,7 @@ export class IntegratedOptimizerComparison {
           'Multi-objective optimization',
           'High reliability',
         ],
-        weaknesses: [
-          'May be slower for simple tasks',
-          'Complex setup required',
-        ],
+        weaknesses: ['May be slower for simple tasks', 'Complex setup required'],
       }
     } catch (error) {
       console.error('CAPO Hybrid optimization failed:', error)
@@ -221,17 +225,13 @@ export class IntegratedOptimizerComparison {
    */
   private async runGEPAGenetic(testCase: TestCase): Promise<OptimizationResult> {
     const startTime = Date.now()
-    
+
     try {
-      const result = await gepaOptimizer.optimizePrompt(
-        testCase.prompt,
-        testCase.targetModel,
-        0.8
-      )
+      const result = await gepaOptimizer.optimizePrompt(testCase.prompt, testCase.targetModel, 0.8)
 
       const executionTime = Date.now() - startTime
       const originalTokens = await TokenCounter.countTokens(testCase.prompt, testCase.targetModel)
-      
+
       return {
         optimizer: 'GEPA Genetic Algorithm',
         optimizedPrompt: result.bestSolution.prompt,
@@ -242,17 +242,8 @@ export class IntegratedOptimizerComparison {
         reliability: 0.85, // Good reliability with evolutionary approach
         strategies: ['genetic_evolution', 'population_optimization', 'fitness_scoring'],
         score: this.calculateScore(originalTokens, result.bestSolution.tokens, result.costSavings, executionTime, 0.85),
-        strengths: [
-          'Evolutionary learning',
-          'Quality preservation',
-          'Adaptive optimization',
-          'Scalable approach',
-        ],
-        weaknesses: [
-          'Slower for simple tasks',
-          'Requires multiple generations',
-          'Higher computational cost',
-        ],
+        strengths: ['Evolutionary learning', 'Quality preservation', 'Adaptive optimization', 'Scalable approach'],
+        weaknesses: ['Slower for simple tasks', 'Requires multiple generations', 'Higher computational cost'],
       }
     } catch (error) {
       console.error('GEPA Genetic optimization failed:', error)
@@ -265,16 +256,16 @@ export class IntegratedOptimizerComparison {
    */
   private async runResearchBacked(testCase: TestCase): Promise<OptimizationResult> {
     const startTime = Date.now()
-    
+
     try {
       const result = await researchBackedOptimizer.optimizeWithResearch(
         testCase.prompt,
         testCase.taskDescription,
-        testCase.targetModel
+        testCase.targetModel,
       )
 
       const executionTime = Date.now() - startTime
-      
+
       return {
         optimizer: 'Research-Backed Optimization',
         optimizedPrompt: result.optimizedPrompt,
@@ -289,18 +280,10 @@ export class IntegratedOptimizerComparison {
           Math.floor(result.optimizedPrompt.length / 4),
           result.costReduction,
           executionTime,
-          0.95
+          0.95,
         ),
-        strengths: [
-          'Based on academic research',
-          'High reliability',
-          'Fast execution',
-          'Proven effectiveness',
-        ],
-        weaknesses: [
-          'May not adapt to new patterns',
-          'Limited to research findings',
-        ],
+        strengths: ['Based on academic research', 'High reliability', 'Fast execution', 'Proven effectiveness'],
+        weaknesses: ['May not adapt to new patterns', 'Limited to research findings'],
       }
     } catch (error) {
       console.error('Research-Backed optimization failed:', error)
@@ -313,16 +296,16 @@ export class IntegratedOptimizerComparison {
    */
   private async runCloudflareCodeMode(testCase: TestCase): Promise<OptimizationResult> {
     const startTime = Date.now()
-    
+
     try {
       const result = await cloudflareCodeModeOptimizer.optimizeWithCodeMode(
         testCase.prompt,
         testCase.taskDescription,
-        testCase.targetModel
+        testCase.targetModel,
       )
 
       const executionTime = Date.now() - startTime
-      
+
       return {
         optimizer: 'Cloudflare Code Mode',
         optimizedPrompt: result.optimizedCode,
@@ -337,19 +320,10 @@ export class IntegratedOptimizerComparison {
           Math.floor(result.optimizedCode.length / 4),
           result.costReduction,
           executionTime,
-          0.8
+          0.8,
         ),
-        strengths: [
-          'Cutting-edge technology',
-          'High performance',
-          'Cost-effective execution',
-          'Modern architecture',
-        ],
-        weaknesses: [
-          'Newer technology',
-          'May have compatibility issues',
-          'Requires Cloudflare infrastructure',
-        ],
+        strengths: ['Cutting-edge technology', 'High performance', 'Cost-effective execution', 'Modern architecture'],
+        weaknesses: ['Newer technology', 'May have compatibility issues', 'Requires Cloudflare infrastructure'],
       }
     } catch (error) {
       console.error('Cloudflare Code Mode optimization failed:', error)
@@ -365,7 +339,7 @@ export class IntegratedOptimizerComparison {
     optimizedTokens: number,
     costReduction: number,
     executionTime: number,
-    reliability: number
+    reliability: number,
   ): number {
     const tokenEfficiency = (originalTokens - optimizedTokens) / originalTokens
     const costEfficiency = costReduction
@@ -386,7 +360,7 @@ export class IntegratedOptimizerComparison {
     }))
 
     const winner = scores.reduce((best, current) => (current.score > best.score ? current : best))
-    
+
     let reasoning = ''
     if (winner.score > 80) {
       reasoning = 'Excellent performance across all metrics'
@@ -410,26 +384,22 @@ export class IntegratedOptimizerComparison {
    */
   private analyzePerformance(results: any): any {
     const metrics = Object.values(results) as OptimizationResult[]
-    
-    const bestTokenReduction = metrics.reduce((best, current) => 
-      current.tokenReduction > best.tokenReduction ? current : best
+
+    const bestTokenReduction = metrics.reduce((best, current) =>
+      current.tokenReduction > best.tokenReduction ? current : best,
     )
-    
-    const bestCostReduction = metrics.reduce((best, current) => 
-      current.costReduction > best.costReduction ? current : best
+
+    const bestCostReduction = metrics.reduce((best, current) =>
+      current.costReduction > best.costReduction ? current : best,
     )
-    
-    const bestAccuracyImprovement = metrics.reduce((best, current) => 
-      current.accuracyImprovement > best.accuracyImprovement ? current : best
+
+    const bestAccuracyImprovement = metrics.reduce((best, current) =>
+      current.accuracyImprovement > best.accuracyImprovement ? current : best,
     )
-    
-    const bestSpeed = metrics.reduce((best, current) => 
-      current.executionTime < best.executionTime ? current : best
-    )
-    
-    const mostReliable = metrics.reduce((best, current) => 
-      current.reliability > best.reliability ? current : best
-    )
+
+    const bestSpeed = metrics.reduce((best, current) => (current.executionTime < best.executionTime ? current : best))
+
+    const mostReliable = metrics.reduce((best, current) => (current.reliability > best.reliability ? current : best))
 
     return {
       bestTokenReduction: bestTokenReduction.optimizer,
@@ -446,7 +416,7 @@ export class IntegratedOptimizerComparison {
   private generateRecommendations(results: any, testCase: TestCase): any {
     const winner = this.determineWinner(results)
     const performanceAnalysis = this.analyzePerformance(results)
-    
+
     let useFor = ''
     let avoidFor = ''
     let bestOverall = winner.optimizer

@@ -15,6 +15,13 @@ import { getCurrentUser, requireAuth, SimpleUsageTracker } from '@/lib/auth/simp
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if development mode is enabled
+    if (process.env.NEXT_PUBLIC_DEV_MODE === 'true') {
+      const { getMockTasks } = await import('@/lib/config/dev-config')
+      const mockTasks = getMockTasks()
+      return NextResponse.json({ tasks: mockTasks })
+    }
+
     // Get current user
     const user = await getCurrentUser(request)
 

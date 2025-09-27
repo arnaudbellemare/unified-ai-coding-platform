@@ -4,6 +4,13 @@ import { getCurrentUser, requireAuth } from '@/lib/auth/simple-auth'
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if development mode is enabled
+    if (process.env.NEXT_PUBLIC_DEV_MODE === 'true') {
+      const { getMockComparisonResult } = await import('@/lib/config/dev-config')
+      const mockResult = getMockComparisonResult()
+      return NextResponse.json(mockResult)
+    }
+
     // Require authentication
     const user = await requireAuth(request)
     
@@ -112,10 +119,15 @@ export async function GET(request: NextRequest) {
  */
 function calculateOverallStatistics(results: any[]): any {
   const optimizerStats: Record<string, any> = {}
-  
+
   // Initialize stats for each optimizer
-  const optimizers = ['CAPO Hybrid Enhanced', 'GEPA Genetic Algorithm', 'Research-Backed Optimization', 'Cloudflare Code Mode']
-  optimizers.forEach(opt => {
+  const optimizers = [
+    'CAPO Hybrid Enhanced',
+    'GEPA Genetic Algorithm',
+    'Research-Backed Optimization',
+    'Cloudflare Code Mode',
+  ]
+  optimizers.forEach((opt) => {
     optimizerStats[opt] = {
       wins: 0,
       totalScore: 0,
@@ -126,13 +138,13 @@ function calculateOverallStatistics(results: any[]): any {
   })
 
   // Calculate stats from results
-  results.forEach(result => {
+  results.forEach((result) => {
     Object.values(result.results).forEach((optResult: any) => {
       const optimizer = optResult.optimizer
       if (optimizerStats[optimizer]) {
         optimizerStats[optimizer].totalScore += optResult.score
         optimizerStats[optimizer].totalTests += 1
-        
+
         if (result.winner.optimizer === optimizer) {
           optimizerStats[optimizer].wins += 1
         }
@@ -147,7 +159,7 @@ function calculateOverallStatistics(results: any[]): any {
   Object.entries(optimizerStats).forEach(([optimizer, stats]) => {
     stats.avgScore = stats.totalTests > 0 ? stats.totalScore / stats.totalTests : 0
     stats.winRate = stats.totalTests > 0 ? (stats.wins / stats.totalTests) * 100 : 0
-    
+
     if (stats.avgScore > highestAvgScore) {
       highestAvgScore = stats.avgScore
       overallWinner = optimizer
@@ -159,11 +171,13 @@ function calculateOverallStatistics(results: any[]): any {
     optimizerStats,
     totalTests: results.length,
     summary: {
-      mostWins: Object.entries(optimizerStats).reduce((best, [name, stats]) => 
-        stats.wins > best.wins ? { name, ...stats } : best, { name: '', wins: 0 }
+      mostWins: Object.entries(optimizerStats).reduce(
+        (best, [name, stats]) => (stats.wins > best.wins ? { name, ...stats } : best),
+        { name: '', wins: 0 },
       ),
-      highestAvgScore: Object.entries(optimizerStats).reduce((best, [name, stats]) => 
-        stats.avgScore > best.avgScore ? { name, ...stats } : best, { name: '', avgScore: 0 }
+      highestAvgScore: Object.entries(optimizerStats).reduce(
+        (best, [name, stats]) => (stats.avgScore > best.avgScore ? { name, ...stats } : best),
+        { name: '', avgScore: 0 },
       ),
     },
   }
