@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     // Require authentication
     const user = await requireAuth(request)
-    
+
     const body = await request.json()
     const { testCase, runAllTests = false } = body
 

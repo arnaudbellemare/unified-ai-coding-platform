@@ -42,7 +42,7 @@ export class DevAuth {
       console.log('🔧 Development mode: Bypassing authentication')
       return this.devUser
     }
-    
+
     throw new Error('Authentication required - set up environment variables for production')
   }
 
@@ -53,7 +53,7 @@ export class DevAuth {
     if (this.isDevMode()) {
       return this.devUser
     }
-    
+
     return null
   }
 }

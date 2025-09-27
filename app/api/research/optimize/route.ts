@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     // Require authentication
     const user = await requireAuth(request)
-    
+
     const body = await request.json()
     const { prompt, taskDescription, targetModel = 'gpt-4o-mini', parameters } = body
 

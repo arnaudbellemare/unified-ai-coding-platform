@@ -6,7 +6,7 @@
 export const devConfig = {
   // Development mode flag
   isDevMode: process.env.NEXT_PUBLIC_DEV_MODE === 'true',
-  
+
   // Mock database configuration
   database: {
     enabled: false,
@@ -16,22 +16,28 @@ export const devConfig = {
           id: 'dev-task-1',
           title: 'Sample Task 1',
           description: 'This is a sample task for development',
+          prompt: 'Create a simple React component that displays user information',
           status: 'pending',
           createdAt: new Date().toISOString(),
           userId: 'dev-user-123',
+          repoUrl: 'https://github.com/example/repo1',
+          branchName: 'feature/sample-task-1',
         },
         {
-          id: 'dev-task-2', 
+          id: 'dev-task-2',
           title: 'Sample Task 2',
           description: 'Another sample task for testing',
+          prompt: 'Implement a cost optimization algorithm for API calls',
           status: 'completed',
           createdAt: new Date(Date.now() - 86400000).toISOString(),
           userId: 'dev-user-123',
+          repoUrl: 'https://github.com/example/repo2',
+          branchName: 'feature/sample-task-2',
         },
       ],
     },
   },
-  
+
   // Mock AI configuration
   ai: {
     enabled: true,
@@ -62,7 +68,7 @@ export const devConfig = {
       },
     },
   },
-  
+
   // Development user
   user: {
     id: 'dev-user-123',
@@ -107,31 +113,32 @@ export function getMockOptimizationResult(type: 'basic' | 'gepa' | 'research' | 
           savings: devConfig.ai.mockResponses.optimization,
         },
       }
-    
+
     case 'gepa':
       return {
         ...baseResult,
         results: devConfig.ai.mockResponses.gepa,
       }
-    
+
     case 'research':
       return {
         ...baseResult,
         results: devConfig.ai.mockResponses.research,
       }
-    
+
     case 'cloudflare':
       return {
         ...baseResult,
         results: {
-          optimizedCode: '// Mock TypeScript code for testing\nexport default {\n  async fetch() {\n    return new Response("Hello World")\n  }\n}',
+          optimizedCode:
+            '// Mock TypeScript code for testing\nexport default {\n  async fetch() {\n    return new Response("Hello World")\n  }\n}',
           tokenReduction: 40,
           costReduction: 0.003,
           executionTimeReduction: 150,
           strategies: ['dev_cloudflare_optimization'],
         },
       }
-    
+
     default:
       return baseResult
   }
@@ -179,7 +186,7 @@ export function getMockComparisonResult() {
             score: 79.2,
             tokenReduction: 40,
             costReduction: 0.003,
-            accuracyImprovement: 0.10,
+            accuracyImprovement: 0.1,
             executionTime: 600,
             reliability: 0.8,
           },
