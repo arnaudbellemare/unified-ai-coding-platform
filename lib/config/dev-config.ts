@@ -74,6 +74,32 @@ export const devConfig = {
           totalGenerations: 5,
         },
         totalGenerations: 5,
+        population: [
+          {
+            id: 'sol-1',
+            prompt: 'Optimized solution 1 for testing',
+            tokens: 45,
+            cost: 0.00008,
+            quality: 0.82,
+            fitness: 0.76,
+          },
+          {
+            id: 'sol-2',
+            prompt: 'Alternative optimized solution 2',
+            tokens: 52,
+            cost: 0.00009,
+            quality: 0.80,
+            fitness: 0.74,
+          },
+          {
+            id: 'sol-3',
+            prompt: 'Third generation solution 3',
+            tokens: 48,
+            cost: 0.000085,
+            quality: 0.83,
+            fitness: 0.77,
+          },
+        ],
         evolutionHistory: [
           { generation: 1, fitness: 0.65, tokens: 80 },
           { generation: 2, fitness: 0.72, tokens: 65 },
