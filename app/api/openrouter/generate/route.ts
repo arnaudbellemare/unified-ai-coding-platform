@@ -4,32 +4,7 @@ import { PrivyOpenRouterAuth } from '@/lib/openrouter/privy-auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if development mode is enabled (only for local development)
-    if (process.env.NEXT_PUBLIC_DEV_MODE === 'true' && 
-        process.env.VERCEL !== '1' && 
-        process.env.NODE_ENV === 'development') {
-      // Return mock response for development
-      return NextResponse.json({
-        success: true,
-        message: 'Mock response for development mode',
-        data: {
-          id: 'mock-response-id',
-          model: 'openai/gpt-4o-mini',
-          choices: [{
-            message: {
-              role: 'assistant',
-              content: 'This is a mock response for development mode. In production, this would be a real AI-generated response.'
-            },
-            finish_reason: 'stop'
-          }],
-          usage: {
-            prompt_tokens: 50,
-            completion_tokens: 25,
-            total_tokens: 75
-          }
-        }
-      })
-    }
+    // Production mode - real generation
 
     const { modelId, messages, options, accessToken } = await request.json()
 

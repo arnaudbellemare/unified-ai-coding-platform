@@ -4,16 +4,7 @@ import { getCurrentUser, requireAuth } from '@/lib/auth/simple-auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if development mode is enabled (only for local development)
-    if (
-      process.env.NEXT_PUBLIC_DEV_MODE === 'true' &&
-      process.env.VERCEL !== '1' &&
-      process.env.NODE_ENV === 'development'
-    ) {
-      const { getMockOptimizationResult } = await import('@/lib/config/dev-config')
-      const mockResult = getMockOptimizationResult('research')
-      return NextResponse.json(mockResult)
-    }
+    // Production mode - real optimization
 
     // Require authentication
     const user = await requireAuth(request)

@@ -7,33 +7,7 @@ import { createSandbox } from '@/lib/sandbox/creation'
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if development mode is enabled (only for local development)
-    if (process.env.NEXT_PUBLIC_DEV_MODE === 'true' && 
-        process.env.VERCEL !== '1' && 
-        process.env.NODE_ENV === 'development') {
-      // Return mock vibe-code response for development
-      return NextResponse.json({
-        success: true,
-        message: 'Mock vibe-code response for development mode',
-        data: {
-          id: 'mock-vibe-code-response-id',
-          model: 'openai/gpt-4o-mini',
-          code: `// Mock generated code for development mode
-function mockFunction() {
-  console.log('This is mock code for development');
-  return 'Hello from development mode!';
-}
-
-export default mockFunction;`,
-          explanation: 'This is a mock code generation response for development mode. In production, this would be real AI-generated code.',
-          usage: {
-            prompt_tokens: 75,
-            completion_tokens: 40,
-            total_tokens: 115
-          }
-        }
-      })
-    }
+    // Production mode - real code generation
 
     const { modelId, prompt, useSandbox = true, accessToken } = await request.json()
 
