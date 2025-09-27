@@ -49,15 +49,34 @@ export const devConfig = {
         strategies: ['dev_mock_optimization'],
       },
       gepa: {
-        bestSolution: {
+        original: {
+          prompt: 'Original prompt for GEPA testing',
+          tokens: 100,
+          cost: 0.002,
+          quality: 0.75,
+        },
+        optimized: {
           prompt: 'Optimized prompt for development testing',
           tokens: 50,
           cost: 0.0001,
           quality: 0.85,
           fitness: 0.78,
         },
-        costSavings: 0.0005,
+        savings: {
+          tokenReduction: 50,
+          tokenReductionPercentage: 50.0,
+          costReduction: 0.0019,
+          costReductionPercentage: 95.0,
+          costSavings: 0.0005,
+        },
         totalGenerations: 5,
+        evolutionHistory: [
+          { generation: 1, fitness: 0.65, tokens: 80 },
+          { generation: 2, fitness: 0.72, tokens: 65 },
+          { generation: 3, fitness: 0.75, tokens: 55 },
+          { generation: 4, fitness: 0.77, tokens: 52 },
+          { generation: 5, fitness: 0.78, tokens: 50 },
+        ],
       },
       research: {
         optimizedPrompt: 'Research-optimized prompt for development',
