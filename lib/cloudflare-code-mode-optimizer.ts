@@ -99,7 +99,7 @@ export class CloudflareCodeModeOptimizer {
       ],
       codeModeBenefits,
       dynamicWorkerBenefits,
-      totalCostSavings: costReduction + (executionTimeReduction * 0.001), // Include execution savings
+      totalCostSavings: costReduction + executionTimeReduction * 0.001, // Include execution savings
       monthlyProjection,
     }
   }
@@ -107,11 +107,7 @@ export class CloudflareCodeModeOptimizer {
   /**
    * Convert prompt to TypeScript API code (Code Mode approach)
    */
-  private async convertToCodeMode(
-    prompt: string,
-    taskDescription: string,
-    targetModel: string,
-  ): Promise<string> {
+  private async convertToCodeMode(prompt: string, taskDescription: string, targetModel: string): Promise<string> {
     const codeModePrompt = `Convert this prompt into efficient TypeScript code that can be executed in a Cloudflare Worker isolate. Use the Code Mode approach to minimize LLM token usage and maximize computation efficiency.
 
 Original Prompt: ${prompt}
@@ -206,23 +202,26 @@ interface Env {
   /**
    * Calculate Code Mode benefits based on Kenton Varda's analysis
    */
-  private calculateCodeModeBenefits(originalTokens: number, optimizedCode: string): {
+  private calculateCodeModeBenefits(
+    originalTokens: number,
+    optimizedCode: string,
+  ): {
     llmAccuracyImprovement: number
     tokenEfficiency: number
     computationOffload: number
     iOReduction: number
   } {
     // Based on the 2023 arXiv study: 30% higher accuracy with code
-    const llmAccuracyImprovement = 0.30
+    const llmAccuracyImprovement = 0.3
 
     // Code Mode reduces token usage by 60% (500 tokens -> 200 tokens)
-    const tokenEfficiency = 0.60
+    const tokenEfficiency = 0.6
 
     // Computation offloaded to isolates reduces LLM processing
-    const computationOffload = 0.70
+    const computationOffload = 0.7
 
     // I/O reduction through optimized data flow
-    const iOReduction = 0.50
+    const iOReduction = 0.5
 
     return {
       llmAccuracyImprovement,
@@ -242,7 +241,7 @@ interface Env {
     resourceOptimization: number
   } {
     // 90% faster startup (200ms -> 2ms)
-    const startupTimeReduction = 0.90
+    const startupTimeReduction = 0.9
 
     // Eliminate idle compute costs
     const idleCostElimination = 0.95
@@ -251,7 +250,7 @@ interface Env {
     const sandboxEfficiency = 0.85
 
     // Resource optimization through capability-based security
-    const resourceOptimization = 0.80
+    const resourceOptimization = 0.8
 
     return {
       startupTimeReduction,
@@ -269,7 +268,7 @@ interface Env {
     const baseExecutionTime = originalTokens * 0.1 // 0.1ms per token
 
     // Code Mode reduces execution time by 60%
-    const codeModeReduction = baseExecutionTime * 0.60
+    const codeModeReduction = baseExecutionTime * 0.6
 
     // Dynamic Worker Loading reduces startup overhead
     const workerStartupReduction = 198 // 200ms - 2ms

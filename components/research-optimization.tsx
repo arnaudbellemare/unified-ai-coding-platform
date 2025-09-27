@@ -8,17 +8,17 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Microscope, 
-  TrendingUp, 
-  DollarSign, 
-  Target, 
-  Zap, 
+import {
+  Microscope,
+  TrendingUp,
+  DollarSign,
+  Target,
+  Zap,
   Brain,
   Sparkles,
   CheckCircle,
   BookOpen,
-  Lightbulb
+  Lightbulb,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -288,7 +288,9 @@ export function ResearchOptimization() {
                       <div className="text-sm text-gray-600">Tokens Saved</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">${results.savings.costReduction.toFixed(6)}</div>
+                      <div className="text-2xl font-bold text-green-600">
+                        ${results.savings.costReduction.toFixed(6)}
+                      </div>
                       <div className="text-sm text-gray-600">Cost Saved</div>
                     </div>
                     <div className="text-center">
@@ -298,7 +300,9 @@ export function ResearchOptimization() {
                       <div className="text-sm text-gray-600">Accuracy Gain</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-orange-600">${results.savings.estimatedMonthlySavings.toFixed(2)}</div>
+                      <div className="text-2xl font-bold text-orange-600">
+                        ${results.savings.estimatedMonthlySavings.toFixed(2)}
+                      </div>
                       <div className="text-sm text-gray-600">Monthly Savings</div>
                     </div>
                   </div>
@@ -325,9 +329,7 @@ export function ResearchOptimization() {
                         <span className="text-sm">Prompt length optimization</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={results.researchInsights.zeroShotApplied ? 'default' : 'secondary'}>
-                          MIT
-                        </Badge>
+                        <Badge variant={results.researchInsights.zeroShotApplied ? 'default' : 'secondary'}>MIT</Badge>
                         <span className="text-sm">Zero-shot conversion</span>
                       </div>
                       <div className="flex items-center gap-2">

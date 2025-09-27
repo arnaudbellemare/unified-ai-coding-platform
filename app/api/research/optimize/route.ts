@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     // Require authentication
     const user = await requireAuth(request)
-    
+
     const body = await request.json()
     const { prompt, taskDescription, targetModel = 'gpt-4o-mini', parameters } = body
 
@@ -25,7 +25,9 @@ export async function POST(request: NextRequest) {
     )
 
     console.log(`✅ Research-backed optimization completed`)
-    console.log(`📊 Token reduction: ${results.tokenReduction} (${((results.tokenReduction / (results.tokenReduction + Math.floor(results.optimizedPrompt.length / 4))) * 100).toFixed(1)}%)`)
+    console.log(
+      `📊 Token reduction: ${results.tokenReduction} (${((results.tokenReduction / (results.tokenReduction + Math.floor(results.optimizedPrompt.length / 4))) * 100).toFixed(1)}%)`,
+    )
     console.log(`💰 Cost reduction: $${results.costReduction.toFixed(6)}`)
     console.log(`📈 Performance improvement: ${(results.performanceImprovement * 100).toFixed(1)}%`)
 
@@ -35,20 +37,26 @@ export async function POST(request: NextRequest) {
         original: {
           prompt,
           tokens: results.tokenReduction + Math.floor(results.optimizedPrompt.length / 4),
-          cost: results.costReduction + (results.optimizedPrompt.length * 0.002 / 1000),
+          cost: results.costReduction + (results.optimizedPrompt.length * 0.002) / 1000,
         },
         optimized: {
           prompt: results.optimizedPrompt,
           tokens: Math.floor(results.optimizedPrompt.length / 4),
-          cost: results.optimizedPrompt.length * 0.002 / 1000,
+          cost: (results.optimizedPrompt.length * 0.002) / 1000,
           performanceImprovement: results.performanceImprovement,
         },
         savings: {
           tokenReduction: results.tokenReduction,
           costReduction: results.costReduction,
           performanceImprovement: results.performanceImprovement,
-          tokenReductionPercentage: ((results.tokenReduction / (results.tokenReduction + Math.floor(results.optimizedPrompt.length / 4))) * 100).toFixed(1),
-          costReductionPercentage: ((results.costReduction / (results.costReduction + (results.optimizedPrompt.length * 0.002 / 1000))) * 100).toFixed(1),
+          tokenReductionPercentage: (
+            (results.tokenReduction / (results.tokenReduction + Math.floor(results.optimizedPrompt.length / 4))) *
+            100
+          ).toFixed(1),
+          costReductionPercentage: (
+            (results.costReduction / (results.costReduction + (results.optimizedPrompt.length * 0.002) / 1000)) *
+            100
+          ).toFixed(1),
           estimatedMonthlySavings: results.costSavings.totalMonthlySavings,
         },
         researchInsights: results.researchInsights,

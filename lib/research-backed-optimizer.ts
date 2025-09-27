@@ -197,7 +197,7 @@ export class ResearchBackedOptimizer {
 
     // Add clear instructions instead
     const clearInstructions = `Task: ${taskDescription}\n\nInstructions: ${zeroShotPrompt}`
-    
+
     console.log('🎯 MIT optimization: Converted to zero-shot prompt')
     return clearInstructions
   }
@@ -216,7 +216,7 @@ export class ResearchBackedOptimizer {
 
     const optimalTemp = modelTemperatures[targetModel] || 0.1
     console.log(`🌡️ Google optimization: Temperature set to ${optimalTemp} for ${targetModel}`)
-    
+
     // Return prompt with temperature hint (will be used by API calls)
     return prompt
   }
@@ -233,7 +233,7 @@ export class ResearchBackedOptimizer {
     ]
 
     let optimized = prompt
-    rolePlayingPatterns.forEach(pattern => {
+    rolePlayingPatterns.forEach((pattern) => {
       optimized = optimized.replace(pattern, '').trim()
     })
 
@@ -246,21 +246,16 @@ export class ResearchBackedOptimizer {
    */
   private prioritizeUserPrompts(prompt: string): string {
     // Convert system prompt patterns to user prompt format
-    const systemPatterns = [
-      /System: /gi,
-      /You must /gi,
-      /You should /gi,
-      /You need to /gi,
-    ]
+    const systemPatterns = [/System: /gi, /You must /gi, /You should /gi, /You need to /gi]
 
     let optimized = prompt
-    systemPatterns.forEach(pattern => {
+    systemPatterns.forEach((pattern) => {
       optimized = optimized.replace(pattern, '').trim()
     })
 
     // Add user context
     optimized = `User request: ${optimized}`
-    
+
     console.log('👤 OpenAI optimization: Converted to user prompt format')
     return optimized
   }
@@ -270,9 +265,7 @@ export class ResearchBackedOptimizer {
    */
   private applyEffectiveFormatting(prompt: string): string {
     // Remove ALL CAPS and excessive emojis
-    let optimized = prompt
-      .replace(/[A-Z]{3,}/g, (match) => match.toLowerCase())
-      .replace(/[^\w\s.,!?]/g, '') // Remove excessive punctuation/emojis
+    let optimized = prompt.replace(/[A-Z]{3,}/g, (match) => match.toLowerCase()).replace(/[^\w\s.,!?]/g, '') // Remove excessive punctuation/emojis
 
     // Add XML tags for structure
     if (!optimized.includes('<task>')) {
@@ -357,7 +350,7 @@ export class ResearchBackedOptimizer {
    */
   private applyInstructionCaching(prompt: string): string {
     const instructionHash = this.getInstructionHash(prompt)
-    
+
     if (this.instructionCache.has(instructionHash)) {
       console.log('💾 Cache optimization: Using cached instructions')
       return this.instructionCache.get(instructionHash)!
@@ -379,7 +372,7 @@ export class ResearchBackedOptimizer {
     // Chunk large inputs
     const chunks = this.chunkText(prompt, 4000)
     console.log(`📦 Chunking optimization: Split into ${chunks.length} chunks`)
-    
+
     return chunks[0] // Return first chunk for processing
   }
 
@@ -387,7 +380,7 @@ export class ResearchBackedOptimizer {
   private extractKeyWords(words: string[]): string[] {
     // Extract important words, removing stop words
     const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'])
-    return words.filter(word => !stopWords.has(word.toLowerCase()) && word.length > 2)
+    return words.filter((word) => !stopWords.has(word.toLowerCase()) && word.length > 2)
   }
 
   private detectFewShot(prompt: string): boolean {
@@ -435,9 +428,9 @@ export class ResearchBackedOptimizer {
     // Based on research findings
     const lengthImprovement = original.length > optimized.length ? 0.15 : 0
     const formattingImprovement = 0.12 // XML/Markdown improvement
-    const zeroShotImprovement = this.detectFewShot(original) ? 0.20 : 0
+    const zeroShotImprovement = this.detectFewShot(original) ? 0.2 : 0
     const rolePlayingImprovement = this.detectRolePlaying(original) ? 0.31 : 0
-    
+
     return lengthImprovement + formattingImprovement + zeroShotImprovement + rolePlayingImprovement
   }
 
@@ -457,18 +450,18 @@ export class ResearchBackedOptimizer {
 
   private calculateMonthlySavings(costReduction: number, tokenReduction: number): number {
     const monthlyRequests = 10000 // Estimated monthly requests
-    return (costReduction + (tokenReduction * 0.002 / 1000)) * monthlyRequests
+    return (costReduction + (tokenReduction * 0.002) / 1000) * monthlyRequests
   }
 
   private calculateAccuracyImprovement(original: string, optimized: string): number {
     // Based on research findings
     let improvement = 0
-    
+
     if (this.detectRolePlaying(original)) improvement += 0.31
     if (this.detectPoorFormatting(original)) improvement += 0.23
-    if (this.detectFewShot(original)) improvement += 0.20
+    if (this.detectFewShot(original)) improvement += 0.2
     if (original.length > optimized.length) improvement += 0.15
-    
+
     return Math.min(improvement, 0.5) // Cap at 50% improvement
   }
 
