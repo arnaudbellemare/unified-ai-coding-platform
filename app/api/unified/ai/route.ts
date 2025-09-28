@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
       } catch (error) {
         console.log('OpenRouter models failed, using fallback:', error)
       }
-
+      
       // Fallback models when OpenRouter is not configured - with provider selection
       const fallbackModels = [
         {
