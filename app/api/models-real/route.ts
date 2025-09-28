@@ -35,14 +35,14 @@ export async function GET() {
       description: model.description || `${model.name} - ${model.context_length} context`,
       pricing: model.pricing,
       context_length: model.context_length,
-        providers: [
-          {
-            id: 'default-provider',
-            name: 'Default Provider',
-            latency: 100,
-            reliability: 0.95,
-          },
-        ],
+      providers: [
+        {
+          id: 'default-provider',
+          name: 'Default Provider',
+          latency: 100,
+          reliability: 0.95,
+        },
+      ],
       supportsProviderSelection: true,
       recommendedProvider: 'default-provider',
       providerMetrics: {

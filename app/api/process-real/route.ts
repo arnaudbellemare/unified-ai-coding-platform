@@ -90,8 +90,10 @@ export async function POST(request: NextRequest) {
     // Step 4: Calculate real costs
     const promptTokens = Math.ceil(optimizedPrompt.length / 4)
     const completionTokens = Math.ceil(aiResponse.content.length / 4)
-    const promptCost = (selectedModelData.pricing.prompt * promptTokens) / 1000000
-    const completionCost = (selectedModelData.pricing.completion * completionTokens) / 1000000
+    const promptPrice = typeof selectedModelData.pricing.prompt === 'string' ? parseFloat(selectedModelData.pricing.prompt) : selectedModelData.pricing.prompt
+    const completionPrice = typeof selectedModelData.pricing.completion === 'string' ? parseFloat(selectedModelData.pricing.completion) : selectedModelData.pricing.completion
+    const promptCost = (promptPrice * promptTokens) / 1000000
+    const completionCost = (completionPrice * completionTokens) / 1000000
     const totalCost = promptCost + completionCost
 
     console.log(`💰 Real cost: $${totalCost.toFixed(6)} (${promptTokens}p + ${completionTokens}c tokens)`)
@@ -165,9 +167,9 @@ export async function POST(request: NextRequest) {
           costPerCharacter: totalCost / optimizedPrompt.length,
         },
         savings: {
-          estimatedOriginalCost: (selectedModelData.pricing.prompt * Math.ceil(prompt.length / 4)) / 1000000,
+          estimatedOriginalCost: (promptPrice * Math.ceil(prompt.length / 4)) / 1000000,
           actualOptimizedCost: totalCost,
-          savingsAmount: (selectedModelData.pricing.prompt * Math.ceil(prompt.length / 4)) / 1000000 - totalCost,
+          savingsAmount: (promptPrice * Math.ceil(prompt.length / 4)) / 1000000 - totalCost,
           savingsPercentage: costReduction,
         },
       },

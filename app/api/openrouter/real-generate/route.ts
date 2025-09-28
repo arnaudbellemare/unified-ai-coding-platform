@@ -27,8 +27,10 @@ export async function POST(request: NextRequest) {
 
     // Calculate estimated cost
     const estimatedTokens = Math.ceil(prompt.length / 4) // Rough estimation
-    const promptCost = (selectedModel.pricing.prompt * estimatedTokens) / 1000000
-    const estimatedCompletionCost = (selectedModel.pricing.completion * 100) / 1000000 // Estimate 100 tokens completion
+    const promptPrice = typeof selectedModel.pricing.prompt === 'string' ? parseFloat(selectedModel.pricing.prompt) : selectedModel.pricing.prompt
+    const completionPrice = typeof selectedModel.pricing.completion === 'string' ? parseFloat(selectedModel.pricing.completion) : selectedModel.pricing.completion
+    const promptCost = (promptPrice * estimatedTokens) / 1000000
+    const estimatedCompletionCost = (completionPrice * 100) / 1000000 // Estimate 100 tokens completion
     const totalEstimatedCost = promptCost + estimatedCompletionCost
 
     console.log(`💰 Estimated cost for ${model}: $${totalEstimatedCost.toFixed(6)}`)
@@ -55,8 +57,8 @@ export async function POST(request: NextRequest) {
     // Calculate actual cost based on response
     const actualPromptTokens = Math.ceil(prompt.length / 4)
     const actualCompletionTokens = Math.ceil(aiResponse.content.length / 4)
-    const actualPromptCost = (selectedModel.pricing.prompt * actualPromptTokens) / 1000000
-    const actualCompletionCost = (selectedModel.pricing.completion * actualCompletionTokens) / 1000000
+    const actualPromptCost = (promptPrice * actualPromptTokens) / 1000000
+    const actualCompletionCost = (completionPrice * actualCompletionTokens) / 1000000
     const actualTotalCost = actualPromptCost + actualCompletionCost
 
     console.log(
