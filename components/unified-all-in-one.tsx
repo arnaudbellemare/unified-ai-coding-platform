@@ -75,35 +75,12 @@ export default function UnifiedAllInOne() {
   const [result, setResult] = useState<UnifiedResult | null>(null)
   const [progress, setProgress] = useState(0)
   const [currentStep, setCurrentStep] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  // Authentication removed - system works for everyone
 
-  // Load models and check authentication on component mount
+  // Load models on component mount
   useEffect(() => {
     loadModels()
-    checkAuthentication()
   }, [])
-
-  const checkAuthentication = async () => {
-    try {
-      const response = await fetch('/api/auth/github/user')
-      setIsAuthenticated(response.ok)
-    } catch (error) {
-      setIsAuthenticated(false)
-    }
-  }
-
-  const handleGitHubAuth = () => {
-    // Check if we're in development mode (no GitHub OAuth configured)
-    const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    
-    if (isLocalDev) {
-      // Show a message that GitHub OAuth is not configured locally
-      alert('GitHub OAuth is not configured for local development. This will work automatically when deployed to Vercel with your configured GitHub OAuth app.')
-    } else {
-      // Redirect to GitHub OAuth
-      window.location.href = '/api/auth/github'
-    }
-  }
 
   const loadModels = async () => {
     try {
@@ -302,37 +279,24 @@ export default function UnifiedAllInOne() {
             </div>
 
             {/* Process Button */}
-            {!isAuthenticated ? (
-              <div className="space-y-4">
-                <div className="text-center p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-yellow-800 font-medium">Authentication Required</p>
-                  <p className="text-yellow-600 text-sm mt-1">Sign in with GitHub to use the unified AI system</p>
-                </div>
-                <Button onClick={handleGitHubAuth} className="w-full" size="lg">
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Sign in with GitHub
-                </Button>
-              </div>
-            ) : (
-              <Button
-                onClick={handleUnifiedProcess}
-                disabled={isProcessing || !prompt.trim() || !task.trim()}
-                className="w-full"
-                size="lg"
-              >
-                {isProcessing ? (
-                  <>
-                    <Clock className="h-4 w-4 mr-2 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-4 w-4 mr-2" />
-                    Process with AI
-                  </>
-                )}
-              </Button>
-            )}
+            <Button
+              onClick={handleUnifiedProcess}
+              disabled={isProcessing || !prompt.trim() || !task.trim()}
+              className="w-full"
+              size="lg"
+            >
+              {isProcessing ? (
+                <>
+                  <Clock className="h-4 w-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Play className="h-4 w-4 mr-2" />
+                  Process with AI
+                </>
+              )}
+            </Button>
           </CardContent>
         </Card>
 

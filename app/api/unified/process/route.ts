@@ -3,19 +3,7 @@ import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Always require authentication for the unified system
-    const { getCurrentUser } = await import('@/lib/auth/simple-auth')
-    const user = await getCurrentUser(request)
-
-    if (!user) {
-      return NextResponse.json(
-        {
-          error: 'Authentication required',
-          message: 'Please sign in with GitHub to use the unified AI system',
-        },
-        { status: 401 },
-      )
-    }
+    // No authentication required - system works for everyone
 
     const body = await request.json()
     const { prompt, task, model, provider } = body
