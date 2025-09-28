@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
       },
       optimization: {
         modelSelected: selectedModel.id,
-        providerSelected: provider || selectedModel.providers?.[0]?.id,
+        providerSelected: provider || 'default-provider',
         costOptimized: true,
         efficiency: {
           costPerToken: actualTotalCost / (actualPromptTokens + actualCompletionTokens),
