@@ -21,6 +21,7 @@ import {
   Download,
   Sparkles,
 } from 'lucide-react'
+import { GitHubAuthButton } from './github-auth-button'
 
 interface Model {
   id: string
@@ -98,7 +99,7 @@ export default function UnifiedAllInOne() {
 
   const loadModels = async () => {
     try {
-      const response = await fetch('/api/unified/ai?action=models')
+      const response = await fetch('/api/models')
       const data = await response.json()
       if (data.success && data.models.length > 0) {
         setAvailableModels(data.models)
@@ -125,7 +126,7 @@ export default function UnifiedAllInOne() {
       setCurrentStep('Processing with AI...')
       setProgress(50)
 
-      const response = await fetch('/api/unified/process', {
+      const response = await fetch('/api/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -170,12 +171,15 @@ export default function UnifiedAllInOne() {
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2">
+      <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2">
           <Sparkles className="h-8 w-8 text-blue-600" />
           <h1 className="text-3xl font-bold">Unified AI System</h1>
         </div>
         <p className="text-gray-600">One system for optimization, AI generation, and cost management</p>
+        <div className="flex justify-center">
+          <GitHubAuthButton />
+        </div>
       </div>
 
       {/* Main Content */}
