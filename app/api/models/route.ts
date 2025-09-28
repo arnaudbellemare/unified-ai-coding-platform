@@ -64,9 +64,7 @@ export async function GET(request: NextRequest) {
         description: 'Open source model with excellent reasoning',
         pricing: { prompt: 0.9, completion: 0.9 },
         context_length: 128000,
-        providers: [
-          { id: 'meta-global', name: 'Meta Global', latency: 200, reliability: 0.95 },
-        ],
+        providers: [{ id: 'meta-global', name: 'Meta Global', latency: 200, reliability: 0.95 }],
         supportsProviderSelection: true,
         recommendedProvider: 'meta-global',
         providerMetrics: {
@@ -81,9 +79,7 @@ export async function GET(request: NextRequest) {
         description: 'Efficient small model for quick tasks',
         pricing: { prompt: 0.2, completion: 0.2 },
         context_length: 32000,
-        providers: [
-          { id: 'mistral-eu', name: 'Mistral EU', latency: 80, reliability: 0.97 },
-        ],
+        providers: [{ id: 'mistral-eu', name: 'Mistral EU', latency: 80, reliability: 0.97 }],
         supportsProviderSelection: true,
         recommendedProvider: 'mistral-eu',
         providerMetrics: {
@@ -107,9 +103,9 @@ export async function GET(request: NextRequest) {
         if (response.ok) {
           const data = await response.json()
           const openrouterModels = data.data
-            .filter((model: any) => 
-              model.architecture?.modality?.includes('text') && 
-              (model.pricing || model.top_provider?.pricing)
+            .filter(
+              (model: any) =>
+                model.architecture?.modality?.includes('text') && (model.pricing || model.top_provider?.pricing),
             )
             .slice(0, 20) // Limit to first 20 models
             .map((model: any) => ({
@@ -132,9 +128,10 @@ export async function GET(request: NextRequest) {
               providerMetrics: {
                 averageLatency: 150,
                 reliability: 0.95,
-                costPerToken: typeof model.pricing?.prompt === 'string' 
-                  ? parseFloat(model.pricing.prompt) 
-                  : model.pricing?.prompt || 0,
+                costPerToken:
+                  typeof model.pricing?.prompt === 'string'
+                    ? parseFloat(model.pricing.prompt)
+                    : model.pricing?.prompt || 0,
               },
             }))
 
@@ -157,7 +154,6 @@ export async function GET(request: NextRequest) {
       source: 'fallback',
       timestamp: new Date().toISOString(),
     })
-
   } catch (error) {
     console.error('Models API error:', error)
     return NextResponse.json(
@@ -166,7 +162,7 @@ export async function GET(request: NextRequest) {
         error: 'Failed to load models',
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

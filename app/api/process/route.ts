@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: 'Missing required fields: prompt and task are required',
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -46,7 +46,6 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(result)
-
   } catch (error) {
     console.error('Process API error:', error)
     return NextResponse.json(
@@ -55,7 +54,7 @@ export async function POST(request: NextRequest) {
         error: error instanceof Error ? error.message : 'Processing failed',
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

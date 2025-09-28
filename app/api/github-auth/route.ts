@@ -11,10 +11,12 @@ export async function GET(request: NextRequest) {
       const clientId = process.env.GITHUB_CLIENT_ID
       const clientSecret = process.env.GITHUB_CLIENT_SECRET
 
-      if (!clientId || !clientSecret || 
-          clientId === 'your_github_client_id_here' || 
-          clientSecret === 'your_github_client_secret_here') {
-        
+      if (
+        !clientId ||
+        !clientSecret ||
+        clientId === 'your_github_client_id_here' ||
+        clientSecret === 'your_github_client_secret_here'
+      ) {
         // Return a user-friendly error page
         return new NextResponse(
           `
@@ -67,7 +69,7 @@ export async function GET(request: NextRequest) {
             headers: {
               'Content-Type': 'text/html',
             },
-          }
+          },
         )
       }
 
@@ -131,7 +133,7 @@ export async function GET(request: NextRequest) {
 
     // Create response with user data and token
     const response = NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'https://unified-ai-coding-platform.vercel.app'}/?github_connected=true`
+      `${process.env.NEXT_PUBLIC_APP_URL || 'https://unified-ai-coding-platform.vercel.app'}/?github_connected=true`,
     )
 
     // Set secure HTTP-only cookie with the access token
@@ -143,11 +145,10 @@ export async function GET(request: NextRequest) {
     })
 
     return response
-
   } catch (error) {
     console.error('GitHub OAuth error:', error)
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'https://unified-ai-coding-platform.vercel.app'}/?github_error=true`
+      `${process.env.NEXT_PUBLIC_APP_URL || 'https://unified-ai-coding-platform.vercel.app'}/?github_error=true`,
     )
   }
 }
