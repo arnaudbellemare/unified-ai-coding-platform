@@ -56,12 +56,12 @@ export async function POST(request: NextRequest) {
     // Step 2: Select best optimization result
     let bestOptimization = null
     let bestOptimizer = 'none'
-    
+
     for (let i = 0; i < optimizationResults.length; i++) {
       const result = optimizationResults[i]
       if (result && !('error' in result)) {
         const costReduction = 'costReduction' in result ? result.costReduction : 0
-        if (!bestOptimization || costReduction > (bestOptimization.costReduction || 0)) {
+        if (!bestOptimization || costReduction > ('costReduction' in bestOptimization ? bestOptimization.costReduction : 0)) {
           bestOptimization = result
           bestOptimizer = ['research', 'gepa', 'capo', 'cloudflare'][i]
         }
