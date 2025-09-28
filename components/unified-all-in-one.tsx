@@ -40,28 +40,42 @@ interface Model {
 
 interface UnifiedResult {
   success: boolean
-  optimizedPrompt?: string
-  aiResponse?: string
-  costSavings: {
-    originalCost: number
-    optimizedCost: number
-    savings: number
-    percentage: number
+  optimization?: any
+  aiResponse?: any
+  multiOptimizerResults?: any
+  bestOptimizer?: string
+  costAnalysis?: any
+  contextAnalysis?: any
+  performanceMetrics?: {
+    optimizationSpeed: number
+    qualityScore: number
+    reliabilityScore: number
+    costEfficiency: number
   }
-  tokenSavings: {
-    originalTokens: number
-    optimizedTokens: number
-    reduction: number
-    percentage: number
+  summary: {
+    originalPrompt: string
+    optimizedPrompt: string
+    aiResponse: string
+    costSavings: {
+      original: number
+      optimized: number
+      reduction: number
+      percentage: number
+    }
+    tokenSavings: {
+      original: number
+      optimized: number
+      reduction: number
+      percentage: number
+    }
+    model: string
+    provider: string
+    timestamp: string
+    optimizationEngines?: string[]
+    selectedEngine?: string
+    performanceScore?: number
+    costEfficiency?: number
   }
-  performance: {
-    speed: number
-    quality: number
-    reliability: number
-  }
-  model: string
-  provider: string
-  timestamp: string
 }
 
 export default function UnifiedAllInOne() {
@@ -127,35 +141,11 @@ export default function UnifiedAllInOne() {
         throw new Error(data.error || 'Process failed')
       }
 
-      // Step 2: Calculate final results
-      setCurrentStep('Calculating results...')
-      setProgress(75)
+          // Step 2: Use the complete result from the API
+          setCurrentStep('Calculating results...')
+          setProgress(75)
 
-      const finalResult: UnifiedResult = {
-        success: true,
-        optimizedPrompt: data.summary.optimizedPrompt,
-        aiResponse: data.summary.aiResponse,
-        costSavings: {
-          originalCost: data.summary.costSavings.original,
-          optimizedCost: data.summary.costSavings.optimized,
-          savings: data.summary.costSavings.reduction,
-          percentage: data.summary.costSavings.percentage,
-        },
-        tokenSavings: {
-          originalTokens: data.summary.tokenSavings.original,
-          optimizedTokens: data.summary.tokenSavings.optimized,
-          reduction: data.summary.tokenSavings.reduction,
-          percentage: data.summary.tokenSavings.percentage,
-        },
-        performance: {
-          speed: 95,
-          quality: 90,
-          reliability: 98,
-        },
-        model: data.summary.model,
-        provider: data.summary.provider,
-        timestamp: data.summary.timestamp,
-      }
+          const finalResult: UnifiedResult = data
 
       setProgress(100)
       setCurrentStep('Complete!')
@@ -323,47 +313,102 @@ export default function UnifiedAllInOne() {
 
             {result && (
               <div className="space-y-6">
-                {/* Performance Metrics */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center p-3 bg-green-50 rounded-lg">
-                    <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
-                    <div className="text-lg font-bold text-green-600">{result.costSavings.percentage}%</div>
-                    <div className="text-xs text-gray-600">Cost Saved</div>
-                  </div>
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
-                    <TrendingUp className="h-6 w-6 mx-auto text-blue-600 mb-1" />
-                    <div className="text-lg font-bold text-blue-600">{result.tokenSavings.percentage}%</div>
-                    <div className="text-xs text-gray-600">Tokens Saved</div>
-                  </div>
-                  <div className="text-center p-3 bg-purple-50 rounded-lg">
-                    <Zap className="h-6 w-6 mx-auto text-purple-600 mb-1" />
-                    <div className="text-lg font-bold text-purple-600">{result.performance.quality}%</div>
-                    <div className="text-xs text-gray-600">Quality</div>
-                  </div>
-                </div>
+                      {/* Performance Metrics */}
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="text-center p-3 bg-green-50 rounded-lg">
+                          <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
+                          <div className="text-lg font-bold text-green-600">{result.summary.costSavings.percentage}%</div>
+                          <div className="text-xs text-gray-600">Cost Saved</div>
+                        </div>
+                        <div className="text-center p-3 bg-blue-50 rounded-lg">
+                          <TrendingUp className="h-6 w-6 mx-auto text-blue-600 mb-1" />
+                          <div className="text-lg font-bold text-blue-600">{result.summary.tokenSavings.percentage}%</div>
+                          <div className="text-xs text-gray-600">Tokens Saved</div>
+                        </div>
+                        <div className="text-center p-3 bg-purple-50 rounded-lg">
+                          <Zap className="h-6 w-6 mx-auto text-purple-600 mb-1" />
+                          <div className="text-lg font-bold text-purple-600">{result.summary.performanceScore || 90}%</div>
+                          <div className="text-xs text-gray-600">Quality</div>
+                        </div>
+                      </div>
 
                 {/* Optimized Prompt */}
-                {result.optimizedPrompt && (
+                {result.summary.optimizedPrompt && (
                   <div className="space-y-2">
                     <h4 className="font-medium">Optimized Prompt</h4>
-                    <div className="p-3 bg-gray-50 rounded-lg text-sm">{result.optimizedPrompt}</div>
+                    <div className="p-3 bg-gray-50 rounded-lg text-sm">{result.summary.optimizedPrompt}</div>
                   </div>
                 )}
 
                 {/* AI Response */}
-                {result.aiResponse && (
+                {result.summary.aiResponse && (
                   <div className="space-y-2">
                     <h4 className="font-medium">AI Response</h4>
-                    <div className="p-3 bg-blue-50 rounded-lg text-sm">{result.aiResponse}</div>
+                    <div className="p-3 bg-blue-50 rounded-lg text-sm">{result.summary.aiResponse}</div>
                   </div>
                 )}
 
-                {/* Model & Provider Info */}
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline">Model: {getModelDisplayName(result.model)}</Badge>
-                  <Badge variant="outline">Provider: {result.provider}</Badge>
-                  <Badge variant="outline">Cost: ${result.costSavings.optimizedCost.toFixed(6)}</Badge>
-                </div>
+                      {/* Advanced Optimizer Results */}
+                      {result.optimizationEngines && (
+                        <div className="space-y-3">
+                          <h4 className="font-medium">🚀 Advanced Optimization Engines</h4>
+                          <div className="grid grid-cols-2 gap-2">
+                            {result.optimizationEngines.map((engine) => (
+                              <Badge 
+                                key={engine} 
+                                variant={result.selectedEngine === engine ? "default" : "outline"}
+                                className="text-xs"
+                              >
+                                {engine.toUpperCase()}
+                                {result.selectedEngine === engine && " ⭐"}
+                              </Badge>
+                            ))}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            Selected: <span className="font-medium">{result.selectedEngine}</span> engine
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Performance Metrics */}
+                      {result.performanceMetrics && (
+                        <div className="space-y-3">
+                          <h4 className="font-medium">📊 Performance Metrics</h4>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="text-center p-2 bg-blue-50 rounded">
+                              <div className="text-sm font-medium text-blue-600">
+                                {result.performanceMetrics.qualityScore}%
+                              </div>
+                              <div className="text-xs text-gray-600">Quality Score</div>
+                            </div>
+                            <div className="text-center p-2 bg-green-50 rounded">
+                              <div className="text-sm font-medium text-green-600">
+                                {result.performanceMetrics.costEfficiency}%
+                              </div>
+                              <div className="text-xs text-gray-600">Cost Efficiency</div>
+                            </div>
+                            <div className="text-center p-2 bg-purple-50 rounded">
+                              <div className="text-sm font-medium text-purple-600">
+                                {result.performanceMetrics.optimizationSpeed}%
+                              </div>
+                              <div className="text-xs text-gray-600">Speed</div>
+                            </div>
+                            <div className="text-center p-2 bg-orange-50 rounded">
+                              <div className="text-sm font-medium text-orange-600">
+                                {result.performanceMetrics.reliabilityScore}%
+                              </div>
+                              <div className="text-xs text-gray-600">Reliability</div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Model & Provider Info */}
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline">Model: {getModelDisplayName(result.summary.model)}</Badge>
+                        <Badge variant="outline">Provider: {result.summary.provider}</Badge>
+                        <Badge variant="outline">Cost: ${result.summary.costSavings.optimized.toFixed(6)}</Badge>
+                      </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
