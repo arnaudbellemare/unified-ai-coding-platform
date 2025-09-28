@@ -348,9 +348,7 @@ export class UnifiedAIRouter {
 
     try {
       const models = await this.openRouterClient.getModels()
-      const filteredModels = models.filter(
-        (model) => model.architecture?.modality?.includes('text') && model.pricing,
-      )
+      const filteredModels = models.filter((model) => model.architecture?.modality?.includes('text') && model.pricing)
 
       // Enhance models with provider information for provider selection
       return filteredModels.map((model) => ({
@@ -374,9 +372,7 @@ export class UnifiedAIRouter {
           averageLatency: 150,
           reliability: 0.95,
           costPerToken:
-            typeof model.pricing?.prompt === 'string'
-              ? parseFloat(model.pricing.prompt)
-              : model.pricing?.prompt || 0,
+            typeof model.pricing?.prompt === 'string' ? parseFloat(model.pricing.prompt) : model.pricing?.prompt || 0,
         },
       }))
     } catch (error) {

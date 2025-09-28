@@ -1,5 +1,5 @@
-import { HomePageContent } from '@/components/home-page-content'
+import { SimplifiedHome } from '@/components/simplified-home'
 
 export default function Home() {
-  return <HomePageContent />
+  return <SimplifiedHome />
 }

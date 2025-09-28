@@ -20,7 +20,7 @@ import { OpenRouterIntegration } from '@/components/openrouter-integration'
 import { GEPAOptimization } from '@/components/gepa-optimization'
 import { ResearchOptimization } from '@/components/research-optimization'
 import { OptimizerComparison } from '@/components/optimizer-comparison'
-import UnifiedDashboard from '@/components/unified-dashboard'
+import UnifiedAllInOne from '@/components/unified-all-in-one'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -31,7 +31,7 @@ import { useTasks } from '@/components/app-layout'
 
 export function HomePageContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [activeTab, setActiveTab] = useState('tasks')
+  const [activeTab, setActiveTab] = useState('unified')
   const router = useRouter()
   const { refreshTasks, addTaskOptimistically } = useTasks()
 
