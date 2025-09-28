@@ -133,7 +133,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'gpt-4o-mini',
             name: 'GPT-4o Mini',
-            description: 'OpenAI\'s most cost-effective model',
+            description: "OpenAI's most cost-effective model",
             pricing: { prompt: 0.15, completion: 0.6 },
             context_length: 128000,
             providers: [{ id: 'openai', name: 'OpenAI', latency: 120, reliability: 0.99 }],
@@ -144,7 +144,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'llama-3.2-3b',
             name: 'Llama 3.2 3B',
-            description: 'Meta\'s ultra-lightweight model',
+            description: "Meta's ultra-lightweight model",
             pricing: { prompt: 0.3, completion: 0.3 },
             context_length: 128000,
             providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
@@ -155,7 +155,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'qwen-2.5-7b',
             name: 'Qwen 2.5 7B',
-            description: 'Alibaba\'s efficient multilingual model',
+            description: "Alibaba's efficient multilingual model",
             pricing: { prompt: 0.25, completion: 0.25 },
             context_length: 128000,
             providers: [{ id: 'qwen', name: 'Qwen', latency: 90, reliability: 0.95 }],
@@ -166,7 +166,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'gemma-7b-it',
             name: 'Gemma 7B Instruct',
-            description: 'Google\'s efficient open model',
+            description: "Google's efficient open model",
             pricing: { prompt: 0.35, completion: 0.35 },
             context_length: 8192,
             providers: [{ id: 'google', name: 'Google', latency: 100, reliability: 0.94 }],
@@ -188,7 +188,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'phi-3.5-mini',
             name: 'Phi-3.5 Mini',
-            description: 'Microsoft\'s compact reasoning model',
+            description: "Microsoft's compact reasoning model",
             pricing: { prompt: 0.45, completion: 0.45 },
             context_length: 128000,
             providers: [{ id: 'microsoft', name: 'Microsoft', latency: 110, reliability: 0.96 }],
@@ -232,7 +232,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'gemini-pro-1.5-flash',
             name: 'Gemini Pro 1.5 Flash',
-            description: 'Google\'s fastest model',
+            description: "Google's fastest model",
             pricing: { prompt: 0.75, completion: 3.0 },
             context_length: 1000000,
             providers: [{ id: 'google', name: 'Google', latency: 80, reliability: 0.98 }],
@@ -243,7 +243,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'claude-3-haiku',
             name: 'Claude 3 Haiku',
-            description: 'Anthropic\'s fastest and cheapest model',
+            description: "Anthropic's fastest and cheapest model",
             pricing: { prompt: 0.25, completion: 1.25 },
             context_length: 200000,
             providers: [{ id: 'anthropic', name: 'Anthropic', latency: 100, reliability: 0.99 }],
@@ -254,7 +254,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'gemini-pro-1.5',
             name: 'Gemini Pro 1.5',
-            description: 'Google\'s balanced model with long context',
+            description: "Google's balanced model with long context",
             pricing: { prompt: 1.25, completion: 5.0 },
             context_length: 1000000,
             providers: [{ id: 'google', name: 'Google', latency: 120, reliability: 0.99 }],
@@ -265,7 +265,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'claude-3.5-sonnet',
             name: 'Claude 3.5 Sonnet',
-            description: 'Anthropic\'s balanced performance model',
+            description: "Anthropic's balanced performance model",
             pricing: { prompt: 3.0, completion: 15.0 },
             context_length: 200000,
             providers: [{ id: 'anthropic', name: 'Anthropic', latency: 150, reliability: 0.98 }],
@@ -276,7 +276,7 @@ export default function UnifiedAllInOne() {
           {
             id: 'gpt-4o',
             name: 'GPT-4o',
-            description: 'OpenAI\'s flagship multimodal model',
+            description: "OpenAI's flagship multimodal model",
             pricing: { prompt: 5.0, completion: 15.0 },
             context_length: 128000,
             providers: [{ id: 'openai', name: 'OpenAI', latency: 180, reliability: 0.99 }],
@@ -309,7 +309,7 @@ export default function UnifiedAllInOne() {
         {
           id: 'gpt-4o-mini',
           name: 'GPT-4o Mini',
-          description: 'OpenAI\'s most cost-effective model',
+          description: "OpenAI's most cost-effective model",
           pricing: { prompt: 0.15, completion: 0.6 },
           context_length: 128000,
           providers: [{ id: 'openai', name: 'OpenAI', latency: 120, reliability: 0.99 }],
@@ -320,7 +320,7 @@ export default function UnifiedAllInOne() {
         {
           id: 'llama-3.2-3b',
           name: 'Llama 3.2 3B',
-          description: 'Meta\'s ultra-lightweight model',
+          description: "Meta's ultra-lightweight model",
           pricing: { prompt: 0.3, completion: 0.3 },
           context_length: 128000,
           providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
@@ -331,7 +331,7 @@ export default function UnifiedAllInOne() {
         {
           id: 'claude-3-haiku',
           name: 'Claude 3 Haiku',
-          description: 'Anthropic\'s fastest and cheapest model',
+          description: "Anthropic's fastest and cheapest model",
           pricing: { prompt: 0.25, completion: 1.25 },
           context_length: 200000,
           providers: [{ id: 'anthropic', name: 'Anthropic', latency: 100, reliability: 0.99 }],
