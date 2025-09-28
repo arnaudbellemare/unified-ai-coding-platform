@@ -295,11 +295,7 @@ export default function UnifiedAllInOne() {
                   <p className="text-yellow-800 font-medium">Authentication Required</p>
                   <p className="text-yellow-600 text-sm mt-1">Sign in with GitHub to use the unified AI system</p>
                 </div>
-                <Button
-                  onClick={() => window.location.href = '/api/auth/github'}
-                  className="w-full"
-                  size="lg"
-                >
+                <Button onClick={() => (window.location.href = '/api/auth/github')} className="w-full" size="lg">
                   <Sparkles className="h-4 w-4 mr-2" />
                   Sign in with GitHub
                 </Button>

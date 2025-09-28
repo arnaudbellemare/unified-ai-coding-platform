@@ -6,12 +6,15 @@ export async function POST(request: NextRequest) {
     // Always require authentication for the unified system
     const { getCurrentUser } = await import('@/lib/auth/simple-auth')
     const user = await getCurrentUser(request)
-    
+
     if (!user) {
-      return NextResponse.json({ 
-        error: 'Authentication required',
-        message: 'Please sign in with GitHub to use the unified AI system'
-      }, { status: 401 })
+      return NextResponse.json(
+        {
+          error: 'Authentication required',
+          message: 'Please sign in with GitHub to use the unified AI system',
+        },
+        { status: 401 },
+      )
     }
 
     const body = await request.json()
@@ -24,39 +27,35 @@ export async function POST(request: NextRequest) {
     // Step 1: Direct optimization without authentication
     const { ResearchBackedOptimizer } = await import('@/lib/research-backed-optimizer')
     const optimizer = new ResearchBackedOptimizer()
-    
-    const optimizeResult = await optimizer.optimizeWithResearch(prompt, task)
-    
-    if (!optimizeResult.success) {
-      throw new Error('Optimization failed: ' + (optimizeResult.error || 'Unknown error'))
-    }
+
+    const optimizeResult = await optimizer.optimizeWithResearch(prompt, task, model || 'gpt-4o-mini')
 
     // Step 2: Direct AI generation using OpenRouter client
     const { OpenRouterClient } = await import('@/lib/openrouter/openrouter-client')
-    
+
     if (!process.env.OPENROUTER_API_KEY) {
       throw new Error('OpenRouter API key not configured')
     }
-    
+
     const openRouterClient = new OpenRouterClient({
       apiKey: process.env.OPENROUTER_API_KEY,
     })
-    
+
     const aiResponse = await openRouterClient.generateText(
       model || 'openai/gpt-4o-mini',
       [
         {
           role: 'user',
-          content: optimizeResult.results.optimizedPrompt || prompt,
+          content: optimizeResult.optimizedPrompt || prompt,
         },
       ],
       {
         max_tokens: 1000,
         temperature: 0.7,
         ...(provider && provider !== 'auto' && { provider }),
-      }
+      },
     )
-    
+
     const aiResult = {
       success: true,
       response: {
@@ -70,23 +69,23 @@ export async function POST(request: NextRequest) {
     // Step 3: Combine results
     const finalResult = {
       success: true,
-      optimization: optimizeResult.results,
+      optimization: optimizeResult,
       aiResponse: aiResult.response,
       summary: {
         originalPrompt: prompt,
-        optimizedPrompt: optimizeResult.results.optimizedPrompt,
+        optimizedPrompt: optimizeResult.optimizedPrompt,
         aiResponse: aiResult.response.content,
-        costSavings: optimizeResult.results.breakdown?.costSavings || {
-          original: 0.001,
-          optimized: 0.0005,
-          reduction: 0.0005,
-          percentage: 50,
+        costSavings: {
+          original: aiResult.response.cost + optimizeResult.costReduction,
+          optimized: aiResult.response.cost,
+          reduction: optimizeResult.costReduction,
+          percentage: Math.round((optimizeResult.costReduction / (aiResult.response.cost + optimizeResult.costReduction)) * 100),
         },
-        tokenSavings: optimizeResult.results.breakdown?.tokenSavings || {
-          original: 100,
-          optimized: 75,
-          reduction: 25,
-          percentage: 25,
+        tokenSavings: {
+          original: aiResult.response.tokens.total_tokens + optimizeResult.tokenReduction,
+          optimized: aiResult.response.tokens.total_tokens,
+          reduction: optimizeResult.tokenReduction,
+          percentage: Math.round((optimizeResult.tokenReduction / (aiResult.response.tokens.total_tokens + optimizeResult.tokenReduction)) * 100),
         },
         model: model || 'openai/gpt-4o-mini',
         provider: provider || 'auto',

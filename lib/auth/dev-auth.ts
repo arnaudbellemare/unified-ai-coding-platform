@@ -34,7 +34,7 @@ export class DevAuth {
   static isDevMode(): boolean {
     // Enable dev mode if GitHub OAuth is not configured
     const hasGitHubOAuth = !!(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET)
-    
+
     // Also enable dev mode if no API keys are configured (for UI testing)
     const hasApiKeys =
       process.env.OPENAI_API_KEY ||
