@@ -79,13 +79,18 @@ export async function POST(request: NextRequest) {
           original: aiResult.response.cost + optimizeResult.costReduction,
           optimized: aiResult.response.cost,
           reduction: optimizeResult.costReduction,
-          percentage: Math.round((optimizeResult.costReduction / (aiResult.response.cost + optimizeResult.costReduction)) * 100),
+          percentage: Math.round(
+            (optimizeResult.costReduction / (aiResult.response.cost + optimizeResult.costReduction)) * 100,
+          ),
         },
         tokenSavings: {
           original: aiResult.response.tokens.total_tokens + optimizeResult.tokenReduction,
           optimized: aiResult.response.tokens.total_tokens,
           reduction: optimizeResult.tokenReduction,
-          percentage: Math.round((optimizeResult.tokenReduction / (aiResult.response.tokens.total_tokens + optimizeResult.tokenReduction)) * 100),
+          percentage: Math.round(
+            (optimizeResult.tokenReduction / (aiResult.response.tokens.total_tokens + optimizeResult.tokenReduction)) *
+              100,
+          ),
         },
         model: model || 'openai/gpt-4o-mini',
         provider: provider || 'auto',

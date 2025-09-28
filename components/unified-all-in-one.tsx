@@ -92,6 +92,19 @@ export default function UnifiedAllInOne() {
     }
   }
 
+  const handleGitHubAuth = () => {
+    // Check if we're in development mode (no GitHub OAuth configured)
+    const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    
+    if (isLocalDev) {
+      // Show a message that GitHub OAuth is not configured locally
+      alert('GitHub OAuth is not configured for local development. This will work automatically when deployed to Vercel with your configured GitHub OAuth app.')
+    } else {
+      // Redirect to GitHub OAuth
+      window.location.href = '/api/auth/github'
+    }
+  }
+
   const loadModels = async () => {
     try {
       const response = await fetch('/api/unified/ai?action=models')
@@ -295,7 +308,7 @@ export default function UnifiedAllInOne() {
                   <p className="text-yellow-800 font-medium">Authentication Required</p>
                   <p className="text-yellow-600 text-sm mt-1">Sign in with GitHub to use the unified AI system</p>
                 </div>
-                <Button onClick={() => (window.location.href = '/api/auth/github')} className="w-full" size="lg">
+                <Button onClick={handleGitHubAuth} className="w-full" size="lg">
                   <Sparkles className="h-4 w-4 mr-2" />
                   Sign in with GitHub
                 </Button>
