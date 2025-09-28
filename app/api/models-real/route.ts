@@ -35,28 +35,19 @@ export async function GET() {
       description: model.description || `${model.name} - ${model.context_length} context`,
       pricing: model.pricing,
       context_length: model.context_length,
-      providers: model.top_provider
-        ? [
-            {
-              id: model.top_provider.id || 'default-provider',
-              name: model.top_provider.name || 'Default Provider',
-              latency: model.top_provider.latency || 100,
-              reliability: model.top_provider.reliability || 0.95,
-            },
-          ]
-        : [
-            {
-              id: 'default-provider',
-              name: 'Default Provider',
-              latency: 100,
-              reliability: 0.95,
-            },
-          ],
+        providers: [
+          {
+            id: 'default-provider',
+            name: 'Default Provider',
+            latency: 100,
+            reliability: 0.95,
+          },
+        ],
       supportsProviderSelection: true,
-      recommendedProvider: model.top_provider?.id || 'default-provider',
+      recommendedProvider: 'default-provider',
       providerMetrics: {
-        averageLatency: model.top_provider?.latency || 100,
-        reliability: model.top_provider?.reliability || 0.95,
+        averageLatency: 100,
+        reliability: 0.95,
         costPerToken: ((model.pricing.prompt as number) + (model.pricing.completion as number)) / 2,
       },
       costEfficiency: model.costEfficiency,
