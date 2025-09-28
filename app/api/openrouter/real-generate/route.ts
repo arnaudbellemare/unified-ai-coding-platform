@@ -27,8 +27,14 @@ export async function POST(request: NextRequest) {
 
     // Calculate estimated cost
     const estimatedTokens = Math.ceil(prompt.length / 4) // Rough estimation
-    const promptPrice = typeof selectedModel.pricing.prompt === 'string' ? parseFloat(selectedModel.pricing.prompt) : selectedModel.pricing.prompt
-    const completionPrice = typeof selectedModel.pricing.completion === 'string' ? parseFloat(selectedModel.pricing.completion) : selectedModel.pricing.completion
+    const promptPrice =
+      typeof selectedModel.pricing.prompt === 'string'
+        ? parseFloat(selectedModel.pricing.prompt)
+        : selectedModel.pricing.prompt
+    const completionPrice =
+      typeof selectedModel.pricing.completion === 'string'
+        ? parseFloat(selectedModel.pricing.completion)
+        : selectedModel.pricing.completion
     const promptCost = (promptPrice * estimatedTokens) / 1000000
     const estimatedCompletionCost = (completionPrice * 100) / 1000000 // Estimate 100 tokens completion
     const totalEstimatedCost = promptCost + estimatedCompletionCost
@@ -37,9 +43,9 @@ export async function POST(request: NextRequest) {
 
     // Make real API call to OpenRouter
     const startTime = Date.now()
-    const aiResponse = await openRouterClient.generateText({
+    const aiResponse = await openRouterClient.generateText(
       model,
-      messages: [
+      [
         {
           role: 'system',
           content: `You are an AI assistant optimized for cost efficiency. Provide concise, accurate responses. Task: ${task || 'General assistance'}`,
@@ -49,9 +55,11 @@ export async function POST(request: NextRequest) {
           content: prompt,
         },
       ],
-      max_tokens: 1000,
-      temperature: 0.7,
-    })
+      {
+        max_tokens: 1000,
+        temperature: 0.7,
+      }
+    )
     const endTime = Date.now()
 
     // Calculate actual cost based on response

@@ -69,9 +69,9 @@ export async function POST(request: NextRequest) {
     console.log(`🤖 Generating AI response with ${model}...`)
     const startTime = Date.now()
 
-    const aiResponse = await openRouterClient.generateText({
+    const aiResponse = await openRouterClient.generateText(
       model,
-      messages: [
+      [
         {
           role: 'system',
           content: `You are an AI assistant optimized for cost efficiency and accuracy. Task: ${task}`,
@@ -81,17 +81,25 @@ export async function POST(request: NextRequest) {
           content: optimizedPrompt,
         },
       ],
-      max_tokens: 1000,
-      temperature: 0.7,
-    })
+      {
+        max_tokens: 1000,
+        temperature: 0.7,
+      }
+    )
 
     const endTime = Date.now()
 
     // Step 4: Calculate real costs
     const promptTokens = Math.ceil(optimizedPrompt.length / 4)
     const completionTokens = Math.ceil(aiResponse.content.length / 4)
-    const promptPrice = typeof selectedModelData.pricing.prompt === 'string' ? parseFloat(selectedModelData.pricing.prompt) : selectedModelData.pricing.prompt
-    const completionPrice = typeof selectedModelData.pricing.completion === 'string' ? parseFloat(selectedModelData.pricing.completion) : selectedModelData.pricing.completion
+    const promptPrice =
+      typeof selectedModelData.pricing.prompt === 'string'
+        ? parseFloat(selectedModelData.pricing.prompt)
+        : selectedModelData.pricing.prompt
+    const completionPrice =
+      typeof selectedModelData.pricing.completion === 'string'
+        ? parseFloat(selectedModelData.pricing.completion)
+        : selectedModelData.pricing.completion
     const promptCost = (promptPrice * promptTokens) / 1000000
     const completionCost = (completionPrice * completionTokens) / 1000000
     const totalCost = promptCost + completionCost
