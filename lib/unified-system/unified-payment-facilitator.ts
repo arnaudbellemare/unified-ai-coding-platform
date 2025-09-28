@@ -241,7 +241,6 @@ export class UnifiedPaymentFacilitator {
    * Execute x402 Foundation payment
    */
   private async executeX402Payment(amount: number, currency: string, user: any, metadata: any): Promise<any> {
-
     try {
       // Create payment intent with x402 Foundation
       const paymentIntent = {

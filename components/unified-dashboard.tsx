@@ -145,6 +145,8 @@ export default function UnifiedDashboard() {
   const [systemStats, setSystemStats] = useState<any>(null)
   const [availableModels, setAvailableModels] = useState<any[]>([])
   const [selectedModel, setSelectedModel] = useState<string>('')
+  const [selectedProvider, setSelectedProvider] = useState<string>('')
+  const [currentModelProviders, setCurrentModelProviders] = useState<any[]>([])
 
   useEffect(() => {
     loadSystemStats()
@@ -160,10 +162,24 @@ export default function UnifiedDashboard() {
         // Set default model if none selected
         if (!selectedModel && data.models.length > 0) {
           setSelectedModel(data.models[0].id)
+          // Set providers for the default model
+          setCurrentModelProviders(data.models[0].providers || [])
+          if (data.models[0].recommendedProvider) {
+            setSelectedProvider(data.models[0].recommendedProvider)
+          }
         }
       }
     } catch (error) {
       console.error('Failed to load models:', error)
+    }
+  }
+
+  const handleModelChange = (modelId: string) => {
+    setSelectedModel(modelId)
+    const model = availableModels.find(m => m.id === modelId)
+    if (model) {
+      setCurrentModelProviders(model.providers || [])
+      setSelectedProvider(model.recommendedProvider || 'auto')
     }
   }
 
@@ -228,6 +244,7 @@ export default function UnifiedDashboard() {
           prompt,
           task,
           model: selectedModel,
+          provider: selectedProvider, // Include provider selection as requested in big-AGI issue #826
           optimization: {
             enabled: true,
             strategy: 'auto',
@@ -460,7 +477,7 @@ export default function UnifiedDashboard() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Select AI Model</label>
-                <Select value={selectedModel} onValueChange={setSelectedModel}>
+                <Select value={selectedModel} onValueChange={handleModelChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Choose an AI model" />
                   </SelectTrigger>
@@ -471,6 +488,9 @@ export default function UnifiedDashboard() {
                           <span className="font-medium">{model.name}</span>
                           <span className="text-xs text-gray-500">
                             ${model.pricing?.prompt || 0}/1M tokens • {model.context_length?.toLocaleString() || 'N/A'} context
+                            {model.supportsProviderSelection && (
+                              <span className="text-green-600 ml-1">• Provider Selection Available</span>
+                            )}
                           </span>
                         </div>
                       </SelectItem>
@@ -479,7 +499,41 @@ export default function UnifiedDashboard() {
                 </Select>
               </div>
 
-              <Button onClick={handleAIGenerate} disabled={isLoading || !prompt || !task || !selectedModel} className="w-full">
+              {/* Provider Selection - as requested in big-AGI issue #826 */}
+              {currentModelProviders.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Select Provider</label>
+                  <Select value={selectedProvider} onValueChange={setSelectedProvider}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose a provider" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="auto">
+                        <div className="flex flex-col">
+                          <span className="font-medium">Auto (Recommended)</span>
+                          <span className="text-xs text-gray-500">Let OpenRouter choose the best provider</span>
+                        </div>
+                      </SelectItem>
+                      {currentModelProviders.map((provider) => (
+                        <SelectItem key={provider.id} value={provider.id}>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{provider.name}</span>
+                            <span className="text-xs text-gray-500">
+                              {provider.latency}ms latency • {Math.round(provider.reliability * 100)}% reliability
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              <Button
+                onClick={handleAIGenerate}
+                disabled={isLoading || !prompt || !task || !selectedModel}
+                className="w-full"
+              >
                 {isLoading ? 'Generating...' : 'Generate AI Response'}
               </Button>
             </CardContent>

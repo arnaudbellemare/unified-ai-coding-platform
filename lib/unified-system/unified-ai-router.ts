@@ -6,6 +6,7 @@ export interface UnifiedAIRequest {
   prompt: string
   task: string
   model?: string
+  provider?: string // Provider selection as requested in big-AGI issue #826
   context?: {
     repoUrl?: string
     branchName?: string
@@ -160,7 +161,7 @@ export class UnifiedAIRouter {
     const priority = context?.priority || 'balanced'
     const budget = context?.budget || 100
 
-      // Always use real model selection
+    // Always use real model selection
 
     // Production model selection
     switch (priority) {
@@ -196,6 +197,20 @@ export class UnifiedAIRouter {
     }
 
     try {
+      // Prepare request options with provider selection
+      const options: any = {
+        max_tokens: 1000,
+        temperature: 0.7,
+      }
+
+      // Add provider selection if specified (as requested in big-AGI issue #826)
+      if (request.provider && request.provider !== 'auto') {
+        options.provider = request.provider
+        console.log(`🎯 Using specific provider: ${request.provider}`)
+      } else {
+        console.log('🔄 Using auto provider selection')
+      }
+
       // Execute request with OpenRouter
       const response = await this.openRouterClient.generateText(
         model,
@@ -205,10 +220,7 @@ export class UnifiedAIRouter {
             content: prompt,
           },
         ],
-        {
-          max_tokens: 1000,
-          temperature: 0.7,
-        },
+        options,
       )
 
       return {
@@ -326,14 +338,28 @@ export class UnifiedAIRouter {
    * Get available models
    */
   async getAvailableModels(): Promise<any[]> {
-
     if (!this.openRouterClient) {
       throw new Error('OpenRouter client not initialized. Please configure OPENROUTER_API_KEY environment variable.')
     }
 
     try {
       const models = await this.openRouterClient.getModels()
-      return models.filter((model) => model.architecture?.modality === 'text' && model.top_provider?.pricing)
+      const filteredModels = models.filter((model) => model.architecture?.modality === 'text' && model.top_provider?.pricing)
+      
+      // Enhance models with provider information for provider selection
+      return filteredModels.map((model) => ({
+        ...model,
+        providers: model.top_provider ? [model.top_provider] : [],
+        // Add provider selection capability as requested in big-AGI issue #826
+        supportsProviderSelection: true,
+        recommendedProvider: model.top_provider?.id || 'auto',
+        // Add performance metrics for provider selection
+        providerMetrics: {
+          averageLatency: model.top_provider?.average_latency || 0,
+          reliability: model.top_provider?.reliability || 0.95,
+          costPerToken: model.top_provider?.pricing?.prompt || 0
+        }
+      }))
     } catch (error) {
       console.error('Failed to get models:', error)
       throw new Error('Failed to retrieve available models')
