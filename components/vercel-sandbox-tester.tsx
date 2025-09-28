@@ -35,11 +35,14 @@ export default function VercelSandboxTester() {
 
     for (const endpoint of testEndpoints) {
       // Set loading state
-      setTestResults(prev => [...prev, {
-        endpoint: endpoint.name,
-        status: 'loading',
-        timestamp: new Date().toISOString()
-      }])
+      setTestResults((prev) => [
+        ...prev,
+        {
+          endpoint: endpoint.name,
+          status: 'loading',
+          timestamp: new Date().toISOString(),
+        },
+      ])
 
       try {
         const response = await fetch(endpoint.url, {
@@ -54,7 +57,7 @@ export default function VercelSandboxTester() {
             statusText: response.statusText,
             url: endpoint.url,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
 
         if (endpoint.type === 'api') {
@@ -72,9 +75,9 @@ export default function VercelSandboxTester() {
           result.error = `HTTP ${response.status}: ${response.statusText}`
         }
 
-        setTestResults(prev => {
+        setTestResults((prev) => {
           const updated = [...prev]
-          const index = updated.findIndex(r => r.endpoint === endpoint.name)
+          const index = updated.findIndex((r) => r.endpoint === endpoint.name)
           if (index !== -1) {
             updated[index] = result
           }
@@ -82,19 +85,18 @@ export default function VercelSandboxTester() {
         })
 
         // Add delay between requests
-        await new Promise(resolve => setTimeout(resolve, 500))
-
+        await new Promise((resolve) => setTimeout(resolve, 500))
       } catch (error) {
         const result: TestResult = {
           endpoint: endpoint.name,
           status: 'error',
           error: error instanceof Error ? error.message : 'Unknown error',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
 
-        setTestResults(prev => {
+        setTestResults((prev) => {
           const updated = [...prev]
-          const index = updated.findIndex(r => r.endpoint === endpoint.name)
+          const index = updated.findIndex((r) => r.endpoint === endpoint.name)
           if (index !== -1) {
             updated[index] = result
           }
@@ -122,7 +124,11 @@ export default function VercelSandboxTester() {
   const getStatusBadge = (status: TestResult['status']) => {
     switch (status) {
       case 'success':
-        return <Badge variant="default" className="bg-green-500">Success</Badge>
+        return (
+          <Badge variant="default" className="bg-green-500">
+            Success
+          </Badge>
+        )
       case 'error':
         return <Badge variant="destructive">Error</Badge>
       case 'loading':
@@ -132,8 +138,8 @@ export default function VercelSandboxTester() {
     }
   }
 
-  const successCount = testResults.filter(r => r.status === 'success').length
-  const errorCount = testResults.filter(r => r.status === 'error').length
+  const successCount = testResults.filter((r) => r.status === 'success').length
+  const errorCount = testResults.filter((r) => r.status === 'error').length
 
   return (
     <div className="space-y-6">
@@ -153,20 +159,10 @@ export default function VercelSandboxTester() {
               <Badge variant="default" className="bg-green-500">
                 Success: {successCount}
               </Badge>
-              <Badge variant="destructive">
-                Errors: {errorCount}
-              </Badge>
+              <Badge variant="destructive">Errors: {errorCount}</Badge>
             </div>
-            <Button 
-              onClick={runTests} 
-              disabled={isRunning}
-              className="flex items-center gap-2"
-            >
-              {isRunning ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <CheckCircle className="h-4 w-4" />
-              )}
+            <Button onClick={runTests} disabled={isRunning} className="flex items-center gap-2">
+              {isRunning ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
               {isRunning ? 'Running Tests...' : 'Run All Tests'}
             </Button>
           </div>
@@ -264,11 +260,21 @@ export default function VercelSandboxTester() {
               <AlertDescription>
                 <strong>Top 5 Most Cost-Effective Models:</strong>
                 <ol className="mt-2 space-y-1">
-                  <li>1. <strong>Mistral 7B Instruct</strong> - $0.20/1M tokens (Ultra-fast, best for high-volume tasks)</li>
-                  <li>2. <strong>GPT-4o Mini</strong> - $0.15-0.60/1M tokens (OpenAI's most cost-effective)</li>
-                  <li>3. <strong>Llama 3.2 3B</strong> - $0.30/1M tokens (Meta's ultra-lightweight)</li>
-                  <li>4. <strong>Qwen 2.5 7B</strong> - $0.25/1M tokens (Alibaba's efficient multilingual)</li>
-                  <li>5. <strong>Gemma 7B Instruct</strong> - $0.35/1M tokens (Google's efficient open model)</li>
+                  <li>
+                    1. <strong>Mistral 7B Instruct</strong> - $0.20/1M tokens (Ultra-fast, best for high-volume tasks)
+                  </li>
+                  <li>
+                    2. <strong>GPT-4o Mini</strong> - $0.15-0.60/1M tokens (OpenAI's most cost-effective)
+                  </li>
+                  <li>
+                    3. <strong>Llama 3.2 3B</strong> - $0.30/1M tokens (Meta's ultra-lightweight)
+                  </li>
+                  <li>
+                    4. <strong>Qwen 2.5 7B</strong> - $0.25/1M tokens (Alibaba's efficient multilingual)
+                  </li>
+                  <li>
+                    5. <strong>Gemma 7B Instruct</strong> - $0.35/1M tokens (Google's efficient open model)
+                  </li>
                 </ol>
               </AlertDescription>
             </Alert>

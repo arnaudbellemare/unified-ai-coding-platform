@@ -26,12 +26,7 @@ export async function GET() {
           'Environment Variables',
           'Database Connections',
         ],
-        limitations: [
-          '10 second execution timeout',
-          'Memory limits',
-          'Cold starts',
-          'Rate limiting',
-        ],
+        limitations: ['10 second execution timeout', 'Memory limits', 'Cold starts', 'Rate limiting'],
       },
       testing: {
         jsonResponse: 'Working',

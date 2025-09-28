@@ -210,11 +210,7 @@ export const COST_OPTIMIZATION_STRATEGIES = {
 }
 
 // Calculate cost efficiency score
-export function calculateCostEfficiency(
-  promptCost: number,
-  completionCost: number,
-  performance: number = 1.0
-): number {
+export function calculateCostEfficiency(promptCost: number, completionCost: number, performance: number = 1.0): number {
   const avgCost = (promptCost + completionCost) / 2
   return Math.round((performance / avgCost) * 100)
 }
@@ -222,10 +218,10 @@ export function calculateCostEfficiency(
 // Get optimal model for use case
 export function getOptimalModel(
   useCase: 'speed' | 'cost' | 'quality' | 'balance',
-  maxBudget: number = 1.0
+  maxBudget: number = 1.0,
 ): ModelCostData | null {
   const filtered = MOST_COST_EFFECTIVE_MODELS.filter(
-    (model) => (model.promptCost + model.completionCost) / 2 <= maxBudget
+    (model) => (model.promptCost + model.completionCost) / 2 <= maxBudget,
   )
 
   switch (useCase) {
@@ -249,11 +245,7 @@ export const OPENROUTER_OPTIMIZATIONS = {
   // Enable caching for repeated requests
   caching: true,
   // Use fallback models for reliability
-  fallbacks: [
-    'mistralai/mistral-7b-instruct',
-    'openai/gpt-4o-mini',
-    'meta-llama/llama-3.2-3b-instruct',
-  ],
+  fallbacks: ['mistralai/mistral-7b-instruct', 'openai/gpt-4o-mini', 'meta-llama/llama-3.2-3b-instruct'],
   // Rate limiting to avoid overuse
   rateLimit: {
     requestsPerMinute: 60,
