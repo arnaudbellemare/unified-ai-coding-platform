@@ -99,12 +99,24 @@ export default function UnifiedAllInOne() {
 
   const loadModels = async () => {
     try {
-      const response = await fetch('/api/models')
-      const data = await response.json()
-      if (data.success && data.models.length > 0) {
+      // Try the main models endpoint first
+      let response = await fetch('/api/models')
+      let data = await response.json()
+      
+      // If it fails, try the simple fallback
+      if (!data.success || !data.models || data.models.length === 0) {
+        console.log('Main models API failed, trying simple fallback...')
+        response = await fetch('/api/models-simple')
+        data = await response.json()
+      }
+      
+      if (data.success && data.models && data.models.length > 0) {
         setAvailableModels(data.models)
         setSelectedModel(data.models[0].id)
         setSelectedProvider(data.models[0].recommendedProvider || 'auto')
+        console.log(`Loaded ${data.models.length} models from ${data.source}`)
+      } else {
+        console.error('Both model endpoints failed:', data)
       }
     } catch (error) {
       console.error('Failed to load models:', error)
@@ -126,7 +138,8 @@ export default function UnifiedAllInOne() {
       setCurrentStep('Processing with AI...')
       setProgress(50)
 
-      const response = await fetch('/api/process', {
+      // Try main process endpoint first, then fallback
+      let response = await fetch('/api/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -136,6 +149,20 @@ export default function UnifiedAllInOne() {
           provider: selectedProvider,
         }),
       })
+
+      // If main endpoint fails, try simple fallback
+      if (!response.ok) {
+        console.log('Main process API failed, trying simple fallback...')
+        response = await fetch('/api/process-simple', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt,
+            task,
+            model: selectedModel,
+          }),
+        })
+      }
 
       const data = await response.json()
       if (!data.success) {
