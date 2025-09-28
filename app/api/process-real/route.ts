@@ -38,10 +38,10 @@ export async function POST(request: NextRequest) {
     // Step 1: Run all optimization engines in parallel
     console.log('🧠 Running optimization engines...')
     const optimizationPromises = [
-      researchOptimizer.optimizePrompt(prompt, task).catch((err) => ({ error: err.message })),
+      researchOptimizer.optimizeWithResearch(prompt, task, model).catch((err) => ({ error: err.message })),
       gepaOptimizer.optimizePrompt(prompt, model, 0.8).catch((err) => ({ error: err.message })),
       capoOptimizer.optimizeWithCAPO({ description: task, context: prompt }).catch((err) => ({ error: err.message })),
-      cloudflareOptimizer.optimizePrompt(prompt, task).catch((err) => ({ error: err.message })),
+      cloudflareOptimizer.optimizeWithCodeMode(prompt, task, model).catch((err) => ({ error: err.message })),
     ]
 
     const optimizationResults = await Promise.all(optimizationPromises)
