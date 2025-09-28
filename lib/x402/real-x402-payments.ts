@@ -184,6 +184,68 @@ export class RealX402PaymentService {
   }
 
   /**
+   * Process API call reimbursement
+   */
+  async processReimbursement(data: {
+    userId: string
+    model: string
+    provider: string
+    promptTokens: number
+    completionTokens: number
+    totalTokens: number
+    promptCost: number
+    completionCost: number
+    totalCost: number
+    latency: number
+    timestamp: string
+    task: string
+    optimizationApplied?: string
+    costReduction?: number
+  }): Promise<any> {
+    try {
+      console.log(`🔄 Processing x402 reimbursement: $${data.totalCost} for ${data.userId}`)
+      
+      // Create reimbursement payment
+      const reimbursementRequest: RealX402PaymentRequest = {
+        amount: data.totalCost,
+        currency: 'USDC',
+        recipient: data.userId,
+        agentId: 'ai-agent-reimbursement',
+        description: `API call reimbursement for ${data.model} - ${data.task}`,
+        metadata: {
+          model: data.model,
+          provider: data.provider,
+          tokens: data.totalTokens,
+          optimization: data.optimizationApplied,
+          costReduction: data.costReduction,
+          latency: data.latency,
+          timestamp: data.timestamp,
+        },
+      }
+
+      // Process the reimbursement payment
+      const result = await this.processPayment(reimbursementRequest)
+      
+      console.log(`✅ x402 reimbursement completed: ${result.transactionHash}`)
+      return {
+        success: true,
+        transactionHash: result.transactionHash,
+        amount: data.totalCost,
+        currency: 'USDC',
+        recipient: data.userId,
+        model: data.model,
+        tokens: data.totalTokens,
+        optimization: data.optimizationApplied,
+        costReduction: data.costReduction,
+        timestamp: new Date().toISOString(),
+      }
+    } catch (error) {
+      console.error('x402 reimbursement failed:', error)
+      throw new Error(`Reimbursement failed: ${error}`)
+    }
+  }
+
+  /**
    * Generate real x402 payment request
    */
   async generateX402PaymentRequest(request: RealX402PaymentRequest): Promise<{

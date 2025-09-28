@@ -4,7 +4,7 @@ import { GEPAOptimizer } from '@/lib/gepa-optimizer'
 import { CAPOEnhancedOptimizer } from '@/lib/capo-enhanced-optimizer'
 import { CloudflareCodeModeOptimizer } from '@/lib/cloudflare-code-mode-optimizer'
 import { OpenRouterClient } from '@/lib/openrouter/openrouter-client'
-import { x402PaymentService } from '@/lib/x402/real-x402-payments'
+import { RealX402PaymentService } from '@/lib/x402/real-x402-payments'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,10 +12,7 @@ export async function POST(request: NextRequest) {
     const { prompt, task, model, provider, userId } = body
 
     if (!prompt || !task || !model) {
-      return NextResponse.json(
-        { success: false, error: 'Prompt, task, and model are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Prompt, task, and model are required' }, { status: 400 })
     }
 
     console.log(`🚀 Starting real AI processing: ${model} for task: ${task}`)
@@ -25,34 +22,34 @@ export async function POST(request: NextRequest) {
     const gepaOptimizer = new GEPAOptimizer()
     const capoOptimizer = new CAPOEnhancedOptimizer()
     const cloudflareOptimizer = new CloudflareCodeModeOptimizer()
-    const openRouterClient = new OpenRouterClient()
+    const openRouterClient = new OpenRouterClient({
+      apiKey: process.env.OPENROUTER_API_KEY!,
+      baseURL: 'https://openrouter.ai/api/v1',
+    })
 
     // Get available models for cost optimization
     const availableModels = await openRouterClient.getAvailableModels()
-    const selectedModelData = availableModels.find(m => m.id === model)
-    
+    const selectedModelData = availableModels.find((m) => m.id === model)
+
     if (!selectedModelData) {
-      return NextResponse.json(
-        { success: false, error: `Model ${model} not available` },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: `Model ${model} not available` }, { status: 400 })
     }
 
     // Step 1: Run all optimization engines in parallel
     console.log('🧠 Running optimization engines...')
     const optimizationPromises = [
-      researchOptimizer.optimizePrompt(prompt, task).catch(err => ({ error: err.message })),
-      gepaOptimizer.optimizePrompt(prompt, task).catch(err => ({ error: err.message })),
-      capoOptimizer.optimizeWithCAPO({ description: task, context: prompt }).catch(err => ({ error: err.message })),
-      cloudflareOptimizer.optimizePrompt(prompt, task).catch(err => ({ error: err.message })),
+      researchOptimizer.optimizePrompt(prompt, task).catch((err) => ({ error: err.message })),
+      gepaOptimizer.optimizePrompt(prompt, task).catch((err) => ({ error: err.message })),
+      capoOptimizer.optimizeWithCAPO({ description: task, context: prompt }).catch((err) => ({ error: err.message })),
+      cloudflareOptimizer.optimizePrompt(prompt, task).catch((err) => ({ error: err.message })),
     ]
 
     const optimizationResults = await Promise.all(optimizationPromises)
-    
+
     // Step 2: Select best optimization result
     let bestOptimization = null
     let bestOptimizer = 'none'
-    
+
     for (let i = 0; i < optimizationResults.length; i++) {
       const result = optimizationResults[i]
       if (result && !result.error) {
@@ -71,23 +68,23 @@ export async function POST(request: NextRequest) {
     // Step 3: Make real AI generation call
     console.log(`🤖 Generating AI response with ${model}...`)
     const startTime = Date.now()
-    
+
     const aiResponse = await openRouterClient.generateText({
       model,
       messages: [
         {
           role: 'system',
-          content: `You are an AI assistant optimized for cost efficiency and accuracy. Task: ${task}`
+          content: `You are an AI assistant optimized for cost efficiency and accuracy. Task: ${task}`,
         },
         {
           role: 'user',
-          content: optimizedPrompt
-        }
+          content: optimizedPrompt,
+        },
       ],
       max_tokens: 1000,
       temperature: 0.7,
     })
-    
+
     const endTime = Date.now()
 
     // Step 4: Calculate real costs
@@ -120,7 +117,8 @@ export async function POST(request: NextRequest) {
           costReduction,
         }
 
-        reimbursementResult = await x402PaymentService.processReimbursement(reimbursementData)
+        const x402Service = new RealX402PaymentService()
+        reimbursementResult = await x402Service.processReimbursement(reimbursementData)
         console.log(`🔄 x402 reimbursement processed:`, reimbursementResult)
       } catch (reimbursementError) {
         console.error('x402 reimbursement failed:', reimbursementError)
@@ -169,7 +167,7 @@ export async function POST(request: NextRequest) {
         savings: {
           estimatedOriginalCost: (selectedModelData.pricing.prompt * Math.ceil(prompt.length / 4)) / 1000000,
           actualOptimizedCost: totalCost,
-          savingsAmount: ((selectedModelData.pricing.prompt * Math.ceil(prompt.length / 4)) / 1000000) - totalCost,
+          savingsAmount: (selectedModelData.pricing.prompt * Math.ceil(prompt.length / 4)) / 1000000 - totalCost,
           savingsPercentage: costReduction,
         },
       },
@@ -205,7 +203,7 @@ export async function POST(request: NextRequest) {
         details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

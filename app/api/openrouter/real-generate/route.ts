@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { OpenRouterClient } from '@/lib/openrouter/openrouter-client'
-import { x402PaymentService } from '@/lib/x402/real-x402-payments'
+import { RealX402PaymentService } from '@/lib/x402/real-x402-payments'
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,24 +8,21 @@ export async function POST(request: NextRequest) {
     const { prompt, model, provider, task, userId } = body
 
     if (!prompt || !model) {
-      return NextResponse.json(
-        { success: false, error: 'Prompt and model are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Prompt and model are required' }, { status: 400 })
     }
 
     // Initialize OpenRouter client
-    const openRouterClient = new OpenRouterClient()
+    const openRouterClient = new OpenRouterClient({
+      apiKey: process.env.OPENROUTER_API_KEY!,
+      baseURL: 'https://openrouter.ai/api/v1',
+    })
 
     // Get model pricing for cost calculation
     const models = await openRouterClient.getAvailableModels()
-    const selectedModel = models.find(m => m.id === model)
-    
+    const selectedModel = models.find((m) => m.id === model)
+
     if (!selectedModel) {
-      return NextResponse.json(
-        { success: false, error: `Model ${model} not found` },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: `Model ${model} not found` }, { status: 400 })
     }
 
     // Calculate estimated cost
@@ -43,12 +40,12 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: 'system',
-          content: `You are an AI assistant optimized for cost efficiency. Provide concise, accurate responses. Task: ${task || 'General assistance'}`
+          content: `You are an AI assistant optimized for cost efficiency. Provide concise, accurate responses. Task: ${task || 'General assistance'}`,
         },
         {
           role: 'user',
-          content: prompt
-        }
+          content: prompt,
+        },
       ],
       max_tokens: 1000,
       temperature: 0.7,
@@ -62,7 +59,9 @@ export async function POST(request: NextRequest) {
     const actualCompletionCost = (selectedModel.pricing.completion * actualCompletionTokens) / 1000000
     const actualTotalCost = actualPromptCost + actualCompletionCost
 
-    console.log(`💰 Actual cost: $${actualTotalCost.toFixed(6)} (${actualPromptTokens}p + ${actualCompletionTokens}c tokens)`)
+    console.log(
+      `💰 Actual cost: $${actualTotalCost.toFixed(6)} (${actualPromptTokens}p + ${actualCompletionTokens}c tokens)`,
+    )
 
     // Prepare x402 reimbursement data
     const reimbursementData = {
@@ -84,7 +83,8 @@ export async function POST(request: NextRequest) {
     let reimbursementResult = null
     if (process.env.X402_ENABLED === 'true' && process.env.X402_PRIVATE_KEY) {
       try {
-        reimbursementResult = await x402PaymentService.processReimbursement(reimbursementData)
+        const x402Service = new RealX402PaymentService()
+        reimbursementResult = await x402Service.processReimbursement(reimbursementData)
         console.log(`🔄 x402 reimbursement processed:`, reimbursementResult)
       } catch (reimbursementError) {
         console.error('x402 reimbursement failed:', reimbursementError)
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
         details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
