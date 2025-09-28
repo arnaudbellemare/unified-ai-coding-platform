@@ -348,27 +348,27 @@ export default function UnifiedAllInOne() {
                   </div>
                 )}
 
-                 {/* Advanced Optimizer Results */}
-                 {result.summary.optimizationEngines && (
-                   <div className="space-y-3">
-                     <h4 className="font-medium">🚀 Advanced Optimization Engines</h4>
-                     <div className="grid grid-cols-2 gap-2">
-                       {result.summary.optimizationEngines.map((engine: string) => (
-                         <Badge
-                           key={engine}
-                           variant={result.summary.selectedEngine === engine ? 'default' : 'outline'}
-                           className="text-xs"
-                         >
-                           {engine.toUpperCase()}
-                           {result.summary.selectedEngine === engine && ' ⭐'}
-                         </Badge>
-                       ))}
-                     </div>
-                     <div className="text-sm text-gray-600">
-                       Selected: <span className="font-medium">{result.summary.selectedEngine}</span> engine
-                     </div>
-                   </div>
-                 )}
+                {/* Advanced Optimizer Results */}
+                {result.summary.optimizationEngines && (
+                  <div className="space-y-3">
+                    <h4 className="font-medium">🚀 Advanced Optimization Engines</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {result.summary.optimizationEngines.map((engine: string) => (
+                        <Badge
+                          key={engine}
+                          variant={result.summary.selectedEngine === engine ? 'default' : 'outline'}
+                          className="text-xs"
+                        >
+                          {engine.toUpperCase()}
+                          {result.summary.selectedEngine === engine && ' ⭐'}
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Selected: <span className="font-medium">{result.summary.selectedEngine}</span> engine
+                    </div>
+                  </div>
+                )}
 
                 {/* Performance Metrics */}
                 {result.performanceMetrics && (
@@ -443,7 +443,9 @@ export default function UnifiedAllInOne() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">${result.summary.costSavings.reduction.toFixed(6)}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  ${result.summary.costSavings.reduction.toFixed(6)}
+                </div>
                 <div className="text-sm text-gray-600">Cost Savings</div>
               </div>
               <div className="text-center">
@@ -451,11 +453,15 @@ export default function UnifiedAllInOne() {
                 <div className="text-sm text-gray-600">Tokens Saved</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{result.performanceMetrics?.optimizationSpeed || 95}%</div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {result.performanceMetrics?.optimizationSpeed || 95}%
+                </div>
                 <div className="text-sm text-gray-600">Speed</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">{result.performanceMetrics?.reliabilityScore || 98}%</div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {result.performanceMetrics?.reliabilityScore || 98}%
+                </div>
                 <div className="text-sm text-gray-600">Reliability</div>
               </div>
             </div>

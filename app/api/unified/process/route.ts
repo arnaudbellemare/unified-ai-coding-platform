@@ -4,42 +4,42 @@ import { DevAuth } from '@/lib/auth/dev-auth'
 // Helper function to select the best optimization result
 function selectBestOptimization(results: any) {
   const validResults = Object.entries(results).filter(([_, result]) => result !== null)
-  
+
   if (validResults.length === 0) {
     return {
       selectedOptimizer: 'research',
       bestResult: null,
-      performanceMetrics: { speed: 90, quality: 85, reliability: 95 }
+      performanceMetrics: { speed: 90, quality: 85, reliability: 95 },
     }
   }
-  
+
   // Simple scoring based on token reduction and cost reduction
   let bestScore = -Infinity
   let bestOptimizer = 'research'
   let bestResult = results.research
-  
+
   for (const [optimizer, result] of validResults) {
     if (!result) continue
-    
+
     const tokenReduction = Math.abs((result as any).tokenReduction || 0)
     const costReduction = Math.abs((result as any).costReduction || 0)
-    const score = tokenReduction + (costReduction * 1000) // Weight cost reduction higher
-    
+    const score = tokenReduction + costReduction * 1000 // Weight cost reduction higher
+
     if (score > bestScore) {
       bestScore = score
       bestOptimizer = optimizer
       bestResult = result
     }
   }
-  
+
   return {
     selectedOptimizer: bestOptimizer,
     bestResult,
     performanceMetrics: {
       speed: 90 + Math.random() * 10,
       quality: 85 + Math.random() * 15,
-      reliability: 95 + Math.random() * 5
-    }
+      reliability: 95 + Math.random() * 5,
+    },
   }
 }
 

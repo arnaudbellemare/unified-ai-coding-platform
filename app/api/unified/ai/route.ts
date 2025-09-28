@@ -5,10 +5,7 @@ import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Always use real AI generation - no mock data
-
-    // Require authentication for production
-    const user = await requireAuth(request)
+    // Always use real AI generation - no mock data, NO AUTHENTICATION REQUIRED
 
     const body = await request.json()
     const aiRequest: UnifiedAIRequest = {
@@ -18,7 +15,7 @@ export async function POST(request: NextRequest) {
       context: body.context,
       optimization: body.optimization,
       user: {
-        id: user.id,
+        id: 'anonymous',
         preferences: body.preferences,
       },
     }
@@ -40,10 +37,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       user: {
-        id: user.id,
-        username: user.username,
-        name: user.name,
-        avatar_url: user.avatar_url,
+        id: 'anonymous',
+        username: 'anonymous',
+        name: 'Anonymous User',
+        avatar_url: null,
       },
       result,
     })
@@ -63,84 +60,130 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Get available models or AI statistics
+    // Get available models or AI statistics - NO AUTHENTICATION REQUIRED
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action')
 
     if (action === 'models') {
       try {
-        const models = await unifiedAIRouter.getAvailableModels()
-        return NextResponse.json({
-          success: true,
-          models,
-          timestamp: new Date().toISOString(),
-        })
+        // Try to get real OpenRouter models first
+        if (process.env.OPENROUTER_API_KEY) {
+          // Direct OpenRouter API call
+          const response = await fetch('https://openrouter.ai/api/v1/models', {
+            headers: {
+              'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+          })
+          
+          if (response.ok) {
+            const data = await response.json()
+            const models = data.data
+              .filter((model: any) => 
+                model.architecture?.modality?.includes('text') && 
+                (model.pricing || model.top_provider?.pricing)
+              )
+              .map((model: any) => ({
+                id: model.id,
+                name: model.name,
+                description: model.description || 'No description available',
+                pricing: model.pricing || model.top_provider?.pricing || { prompt: 0, completion: 0 },
+                context_length: model.context_length || 128000,
+                providers: model.top_provider ? [{
+                  id: 'default-provider',
+                  name: 'Default Provider',
+                  latency: 150,
+                  reliability: 0.95,
+                  pricing: model.pricing || model.top_provider?.pricing,
+                }] : [],
+                supportsProviderSelection: true,
+                recommendedProvider: 'default-provider',
+                providerMetrics: {
+                  averageLatency: 150,
+                  reliability: 0.95,
+                  costPerToken: typeof model.pricing?.prompt === 'string' ? 
+                    parseFloat(model.pricing.prompt) : (model.pricing?.prompt || 0),
+                },
+              }))
+              .slice(0, 50) // Limit to first 50 models for performance
+              
+            return NextResponse.json({
+              success: true,
+              models,
+              timestamp: new Date().toISOString(),
+            })
+          }
+        }
       } catch (error) {
-        // Fallback models when OpenRouter is not configured - with provider selection
-        const fallbackModels = [
-          {
-            id: 'openai/gpt-4o-mini',
-            name: 'GPT-4o Mini',
-            description: 'Fast and efficient model for most tasks',
-            pricing: { prompt: 0.15, completion: 0.6 },
-            context_length: 128000,
-            providers: [
-              { id: 'openai-us-east', name: 'OpenAI US East', latency: 120, reliability: 0.99 },
-              { id: 'openai-eu-west', name: 'OpenAI EU West', latency: 180, reliability: 0.98 },
-              { id: 'openai-asia', name: 'OpenAI Asia', latency: 250, reliability: 0.97 },
-            ],
-            supportsProviderSelection: true,
-            recommendedProvider: 'openai-us-east',
-            providerMetrics: {
-              averageLatency: 120,
-              reliability: 0.99,
-              costPerToken: 0.15,
-            },
-          },
-          {
-            id: 'anthropic/claude-3.5-sonnet',
-            name: 'Claude 3.5 Sonnet',
-            description: 'Balanced performance and speed',
-            pricing: { prompt: 3.0, completion: 15.0 },
-            context_length: 200000,
-            providers: [
-              { id: 'anthropic-us', name: 'Anthropic US', latency: 150, reliability: 0.98 },
-              { id: 'anthropic-eu', name: 'Anthropic EU', latency: 200, reliability: 0.97 },
-            ],
-            supportsProviderSelection: true,
-            recommendedProvider: 'anthropic-us',
-            providerMetrics: {
-              averageLatency: 150,
-              reliability: 0.98,
-              costPerToken: 3.0,
-            },
-          },
-          {
-            id: 'google/gemini-pro-1.5',
-            name: 'Gemini Pro 1.5',
-            description: "Google's latest model with long context",
-            pricing: { prompt: 1.25, completion: 5.0 },
-            context_length: 1000000,
-            providers: [
-              { id: 'google-global', name: 'Google Global', latency: 100, reliability: 0.99 },
-              { id: 'google-eu', name: 'Google EU', latency: 140, reliability: 0.98 },
-            ],
-            supportsProviderSelection: true,
-            recommendedProvider: 'google-global',
-            providerMetrics: {
-              averageLatency: 100,
-              reliability: 0.99,
-              costPerToken: 1.25,
-            },
-          },
-        ]
-        return NextResponse.json({
-          success: true,
-          models: fallbackModels,
-          timestamp: new Date().toISOString(),
-        })
+        console.log('OpenRouter models failed, using fallback:', error)
       }
-    } else {
+      
+      // Fallback models when OpenRouter is not configured - with provider selection
+      const fallbackModels = [
+        {
+          id: 'openai/gpt-4o-mini',
+          name: 'GPT-4o Mini',
+          description: 'Fast and efficient model for most tasks',
+          pricing: { prompt: 0.15, completion: 0.6 },
+          context_length: 128000,
+          providers: [
+            { id: 'openai-us-east', name: 'OpenAI US East', latency: 120, reliability: 0.99 },
+            { id: 'openai-eu-west', name: 'OpenAI EU West', latency: 180, reliability: 0.98 },
+            { id: 'openai-asia', name: 'OpenAI Asia', latency: 250, reliability: 0.97 },
+          ],
+          supportsProviderSelection: true,
+          recommendedProvider: 'openai-us-east',
+          providerMetrics: {
+            averageLatency: 120,
+            reliability: 0.99,
+            costPerToken: 0.15,
+          },
+        },
+        {
+          id: 'anthropic/claude-3.5-sonnet',
+          name: 'Claude 3.5 Sonnet',
+          description: 'Balanced performance and speed',
+          pricing: { prompt: 3.0, completion: 15.0 },
+          context_length: 200000,
+          providers: [
+            { id: 'anthropic-us', name: 'Anthropic US', latency: 150, reliability: 0.98 },
+            { id: 'anthropic-eu', name: 'Anthropic EU', latency: 200, reliability: 0.97 },
+          ],
+          supportsProviderSelection: true,
+          recommendedProvider: 'anthropic-us',
+          providerMetrics: {
+            averageLatency: 150,
+            reliability: 0.98,
+            costPerToken: 3.0,
+          },
+        },
+        {
+          id: 'google/gemini-pro-1.5',
+          name: 'Gemini Pro 1.5',
+          description: "Google's latest model with long context",
+          pricing: { prompt: 1.25, completion: 5.0 },
+          context_length: 1000000,
+          providers: [
+            { id: 'google-global', name: 'Google Global', latency: 100, reliability: 0.99 },
+            { id: 'google-eu', name: 'Google EU', latency: 140, reliability: 0.98 },
+          ],
+          supportsProviderSelection: true,
+          recommendedProvider: 'google-global',
+          providerMetrics: {
+            averageLatency: 100,
+            reliability: 0.99,
+            costPerToken: 1.25,
+          },
+        },
+      ]
+      return NextResponse.json({
+        success: true,
+        models: fallbackModels,
+        timestamp: new Date().toISOString(),
+      })
+    }
+    
+    if (action === 'stats') {
       const stats = unifiedAIRouter.getAIStats()
       return NextResponse.json({
         success: true,
@@ -148,6 +191,13 @@ export async function GET(request: NextRequest) {
         timestamp: new Date().toISOString(),
       })
     }
+
+    return NextResponse.json({
+      success: false,
+      error: 'Invalid action',
+      timestamp: new Date().toISOString(),
+    }, { status: 400 })
+
   } catch (error) {
     console.error('Failed to get AI data:', error)
 
