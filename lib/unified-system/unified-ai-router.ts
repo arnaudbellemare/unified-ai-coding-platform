@@ -84,10 +84,14 @@ export class UnifiedAIRouter {
    * Initialize OpenRouter client
    */
   private initializeOpenRouter() {
-    if (process.env.OPENROUTER_API_KEY && !DevAuth.isDevMode()) {
+    // Always initialize OpenRouter client if API key is available (real data only)
+    if (process.env.OPENROUTER_API_KEY) {
       this.openRouterClient = new OpenRouterClient({
         apiKey: process.env.OPENROUTER_API_KEY,
       })
+      console.log('✅ OpenRouter client initialized with real API key')
+    } else {
+      console.log('⚠️ OpenRouter API key not found - using fallback models')
     }
   }
 
@@ -344,8 +348,10 @@ export class UnifiedAIRouter {
 
     try {
       const models = await this.openRouterClient.getModels()
-      const filteredModels = models.filter((model) => model.architecture?.modality === 'text' && model.top_provider?.pricing)
-      
+      const filteredModels = models.filter(
+        (model) => model.architecture?.modality === 'text' && model.top_provider?.pricing,
+      )
+
       // Enhance models with provider information for provider selection
       return filteredModels.map((model) => ({
         ...model,
@@ -357,8 +363,8 @@ export class UnifiedAIRouter {
         providerMetrics: {
           averageLatency: model.top_provider?.average_latency || 0,
           reliability: model.top_provider?.reliability || 0.95,
-          costPerToken: model.top_provider?.pricing?.prompt || 0
-        }
+          costPerToken: model.top_provider?.pricing?.prompt || 0,
+        },
       }))
     } catch (error) {
       console.error('Failed to get models:', error)

@@ -176,7 +176,7 @@ export default function UnifiedDashboard() {
 
   const handleModelChange = (modelId: string) => {
     setSelectedModel(modelId)
-    const model = availableModels.find(m => m.id === modelId)
+    const model = availableModels.find((m) => m.id === modelId)
     if (model) {
       setCurrentModelProviders(model.providers || [])
       setSelectedProvider(model.recommendedProvider || 'auto')
@@ -487,7 +487,8 @@ export default function UnifiedDashboard() {
                         <div className="flex flex-col">
                           <span className="font-medium">{model.name}</span>
                           <span className="text-xs text-gray-500">
-                            ${model.pricing?.prompt || 0}/1M tokens • {model.context_length?.toLocaleString() || 'N/A'} context
+                            ${model.pricing?.prompt || 0}/1M tokens • {model.context_length?.toLocaleString() || 'N/A'}{' '}
+                            context
                             {model.supportsProviderSelection && (
                               <span className="text-green-600 ml-1">• Provider Selection Available</span>
                             )}
