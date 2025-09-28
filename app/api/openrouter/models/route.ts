@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
           description: 'Fast and efficient model for most tasks',
           pricing: { prompt: 0.15, completion: 0.6 },
           context_length: 128000,
-          architecture: { modality: 'text', tokenizer: 'cl100k_base', instruct_type: 'chat' }
+          architecture: { modality: 'text', tokenizer: 'cl100k_base', instruct_type: 'chat' },
         },
         {
           id: 'anthropic/claude-3.5-sonnet',
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
           description: 'Balanced performance and speed',
           pricing: { prompt: 3.0, completion: 15.0 },
           context_length: 200000,
-          architecture: { modality: 'text', tokenizer: 'claude', instruct_type: 'chat' }
+          architecture: { modality: 'text', tokenizer: 'claude', instruct_type: 'chat' },
         },
         {
           id: 'google/gemini-pro-1.5',
@@ -30,8 +30,8 @@ export async function GET(request: NextRequest) {
           description: "Google's latest model with long context",
           pricing: { prompt: 1.25, completion: 5.0 },
           context_length: 1000000,
-          architecture: { modality: 'text', tokenizer: 'gemini', instruct_type: 'chat' }
-        }
+          architecture: { modality: 'text', tokenizer: 'gemini', instruct_type: 'chat' },
+        },
       ])
     }
 

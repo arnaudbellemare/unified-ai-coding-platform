@@ -33,10 +33,11 @@ export class DevAuth {
    */
   static isDevMode(): boolean {
     // Enable dev mode if no API keys are configured (for UI testing)
-    const hasApiKeys = process.env.OPENAI_API_KEY || 
-                      process.env.ANTHROPIC_API_KEY || 
-                      process.env.PERPLEXITY_API_KEY ||
-                      process.env.OPENROUTER_API_KEY
+    const hasApiKeys =
+      process.env.OPENAI_API_KEY ||
+      process.env.ANTHROPIC_API_KEY ||
+      process.env.PERPLEXITY_API_KEY ||
+      process.env.OPENROUTER_API_KEY
     return !hasApiKeys
   }
 

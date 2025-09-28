@@ -20,6 +20,7 @@ import { OpenRouterIntegration } from '@/components/openrouter-integration'
 import { GEPAOptimization } from '@/components/gepa-optimization'
 import { ResearchOptimization } from '@/components/research-optimization'
 import { OptimizerComparison } from '@/components/optimizer-comparison'
+import UnifiedDashboard from '@/components/unified-dashboard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -136,6 +137,16 @@ export function HomePageContent() {
               Optimizer Comparison
             </button>
             <button
+              onClick={() => setActiveTab('unified')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'unified'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Unified System
+            </button>
+            <button
               onClick={() => setActiveTab('advanced')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'advanced'
@@ -241,6 +252,14 @@ export function HomePageContent() {
           <div className="flex justify-center items-start min-h-screen py-8">
             <div className="max-w-7xl w-full px-4">
               <OptimizerComparison />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'unified' && (
+          <div className="flex justify-center items-start min-h-screen py-8">
+            <div className="max-w-7xl w-full px-4">
+              <UnifiedDashboard />
             </div>
           </div>
         )}

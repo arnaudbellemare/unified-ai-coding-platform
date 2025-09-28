@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
           // Redirect to home page with mock auth in development mode
           return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`)
         }
-        
+
         console.error('GitHub OAuth configuration missing:', {
           clientId: !!clientId,
           clientSecret: !!clientSecret,
