@@ -85,25 +85,24 @@ export class UnifiedOptimizer {
    */
   async optimize(request: UnifiedOptimizationRequest): Promise<UnifiedOptimizationResult> {
     const startTime = Date.now()
-    
+
     try {
       // Determine best optimizer based on context and user preferences
       const selectedOptimizer = this.selectBestOptimizer(request)
-      
+
       // Execute optimization with selected strategy
       const result = await this.executeOptimization(selectedOptimizer, request)
-      
+
       // Enhance result with unified metrics
       const enhancedResult = this.enhanceResult(result, request, startTime)
-      
+
       // Store in history for learning
       this.storeOptimizationHistory(request.user?.id || 'anonymous', enhancedResult)
-      
+
       return enhancedResult
-      
     } catch (error) {
       console.error('Unified optimization failed:', error)
-      
+
       // Fallback to basic optimization
       return this.createFallbackResult(request, error as Error, startTime)
     }
@@ -114,15 +113,15 @@ export class UnifiedOptimizer {
    */
   private selectBestOptimizer(request: UnifiedOptimizationRequest): string {
     const { prompt, task, context, user } = request
-    
+
     // User preference override
     if (user?.preferences?.preferredOptimizer) {
       return user.preferences.preferredOptimizer
     }
-    
+
     // Priority-based selection
     const priority = context?.priority || 'balanced'
-    
+
     switch (priority) {
       case 'cost':
         // Research-backed for cost optimization
@@ -143,30 +142,23 @@ export class UnifiedOptimizer {
   /**
    * Execute optimization with selected strategy
    */
-  private async executeOptimization(
-    optimizer: string, 
-    request: UnifiedOptimizationRequest
-  ): Promise<any> {
+  private async executeOptimization(optimizer: string, request: UnifiedOptimizationRequest): Promise<any> {
     const { prompt, task, context } = request
-    
+
     switch (optimizer) {
       case 'research':
         return await researchBackedOptimizer.optimizeWithResearch(prompt, task)
-      
+
       case 'gepa':
-        return await gepaOptimizer.optimizePrompt(
-          prompt,
-          'gpt-4o-mini',
-          0.8
-        )
-      
+        return await gepaOptimizer.optimizePrompt(prompt, 'gpt-4o-mini', 0.8)
+
       case 'cloudflare':
         return await cloudflareCodeModeOptimizer.optimizeWithCodeMode(prompt, task)
-      
+
       case 'capo':
         // Use research optimizer as fallback for CAPO
         return await researchBackedOptimizer.optimizeWithResearch(prompt, task)
-      
+
       default:
         throw new Error(`Unknown optimizer: ${optimizer}`)
     }
@@ -176,15 +168,15 @@ export class UnifiedOptimizer {
    * Enhance result with unified metrics and analysis
    */
   private enhanceResult(
-    result: any, 
-    request: UnifiedOptimizationRequest, 
-    startTime: number
+    result: any,
+    request: UnifiedOptimizationRequest,
+    startTime: number,
   ): UnifiedOptimizationResult {
     const processingTime = Date.now() - startTime
-    
+
     // Extract metrics from different optimizer formats
     const metrics = this.extractMetrics(result)
-    
+
     return {
       success: true,
       optimization: {
@@ -196,35 +188,35 @@ export class UnifiedOptimizer {
         qualityImprovement: metrics.qualityImprovement,
         executionTime: processingTime,
         reliability: metrics.reliability,
-        score: this.calculateScore(metrics)
+        score: this.calculateScore(metrics),
       },
       breakdown: {
         tokenSavings: {
           original: metrics.originalTokens,
           optimized: metrics.optimizedTokens,
           reduction: metrics.tokenReduction,
-          percentage: (metrics.tokenReduction / metrics.originalTokens) * 100
+          percentage: (metrics.tokenReduction / metrics.originalTokens) * 100,
         },
         costSavings: {
           original: metrics.originalCost,
           optimized: metrics.optimizedCost,
           reduction: metrics.costReduction,
           percentage: (metrics.costReduction / metrics.originalCost) * 100,
-          monthlyProjection: metrics.costReduction * 30 * 1000 // Assuming 1000 requests/day
+          monthlyProjection: metrics.costReduction * 30 * 1000, // Assuming 1000 requests/day
         },
         qualityMetrics: {
           accuracy: metrics.accuracy,
           completeness: metrics.completeness,
-          efficiency: metrics.efficiency
-        }
+          efficiency: metrics.efficiency,
+        },
       },
       recommendations: this.generateRecommendations(metrics, request),
       metadata: {
         optimizer: this.determineOptimizer(result),
         timestamp: new Date().toISOString(),
         version: '1.0.0',
-        processingTime
-      }
+        processingTime,
+      },
     }
   }
 
@@ -247,7 +239,7 @@ export class UnifiedOptimizer {
         reliability: result.results.reliability || 0.9,
         accuracy: result.results.accuracy || 0.85,
         completeness: result.results.completeness || 0.9,
-        efficiency: result.results.efficiency || 0.8
+        efficiency: result.results.efficiency || 0.8,
       }
     } else if (result.optimized) {
       // GEPA format
@@ -263,7 +255,7 @@ export class UnifiedOptimizer {
         reliability: 0.85,
         accuracy: result.optimized.quality,
         completeness: 0.9,
-        efficiency: result.savings.tokenReductionPercentage / 100
+        efficiency: result.savings.tokenReductionPercentage / 100,
       }
     } else {
       // Fallback format
@@ -279,7 +271,7 @@ export class UnifiedOptimizer {
         reliability: 0.9,
         accuracy: 0.85,
         completeness: 0.9,
-        efficiency: 0.8
+        efficiency: 0.8,
       }
     }
   }
@@ -311,7 +303,7 @@ export class UnifiedOptimizer {
     const costScore = Math.min(metrics.costReduction / 0.001, 1) * 30
     const qualityScore = Math.min(metrics.qualityImprovement / 0.2, 1) * 25
     const reliabilityScore = metrics.reliability * 15
-    
+
     return Math.round(tokenScore + costScore + qualityScore + reliabilityScore)
   }
 
@@ -322,7 +314,7 @@ export class UnifiedOptimizer {
     const recommendations = {
       bestFor: [] as string[],
       avoidFor: [] as string[],
-      nextSteps: [] as string[]
+      nextSteps: [] as string[],
     }
 
     // Best for recommendations
@@ -363,10 +355,10 @@ export class UnifiedOptimizer {
     if (!this.optimizationHistory.has(userId)) {
       this.optimizationHistory.set(userId, [])
     }
-    
+
     const history = this.optimizationHistory.get(userId)!
     history.push(result)
-    
+
     // Keep only last 100 optimizations per user
     if (history.length > 100) {
       history.shift()
@@ -377,9 +369,9 @@ export class UnifiedOptimizer {
    * Create fallback result when optimization fails
    */
   private createFallbackResult(
-    request: UnifiedOptimizationRequest, 
-    error: Error, 
-    startTime: number
+    request: UnifiedOptimizationRequest,
+    error: Error,
+    startTime: number,
   ): UnifiedOptimizationResult {
     return {
       success: false,
@@ -392,39 +384,39 @@ export class UnifiedOptimizer {
         qualityImprovement: 0,
         executionTime: Date.now() - startTime,
         reliability: 0,
-        score: 0
+        score: 0,
       },
       breakdown: {
         tokenSavings: {
           original: 100,
           optimized: 100,
           reduction: 0,
-          percentage: 0
+          percentage: 0,
         },
         costSavings: {
           original: 0.002,
           optimized: 0.002,
           reduction: 0,
           percentage: 0,
-          monthlyProjection: 0
+          monthlyProjection: 0,
         },
         qualityMetrics: {
           accuracy: 0,
           completeness: 0,
-          efficiency: 0
-        }
+          efficiency: 0,
+        },
       },
       recommendations: {
         bestFor: [],
         avoidFor: ['All use cases'],
-        nextSteps: ['Check API configuration', 'Verify network connectivity']
+        nextSteps: ['Check API configuration', 'Verify network connectivity'],
       },
       metadata: {
         optimizer: 'fallback',
         timestamp: new Date().toISOString(),
         version: '1.0.0',
-        processingTime: Date.now() - startTime
-      }
+        processingTime: Date.now() - startTime,
+      },
     }
   }
 
@@ -439,18 +431,20 @@ export class UnifiedOptimizer {
    * Get system statistics
    */
   getSystemStats(): any {
-    const totalOptimizations = Array.from(this.optimizationHistory.values())
-      .reduce((sum, history) => sum + history.length, 0)
-    
+    const totalOptimizations = Array.from(this.optimizationHistory.values()).reduce(
+      (sum, history) => sum + history.length,
+      0,
+    )
+
     const successfulOptimizations = Array.from(this.optimizationHistory.values())
       .flat()
-      .filter(result => result.success).length
-    
+      .filter((result) => result.success).length
+
     return {
       totalOptimizations,
       successfulOptimizations,
       successRate: totalOptimizations > 0 ? (successfulOptimizations / totalOptimizations) * 100 : 0,
-      activeUsers: this.optimizationHistory.size
+      activeUsers: this.optimizationHistory.size,
     }
   }
 }

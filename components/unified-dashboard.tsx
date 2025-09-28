@@ -8,17 +8,18 @@ import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  Zap, 
-  DollarSign, 
-  Brain, 
-  CreditCard, 
-  TrendingUp, 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Zap,
+  DollarSign,
+  Brain,
+  CreditCard,
+  TrendingUp,
   Activity,
   Settings,
   BarChart3,
   Target,
-  Sparkles
+  Sparkles,
 } from 'lucide-react'
 
 interface OptimizationResult {
@@ -142,23 +143,42 @@ export default function UnifiedDashboard() {
   const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [systemStats, setSystemStats] = useState<any>(null)
+  const [availableModels, setAvailableModels] = useState<any[]>([])
+  const [selectedModel, setSelectedModel] = useState<string>('')
 
   useEffect(() => {
     loadSystemStats()
+    loadAvailableModels()
   }, [])
+
+  const loadAvailableModels = async () => {
+    try {
+      const response = await fetch('/api/unified/ai?action=models')
+      const data = await response.json()
+      if (data.success) {
+        setAvailableModels(data.models)
+        // Set default model if none selected
+        if (!selectedModel && data.models.length > 0) {
+          setSelectedModel(data.models[0].id)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load models:', error)
+    }
+  }
 
   const loadSystemStats = async () => {
     try {
       const [optimizationStats, aiStats, paymentStats] = await Promise.all([
-        fetch('/api/unified/optimize').then(res => res.json()),
-        fetch('/api/unified/ai').then(res => res.json()),
-        fetch('/api/unified/payment').then(res => res.json())
+        fetch('/api/unified/optimize').then((res) => res.json()),
+        fetch('/api/unified/ai').then((res) => res.json()),
+        fetch('/api/unified/payment').then((res) => res.json()),
       ])
-      
+
       setSystemStats({
         optimization: optimizationStats.stats,
         ai: aiStats.stats,
-        payment: paymentStats.stats
+        payment: paymentStats.stats,
       })
     } catch (error) {
       console.error('Failed to load system stats:', error)
@@ -167,7 +187,7 @@ export default function UnifiedDashboard() {
 
   const handleOptimize = async () => {
     if (!prompt || !task) return
-    
+
     setIsLoading(true)
     try {
       const response = await fetch('/api/unified/optimize', {
@@ -177,14 +197,14 @@ export default function UnifiedDashboard() {
           prompt,
           task,
           context: {
-            priority: 'balanced'
+            priority: 'balanced',
           },
           preferences: {
-            preferredOptimizer: 'auto'
-          }
-        })
+            preferredOptimizer: 'auto',
+          },
+        }),
       })
-      
+
       const data = await response.json()
       if (data.success) {
         setOptimizationResult(data.result)
@@ -198,7 +218,7 @@ export default function UnifiedDashboard() {
 
   const handleAIGenerate = async () => {
     if (!prompt || !task) return
-    
+
     setIsLoading(true)
     try {
       const response = await fetch('/api/unified/ai', {
@@ -207,16 +227,17 @@ export default function UnifiedDashboard() {
         body: JSON.stringify({
           prompt,
           task,
+          model: selectedModel,
           optimization: {
             enabled: true,
-            strategy: 'auto'
+            strategy: 'auto',
           },
           context: {
-            priority: 'balanced'
-          }
-        })
+            priority: 'balanced',
+          },
+        }),
       })
-      
+
       const data = await response.json()
       if (data.success) {
         setAIResponse(data.result)
@@ -235,17 +256,17 @@ export default function UnifiedDashboard() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: 10.00,
+          amount: 10.0,
           currency: 'USD',
           purpose: 'optimization',
           paymentMethod: 'x402',
           metadata: {
             optimizationType: optimizationResult?.optimization.strategy || 'general',
-            tokenCount: optimizationResult?.optimization.tokenReduction || 0
-          }
-        })
+            tokenCount: optimizationResult?.optimization.tokenReduction || 0,
+          },
+        }),
       })
-      
+
       const data = await response.json()
       if (data.success) {
         setPaymentResult(data.result)
@@ -264,9 +285,7 @@ export default function UnifiedDashboard() {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Unified AI Platform
         </h1>
-        <p className="text-gray-600 text-lg">
-          All-in-one system for AI optimization, generation, and payments
-        </p>
+        <p className="text-gray-600 text-lg">All-in-one system for AI optimization, generation, and payments</p>
       </div>
 
       {/* System Stats */}
@@ -284,7 +303,7 @@ export default function UnifiedDashboard() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">AI Requests</CardTitle>
@@ -292,12 +311,10 @@ export default function UnifiedDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{systemStats.ai?.totalRequests || 0}</div>
-              <p className="text-xs text-muted-foreground">
-                {systemStats.ai?.totalTokens || 0} tokens processed
-              </p>
+              <p className="text-xs text-muted-foreground">{systemStats.ai?.totalTokens || 0} tokens processed</p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Payments</CardTitle>
@@ -330,9 +347,7 @@ export default function UnifiedDashboard() {
                 <Zap className="h-5 w-5" />
                 Unified Optimization
               </CardTitle>
-              <CardDescription>
-                Optimize your prompts using our intelligent routing system
-              </CardDescription>
+              <CardDescription>Optimize your prompts using our intelligent routing system</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -344,7 +359,7 @@ export default function UnifiedDashboard() {
                   className="min-h-[100px]"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Task Description</label>
                 <Input
@@ -353,12 +368,8 @@ export default function UnifiedDashboard() {
                   onChange={(e) => setTask(e.target.value)}
                 />
               </div>
-              
-              <Button 
-                onClick={handleOptimize} 
-                disabled={isLoading || !prompt || !task}
-                className="w-full"
-              >
+
+              <Button onClick={handleOptimize} disabled={isLoading || !prompt || !task} className="w-full">
                 {isLoading ? 'Optimizing...' : 'Optimize Prompt'}
               </Button>
             </CardContent>
@@ -381,18 +392,16 @@ export default function UnifiedDashboard() {
                     </div>
                     <div className="text-sm text-gray-600">Token Reduction</div>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-green-50 rounded-lg">
                     <div className="text-2xl font-bold text-green-600">
                       ${optimizationResult.breakdown.costSavings.reduction.toFixed(4)}
                     </div>
                     <div className="text-sm text-gray-600">Cost Savings</div>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-purple-50 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">
-                      {optimizationResult.optimization.score}
-                    </div>
+                    <div className="text-2xl font-bold text-purple-600">{optimizationResult.optimization.score}</div>
                     <div className="text-sm text-gray-600">Optimization Score</div>
                   </div>
                 </div>
@@ -427,9 +436,7 @@ export default function UnifiedDashboard() {
                 <Brain className="h-5 w-5" />
                 AI Generation
               </CardTitle>
-              <CardDescription>
-                Generate AI responses with automatic optimization
-              </CardDescription>
+              <CardDescription>Generate AI responses with automatic optimization</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -441,7 +448,7 @@ export default function UnifiedDashboard() {
                   className="min-h-[100px]"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Task Description</label>
                 <Input
@@ -450,12 +457,29 @@ export default function UnifiedDashboard() {
                   onChange={(e) => setTask(e.target.value)}
                 />
               </div>
-              
-              <Button 
-                onClick={handleAIGenerate} 
-                disabled={isLoading || !prompt || !task}
-                className="w-full"
-              >
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select AI Model</label>
+                <Select value={selectedModel} onValueChange={setSelectedModel}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose an AI model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableModels.map((model) => (
+                      <SelectItem key={model.id} value={model.id}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{model.name}</span>
+                          <span className="text-xs text-gray-500">
+                            ${model.pricing?.prompt || 0}/1M tokens • {model.context_length?.toLocaleString() || 'N/A'} context
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button onClick={handleAIGenerate} disabled={isLoading || !prompt || !task || !selectedModel} className="w-full">
                 {isLoading ? 'Generating...' : 'Generate AI Response'}
               </Button>
             </CardContent>
@@ -473,19 +497,15 @@ export default function UnifiedDashboard() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {aiResponse.response.model}
-                    </div>
+                    <div className="text-2xl font-bold text-blue-600">{aiResponse.response.model}</div>
                     <div className="text-sm text-gray-600">Model Used</div>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">
-                      {aiResponse.response.tokens.total}
-                    </div>
+                    <div className="text-2xl font-bold text-green-600">{aiResponse.response.tokens.total}</div>
                     <div className="text-sm text-gray-600">Total Tokens</div>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-purple-50 rounded-lg">
                     <div className="text-2xl font-bold text-purple-600">
                       ${aiResponse.response.cost.total.toFixed(4)}
@@ -496,9 +516,7 @@ export default function UnifiedDashboard() {
 
                 <div className="space-y-2">
                   <h4 className="font-medium">Response:</h4>
-                  <div className="p-3 bg-gray-50 rounded-lg text-sm">
-                    {aiResponse.response.content}
-                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg text-sm">{aiResponse.response.content}</div>
                 </div>
 
                 {aiResponse.optimization && (
@@ -506,7 +524,10 @@ export default function UnifiedDashboard() {
                     <h4 className="font-medium">Optimization Applied:</h4>
                     <div className="p-3 bg-green-50 rounded-lg text-sm">
                       <div className="font-medium">Strategy: {aiResponse.optimization.strategy}</div>
-                      <div>Token Savings: {aiResponse.optimization.savings.tokens} ({aiResponse.optimization.savings.percentage.toFixed(1)}%)</div>
+                      <div>
+                        Token Savings: {aiResponse.optimization.savings.tokens} (
+                        {aiResponse.optimization.savings.percentage.toFixed(1)}%)
+                      </div>
                       <div>Cost Savings: ${aiResponse.optimization.savings.cost.toFixed(4)}</div>
                     </div>
                   </div>
@@ -524,9 +545,7 @@ export default function UnifiedDashboard() {
                 <CreditCard className="h-5 w-5" />
                 Unified Payment
               </CardTitle>
-              <CardDescription>
-                Process payments with automatic optimization and multi-protocol support
-              </CardDescription>
+              <CardDescription>Process payments with automatic optimization and multi-protocol support</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -534,23 +553,19 @@ export default function UnifiedDashboard() {
                   <label className="text-sm font-medium">Amount</label>
                   <Input placeholder="10.00" defaultValue="10.00" />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Currency</label>
                   <Input placeholder="USD" defaultValue="USD" />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Purpose</label>
                 <Input placeholder="optimization" defaultValue="optimization" />
               </div>
-              
-              <Button 
-                onClick={handlePayment} 
-                disabled={isLoading}
-                className="w-full"
-              >
+
+              <Button onClick={handlePayment} disabled={isLoading} className="w-full">
                 {isLoading ? 'Processing...' : 'Process Payment'}
               </Button>
             </CardContent>
@@ -568,16 +583,12 @@ export default function UnifiedDashboard() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">
-                      ${paymentResult.payment.amount}
-                    </div>
+                    <div className="text-2xl font-bold text-green-600">${paymentResult.payment.amount}</div>
                     <div className="text-sm text-gray-600">Amount Paid</div>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {paymentResult.payment.method.toUpperCase()}
-                    </div>
+                    <div className="text-2xl font-bold text-blue-600">{paymentResult.payment.method.toUpperCase()}</div>
                     <div className="text-sm text-gray-600">Payment Method</div>
                   </div>
                 </div>
@@ -625,9 +636,7 @@ export default function UnifiedDashboard() {
                 <BarChart3 className="h-5 w-5" />
                 System Analytics
               </CardTitle>
-              <CardDescription>
-                View comprehensive analytics across all unified services
-              </CardDescription>
+              <CardDescription>View comprehensive analytics across all unified services</CardDescription>
             </CardHeader>
             <CardContent>
               {systemStats ? (
@@ -643,10 +652,7 @@ export default function UnifiedDashboard() {
                         <span>Success Rate:</span>
                         <span>{systemStats.optimization?.successRate?.toFixed(1) || 0}%</span>
                       </div>
-                      <Progress 
-                        value={systemStats.optimization?.successRate || 0} 
-                        className="h-2"
-                      />
+                      <Progress value={systemStats.optimization?.successRate || 0} className="h-2" />
                     </div>
                   </div>
 
@@ -687,9 +693,7 @@ export default function UnifiedDashboard() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  Loading system analytics...
-                </div>
+                <div className="text-center py-8 text-gray-500">Loading system analytics...</div>
               )}
             </CardContent>
           </Card>

@@ -70,24 +70,23 @@ export class UnifiedPaymentFacilitator {
     try {
       // Calculate optimized cost based on purpose and metadata
       const optimizedCost = await this.calculateOptimizedCost(request)
-      
+
       // Select best payment method based on amount and user preferences
       const selectedMethod = this.selectPaymentMethod(request, optimizedCost)
-      
+
       // Execute payment with selected method
       const paymentResult = await this.executePayment(request, selectedMethod, optimizedCost)
-      
+
       // Apply cost optimizations
       const finalResult = await this.applyCostOptimizations(paymentResult, request)
-      
+
       // Store payment history
       this.storePaymentHistory(request.user?.id || 'anonymous', finalResult)
-      
+
       return finalResult
-      
     } catch (error) {
       console.error('Unified payment processing failed:', error)
-      
+
       return this.createFallbackResult(request, error as Error)
     }
   }
@@ -97,10 +96,10 @@ export class UnifiedPaymentFacilitator {
    */
   private async calculateOptimizedCost(request: UnifiedPaymentRequest): Promise<any> {
     const { amount, purpose, metadata } = request
-    
+
     let optimizedAmount = amount
     let optimizationStrategy = 'none'
-    
+
     // Apply optimizations based on purpose
     switch (purpose) {
       case 'optimization':
@@ -108,7 +107,7 @@ export class UnifiedPaymentFacilitator {
         optimizedAmount = amount * 0.8 // 20% discount
         optimizationStrategy = 'optimization-discount'
         break
-        
+
       case 'agent_execution':
         // Apply token-based pricing optimization
         if (metadata?.tokenCount) {
@@ -117,14 +116,14 @@ export class UnifiedPaymentFacilitator {
           optimizationStrategy = tokenOptimization.strategy
         }
         break
-        
+
       case 'premium_features':
         // Apply volume discounts
         const volumeDiscount = this.calculateVolumeDiscount(amount)
         optimizedAmount = amount * volumeDiscount.multiplier
         optimizationStrategy = volumeDiscount.strategy
         break
-        
+
       case 'api_usage':
         // Apply usage-based optimization
         const usageOptimization = this.optimizeUsagePricing(amount)
@@ -132,19 +131,19 @@ export class UnifiedPaymentFacilitator {
         optimizationStrategy = usageOptimization.strategy
         break
     }
-    
+
     return {
       originalAmount: amount,
       optimizedAmount,
       optimizationStrategy,
-      savings: amount - optimizedAmount
+      savings: amount - optimizedAmount,
     }
   }
 
   /**
    * Optimize token-based pricing
    */
-  private optimizeTokenPricing(tokenCount: number): { multiplier: number, strategy: string } {
+  private optimizeTokenPricing(tokenCount: number): { multiplier: number; strategy: string } {
     if (tokenCount > 10000) {
       return { multiplier: 0.7, strategy: 'bulk-token-discount' }
     } else if (tokenCount > 5000) {
@@ -158,7 +157,7 @@ export class UnifiedPaymentFacilitator {
   /**
    * Calculate volume discounts
    */
-  private calculateVolumeDiscount(amount: number): { multiplier: number, strategy: string } {
+  private calculateVolumeDiscount(amount: number): { multiplier: number; strategy: string } {
     if (amount > 1000) {
       return { multiplier: 0.6, strategy: 'enterprise-discount' }
     } else if (amount > 500) {
@@ -172,7 +171,7 @@ export class UnifiedPaymentFacilitator {
   /**
    * Optimize usage-based pricing
    */
-  private optimizeUsagePricing(amount: number): { multiplier: number, strategy: string } {
+  private optimizeUsagePricing(amount: number): { multiplier: number; strategy: string } {
     if (amount > 500) {
       return { multiplier: 0.8, strategy: 'high-usage-optimization' }
     } else if (amount > 100) {
@@ -187,12 +186,12 @@ export class UnifiedPaymentFacilitator {
   private selectPaymentMethod(request: UnifiedPaymentRequest, optimizedCost: any): string {
     const { amount, currency, paymentMethod } = request
     const finalAmount = optimizedCost.optimizedAmount
-    
+
     // User preference override
     if (paymentMethod) {
       return paymentMethod
     }
-    
+
     // Automatic selection based on amount and currency
     if (currency === 'ETH' || currency === 'USDC') {
       if (finalAmount < 10) {
@@ -209,34 +208,30 @@ export class UnifiedPaymentFacilitator {
         return 'sepa' // Best for large payments
       }
     }
-    
+
     return 'x402' // Default to x402
   }
 
   /**
    * Execute payment with selected method
    */
-  private async executePayment(
-    request: UnifiedPaymentRequest, 
-    method: string, 
-    optimizedCost: any
-  ): Promise<any> {
+  private async executePayment(request: UnifiedPaymentRequest, method: string, optimizedCost: any): Promise<any> {
     const { currency, user, metadata } = request
     const amount = optimizedCost.optimizedAmount
-    
+
     switch (method) {
       case 'x402':
         return await this.executeX402Payment(amount, currency, user, metadata)
-      
+
       case 'stripe':
         return await this.executeStripePayment(amount, currency, user)
-      
+
       case 'lightning':
         return await this.executeLightningPayment(amount, currency, user)
-      
+
       case 'sepa':
         return await this.executeSepaPayment(amount, currency, user)
-      
+
       default:
         throw new Error(`Unsupported payment method: ${method}`)
     }
@@ -245,21 +240,7 @@ export class UnifiedPaymentFacilitator {
   /**
    * Execute x402 Foundation payment
    */
-  private async executeX402Payment(
-    amount: number, 
-    currency: string, 
-    user: any, 
-    metadata: any
-  ): Promise<any> {
-    if (DevAuth.isDevMode()) {
-      return {
-        id: `x402_dev_${Date.now()}`,
-        status: 'completed',
-        method: 'x402',
-        transactionHash: '0x' + Math.random().toString(16).substring(2, 66),
-        receipt: `x402-receipt-${Date.now()}`
-      }
-    }
+  private async executeX402Payment(amount: number, currency: string, user: any, metadata: any): Promise<any> {
 
     try {
       // Create payment intent with x402 Foundation
@@ -270,8 +251,8 @@ export class UnifiedPaymentFacilitator {
         metadata: {
           userId: user?.id,
           purpose: 'ai_optimization',
-          ...metadata
-        }
+          ...metadata,
+        },
       }
 
       const result = await ap2Service.createPaymentRequest(
@@ -283,8 +264,8 @@ export class UnifiedPaymentFacilitator {
         {
           userId: user?.id,
           purpose: 'ai_optimization',
-          ...metadata
-        }
+          ...metadata,
+        },
       )
 
       return {
@@ -292,7 +273,7 @@ export class UnifiedPaymentFacilitator {
         status: 'completed',
         method: 'x402',
         transactionHash: `0x${Math.random().toString(16).substring(2, 66)}`,
-        receipt: `x402-receipt-${Date.now()}`
+        receipt: `x402-receipt-${Date.now()}`,
       }
     } catch (error) {
       console.error('x402 payment failed:', error)
@@ -304,15 +285,6 @@ export class UnifiedPaymentFacilitator {
    * Execute Stripe payment (mock implementation)
    */
   private async executeStripePayment(amount: number, currency: string, user: any): Promise<any> {
-    if (DevAuth.isDevMode()) {
-      return {
-        id: `stripe_dev_${Date.now()}`,
-        status: 'completed',
-        method: 'stripe',
-        receipt: `stripe-receipt-${Date.now()}`
-      }
-    }
-
     // In production, integrate with Stripe API
     throw new Error('Stripe integration not implemented yet')
   }
@@ -321,15 +293,6 @@ export class UnifiedPaymentFacilitator {
    * Execute Lightning payment (mock implementation)
    */
   private async executeLightningPayment(amount: number, currency: string, user: any): Promise<any> {
-    if (DevAuth.isDevMode()) {
-      return {
-        id: `lightning_dev_${Date.now()}`,
-        status: 'completed',
-        method: 'lightning',
-        receipt: `lightning-receipt-${Date.now()}`
-      }
-    }
-
     // In production, integrate with Lightning Network
     throw new Error('Lightning integration not implemented yet')
   }
@@ -338,15 +301,6 @@ export class UnifiedPaymentFacilitator {
    * Execute SEPA payment (mock implementation)
    */
   private async executeSepaPayment(amount: number, currency: string, user: any): Promise<any> {
-    if (DevAuth.isDevMode()) {
-      return {
-        id: `sepa_dev_${Date.now()}`,
-        status: 'completed',
-        method: 'sepa',
-        receipt: `sepa-receipt-${Date.now()}`
-      }
-    }
-
     // In production, integrate with SEPA
     throw new Error('SEPA integration not implemented yet')
   }
@@ -355,12 +309,12 @@ export class UnifiedPaymentFacilitator {
    * Apply cost optimizations to payment result
    */
   private async applyCostOptimizations(
-    paymentResult: any, 
-    request: UnifiedPaymentRequest
+    paymentResult: any,
+    request: UnifiedPaymentRequest,
   ): Promise<UnifiedPaymentResult> {
     const networkFees = this.calculateNetworkFees(request.paymentMethod, request.amount)
     const platformFees = this.calculatePlatformFees(request.amount)
-    
+
     return {
       success: true,
       payment: {
@@ -370,26 +324,26 @@ export class UnifiedPaymentFacilitator {
         status: paymentResult.status,
         method: paymentResult.method,
         transactionHash: paymentResult.transactionHash,
-        receipt: paymentResult.receipt
+        receipt: paymentResult.receipt,
       },
       costBreakdown: {
         baseCost: request.amount,
         networkFees,
         platformFees,
         totalCost: request.amount + networkFees + platformFees,
-        savings: 0 // Will be calculated by optimization
+        savings: 0, // Will be calculated by optimization
       },
       optimization: {
         applied: true,
         strategy: 'unified-optimization',
         tokenReduction: 0, // Will be calculated if applicable
-        costReduction: 0 // Will be calculated
+        costReduction: 0, // Will be calculated
       },
       metadata: {
         timestamp: new Date().toISOString(),
         version: '1.0.0',
-        provider: paymentResult.method
-      }
+        provider: paymentResult.method,
+      },
     }
   }
 
@@ -401,7 +355,7 @@ export class UnifiedPaymentFacilitator {
       case 'x402':
         return amount * 0.001 // 0.1% for x402
       case 'stripe':
-        return amount * 0.029 + 0.30 // Stripe fees
+        return amount * 0.029 + 0.3 // Stripe fees
       case 'lightning':
         return amount * 0.0001 // Very low fees for Lightning
       case 'sepa':
@@ -431,10 +385,10 @@ export class UnifiedPaymentFacilitator {
     if (!this.paymentHistory.has(userId)) {
       this.paymentHistory.set(userId, [])
     }
-    
+
     const history = this.paymentHistory.get(userId)!
     history.push(result)
-    
+
     // Keep only last 100 payments per user
     if (history.length > 100) {
       history.shift()
@@ -452,26 +406,26 @@ export class UnifiedPaymentFacilitator {
         amount: request.amount,
         currency: request.currency,
         status: 'failed',
-        method: request.paymentMethod
+        method: request.paymentMethod,
       },
       costBreakdown: {
         baseCost: request.amount,
         networkFees: 0,
         platformFees: 0,
         totalCost: request.amount,
-        savings: 0
+        savings: 0,
       },
       optimization: {
         applied: false,
         strategy: 'none',
         tokenReduction: 0,
-        costReduction: 0
+        costReduction: 0,
       },
       metadata: {
         timestamp: new Date().toISOString(),
         version: '1.0.0',
-        provider: 'fallback'
-      }
+        provider: 'fallback',
+      },
     }
   }
 
@@ -486,24 +440,23 @@ export class UnifiedPaymentFacilitator {
    * Get system payment statistics
    */
   getPaymentStats(): any {
-    const totalPayments = Array.from(this.paymentHistory.values())
-      .reduce((sum, history) => sum + history.length, 0)
-    
+    const totalPayments = Array.from(this.paymentHistory.values()).reduce((sum, history) => sum + history.length, 0)
+
     const successfulPayments = Array.from(this.paymentHistory.values())
       .flat()
-      .filter(result => result.success).length
-    
+      .filter((result) => result.success).length
+
     const totalVolume = Array.from(this.paymentHistory.values())
       .flat()
-      .filter(result => result.success)
+      .filter((result) => result.success)
       .reduce((sum, result) => sum + result.payment.amount, 0)
-    
+
     return {
       totalPayments,
       successfulPayments,
       successRate: totalPayments > 0 ? (successfulPayments / totalPayments) * 100 : 0,
       totalVolume,
-      activeUsers: this.paymentHistory.size
+      activeUsers: this.paymentHistory.size,
     }
   }
 }
