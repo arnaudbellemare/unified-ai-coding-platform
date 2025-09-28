@@ -12,8 +12,8 @@ export async function GET() {
         VERCEL_ENV: process.env.VERCEL_ENV,
         OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY ? 'SET' : 'NOT_SET',
         GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID ? 'SET' : 'NOT_SET',
-        NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'NOT_SET'
-      }
+        NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'NOT_SET',
+      },
     })
   } catch (error) {
     console.error('Vercel test error:', error)
@@ -21,9 +21,9 @@ export async function GET() {
       {
         success: false,
         error: 'Vercel test failed',
-        details: (error as Error).message
+        details: (error as Error).message,
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

@@ -116,10 +116,92 @@ export default function UnifiedAllInOne() {
         setSelectedProvider(data.models[0].recommendedProvider || 'auto')
         console.log(`Loaded ${data.models.length} models from ${data.source}`)
       } else {
-        console.error('Both model endpoints failed:', data)
+        console.error('Both model endpoints failed, using hardcoded fallback')
+        // Hardcoded fallback models that always work
+        const fallbackModels = [
+          {
+            id: 'gpt-4o-mini',
+            name: 'GPT-4o Mini',
+            description: 'Fast and efficient model',
+            pricing: { prompt: 0.15, completion: 0.6 },
+            context_length: 128000,
+            providers: [{ id: 'openai', name: 'OpenAI', latency: 120, reliability: 0.99 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'openai',
+            providerMetrics: { averageLatency: 120, reliability: 0.99, costPerToken: 0.15 }
+          },
+          {
+            id: 'claude-3.5-sonnet',
+            name: 'Claude 3.5 Sonnet',
+            description: 'Balanced performance and speed',
+            pricing: { prompt: 3.0, completion: 15.0 },
+            context_length: 200000,
+            providers: [{ id: 'anthropic', name: 'Anthropic', latency: 150, reliability: 0.98 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'anthropic',
+            providerMetrics: { averageLatency: 150, reliability: 0.98, costPerToken: 3.0 }
+          },
+          {
+            id: 'gemini-pro-1.5',
+            name: 'Gemini Pro 1.5',
+            description: 'Google\'s latest model',
+            pricing: { prompt: 1.25, completion: 5.0 },
+            context_length: 1000000,
+            providers: [{ id: 'google', name: 'Google', latency: 100, reliability: 0.99 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'google',
+            providerMetrics: { averageLatency: 100, reliability: 0.99, costPerToken: 1.25 }
+          },
+          {
+            id: 'llama-3.1-70b',
+            name: 'Llama 3.1 70B',
+            description: 'Open source model with excellent reasoning',
+            pricing: { prompt: 0.9, completion: 0.9 },
+            context_length: 128000,
+            providers: [{ id: 'meta', name: 'Meta', latency: 200, reliability: 0.95 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'meta',
+            providerMetrics: { averageLatency: 200, reliability: 0.95, costPerToken: 0.9 }
+          },
+          {
+            id: 'mistral-7b',
+            name: 'Mistral 7B Instruct',
+            description: 'Efficient small model for quick tasks',
+            pricing: { prompt: 0.2, completion: 0.2 },
+            context_length: 32000,
+            providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'mistral',
+            providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0.2 }
+          }
+        ]
+        
+        setAvailableModels(fallbackModels)
+        setSelectedModel(fallbackModels[0].id)
+        setSelectedProvider(fallbackModels[0].recommendedProvider || 'auto')
+        console.log(`Loaded ${fallbackModels.length} hardcoded fallback models`)
       }
     } catch (error) {
       console.error('Failed to load models:', error)
+      // Use hardcoded models as final fallback
+      const fallbackModels = [
+        {
+          id: 'gpt-4o-mini',
+          name: 'GPT-4o Mini',
+          description: 'Fast and efficient model',
+          pricing: { prompt: 0.15, completion: 0.6 },
+          context_length: 128000,
+          providers: [{ id: 'openai', name: 'OpenAI', latency: 120, reliability: 0.99 }],
+          supportsProviderSelection: true,
+          recommendedProvider: 'openai',
+          providerMetrics: { averageLatency: 120, reliability: 0.99, costPerToken: 0.15 }
+        }
+      ]
+      
+      setAvailableModels(fallbackModels)
+      setSelectedModel(fallbackModels[0].id)
+      setSelectedProvider(fallbackModels[0].recommendedProvider || 'auto')
+      console.log('Using emergency fallback models')
     }
   }
 
