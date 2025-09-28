@@ -99,13 +99,13 @@ export default function UnifiedAllInOne() {
 
   const loadModels = async () => {
     try {
-      // Try the main models endpoint first
-      let response = await fetch('/api/models')
+      // Try real models endpoint first
+      let response = await fetch('/api/models-real')
       let data = await response.json()
 
-      // If it fails, try the simple fallback
+      // If it fails, try the fallback
       if (!data.success || !data.models || data.models.length === 0) {
-        console.log('Main models API failed, trying simple fallback...')
+        console.log('Real models API failed, trying fallback...')
         response = await fetch('/api/models-simple')
         data = await response.json()
       }
@@ -363,8 +363,8 @@ export default function UnifiedAllInOne() {
       setCurrentStep('Processing with AI...')
       setProgress(50)
 
-      // Try main process endpoint first, then fallback
-      let response = await fetch('/api/process', {
+      // Try real process endpoint first
+      let response = await fetch('/api/process-real', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -372,27 +372,14 @@ export default function UnifiedAllInOne() {
           task,
           model: selectedModel,
           provider: selectedProvider,
+          userId: 'user-' + Date.now(), // Generate user ID for tracking
         }),
       })
 
-      // If main endpoint fails, try simple fallback
+      // If real endpoint fails, try fallback
       if (!response.ok) {
-        console.log('Main process API failed, trying simple fallback...')
+        console.log('Real process API failed, trying fallback...')
         response = await fetch('/api/process-simple', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            prompt,
-            task,
-            model: selectedModel,
-          }),
-        })
-      }
-
-      // If simple fallback also fails, try emergency fallback
-      if (!response.ok) {
-        console.log('Simple fallback failed, trying emergency fallback...')
-        response = await fetch('/api/emergency-fallback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

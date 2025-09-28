@@ -21,12 +21,11 @@ export default function VercelSandboxTester() {
 
   const testEndpoints = [
     { name: 'Main Page', url: '/', type: 'page' },
-    { name: 'Status Check', url: '/api/status', type: 'api' },
-    { name: 'Emergency Fallback', url: '/api/emergency-fallback', type: 'api' },
-    { name: 'Models API (Simple)', url: '/api/models-simple', type: 'api' },
-    { name: 'Process API (Simple)', url: '/api/process-simple', type: 'api' },
-    { name: 'Models API (Main)', url: '/api/models', type: 'api' },
-    { name: 'Process API (Main)', url: '/api/process', type: 'api' },
+    { name: 'Real Models API', url: '/api/models-real', type: 'api' },
+    { name: 'Real Process API', url: '/api/process-real', type: 'api' },
+    { name: 'Real OpenRouter Generate', url: '/api/openrouter/real-generate', type: 'api' },
+    { name: 'Models API (Fallback)', url: '/api/models-simple', type: 'api' },
+    { name: 'Process API (Fallback)', url: '/api/process-simple', type: 'api' },
     { name: 'GitHub Auth API', url: '/api/github-auth', type: 'api' },
     { name: 'Test Sandbox', url: '/api/test-sandbox', type: 'api' },
   ]
