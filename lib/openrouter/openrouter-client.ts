@@ -81,10 +81,13 @@ export class OpenRouterClient {
       const models = await this.getModels()
       const model = models.find((m) => m.id === modelId)
       if (!model?.pricing) return null
-      
+
       return {
         prompt: typeof model.pricing.prompt === 'string' ? parseFloat(model.pricing.prompt) : model.pricing.prompt,
-        completion: typeof model.pricing.completion === 'string' ? parseFloat(model.pricing.completion) : model.pricing.completion,
+        completion:
+          typeof model.pricing.completion === 'string'
+            ? parseFloat(model.pricing.completion)
+            : model.pricing.completion,
       }
     } catch (error) {
       console.error('Error fetching model pricing:', error)

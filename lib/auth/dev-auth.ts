@@ -38,10 +38,10 @@ export class DevAuth {
       process.env.ANTHROPIC_API_KEY ||
       process.env.PERPLEXITY_API_KEY ||
       process.env.OPENROUTER_API_KEY
-    
+
     // Also enable dev mode if database is not configured
     const hasDatabase = !!process.env.POSTGRES_URL
-    
+
     return !hasApiKeys || !hasDatabase
   }
 
