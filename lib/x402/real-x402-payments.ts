@@ -204,7 +204,7 @@ export class RealX402PaymentService {
   }): Promise<any> {
     try {
       console.log(`🔄 Processing x402 reimbursement: $${data.totalCost} for ${data.userId}`)
-      
+
       // Create reimbursement payment
       const reimbursementRequest: RealX402PaymentRequest = {
         amount: data.totalCost,
@@ -225,7 +225,7 @@ export class RealX402PaymentService {
 
       // Process the reimbursement payment
       const result = await this.processPayment(reimbursementRequest)
-      
+
       console.log(`✅ x402 reimbursement completed: ${result.transactionHash}`)
       return {
         success: true,

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Get model pricing for cost calculation
-    const models = await openRouterClient.getAvailableModels()
+    const models = await openRouterClient.getModels()
     const selectedModel = models.find((m) => m.id === model)
 
     if (!selectedModel) {

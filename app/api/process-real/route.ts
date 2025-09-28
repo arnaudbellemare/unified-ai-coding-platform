@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ResearchBackedOptimizer } from '@/lib/research-backed-optimizer'
-import { GEPAOptimizer } from '@/lib/gepa-optimizer'
+import { GEPACostOptimizer } from '@/lib/gepa-optimizer'
 import { CAPOEnhancedOptimizer } from '@/lib/capo-enhanced-optimizer'
 import { CloudflareCodeModeOptimizer } from '@/lib/cloudflare-code-mode-optimizer'
 import { OpenRouterClient } from '@/lib/openrouter/openrouter-client'
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize optimizers
     const researchOptimizer = new ResearchBackedOptimizer()
-    const gepaOptimizer = new GEPAOptimizer()
+    const gepaOptimizer = new GEPACostOptimizer()
     const capoOptimizer = new CAPOEnhancedOptimizer()
     const cloudflareOptimizer = new CloudflareCodeModeOptimizer()
     const openRouterClient = new OpenRouterClient({
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Get available models for cost optimization
-    const availableModels = await openRouterClient.getAvailableModels()
+    const availableModels = await openRouterClient.getModels()
     const selectedModelData = availableModels.find((m) => m.id === model)
 
     if (!selectedModelData) {
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     console.log('🧠 Running optimization engines...')
     const optimizationPromises = [
       researchOptimizer.optimizePrompt(prompt, task).catch((err) => ({ error: err.message })),
-      gepaOptimizer.optimizePrompt(prompt, task).catch((err) => ({ error: err.message })),
+        gepaOptimizer.optimizePrompt(prompt, model, 0.8).catch((err) => ({ error: err.message })),
       capoOptimizer.optimizeWithCAPO({ description: task, context: prompt }).catch((err) => ({ error: err.message })),
       cloudflareOptimizer.optimizePrompt(prompt, task).catch((err) => ({ error: err.message })),
     ]

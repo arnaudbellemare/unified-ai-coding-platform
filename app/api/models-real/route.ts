@@ -9,7 +9,7 @@ export async function GET() {
       apiKey: process.env.OPENROUTER_API_KEY!,
       baseURL: 'https://openrouter.ai/api/v1',
     })
-    const models = await openRouterClient.getAvailableModels()
+    const models = await openRouterClient.getModels()
 
     if (!models || models.length === 0) {
       return NextResponse.json({ success: false, error: 'No models available from OpenRouter' }, { status: 500 })
