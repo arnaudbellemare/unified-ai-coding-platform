@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const optimizationPromises = [
       researchOptimizer.optimizeWithResearch(prompt, task, model).catch((err) => ({ error: err.message })),
       gepaOptimizer.optimizePrompt(prompt, model, 0.8).catch((err) => ({ error: err.message })),
-      capoOptimizer.optimizeWithCAPO({ description: task, context: prompt }).catch((err) => ({ error: err.message })),
+      capoOptimizer.optimizeWithCAPO(prompt, { description: task, context: prompt }).catch((err) => ({ error: err.message })),
       cloudflareOptimizer.optimizeWithCodeMode(prompt, task, model).catch((err) => ({ error: err.message })),
     ]
 
