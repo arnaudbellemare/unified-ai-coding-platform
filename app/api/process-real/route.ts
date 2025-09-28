@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       {
         max_tokens: 1000,
         temperature: 0.7,
-      }
+      },
     )
 
     const endTime = Date.now()
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
         const reimbursementData = {
           userId: userId || 'anonymous',
           model: selectedModelData.id,
-          provider: selectedModelData.providers?.[0]?.id || 'unknown',
+          provider: 'default-provider',
           promptTokens,
           completionTokens,
           totalTokens: promptTokens + completionTokens,
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
       aiResponse: {
         content: aiResponse.content,
         model: selectedModelData.id,
-        provider: selectedModelData.providers?.[0]?.id || 'unknown',
+        provider: 'default-provider',
         tokens: {
           prompt: promptTokens,
           completion: completionTokens,
