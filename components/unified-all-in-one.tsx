@@ -102,14 +102,14 @@ export default function UnifiedAllInOne() {
       // Try the main models endpoint first
       let response = await fetch('/api/models')
       let data = await response.json()
-      
+
       // If it fails, try the simple fallback
       if (!data.success || !data.models || data.models.length === 0) {
         console.log('Main models API failed, trying simple fallback...')
         response = await fetch('/api/models-simple')
         data = await response.json()
       }
-      
+
       if (data.success && data.models && data.models.length > 0) {
         setAvailableModels(data.models)
         setSelectedModel(data.models[0].id)
@@ -117,65 +117,175 @@ export default function UnifiedAllInOne() {
         console.log(`Loaded ${data.models.length} models from ${data.source}`)
       } else {
         console.error('Both model endpoints failed, using hardcoded fallback')
-        // Hardcoded fallback models that always work
+        // 15 Most cost-effective AI models (sorted by cost efficiency)
         const fallbackModels = [
           {
-            id: 'gpt-4o-mini',
-            name: 'GPT-4o Mini',
-            description: 'Fast and efficient model',
-            pricing: { prompt: 0.15, completion: 0.6 },
-            context_length: 128000,
-            providers: [{ id: 'openai', name: 'OpenAI', latency: 120, reliability: 0.99 }],
-            supportsProviderSelection: true,
-            recommendedProvider: 'openai',
-            providerMetrics: { averageLatency: 120, reliability: 0.99, costPerToken: 0.15 }
-          },
-          {
-            id: 'claude-3.5-sonnet',
-            name: 'Claude 3.5 Sonnet',
-            description: 'Balanced performance and speed',
-            pricing: { prompt: 3.0, completion: 15.0 },
-            context_length: 200000,
-            providers: [{ id: 'anthropic', name: 'Anthropic', latency: 150, reliability: 0.98 }],
-            supportsProviderSelection: true,
-            recommendedProvider: 'anthropic',
-            providerMetrics: { averageLatency: 150, reliability: 0.98, costPerToken: 3.0 }
-          },
-          {
-            id: 'gemini-pro-1.5',
-            name: 'Gemini Pro 1.5',
-            description: 'Google\'s latest model',
-            pricing: { prompt: 1.25, completion: 5.0 },
-            context_length: 1000000,
-            providers: [{ id: 'google', name: 'Google', latency: 100, reliability: 0.99 }],
-            supportsProviderSelection: true,
-            recommendedProvider: 'google',
-            providerMetrics: { averageLatency: 100, reliability: 0.99, costPerToken: 1.25 }
-          },
-          {
-            id: 'llama-3.1-70b',
-            name: 'Llama 3.1 70B',
-            description: 'Open source model with excellent reasoning',
-            pricing: { prompt: 0.9, completion: 0.9 },
-            context_length: 128000,
-            providers: [{ id: 'meta', name: 'Meta', latency: 200, reliability: 0.95 }],
-            supportsProviderSelection: true,
-            recommendedProvider: 'meta',
-            providerMetrics: { averageLatency: 200, reliability: 0.95, costPerToken: 0.9 }
-          },
-          {
-            id: 'mistral-7b',
+            id: 'mistral-7b-instruct',
             name: 'Mistral 7B Instruct',
-            description: 'Efficient small model for quick tasks',
+            description: 'Ultra-efficient small model for quick tasks',
             pricing: { prompt: 0.2, completion: 0.2 },
             context_length: 32000,
             providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
             supportsProviderSelection: true,
             recommendedProvider: 'mistral',
-            providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0.2 }
-          }
+            providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0.2 },
+          },
+          {
+            id: 'gpt-4o-mini',
+            name: 'GPT-4o Mini',
+            description: 'OpenAI\'s most cost-effective model',
+            pricing: { prompt: 0.15, completion: 0.6 },
+            context_length: 128000,
+            providers: [{ id: 'openai', name: 'OpenAI', latency: 120, reliability: 0.99 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'openai',
+            providerMetrics: { averageLatency: 120, reliability: 0.99, costPerToken: 0.15 },
+          },
+          {
+            id: 'llama-3.2-3b',
+            name: 'Llama 3.2 3B',
+            description: 'Meta\'s ultra-lightweight model',
+            pricing: { prompt: 0.3, completion: 0.3 },
+            context_length: 128000,
+            providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'meta',
+            providerMetrics: { averageLatency: 60, reliability: 0.96, costPerToken: 0.3 },
+          },
+          {
+            id: 'qwen-2.5-7b',
+            name: 'Qwen 2.5 7B',
+            description: 'Alibaba\'s efficient multilingual model',
+            pricing: { prompt: 0.25, completion: 0.25 },
+            context_length: 128000,
+            providers: [{ id: 'qwen', name: 'Qwen', latency: 90, reliability: 0.95 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'qwen',
+            providerMetrics: { averageLatency: 90, reliability: 0.95, costPerToken: 0.25 },
+          },
+          {
+            id: 'gemma-7b-it',
+            name: 'Gemma 7B Instruct',
+            description: 'Google\'s efficient open model',
+            pricing: { prompt: 0.35, completion: 0.35 },
+            context_length: 8192,
+            providers: [{ id: 'google', name: 'Google', latency: 100, reliability: 0.94 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'google',
+            providerMetrics: { averageLatency: 100, reliability: 0.94, costPerToken: 0.35 },
+          },
+          {
+            id: 'llama-3.1-8b',
+            name: 'Llama 3.1 8B',
+            description: 'Balanced performance and cost',
+            pricing: { prompt: 0.4, completion: 0.4 },
+            context_length: 128000,
+            providers: [{ id: 'meta', name: 'Meta', latency: 120, reliability: 0.95 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'meta',
+            providerMetrics: { averageLatency: 120, reliability: 0.95, costPerToken: 0.4 },
+          },
+          {
+            id: 'phi-3.5-mini',
+            name: 'Phi-3.5 Mini',
+            description: 'Microsoft\'s compact reasoning model',
+            pricing: { prompt: 0.45, completion: 0.45 },
+            context_length: 128000,
+            providers: [{ id: 'microsoft', name: 'Microsoft', latency: 110, reliability: 0.96 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'microsoft',
+            providerMetrics: { averageLatency: 110, reliability: 0.96, costPerToken: 0.45 },
+          },
+          {
+            id: 'mistral-8x7b',
+            name: 'Mistral 8x7B MoE',
+            description: 'Mixture of experts for better efficiency',
+            pricing: { prompt: 0.5, completion: 0.5 },
+            context_length: 32000,
+            providers: [{ id: 'mistral', name: 'Mistral', latency: 140, reliability: 0.97 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'mistral',
+            providerMetrics: { averageLatency: 140, reliability: 0.97, costPerToken: 0.5 },
+          },
+          {
+            id: 'llama-3.1-70b',
+            name: 'Llama 3.1 70B',
+            description: 'High-performance open source model',
+            pricing: { prompt: 0.9, completion: 0.9 },
+            context_length: 128000,
+            providers: [{ id: 'meta', name: 'Meta', latency: 200, reliability: 0.95 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'meta',
+            providerMetrics: { averageLatency: 200, reliability: 0.95, costPerToken: 0.9 },
+          },
+          {
+            id: 'qwen-2.5-14b',
+            name: 'Qwen 2.5 14B',
+            description: 'Larger Qwen model with better reasoning',
+            pricing: { prompt: 0.8, completion: 0.8 },
+            context_length: 128000,
+            providers: [{ id: 'qwen', name: 'Qwen', latency: 150, reliability: 0.96 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'qwen',
+            providerMetrics: { averageLatency: 150, reliability: 0.96, costPerToken: 0.8 },
+          },
+          {
+            id: 'gemini-pro-1.5-flash',
+            name: 'Gemini Pro 1.5 Flash',
+            description: 'Google\'s fastest model',
+            pricing: { prompt: 0.75, completion: 3.0 },
+            context_length: 1000000,
+            providers: [{ id: 'google', name: 'Google', latency: 80, reliability: 0.98 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'google',
+            providerMetrics: { averageLatency: 80, reliability: 0.98, costPerToken: 0.75 },
+          },
+          {
+            id: 'claude-3-haiku',
+            name: 'Claude 3 Haiku',
+            description: 'Anthropic\'s fastest and cheapest model',
+            pricing: { prompt: 0.25, completion: 1.25 },
+            context_length: 200000,
+            providers: [{ id: 'anthropic', name: 'Anthropic', latency: 100, reliability: 0.99 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'anthropic',
+            providerMetrics: { averageLatency: 100, reliability: 0.99, costPerToken: 0.25 },
+          },
+          {
+            id: 'gemini-pro-1.5',
+            name: 'Gemini Pro 1.5',
+            description: 'Google\'s balanced model with long context',
+            pricing: { prompt: 1.25, completion: 5.0 },
+            context_length: 1000000,
+            providers: [{ id: 'google', name: 'Google', latency: 120, reliability: 0.99 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'google',
+            providerMetrics: { averageLatency: 120, reliability: 0.99, costPerToken: 1.25 },
+          },
+          {
+            id: 'claude-3.5-sonnet',
+            name: 'Claude 3.5 Sonnet',
+            description: 'Anthropic\'s balanced performance model',
+            pricing: { prompt: 3.0, completion: 15.0 },
+            context_length: 200000,
+            providers: [{ id: 'anthropic', name: 'Anthropic', latency: 150, reliability: 0.98 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'anthropic',
+            providerMetrics: { averageLatency: 150, reliability: 0.98, costPerToken: 3.0 },
+          },
+          {
+            id: 'gpt-4o',
+            name: 'GPT-4o',
+            description: 'OpenAI\'s flagship multimodal model',
+            pricing: { prompt: 5.0, completion: 15.0 },
+            context_length: 128000,
+            providers: [{ id: 'openai', name: 'OpenAI', latency: 180, reliability: 0.99 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'openai',
+            providerMetrics: { averageLatency: 180, reliability: 0.99, costPerToken: 5.0 },
+          },
         ]
-        
+
         setAvailableModels(fallbackModels)
         setSelectedModel(fallbackModels[0].id)
         setSelectedProvider(fallbackModels[0].recommendedProvider || 'auto')
@@ -186,18 +296,51 @@ export default function UnifiedAllInOne() {
       // Use hardcoded models as final fallback
       const fallbackModels = [
         {
+          id: 'mistral-7b-instruct',
+          name: 'Mistral 7B Instruct',
+          description: 'Ultra-efficient small model for quick tasks',
+          pricing: { prompt: 0.2, completion: 0.2 },
+          context_length: 32000,
+          providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
+          supportsProviderSelection: true,
+          recommendedProvider: 'mistral',
+          providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0.2 },
+        },
+        {
           id: 'gpt-4o-mini',
           name: 'GPT-4o Mini',
-          description: 'Fast and efficient model',
+          description: 'OpenAI\'s most cost-effective model',
           pricing: { prompt: 0.15, completion: 0.6 },
           context_length: 128000,
           providers: [{ id: 'openai', name: 'OpenAI', latency: 120, reliability: 0.99 }],
           supportsProviderSelection: true,
           recommendedProvider: 'openai',
-          providerMetrics: { averageLatency: 120, reliability: 0.99, costPerToken: 0.15 }
-        }
+          providerMetrics: { averageLatency: 120, reliability: 0.99, costPerToken: 0.15 },
+        },
+        {
+          id: 'llama-3.2-3b',
+          name: 'Llama 3.2 3B',
+          description: 'Meta\'s ultra-lightweight model',
+          pricing: { prompt: 0.3, completion: 0.3 },
+          context_length: 128000,
+          providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
+          supportsProviderSelection: true,
+          recommendedProvider: 'meta',
+          providerMetrics: { averageLatency: 60, reliability: 0.96, costPerToken: 0.3 },
+        },
+        {
+          id: 'claude-3-haiku',
+          name: 'Claude 3 Haiku',
+          description: 'Anthropic\'s fastest and cheapest model',
+          pricing: { prompt: 0.25, completion: 1.25 },
+          context_length: 200000,
+          providers: [{ id: 'anthropic', name: 'Anthropic', latency: 100, reliability: 0.99 }],
+          supportsProviderSelection: true,
+          recommendedProvider: 'anthropic',
+          providerMetrics: { averageLatency: 100, reliability: 0.99, costPerToken: 0.25 },
+        },
       ]
-      
+
       setAvailableModels(fallbackModels)
       setSelectedModel(fallbackModels[0].id)
       setSelectedProvider(fallbackModels[0].recommendedProvider || 'auto')
@@ -246,7 +389,18 @@ export default function UnifiedAllInOne() {
         })
       }
 
-      const data = await response.json()
+      let data
+      try {
+        const responseText = await response.text()
+        if (!responseText) {
+          throw new Error('Empty response from server')
+        }
+        data = JSON.parse(responseText)
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError)
+        throw new Error('Invalid response format from server')
+      }
+
       if (!data.success) {
         throw new Error(data.error || 'Process failed')
       }
