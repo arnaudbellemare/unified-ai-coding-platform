@@ -71,17 +71,17 @@ export async function GET(request: NextRequest) {
           // Direct OpenRouter API call
           const response = await fetch('https://openrouter.ai/api/v1/models', {
             headers: {
-              'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+              Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
               'Content-Type': 'application/json',
             },
           })
-          
+
           if (response.ok) {
             const data = await response.json()
             const models = data.data
-              .filter((model: any) => 
-                model.architecture?.modality?.includes('text') && 
-                (model.pricing || model.top_provider?.pricing)
+              .filter(
+                (model: any) =>
+                  model.architecture?.modality?.includes('text') && (model.pricing || model.top_provider?.pricing),
               )
               .map((model: any) => ({
                 id: model.id,
@@ -89,24 +89,30 @@ export async function GET(request: NextRequest) {
                 description: model.description || 'No description available',
                 pricing: model.pricing || model.top_provider?.pricing || { prompt: 0, completion: 0 },
                 context_length: model.context_length || 128000,
-                providers: model.top_provider ? [{
-                  id: 'default-provider',
-                  name: 'Default Provider',
-                  latency: 150,
-                  reliability: 0.95,
-                  pricing: model.pricing || model.top_provider?.pricing,
-                }] : [],
+                providers: model.top_provider
+                  ? [
+                      {
+                        id: 'default-provider',
+                        name: 'Default Provider',
+                        latency: 150,
+                        reliability: 0.95,
+                        pricing: model.pricing || model.top_provider?.pricing,
+                      },
+                    ]
+                  : [],
                 supportsProviderSelection: true,
                 recommendedProvider: 'default-provider',
                 providerMetrics: {
                   averageLatency: 150,
                   reliability: 0.95,
-                  costPerToken: typeof model.pricing?.prompt === 'string' ? 
-                    parseFloat(model.pricing.prompt) : (model.pricing?.prompt || 0),
+                  costPerToken:
+                    typeof model.pricing?.prompt === 'string'
+                      ? parseFloat(model.pricing.prompt)
+                      : model.pricing?.prompt || 0,
                 },
               }))
               .slice(0, 50) // Limit to first 50 models for performance
-              
+
             return NextResponse.json({
               success: true,
               models,
@@ -117,7 +123,7 @@ export async function GET(request: NextRequest) {
       } catch (error) {
         console.log('OpenRouter models failed, using fallback:', error)
       }
-      
+
       // Fallback models when OpenRouter is not configured - with provider selection
       const fallbackModels = [
         {
@@ -182,7 +188,7 @@ export async function GET(request: NextRequest) {
         timestamp: new Date().toISOString(),
       })
     }
-    
+
     if (action === 'stats') {
       const stats = unifiedAIRouter.getAIStats()
       return NextResponse.json({
@@ -192,12 +198,14 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({
-      success: false,
-      error: 'Invalid action',
-      timestamp: new Date().toISOString(),
-    }, { status: 400 })
-
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Invalid action',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 400 },
+    )
   } catch (error) {
     console.error('Failed to get AI data:', error)
 
