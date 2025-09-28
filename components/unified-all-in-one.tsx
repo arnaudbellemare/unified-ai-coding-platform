@@ -389,6 +389,20 @@ export default function UnifiedAllInOne() {
         })
       }
 
+      // If simple fallback also fails, try emergency fallback
+      if (!response.ok) {
+        console.log('Simple fallback failed, trying emergency fallback...')
+        response = await fetch('/api/emergency-fallback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt,
+            task,
+            model: selectedModel,
+          }),
+        })
+      }
+
       let data
       try {
         const responseText = await response.text()

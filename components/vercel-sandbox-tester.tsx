@@ -21,6 +21,8 @@ export default function VercelSandboxTester() {
 
   const testEndpoints = [
     { name: 'Main Page', url: '/', type: 'page' },
+    { name: 'Status Check', url: '/api/status', type: 'api' },
+    { name: 'Emergency Fallback', url: '/api/emergency-fallback', type: 'api' },
     { name: 'Models API (Simple)', url: '/api/models-simple', type: 'api' },
     { name: 'Process API (Simple)', url: '/api/process-simple', type: 'api' },
     { name: 'Models API (Main)', url: '/api/models', type: 'api' },
