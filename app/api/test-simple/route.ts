@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
       env: {
         OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY ? 'SET' : 'NOT_SET',
         NODE_ENV: process.env.NODE_ENV,
-      }
+      },
     })
   } catch (error) {
     console.error('Test endpoint error:', error)
