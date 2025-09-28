@@ -180,3 +180,4 @@ pnpm start
 - **Vercel Sandbox**: Sandboxes are isolated but ensure you're not exposing sensitive data in logs or outputs.
 - **GitHub Token**: Use a personal access token with minimal required permissions for repository access.
 # Force Vercel redeploy - Sun Sep 28 03:48:08 EDT 2025
+# Force Vercel redeploy - Sun Sep 28 03:53:54 EDT 2025 - Fix OpenRouter API
