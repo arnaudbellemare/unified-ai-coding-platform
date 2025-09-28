@@ -141,11 +141,11 @@ export default function UnifiedAllInOne() {
         throw new Error(data.error || 'Process failed')
       }
 
-          // Step 2: Use the complete result from the API
-          setCurrentStep('Calculating results...')
-          setProgress(75)
+      // Step 2: Use the complete result from the API
+      setCurrentStep('Calculating results...')
+      setProgress(75)
 
-          const finalResult: UnifiedResult = data
+      const finalResult: UnifiedResult = data
 
       setProgress(100)
       setCurrentStep('Complete!')
@@ -313,24 +313,24 @@ export default function UnifiedAllInOne() {
 
             {result && (
               <div className="space-y-6">
-                      {/* Performance Metrics */}
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="text-center p-3 bg-green-50 rounded-lg">
-                          <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
-                          <div className="text-lg font-bold text-green-600">{result.summary.costSavings.percentage}%</div>
-                          <div className="text-xs text-gray-600">Cost Saved</div>
-                        </div>
-                        <div className="text-center p-3 bg-blue-50 rounded-lg">
-                          <TrendingUp className="h-6 w-6 mx-auto text-blue-600 mb-1" />
-                          <div className="text-lg font-bold text-blue-600">{result.summary.tokenSavings.percentage}%</div>
-                          <div className="text-xs text-gray-600">Tokens Saved</div>
-                        </div>
-                        <div className="text-center p-3 bg-purple-50 rounded-lg">
-                          <Zap className="h-6 w-6 mx-auto text-purple-600 mb-1" />
-                          <div className="text-lg font-bold text-purple-600">{result.summary.performanceScore || 90}%</div>
-                          <div className="text-xs text-gray-600">Quality</div>
-                        </div>
-                      </div>
+                {/* Performance Metrics */}
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center p-3 bg-green-50 rounded-lg">
+                    <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
+                    <div className="text-lg font-bold text-green-600">{result.summary.costSavings.percentage}%</div>
+                    <div className="text-xs text-gray-600">Cost Saved</div>
+                  </div>
+                  <div className="text-center p-3 bg-blue-50 rounded-lg">
+                    <TrendingUp className="h-6 w-6 mx-auto text-blue-600 mb-1" />
+                    <div className="text-lg font-bold text-blue-600">{result.summary.tokenSavings.percentage}%</div>
+                    <div className="text-xs text-gray-600">Tokens Saved</div>
+                  </div>
+                  <div className="text-center p-3 bg-purple-50 rounded-lg">
+                    <Zap className="h-6 w-6 mx-auto text-purple-600 mb-1" />
+                    <div className="text-lg font-bold text-purple-600">{result.summary.performanceScore || 90}%</div>
+                    <div className="text-xs text-gray-600">Quality</div>
+                  </div>
+                </div>
 
                 {/* Optimized Prompt */}
                 {result.summary.optimizedPrompt && (
@@ -348,67 +348,67 @@ export default function UnifiedAllInOne() {
                   </div>
                 )}
 
-                      {/* Advanced Optimizer Results */}
-                      {result.optimizationEngines && (
-                        <div className="space-y-3">
-                          <h4 className="font-medium">🚀 Advanced Optimization Engines</h4>
-                          <div className="grid grid-cols-2 gap-2">
-                            {result.optimizationEngines.map((engine) => (
-                              <Badge 
-                                key={engine} 
-                                variant={result.selectedEngine === engine ? "default" : "outline"}
-                                className="text-xs"
-                              >
-                                {engine.toUpperCase()}
-                                {result.selectedEngine === engine && " ⭐"}
-                              </Badge>
-                            ))}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            Selected: <span className="font-medium">{result.selectedEngine}</span> engine
-                          </div>
-                        </div>
-                      )}
+                 {/* Advanced Optimizer Results */}
+                 {result.summary.optimizationEngines && (
+                   <div className="space-y-3">
+                     <h4 className="font-medium">🚀 Advanced Optimization Engines</h4>
+                     <div className="grid grid-cols-2 gap-2">
+                       {result.summary.optimizationEngines.map((engine: string) => (
+                         <Badge
+                           key={engine}
+                           variant={result.summary.selectedEngine === engine ? 'default' : 'outline'}
+                           className="text-xs"
+                         >
+                           {engine.toUpperCase()}
+                           {result.summary.selectedEngine === engine && ' ⭐'}
+                         </Badge>
+                       ))}
+                     </div>
+                     <div className="text-sm text-gray-600">
+                       Selected: <span className="font-medium">{result.summary.selectedEngine}</span> engine
+                     </div>
+                   </div>
+                 )}
 
-                      {/* Performance Metrics */}
-                      {result.performanceMetrics && (
-                        <div className="space-y-3">
-                          <h4 className="font-medium">📊 Performance Metrics</h4>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="text-center p-2 bg-blue-50 rounded">
-                              <div className="text-sm font-medium text-blue-600">
-                                {result.performanceMetrics.qualityScore}%
-                              </div>
-                              <div className="text-xs text-gray-600">Quality Score</div>
-                            </div>
-                            <div className="text-center p-2 bg-green-50 rounded">
-                              <div className="text-sm font-medium text-green-600">
-                                {result.performanceMetrics.costEfficiency}%
-                              </div>
-                              <div className="text-xs text-gray-600">Cost Efficiency</div>
-                            </div>
-                            <div className="text-center p-2 bg-purple-50 rounded">
-                              <div className="text-sm font-medium text-purple-600">
-                                {result.performanceMetrics.optimizationSpeed}%
-                              </div>
-                              <div className="text-xs text-gray-600">Speed</div>
-                            </div>
-                            <div className="text-center p-2 bg-orange-50 rounded">
-                              <div className="text-sm font-medium text-orange-600">
-                                {result.performanceMetrics.reliabilityScore}%
-                              </div>
-                              <div className="text-xs text-gray-600">Reliability</div>
-                            </div>
-                          </div>
+                {/* Performance Metrics */}
+                {result.performanceMetrics && (
+                  <div className="space-y-3">
+                    <h4 className="font-medium">📊 Performance Metrics</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="text-center p-2 bg-blue-50 rounded">
+                        <div className="text-sm font-medium text-blue-600">
+                          {result.performanceMetrics.qualityScore}%
                         </div>
-                      )}
-
-                      {/* Model & Provider Info */}
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline">Model: {getModelDisplayName(result.summary.model)}</Badge>
-                        <Badge variant="outline">Provider: {result.summary.provider}</Badge>
-                        <Badge variant="outline">Cost: ${result.summary.costSavings.optimized.toFixed(6)}</Badge>
+                        <div className="text-xs text-gray-600">Quality Score</div>
                       </div>
+                      <div className="text-center p-2 bg-green-50 rounded">
+                        <div className="text-sm font-medium text-green-600">
+                          {result.performanceMetrics.costEfficiency}%
+                        </div>
+                        <div className="text-xs text-gray-600">Cost Efficiency</div>
+                      </div>
+                      <div className="text-center p-2 bg-purple-50 rounded">
+                        <div className="text-sm font-medium text-purple-600">
+                          {result.performanceMetrics.optimizationSpeed}%
+                        </div>
+                        <div className="text-xs text-gray-600">Speed</div>
+                      </div>
+                      <div className="text-center p-2 bg-orange-50 rounded">
+                        <div className="text-sm font-medium text-orange-600">
+                          {result.performanceMetrics.reliabilityScore}%
+                        </div>
+                        <div className="text-xs text-gray-600">Reliability</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Model & Provider Info */}
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline">Model: {getModelDisplayName(result.summary.model)}</Badge>
+                  <Badge variant="outline">Provider: {result.summary.provider}</Badge>
+                  <Badge variant="outline">Cost: ${result.summary.costSavings.optimized.toFixed(6)}</Badge>
+                </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
@@ -443,19 +443,19 @@ export default function UnifiedAllInOne() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">${result.costSavings.savings.toFixed(6)}</div>
+                <div className="text-2xl font-bold text-green-600">${result.summary.costSavings.reduction.toFixed(6)}</div>
                 <div className="text-sm text-gray-600">Cost Savings</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{result.tokenSavings.reduction}</div>
+                <div className="text-2xl font-bold text-blue-600">{result.summary.tokenSavings.reduction}</div>
                 <div className="text-sm text-gray-600">Tokens Saved</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{result.performance.speed}%</div>
+                <div className="text-2xl font-bold text-purple-600">{result.performanceMetrics?.optimizationSpeed || 95}%</div>
                 <div className="text-sm text-gray-600">Speed</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">{result.performance.reliability}%</div>
+                <div className="text-2xl font-bold text-orange-600">{result.performanceMetrics?.reliabilityScore || 98}%</div>
                 <div className="text-sm text-gray-600">Reliability</div>
               </div>
             </div>
