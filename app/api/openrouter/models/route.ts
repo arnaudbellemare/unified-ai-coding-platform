@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         // TypeScript safety check - we know top_provider exists due to filter
         const topProvider = model.top_provider!
         const architecture = model.architecture!
-        
+
         return {
           id: model.id,
           name: model.name,

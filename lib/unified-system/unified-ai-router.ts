@@ -349,19 +349,23 @@ export class UnifiedAIRouter {
     try {
       const models = await this.openRouterClient.getModels()
       const filteredModels = models.filter(
-        (model) => model.architecture?.modality === 'text' && (model.pricing || model.top_provider?.pricing),
+        (model) => model.architecture?.modality?.includes('text') && model.pricing,
       )
 
       // Enhance models with provider information for provider selection
       return filteredModels.map((model) => ({
         ...model,
-        providers: model.top_provider ? [{
-          id: 'default-provider',
-          name: 'Default Provider',
-          latency: 150,
-          reliability: 0.95,
-          pricing: model.top_provider.pricing
-        }] : [],
+        providers: model.top_provider
+          ? [
+              {
+                id: 'default-provider',
+                name: 'Default Provider',
+                latency: 150,
+                reliability: 0.95,
+                pricing: model.pricing,
+              },
+            ]
+          : [],
         // Add provider selection capability as requested in big-AGI issue #826
         supportsProviderSelection: true,
         recommendedProvider: model.top_provider ? 'default-provider' : 'auto',
@@ -369,9 +373,10 @@ export class UnifiedAIRouter {
         providerMetrics: {
           averageLatency: 150,
           reliability: 0.95,
-          costPerToken: typeof model.top_provider?.pricing?.prompt === 'string' 
-            ? parseFloat(model.top_provider.pricing.prompt) 
-            : model.top_provider?.pricing?.prompt || 0,
+          costPerToken:
+            typeof model.pricing?.prompt === 'string'
+              ? parseFloat(model.pricing.prompt)
+              : model.pricing?.prompt || 0,
         },
       }))
     } catch (error) {
