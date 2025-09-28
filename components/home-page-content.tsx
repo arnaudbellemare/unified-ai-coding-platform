@@ -20,7 +20,7 @@ import { OpenRouterIntegration } from '@/components/openrouter-integration'
 import { GEPAOptimization } from '@/components/gepa-optimization'
 import { ResearchOptimization } from '@/components/research-optimization'
 import { OptimizerComparison } from '@/components/optimizer-comparison'
-import UnifiedAllInOne from '@/components/unified-all-in-one'
+// import UnifiedAllInOne from '@/components/unified-all-in-one'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -259,7 +259,9 @@ export function HomePageContent() {
         {activeTab === 'unified' && (
           <div className="flex justify-center items-start min-h-screen py-8">
             <div className="max-w-7xl w-full px-4">
-              <UnifiedDashboard />
+              <div className="text-center text-gray-500">
+                <p>This tab is no longer used. The unified system is now the main interface.</p>
+              </div>
             </div>
           </div>
         )}

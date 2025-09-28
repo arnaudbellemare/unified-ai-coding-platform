@@ -29,10 +29,13 @@ export class DevAuth {
 
   /**
    * Check if development mode is enabled
-   * Enable for UI testing when no API keys are configured OR database is not available
+   * Enable for UI testing when GitHub OAuth is not configured
    */
   static isDevMode(): boolean {
-    // Enable dev mode if no API keys are configured (for UI testing)
+    // Enable dev mode if GitHub OAuth is not configured
+    const hasGitHubOAuth = !!(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET)
+    
+    // Also enable dev mode if no API keys are configured (for UI testing)
     const hasApiKeys =
       process.env.OPENAI_API_KEY ||
       process.env.ANTHROPIC_API_KEY ||
@@ -42,7 +45,7 @@ export class DevAuth {
     // Also enable dev mode if database is not configured
     const hasDatabase = !!process.env.POSTGRES_URL
 
-    return !hasApiKeys || !hasDatabase
+    return !hasGitHubOAuth || !hasApiKeys || !hasDatabase
   }
 
   /**

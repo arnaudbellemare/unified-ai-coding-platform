@@ -9,17 +9,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Brain, 
-  Zap, 
-  DollarSign, 
-  CheckCircle, 
-  Clock, 
-  TrendingUp, 
+import {
+  Brain,
+  Zap,
+  DollarSign,
+  CheckCircle,
+  Clock,
+  TrendingUp,
   Settings,
   Play,
   Download,
-  Sparkles
+  Sparkles,
 } from 'lucide-react'
 
 interface Model {
@@ -75,11 +75,22 @@ export default function UnifiedAllInOne() {
   const [result, setResult] = useState<UnifiedResult | null>(null)
   const [progress, setProgress] = useState(0)
   const [currentStep, setCurrentStep] = useState('')
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  // Load models on component mount
+  // Load models and check authentication on component mount
   useEffect(() => {
     loadModels()
+    checkAuthentication()
   }, [])
+
+  const checkAuthentication = async () => {
+    try {
+      const response = await fetch('/api/auth/github/user')
+      setIsAuthenticated(response.ok)
+    } catch (error) {
+      setIsAuthenticated(false)
+    }
+  }
 
   const loadModels = async () => {
     try {
@@ -109,7 +120,7 @@ export default function UnifiedAllInOne() {
       // Single unified API call
       setCurrentStep('Processing with AI...')
       setProgress(50)
-      
+
       const response = await fetch('/api/unified/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -117,10 +128,10 @@ export default function UnifiedAllInOne() {
           prompt,
           task,
           model: selectedModel,
-          provider: selectedProvider
-        })
+          provider: selectedProvider,
+        }),
       })
-      
+
       const data = await response.json()
       if (!data.success) {
         throw new Error(data.error || 'Process failed')
@@ -138,28 +149,27 @@ export default function UnifiedAllInOne() {
           originalCost: data.summary.costSavings.original,
           optimizedCost: data.summary.costSavings.optimized,
           savings: data.summary.costSavings.reduction,
-          percentage: data.summary.costSavings.percentage
+          percentage: data.summary.costSavings.percentage,
         },
         tokenSavings: {
           originalTokens: data.summary.tokenSavings.original,
           optimizedTokens: data.summary.tokenSavings.optimized,
           reduction: data.summary.tokenSavings.reduction,
-          percentage: data.summary.tokenSavings.percentage
+          percentage: data.summary.tokenSavings.percentage,
         },
         performance: {
           speed: 95,
           quality: 90,
-          reliability: 98
+          reliability: 98,
         },
         model: data.summary.model,
         provider: data.summary.provider,
-        timestamp: data.summary.timestamp
+        timestamp: data.summary.timestamp,
       }
 
       setProgress(100)
       setCurrentStep('Complete!')
       setResult(finalResult)
-
     } catch (error) {
       console.error('Unified process failed:', error)
       alert('Process failed: ' + (error as Error).message)
@@ -173,7 +183,7 @@ export default function UnifiedAllInOne() {
   }
 
   const getModelDisplayName = (modelId: string) => {
-    const model = availableModels.find(m => m.id === modelId)
+    const model = availableModels.find((m) => m.id === modelId)
     return model ? model.name : modelId
   }
 
@@ -185,14 +195,11 @@ export default function UnifiedAllInOne() {
           <Sparkles className="h-8 w-8 text-blue-600" />
           <h1 className="text-3xl font-bold">Unified AI System</h1>
         </div>
-        <p className="text-gray-600">
-          One system for optimization, AI generation, and cost management
-        </p>
+        <p className="text-gray-600">One system for optimization, AI generation, and cost management</p>
       </div>
 
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
         {/* Input Panel */}
         <Card>
           <CardHeader>
@@ -202,7 +209,6 @@ export default function UnifiedAllInOne() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            
             {/* Model Selection */}
             <div className="space-y-2">
               <label className="text-sm font-medium">AI Model</label>
@@ -216,9 +222,11 @@ export default function UnifiedAllInOne() {
                       <div className="flex flex-col">
                         <span className="font-medium">{model.name}</span>
                         <span className="text-xs text-gray-500">
-                          ${typeof model.pricing?.prompt === 'string' 
-                            ? parseFloat(model.pricing.prompt) 
-                            : model.pricing?.prompt}/1M tokens
+                          $
+                          {typeof model.pricing?.prompt === 'string'
+                            ? parseFloat(model.pricing.prompt)
+                            : model.pricing?.prompt}
+                          /1M tokens
                         </span>
                       </div>
                     </SelectItem>
@@ -228,7 +236,7 @@ export default function UnifiedAllInOne() {
             </div>
 
             {/* Provider Selection */}
-            {availableModels.find(m => m.id === selectedModel)?.supportsProviderSelection && (
+            {availableModels.find((m) => m.id === selectedModel)?.supportsProviderSelection && (
               <div className="space-y-2">
                 <label className="text-sm font-medium">Provider</label>
                 <Select value={selectedProvider} onValueChange={setSelectedProvider}>
@@ -242,16 +250,18 @@ export default function UnifiedAllInOne() {
                         <span className="text-xs text-gray-500">Best balance of speed and cost</span>
                       </div>
                     </SelectItem>
-                    {availableModels.find(m => m.id === selectedModel)?.providers.map((provider) => (
-                      <SelectItem key={provider.id} value={provider.id}>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{provider.name}</span>
-                          <span className="text-xs text-gray-500">
-                            {provider.latency}ms • {Math.round(provider.reliability * 100)}% reliable
-                          </span>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {availableModels
+                      .find((m) => m.id === selectedModel)
+                      ?.providers.map((provider) => (
+                        <SelectItem key={provider.id} value={provider.id}>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{provider.name}</span>
+                            <span className="text-xs text-gray-500">
+                              {provider.latency}ms • {Math.round(provider.reliability * 100)}% reliable
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -279,24 +289,41 @@ export default function UnifiedAllInOne() {
             </div>
 
             {/* Process Button */}
-            <Button 
-              onClick={handleUnifiedProcess}
-              disabled={isProcessing || !prompt.trim() || !task.trim()}
-              className="w-full"
-              size="lg"
-            >
-              {isProcessing ? (
-                <>
-                  <Clock className="h-4 w-4 mr-2 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <Play className="h-4 w-4 mr-2" />
-                  Process with AI
-                </>
-              )}
-            </Button>
+            {!isAuthenticated ? (
+              <div className="space-y-4">
+                <div className="text-center p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-yellow-800 font-medium">Authentication Required</p>
+                  <p className="text-yellow-600 text-sm mt-1">Sign in with GitHub to use the unified AI system</p>
+                </div>
+                <Button
+                  onClick={() => window.location.href = '/api/auth/github'}
+                  className="w-full"
+                  size="lg"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Sign in with GitHub
+                </Button>
+              </div>
+            ) : (
+              <Button
+                onClick={handleUnifiedProcess}
+                disabled={isProcessing || !prompt.trim() || !task.trim()}
+                className="w-full"
+                size="lg"
+              >
+                {isProcessing ? (
+                  <>
+                    <Clock className="h-4 w-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-4 w-4 mr-2" />
+                    Process with AI
+                  </>
+                )}
+              </Button>
+            )}
           </CardContent>
         </Card>
 
@@ -309,7 +336,6 @@ export default function UnifiedAllInOne() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            
             {isProcessing && (
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -324,28 +350,21 @@ export default function UnifiedAllInOne() {
 
             {result && (
               <div className="space-y-6">
-                
                 {/* Performance Metrics */}
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center p-3 bg-green-50 rounded-lg">
                     <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
-                    <div className="text-lg font-bold text-green-600">
-                      {result.costSavings.percentage}%
-                    </div>
+                    <div className="text-lg font-bold text-green-600">{result.costSavings.percentage}%</div>
                     <div className="text-xs text-gray-600">Cost Saved</div>
                   </div>
                   <div className="text-center p-3 bg-blue-50 rounded-lg">
                     <TrendingUp className="h-6 w-6 mx-auto text-blue-600 mb-1" />
-                    <div className="text-lg font-bold text-blue-600">
-                      {result.tokenSavings.percentage}%
-                    </div>
+                    <div className="text-lg font-bold text-blue-600">{result.tokenSavings.percentage}%</div>
                     <div className="text-xs text-gray-600">Tokens Saved</div>
                   </div>
                   <div className="text-center p-3 bg-purple-50 rounded-lg">
                     <Zap className="h-6 w-6 mx-auto text-purple-600 mb-1" />
-                    <div className="text-lg font-bold text-purple-600">
-                      {result.performance.quality}%
-                    </div>
+                    <div className="text-lg font-bold text-purple-600">{result.performance.quality}%</div>
                     <div className="text-xs text-gray-600">Quality</div>
                   </div>
                 </div>
@@ -354,9 +373,7 @@ export default function UnifiedAllInOne() {
                 {result.optimizedPrompt && (
                   <div className="space-y-2">
                     <h4 className="font-medium">Optimized Prompt</h4>
-                    <div className="p-3 bg-gray-50 rounded-lg text-sm">
-                      {result.optimizedPrompt}
-                    </div>
+                    <div className="p-3 bg-gray-50 rounded-lg text-sm">{result.optimizedPrompt}</div>
                   </div>
                 )}
 
@@ -364,23 +381,15 @@ export default function UnifiedAllInOne() {
                 {result.aiResponse && (
                   <div className="space-y-2">
                     <h4 className="font-medium">AI Response</h4>
-                    <div className="p-3 bg-blue-50 rounded-lg text-sm">
-                      {result.aiResponse}
-                    </div>
+                    <div className="p-3 bg-blue-50 rounded-lg text-sm">{result.aiResponse}</div>
                   </div>
                 )}
 
                 {/* Model & Provider Info */}
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline">
-                    Model: {getModelDisplayName(result.model)}
-                  </Badge>
-                  <Badge variant="outline">
-                    Provider: {result.provider}
-                  </Badge>
-                  <Badge variant="outline">
-                    Cost: ${result.costSavings.optimizedCost.toFixed(6)}
-                  </Badge>
+                  <Badge variant="outline">Model: {getModelDisplayName(result.model)}</Badge>
+                  <Badge variant="outline">Provider: {result.provider}</Badge>
+                  <Badge variant="outline">Cost: ${result.costSavings.optimizedCost.toFixed(6)}</Badge>
                 </div>
 
                 {/* Action Buttons */}
@@ -416,27 +425,19 @@ export default function UnifiedAllInOne() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
-                  ${result.costSavings.savings.toFixed(6)}
-                </div>
+                <div className="text-2xl font-bold text-green-600">${result.costSavings.savings.toFixed(6)}</div>
                 <div className="text-sm text-gray-600">Cost Savings</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
-                  {result.tokenSavings.reduction}
-                </div>
+                <div className="text-2xl font-bold text-blue-600">{result.tokenSavings.reduction}</div>
                 <div className="text-sm text-gray-600">Tokens Saved</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
-                  {result.performance.speed}%
-                </div>
+                <div className="text-2xl font-bold text-purple-600">{result.performance.speed}%</div>
                 <div className="text-sm text-gray-600">Speed</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">
-                  {result.performance.reliability}%
-                </div>
+                <div className="text-2xl font-bold text-orange-600">{result.performance.reliability}%</div>
                 <div className="text-sm text-gray-600">Reliability</div>
               </div>
             </div>

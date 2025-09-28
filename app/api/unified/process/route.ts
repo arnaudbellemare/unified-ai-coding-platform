@@ -3,92 +3,68 @@ import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if development mode is enabled (when no API keys configured)
-    if (DevAuth.isDevMode()) {
-      const { getMockOptimizationResult } = await import('@/lib/config/dev-config')
-      const mockResult = getMockOptimizationResult('unified')
-      
-      // Add mock AI response
-      mockResult.results.aiResponse = {
-        content: "This is a mock AI response demonstrating the unified system. The prompt has been optimized using our advanced algorithms and processed through our intelligent routing system.",
-        model: "openai/gpt-4o-mini",
-        tokens: { prompt: 25, completion: 35, total: 60 },
-        cost: { prompt: 0.000375, completion: 0.00021, total: 0.000585 }
-      }
-      
-      return NextResponse.json(mockResult)
+    // Always require authentication for the unified system
+    const { getCurrentUser } = await import('@/lib/auth/simple-auth')
+    const user = await getCurrentUser(request)
+    
+    if (!user) {
+      return NextResponse.json({ 
+        error: 'Authentication required',
+        message: 'Please sign in with GitHub to use the unified AI system'
+      }, { status: 401 })
     }
 
     const body = await request.json()
     const { prompt, task, model, provider } = body
 
     if (!prompt || !task) {
-      return NextResponse.json(
-        { error: 'Prompt and task are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Prompt and task are required' }, { status: 400 })
     }
 
-    // Step 1: Optimize the prompt (with fallback for dev mode)
-    let optimizeResult
-    try {
-      const optimizeResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/unified/optimize`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt,
-          task,
-          strategy: 'unified'
-        })
-      })
-
-      optimizeResult = await optimizeResponse.json()
-      if (!optimizeResult.success) {
-        throw new Error('Optimization failed')
-      }
-    } catch (error) {
-      // Fallback optimization for development
-      optimizeResult = {
-        success: true,
-        results: {
-          optimizedPrompt: prompt,
-          breakdown: {
-            costSavings: { original: 0.001, optimized: 0.0005, reduction: 0.0005, percentage: 50 },
-            tokenSavings: { original: 100, optimized: 75, reduction: 25, percentage: 25 }
-          }
-        }
-      }
+    // Step 1: Direct optimization without authentication
+    const { ResearchBackedOptimizer } = await import('@/lib/research-backed-optimizer')
+    const optimizer = new ResearchBackedOptimizer()
+    
+    const optimizeResult = await optimizer.optimizeWithResearch(prompt, task)
+    
+    if (!optimizeResult.success) {
+      throw new Error('Optimization failed: ' + (optimizeResult.error || 'Unknown error'))
     }
 
-    // Step 2: Generate AI response (with fallback for dev mode)
-    let aiResult
-    try {
-      const aiResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/unified/ai`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: optimizeResult.results.optimizedPrompt || prompt,
-          task,
-          model: model || 'openai/gpt-4o-mini',
-          provider: provider || 'auto'
-        })
-      })
-
-      aiResult = await aiResponse.json()
-      if (!aiResult.success) {
-        throw new Error('AI generation failed')
+    // Step 2: Direct AI generation using OpenRouter client
+    const { OpenRouterClient } = await import('@/lib/openrouter/openrouter-client')
+    
+    if (!process.env.OPENROUTER_API_KEY) {
+      throw new Error('OpenRouter API key not configured')
+    }
+    
+    const openRouterClient = new OpenRouterClient({
+      apiKey: process.env.OPENROUTER_API_KEY,
+    })
+    
+    const aiResponse = await openRouterClient.generateText(
+      model || 'openai/gpt-4o-mini',
+      [
+        {
+          role: 'user',
+          content: optimizeResult.results.optimizedPrompt || prompt,
+        },
+      ],
+      {
+        max_tokens: 1000,
+        temperature: 0.7,
+        ...(provider && provider !== 'auto' && { provider }),
       }
-    } catch (error) {
-      // Fallback AI response for development
-      aiResult = {
-        success: true,
-        response: {
-          content: `Here's a simple hello world function based on your request:\n\n\`\`\`javascript\nfunction helloWorld() {\n  console.log("Hello, World!");\n  return "Hello, World!";\n}\n\n// Usage\helloWorld();\n\`\`\`\n\nThis function logs and returns a greeting message as requested.`,
-          model: model || 'openai/gpt-4o-mini',
-          tokens: { prompt: 25, completion: 35, total: 60 },
-          cost: { prompt: 0.000375, completion: 0.00021, total: 0.000585 }
-        }
-      }
+    )
+    
+    const aiResult = {
+      success: true,
+      response: {
+        content: aiResponse.content,
+        model: model || 'openai/gpt-4o-mini',
+        tokens: aiResponse.usage,
+        cost: aiResponse.cost,
+      },
     }
 
     // Step 3: Combine results
@@ -104,27 +80,23 @@ export async function POST(request: NextRequest) {
           original: 0.001,
           optimized: 0.0005,
           reduction: 0.0005,
-          percentage: 50
+          percentage: 50,
         },
         tokenSavings: optimizeResult.results.breakdown?.tokenSavings || {
           original: 100,
           optimized: 75,
           reduction: 25,
-          percentage: 25
+          percentage: 25,
         },
         model: model || 'openai/gpt-4o-mini',
         provider: provider || 'auto',
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     }
 
     return NextResponse.json(finalResult)
-
   } catch (error) {
     console.error('Unified process error:', error)
-    return NextResponse.json(
-      { error: 'Unified process failed', details: (error as Error).message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Unified process failed', details: (error as Error).message }, { status: 500 })
   }
 }
