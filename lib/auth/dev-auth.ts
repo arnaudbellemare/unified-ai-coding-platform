@@ -29,7 +29,7 @@ export class DevAuth {
 
   /**
    * Check if development mode is enabled
-   * Enable for UI testing when no API keys are configured
+   * Enable for UI testing when no API keys are configured OR database is not available
    */
   static isDevMode(): boolean {
     // Enable dev mode if no API keys are configured (for UI testing)
@@ -38,7 +38,11 @@ export class DevAuth {
       process.env.ANTHROPIC_API_KEY ||
       process.env.PERPLEXITY_API_KEY ||
       process.env.OPENROUTER_API_KEY
-    return !hasApiKeys
+    
+    // Also enable dev mode if database is not configured
+    const hasDatabase = !!process.env.POSTGRES_URL
+    
+    return !hasApiKeys || !hasDatabase
   }
 
   /**

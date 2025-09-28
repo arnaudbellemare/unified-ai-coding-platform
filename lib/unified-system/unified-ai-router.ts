@@ -349,7 +349,7 @@ export class UnifiedAIRouter {
     try {
       const models = await this.openRouterClient.getModels()
       const filteredModels = models.filter(
-        (model) => model.architecture?.modality === 'text' && model.top_provider?.pricing,
+        (model) => model.architecture?.modality === 'text' && (model.pricing || model.top_provider?.pricing),
       )
 
       // Enhance models with provider information for provider selection

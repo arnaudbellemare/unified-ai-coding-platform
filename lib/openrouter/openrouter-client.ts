@@ -11,8 +11,8 @@ export interface OpenRouterModel {
   name: string
   description: string
   pricing: {
-    prompt: number // price per 1M tokens
-    completion: number // price per 1M tokens
+    prompt: string | number // price per 1M tokens (OpenRouter returns strings)
+    completion: string | number // price per 1M tokens
   }
   context_length: number
   architecture: {
@@ -20,11 +20,11 @@ export interface OpenRouterModel {
     tokenizer: string
     instruct_type?: string
   }
-  top_provider: {
+  top_provider?: {
     context_length: number
     pricing: {
-      prompt: number
-      completion: number
+      prompt: string | number
+      completion: string | number
     }
   }
 }
@@ -80,7 +80,12 @@ export class OpenRouterClient {
     try {
       const models = await this.getModels()
       const model = models.find((m) => m.id === modelId)
-      return model?.pricing || null
+      if (!model?.pricing) return null
+      
+      return {
+        prompt: typeof model.pricing.prompt === 'string' ? parseFloat(model.pricing.prompt) : model.pricing.prompt,
+        completion: typeof model.pricing.completion === 'string' ? parseFloat(model.pricing.completion) : model.pricing.completion,
+      }
     } catch (error) {
       console.error('Error fetching model pricing:', error)
       return null
