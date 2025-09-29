@@ -214,19 +214,19 @@ export function PaymentProtocolTester() {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="bg-white border border-gray-300">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-black">
             <Zap className="h-5 w-5" />
             Payment Protocol Tester
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-black">
             Test the x402 payment protocol and AI processing with Privy wallet integration
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Wallet Status */}
-          <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-center gap-2 p-3 bg-white rounded-lg border">
             {authenticated && user ? (
               <>
                 <CheckCircle className="h-4 w-4 text-green-500" />
@@ -240,7 +240,7 @@ export function PaymentProtocolTester() {
             ) : (
               <>
                 <XCircle className="h-4 w-4 text-red-500" />
-                <span className="text-sm">Not connected</span>
+                <span className="text-sm text-black">Not connected</span>
                 <Button size="sm" onClick={login} className="ml-auto">
                   Connect Wallet
                 </Button>
@@ -251,19 +251,20 @@ export function PaymentProtocolTester() {
           {/* Test Configuration */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Test Amount (USDC)</label>
+              <label className="text-sm font-medium mb-1 block text-black">Test Amount (USDC)</label>
               <Input
                 type="number"
                 step="0.01"
                 value={testAmount}
                 onChange={(e) => setTestAmount(e.target.value)}
                 placeholder="0.01"
+                className="text-black placeholder-black"
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">AI Model</label>
+              <label className="text-sm font-medium mb-1 block text-black">AI Model</label>
               <select
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md text-black bg-white border-gray-300"
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
               >
@@ -276,25 +277,26 @@ export function PaymentProtocolTester() {
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-1 block">Test Prompt</label>
+            <label className="text-sm font-medium mb-1 block text-black">Test Prompt</label>
             <Input
               value={testPrompt}
               onChange={(e) => setTestPrompt(e.target.value)}
               placeholder="Enter your test prompt here..."
+              className="text-black placeholder-black"
             />
           </div>
 
           {/* Test Buttons */}
           <div className="flex gap-2">
-            <Button onClick={testPaymentProtocol} disabled={!authenticated || isLoading} className="flex-1">
-              <CreditCard className="h-4 w-4 mr-2" />
+            <Button onClick={testPaymentProtocol} disabled={!authenticated || isLoading} className="flex-1 bg-blue-600 text-white hover:bg-blue-700">
+              <CreditCard className="h-4 w-4 mr-2 text-white" />
               Test x402 Payment
             </Button>
             <Button
               onClick={testAIProcessing}
               disabled={!authenticated || isLoading}
               variant="outline"
-              className="flex-1"
+              className="flex-1 border-gray-300 text-black hover:bg-gray-100"
             >
               <Zap className="h-4 w-4 mr-2" />
               Test AI Processing

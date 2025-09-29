@@ -671,29 +671,24 @@ What specific aspect would you like me to focus on or elaborate further?`
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-center">
-          <h1
-            className="text-6xl font-black tracking-tight text-black"
-            style={{
-              fontFamily:
-                'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-              letterSpacing: '-0.05em',
-            }}
-          >
-            Verclibase
-          </h1>
-        </div>
-        <p className="text-gray-600">One system for optimization, AI generation, and cost management</p>
-        <div className="flex justify-center gap-4">
-          <GitHubAuthButton />
-          <Button
-            onClick={() => setShowProductionGuide(!showProductionGuide)}
-            variant="outline"
-            className="border-gray-300 text-gray-900 hover:bg-gray-100"
-          >
-            {showProductionGuide ? 'Hide' : 'Show'} Production Setup
-          </Button>
+      <div className="-mx-6 rounded-2xl bg-black py-8 px-6 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center">
+            {/* Fancy logo with blue shadow */}
+            {/* eslint-disable-next-line react/no-unknown-property */}
+            {React.createElement(require('./logo-verclibase').LogoVerclibase, { color: '#0000FF' })}
+          </div>
+          <p className="text-gray-100">One system for optimization, AI generation, and cost management</p>
+          <div className="flex justify-center gap-4">
+            <GitHubAuthButton />
+            <Button
+              onClick={() => setShowProductionGuide(!showProductionGuide)}
+              variant="outline"
+              className="border-white text-white hover:bg-white/10"
+            >
+              {showProductionGuide ? 'Hide' : 'Show'} Production Setup
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -705,7 +700,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             <Button
               onClick={() => setShowOnboarding(false)}
               variant="outline"
-              className="mr-2 border-gray-300 text-gray-900 hover:bg-gray-100"
+              className="mr-2 border-white text-white hover:bg-white/10"
             >
               Skip Tutorial
             </Button>
@@ -731,9 +726,9 @@ What specific aspect would you like me to focus on or elaborate further?`
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Panel */}
-        <Card>
+        <Card className="bg-black text-white border-white/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-gray-900">
+            <CardTitle className="flex items-center gap-2 text-white">
               <Brain className="h-5 w-5" />
               Input & Configuration
             </CardTitle>
@@ -741,17 +736,17 @@ What specific aspect would you like me to focus on or elaborate further?`
           <CardContent className="space-y-4">
             {/* Model Selection */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-900">AI Model</label>
+              <label className="text-sm font-medium text-white">AI Model</label>
               <Select value={selectedModel} onValueChange={setSelectedModel}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select AI model" />
+                <SelectTrigger className="bg-transparent text-white border-white">
+                  <SelectValue placeholder="Select AI model" className="text-white" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-black text-white border border-white">
                   {availableModels.map((model) => (
                     <SelectItem key={model.id} value={model.id}>
                       <div className="flex flex-col">
-                        <span className="font-medium">{model.name}</span>
-                        <span className="text-xs text-gray-500">
+                        <span className="font-medium text-white">{model.name}</span>
+                        <span className="text-xs text-white">
                           $
                           {typeof model.pricing?.prompt === 'string'
                             ? parseFloat(model.pricing.prompt)
@@ -768,16 +763,16 @@ What specific aspect would you like me to focus on or elaborate further?`
             {/* Provider Selection */}
             {availableModels.find((m) => m.id === selectedModel)?.supportsProviderSelection && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-900">Provider</label>
+                <label className="text-sm font-medium text-white">Provider</label>
                 <Select value={selectedProvider} onValueChange={setSelectedProvider}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select provider" />
+                  <SelectTrigger className="bg-transparent text-white border-white">
+                    <SelectValue placeholder="Select provider" className="text-white" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-black text-white border border-white">
                     <SelectItem value="auto">
                       <div className="flex flex-col">
-                        <span className="font-medium">Auto (Recommended)</span>
-                        <span className="text-xs text-gray-500">Best balance of speed and cost</span>
+                        <span className="font-medium text-white">Auto (Recommended)</span>
+                        <span className="text-xs text-white">Best balance of speed and cost</span>
                       </div>
                     </SelectItem>
                     {availableModels
@@ -785,8 +780,8 @@ What specific aspect would you like me to focus on or elaborate further?`
                       ?.providers.map((provider) => (
                         <SelectItem key={provider.id} value={provider.id}>
                           <div className="flex flex-col">
-                            <span className="font-medium">{provider.name}</span>
-                            <span className="text-xs text-gray-500">
+                            <span className="font-medium text-white">{provider.name}</span>
+                            <span className="text-xs text-white">
                               {provider.latency}ms • {Math.round(provider.reliability * 100)}% reliable
                             </span>
                           </div>
@@ -799,22 +794,24 @@ What specific aspect would you like me to focus on or elaborate further?`
 
             {/* Prompt Input */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-900">Your Prompt</label>
+              <label className="text-sm font-medium text-white">Your Prompt</label>
               <Textarea
                 placeholder="Enter your prompt here..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={4}
+                className="bg-white text-black placeholder-black"
               />
             </div>
 
             {/* Task Description */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-900">Task Description</label>
+              <label className="text-sm font-medium text-white">Task Description</label>
               <Input
                 placeholder="Describe what you want to achieve..."
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
+                className="bg-white text-black placeholder-black"
               />
             </div>
 
@@ -843,7 +840,7 @@ What specific aspect would you like me to focus on or elaborate further?`
         {/* Results Panel */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-gray-900">
+            <CardTitle className="flex items-center gap-2 text-white">
               <CheckCircle className="h-5 w-5" />
               Results & Analytics
             </CardTitle>
@@ -872,12 +869,12 @@ What specific aspect would you like me to focus on or elaborate further?`
                     </div>
                     <div className="text-xs text-gray-600">Cost Saved</div>
                   </div>
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
-                    <TrendingUp className="h-6 w-6 mx-auto text-blue-600 mb-1" />
-                    <div className="text-lg font-bold text-blue-600">
+                  <div className="text-center p-3 bg-blue-600 rounded-lg">
+                    <TrendingUp className="h-6 w-6 mx-auto text-white mb-1" />
+                    <div className="text-lg font-bold text-white">
                       {result.summary?.tokenSavings?.percentage || result.optimization?.tokenReduction || 0}%
                     </div>
-                    <div className="text-xs text-gray-600">Tokens Saved</div>
+                    <div className="text-xs text-white">Tokens Saved</div>
                   </div>
                   <div className="text-center p-3 bg-purple-50 rounded-lg">
                     <Zap className="h-6 w-6 mx-auto text-purple-600 mb-1" />
@@ -935,10 +932,10 @@ What specific aspect would you like me to focus on or elaborate further?`
                     <h4 className="font-medium text-gray-900">📊 Performance Metrics</h4>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="text-center p-2 bg-blue-50 rounded">
-                        <div className="text-sm font-medium text-blue-600">
+                    <div className="text-sm font-medium text-white bg-blue-600 px-2 py-1 rounded">
                           {result.performanceMetrics.qualityScore}%
                         </div>
-                        <div className="text-xs text-gray-600">Quality Score</div>
+                    <div className="text-xs text-gray-900">Quality Score</div>
                       </div>
                       <div className="text-center p-2 bg-green-50 rounded">
                         <div className="text-sm font-medium text-green-600">
@@ -946,14 +943,14 @@ What specific aspect would you like me to focus on or elaborate further?`
                         </div>
                         <div className="text-xs text-gray-600">Cost Efficiency</div>
                       </div>
-                      <div className="text-center p-2 bg-purple-50 rounded">
+                  <div className="text-center p-2 bg-purple-50 rounded">
                         <div className="text-sm font-medium text-purple-600">
                           {result.performanceMetrics.optimizationSpeed}%
                         </div>
                         <div className="text-xs text-gray-600">Speed</div>
                       </div>
-                      <div className="text-center p-2 bg-orange-50 rounded">
-                        <div className="text-sm font-medium text-orange-600">
+                  <div className="text-center p-2 bg-orange-50 rounded">
+                    <div className="text-sm font-medium text-orange-600">
                           {result.performanceMetrics.reliabilityScore}%
                         </div>
                         <div className="text-xs text-gray-600">Reliability</div>

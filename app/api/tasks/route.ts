@@ -27,13 +27,11 @@ export async function GET(request: NextRequest) {
     const user = await getCurrentUser(request)
 
     if (!db) {
-      return NextResponse.json(
-        {
-          error: 'Database not available',
-          message: 'Please ensure database is properly configured',
-        },
-        { status: 503 },
-      )
+      // Gracefully degrade to empty list so UI never breaks
+      return NextResponse.json({
+        tasks: [],
+        message: 'Database not available; returning empty task list',
+      })
     }
 
     // If no user, return empty tasks
@@ -56,7 +54,8 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error fetching tasks:', error)
-    return NextResponse.json({ error: 'Failed to fetch tasks' }, { status: 500 })
+    // Never surface a hard error to the client; keep UI stable
+    return NextResponse.json({ tasks: [], error: 'Failed to fetch tasks' })
   }
 }
 

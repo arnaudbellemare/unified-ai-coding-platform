@@ -143,7 +143,7 @@ export class OpenRouterClient {
       console.log('🔄 OpenRouter generateText called:', {
         modelId,
         messagesLength: messages.length,
-        apiKeyPrefix: this.config.apiKey?.substring(0, 15) || 'none'
+        apiKeyPrefix: this.config.apiKey?.substring(0, 15) || 'none',
       })
 
       const pricing = await this.getModelPricing(modelId)
@@ -152,10 +152,10 @@ export class OpenRouterClient {
       const response = await fetch(`${this.config.baseURL || 'https://openrouter.ai/api/v1'}/chat/completions`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
+          Authorization: `Bearer ${this.config.apiKey}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://verclibase.com',
-          'X-Title': 'VERCLIBASE'
+          'X-Title': 'VERCLIBASE',
         },
         body: JSON.stringify({
           model: modelId,
@@ -172,7 +172,7 @@ export class OpenRouterClient {
         console.error('🔴 OpenRouter API error:', {
           status: response.status,
           statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries())
+          headers: Object.fromEntries(response.headers.entries()),
         })
         throw new Error(`OpenRouter API error: ${response.status} - ${response.statusText}`)
       }
@@ -181,7 +181,7 @@ export class OpenRouterClient {
       console.log('✅ OpenRouter response received:', {
         model: data.model,
         usage: data.usage,
-        contentLength: data.choices?.[0]?.message?.content?.length || 0
+        contentLength: data.choices?.[0]?.message?.content?.length || 0,
       })
 
       if (!data.choices?.[0]?.message?.content) {
@@ -234,7 +234,7 @@ export class OpenRouterClient {
     try {
       console.log('🔄 OpenRouter generateStructuredOutput called:', {
         modelId,
-        schema: typeof schema
+        schema: typeof schema,
       })
 
       const pricing = await this.getModelPricing(modelId)
@@ -243,10 +243,10 @@ export class OpenRouterClient {
       const response = await fetch(`${this.config.baseURL || 'https://openrouter.ai/api/v1'}/chat/completions`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
+          Authorization: `Bearer ${this.config.apiKey}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://verclibase.com',
-          'X-Title': 'VERCLIBASE'
+          'X-Title': 'VERCLIBASE',
         },
         body: JSON.stringify({
           model: modelId,
@@ -266,7 +266,7 @@ export class OpenRouterClient {
       if (!response.ok) {
         console.error('🔴 OpenRouter structured output error:', {
           status: response.status,
-          statusText: response.statusText
+          statusText: response.statusText,
         })
         throw new Error(`OpenRouter API error: ${response.status} - ${response.statusText}`)
       }

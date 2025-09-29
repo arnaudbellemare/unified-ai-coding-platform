@@ -122,6 +122,8 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
     fetchTasks()
   }, [])
 
+  // (Reverted) No circuit-breaker; rely on normal fetch lifecycle
+
   // Poll for task updates every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -165,17 +167,44 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch('/api/tasks')
+      // Always use relative path and guard against transient network errors
+      const controller = new AbortController()
+      const timeoutMs = 12000
+      const timeout = setTimeout(() => controller.abort(), timeoutMs)
+      let response: Response
+      try {
+        response = await fetch('/api/tasks', { signal: controller.signal, cache: 'no-store' })
+      } catch (err: any) {
+        if (err && err.name === 'AbortError') {
+          console.warn(`Tasks request timed out after ${timeoutMs}ms; showing empty list`)
+          setTasks([])
+          setIsLoading(false)
+          return
+        }
+        throw err
+      } finally {
+        clearTimeout(timeout)
+      }
+
+      const contentType = response.headers.get('content-type') || ''
+      let data: any = {}
+      if (contentType.includes('application/json')) {
+        data = await response.json().catch(() => ({}))
+      } else {
+        // Non-JSON (e.g., HTML error page) → treat as empty data
+        await response.text().catch(() => '')
+        data = {}
+      }
+
       if (response.ok) {
-        const data = await response.json()
-        setTasks(data.tasks || [])
-        setIsLoading(false)
+        setTasks(Array.isArray(data.tasks) ? data.tasks : [])
       } else {
         console.error('Failed to fetch tasks:', response.status, response.statusText)
-        setTasks([])
-        setIsLoading(false)
+        setTasks(Array.isArray(data.tasks) ? data.tasks : [])
       }
+      setIsLoading(false)
     } catch (error) {
+      // Soft-fail: keep UI responsive with empty list
       console.error('Error fetching tasks:', error)
       setTasks([])
       setIsLoading(false)

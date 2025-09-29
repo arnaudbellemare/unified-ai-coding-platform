@@ -2,16 +2,22 @@
 
 import React, { useState } from 'react'
 import UnifiedAllInOne from './unified-all-in-one'
+import { AcpDemo } from './acp-demo'
+import { MarketingLanding } from './marketing-landing'
 import VercelSandboxTester from './vercel-sandbox-tester'
 
 export function SimplifiedHome() {
   const [showTesting, setShowTesting] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen bg-white">
       {!showTesting ? (
         <div>
+          <MarketingLanding onPrimary={() => window.scrollTo({ top: 600, behavior: 'smooth' })} />
           <UnifiedAllInOne />
+          <div className="max-w-6xl mx-auto p-6">
+            <AcpDemo />
+          </div>
           <div className="fixed bottom-4 right-4">
             <button
               onClick={() => setShowTesting(true)}

@@ -227,59 +227,59 @@ export function ValueProposition() {
     <div className="w-full max-w-6xl mx-auto space-y-8">
       {/* Main Value Prop */}
       <div className="text-center space-y-4">
-        <p className="text-xl text-gray-800 max-w-3xl mx-auto">
+        <p className="text-xl text-white max-w-3xl mx-auto">
           The only AI coding platform that pays you back through intelligent cost optimization
         </p>
       </div>
 
       {/* Key Benefits Grid */}
       <div className="grid md:grid-cols-3 gap-6">
-        <Card className="text-center">
+        <Card className="text-center bg-black text-white border-white/20">
           <CardHeader>
             <div className="flex items-center justify-center mb-2">
-              <DollarSign className="h-8 w-8 text-emerald-600" />
+              <DollarSign className="h-8 w-8 text-white" />
             </div>
-            <CardTitle>Pay Per Use</CardTitle>
+            <CardTitle className="text-white">Pay Per Use</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-700 mb-3">
+            <p className="text-sm text-gray-100 mb-3">
               No subscriptions or monthly fees. Only pay for AI processing you actually use.
             </p>
-            <Badge variant="secondary" className="text-xs bg-emerald-100 text-emerald-800">
+            <Badge variant="secondary" className="text-xs bg-white text-black">
               Save up to 20%
             </Badge>
           </CardContent>
         </Card>
 
-        <Card className="text-center">
+        <Card className="text-center bg-black text-white border-white/20">
           <CardHeader>
             <div className="flex items-center justify-center mb-2">
-              <Zap className="h-8 w-8 text-blue-500" />
+              <Zap className="h-8 w-8 text-white" />
             </div>
-            <CardTitle>Auto Optimization</CardTitle>
+            <CardTitle className="text-white">Auto Optimization</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-700 mb-3">
+            <p className="text-sm text-gray-100 mb-3">
               Our AI automatically optimizes your prompts using research from MIT, Stanford, and Google.
             </p>
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs bg-white text-black">
               Real-time savings
             </Badge>
           </CardContent>
         </Card>
 
-        <Card className="text-center">
+        <Card className="text-center bg-black text-white border-white/20">
           <CardHeader>
             <div className="flex items-center justify-center mb-2">
-              <Code className="h-8 w-8 text-purple-500" />
+              <Code className="h-8 w-8 text-white" />
             </div>
-            <CardTitle>Deploy & Test</CardTitle>
+            <CardTitle className="text-white">Deploy & Test</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-700 mb-3">
+            <p className="text-sm text-gray-100 mb-3">
               One-click deployment to Vercel sandbox with GitHub integration for real testing.
             </p>
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs bg-white text-black">
               Production ready
             </Badge>
           </CardContent>
