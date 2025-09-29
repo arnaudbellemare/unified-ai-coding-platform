@@ -254,10 +254,10 @@ export class ResearchBackedOptimizer {
   private convertToZeroShot(prompt: string, taskDescription: string): string {
     // Remove few-shot examples aggressively
     const fewShotPatterns = [
-      /(?:Example|For example|Here's how|Let me show you|Here are some examples|Below is an example).*?(?=\n\n|\n[A-Z]|$)/gis,
-      /(?:1\.|2\.|3\.|4\.|5\.).*?(?=\n\n|\n[A-Z]|$)/gis,
-      /(?:Step \d+|First|Second|Third|Fourth|Fifth).*?(?=\n\n|\n[A-Z]|$)/gis,
-      /(?:Input:|Output:|Result:|Answer:).*?(?=\n\n|\n[A-Z]|$)/gis,
+      /(?:Example|For example|Here's how|Let me show you|Here are some examples|Below is an example).*?(?=\n\n|\n[A-Z]|$)/gi,
+      /(?:1\.|2\.|3\.|4\.|5\.).*?(?=\n\n|\n[A-Z]|$)/gi,
+      /(?:Step \d+|First|Second|Third|Fourth|Fifth).*?(?=\n\n|\n[A-Z]|$)/gi,
+      /(?:Input:|Output:|Result:|Answer:).*?(?=\n\n|\n[A-Z]|$)/gi,
     ]
 
     let zeroShotPrompt = prompt
