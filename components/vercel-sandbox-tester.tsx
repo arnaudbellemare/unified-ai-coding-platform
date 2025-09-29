@@ -59,7 +59,7 @@ export default function VercelSandboxTester() {
               task: 'Test task description',
               model: 'mistralai/mistral-7b-instruct:free',
               provider: 'auto',
-              userId: 'test-user-' + Date.now()
+              userId: 'test-user-' + Date.now(),
             })
           } else if (endpoint.url.includes('openrouter/real-generate')) {
             fetchOptions.body = JSON.stringify({
@@ -67,7 +67,7 @@ export default function VercelSandboxTester() {
               model: 'mistralai/mistral-7b-instruct:free',
               provider: 'auto',
               task: 'Test task',
-              userId: 'test-user-' + Date.now()
+              userId: 'test-user-' + Date.now(),
             })
           }
         }
