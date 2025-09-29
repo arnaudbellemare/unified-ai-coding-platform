@@ -45,7 +45,7 @@ export function MarketingLanding({
           />
         ) : (
           <div className="pointer-events-none absolute inset-0">
-            {/* Conic spotlight (circular, not a rectangle) */}
+            {/* Ambient spotlight (no rotation) */}
             <div className="absolute inset-0 bg-conic-spot opacity-35" />
             {/* Soft moving orbs for depth */}
             <div className="absolute -top-10 -left-6 w-[420px] h-[420px] bg-orb orb-1" />
@@ -59,10 +59,11 @@ export function MarketingLanding({
             {/* Left: Animated headline + CTAs */}
             <div>
               <div
-                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-sm animate-fade-in"
+                aria-label="verclibase on base"
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25),_0_6px_18px_rgba(0,0,0,0.12)] animate-fade-in border border-white/20"
                 style={{ background: 'linear-gradient(90deg, var(--c1), var(--c2))' }}
               >
-                verclibase <span className="opacity-80">on base</span>
+                verclibase <span className="opacity-90">on base</span>
               </div>
               <div className="mt-3 inline-block rounded-2xl bg-white/85 backdrop-blur-md shadow-[0_6px_30px_rgba(0,0,0,0.06)] px-5 py-4 md:px-6 md:py-5 animate-fade-in">
                 <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.95] animate-slide-up-1 text-black">
@@ -96,11 +97,19 @@ export function MarketingLanding({
                 {/* Twin ellipse rings for structure */}
                 <svg className="absolute inset-0" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
                   <ellipse cx="50" cy="50" rx="42" ry="28" fill="none" stroke="rgba(34,197,94,0.6)" strokeWidth="0.8" />
-                  <ellipse cx="50" cy="50" rx="34" ry="22" fill="none" stroke="rgba(34,197,94,0.35)" strokeWidth="0.6" />
+                  <ellipse
+                    cx="50"
+                    cy="50"
+                    rx="34"
+                    ry="22"
+                    fill="none"
+                    stroke="rgba(34,197,94,0.35)"
+                    strokeWidth="0.6"
+                  />
                 </svg>
                 <div className="absolute -inset-6 rounded-full opacity-25 bg-conic-spot" />
 
-                <div className="absolute left-1/2 top-[8%] -translate-x-1/2 animate-float-1">
+                <div className="absolute left-1/2 top-[8%] -translate-x-1/2 animate-sway-1">
                   <MiniCard
                     className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
                     icon={<Search className="h-4 w-4 text-blue-600" />}
@@ -108,7 +117,7 @@ export function MarketingLanding({
                     desc="Query & rank"
                   />
                 </div>
-                <div className="absolute left-[6%] top-[58%] animate-float-2">
+                <div className="absolute left-[6%] top-[58%] animate-sway-2">
                   <MiniCard
                     className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
                     icon={<CreditCard className="h-4 w-4 text-emerald-600" />}
@@ -116,7 +125,7 @@ export function MarketingLanding({
                     desc="Checkout"
                   />
                 </div>
-                <div className="absolute right-[6%] top-[46%] animate-float-3">
+                <div className="absolute right-[6%] top-[46%] animate-sway-3">
                   <MiniCard
                     className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
                     icon={<Sliders className="h-4 w-4 text-indigo-600" />}
@@ -124,7 +133,7 @@ export function MarketingLanding({
                     desc="Reduce tokens"
                   />
                 </div>
-                <div className="absolute left-[36%] bottom-[4%] animate-float-2">
+                <div className="absolute left-[36%] bottom-[4%] animate-sway-2">
                   <MiniCard
                     className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
                     icon={<Brain className="h-4 w-4 text-purple-600" />}
@@ -138,8 +147,9 @@ export function MarketingLanding({
         </div>
         <style jsx>{`
           .bg-conic-spot {
-            background: conic-gradient(from 0deg at 60% 40%, var(--c1), var(--c2), var(--c3), var(--c1));
-            animation: vrcl-rotate 36s linear infinite;
+            background: radial-gradient(54% 38% at 60% 40%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 60%),
+              radial-gradient(50% 36% at 60% 40%, color-mix(in srgb, var(--c2) 18%, transparent), transparent 60%),
+              radial-gradient(48% 34% at 60% 40%, color-mix(in srgb, var(--c3) 16%, transparent), transparent 60%);
             transform-origin: 60% 40%;
             -webkit-clip-path: circle(48% at 60% 40%);
             clip-path: circle(48% at 60% 40%);
@@ -152,36 +162,102 @@ export function MarketingLanding({
             filter: blur(2px) saturate(120%);
             animation: vrcl-float 14s ease-in-out infinite alternate;
           }
-          .bg-orb { border-radius: 9999px; filter: blur(28px) saturate(120%); mix-blend: multiply; }
-          .orb-1 { background: radial-gradient(circle at 40% 40%, color-mix(in srgb, var(--c1) 65%, transparent), transparent 60%); animation: vrcl-orb-1 18s ease-in-out infinite; opacity: 0.5; }
-          .orb-2 { background: radial-gradient(circle at 60% 60%, color-mix(in srgb, var(--c2) 60%, transparent), transparent 60%); animation: vrcl-orb-2 22s ease-in-out infinite; opacity: 0.45; }
-          .animate-gradient-text { background-size: 200% 200%; animation: gradientShift 8s ease infinite; }
-          .animate-fade-in { animation: fadeIn 600ms ease 100ms both; }
-          .animate-slide-up-1 { animation: slideUp 700ms cubic-bezier(.2,.8,.2,1) 50ms both; }
-          .animate-slide-up-2 { animation: slideUp 750ms cubic-bezier(.2,.8,.2,1) 180ms both; }
-          .animate-slide-up-3 { animation: slideUp 800ms cubic-bezier(.2,.8,.2,1) 260ms both; }
-          .animate-float-1 { animation: float 6s ease-in-out infinite; }
-          .animate-float-2 { animation: float 7.5s ease-in-out infinite alternate; }
-          .animate-float-3 { animation: float 5.5s ease-in-out infinite reverse; }
-          @keyframes vrcl-rotate {
-            to {
-              transform: rotate(360deg);
-            }
+          .bg-orb {
+            border-radius: 9999px;
+            filter: blur(28px) saturate(120%);
+            mix-blend: multiply;
           }
-          @keyframes vrcl-float {
+          .orb-1 {
+            background: radial-gradient(
+              circle at 40% 40%,
+              color-mix(in srgb, var(--c1) 65%, transparent),
+              transparent 60%
+            );
+            animation: vrcl-orb-1 18s ease-in-out infinite;
+            opacity: 0.5;
+          }
+          .orb-2 {
+            background: radial-gradient(
+              circle at 60% 60%,
+              color-mix(in srgb, var(--c2) 60%, transparent),
+              transparent 60%
+            );
+            animation: vrcl-orb-2 22s ease-in-out infinite;
+            opacity: 0.45;
+          }
+          .animate-gradient-text {
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+          }
+          .animate-fade-in {
+            animation: fadeIn 600ms ease 100ms both;
+          }
+          .animate-slide-up-1 {
+            animation: slideUp 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 50ms both;
+          }
+          .animate-slide-up-2 {
+            animation: slideUp 750ms cubic-bezier(0.2, 0.8, 0.2, 1) 180ms both;
+          }
+          .animate-slide-up-3 {
+            animation: slideUp 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 260ms both;
+          }
+          .animate-sway-1 { animation: sway 6s ease-in-out infinite; }
+          .animate-sway-2 { animation: sway 7.5s ease-in-out infinite alternate; }
+          .animate-sway-3 { animation: sway 5.5s ease-in-out infinite reverse; }
+          @keyframes vrcl-rotate { to { transform: rotate(360deg); } }
+          @keyframes vrcl-float { 0% { transform: translate3d(0,-6px,0) scale(1.02); } 100% { transform: translate3d(8px,6px,0) scale(1.04); } }
+          @keyframes vrcl-orb-1 {
             0% {
-              transform: translate3d(0, -6px, 0) scale(1.02);
+              transform: translate3d(0, 0, 0);
+            }
+            50% {
+              transform: translate3d(30px, -18px, 0);
             }
             100% {
-              transform: translate3d(8px, 6px, 0) scale(1.04);
+              transform: translate3d(0, 0, 0);
             }
           }
-          @keyframes vrcl-orb-1 { 0% { transform: translate3d(0,0,0) } 50% { transform: translate3d(30px, -18px, 0) } 100% { transform: translate3d(0,0,0) } }
-          @keyframes vrcl-orb-2 { 0% { transform: translate3d(0,0,0) } 50% { transform: translate3d(-26px, 16px, 0) } 100% { transform: translate3d(0,0,0) } }
-          @keyframes gradientShift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
-          @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-          @keyframes slideUp { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
-          @keyframes float { 0% { transform: translateY(-6px) } 100% { transform: translateY(6px) } }
+          @keyframes vrcl-orb-2 {
+            0% {
+              transform: translate3d(0, 0, 0);
+            }
+            50% {
+              transform: translate3d(-26px, 16px, 0);
+            }
+            100% {
+              transform: translate3d(0, 0, 0);
+            }
+          }
+          @keyframes gradientShift {
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
+          }
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+          @keyframes slideUp {
+            from {
+              opacity: 0;
+              transform: translateY(12px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes sway { 0% { transform: translateY(-6px) translateX(0px) } 100% { transform: translateY(6px) translateX(6px) } }
         `}</style>
       </section>
 
@@ -264,7 +340,17 @@ function FlowCard({ icon, title, desc }: { icon: React.ReactNode; title: string;
   )
 }
 
-function MiniCard({ icon, title, desc, className = '' }: { icon: React.ReactNode; title: string; desc: string; className?: string }) {
+function MiniCard({
+  icon,
+  title,
+  desc,
+  className = '',
+}: {
+  icon: React.ReactNode
+  title: string
+  desc: string
+  className?: string
+}) {
   return (
     <div className={`rounded-xl border px-3 py-2 w-[184px] ${className}`}>
       <div className="flex items-start gap-2">
