@@ -245,7 +245,7 @@ export class GEPACostOptimizer {
     ]
 
     redundantPatterns.forEach(([pattern, replacement]) => {
-      optimized = optimized.replace(pattern, replacement)
+      optimized = optimized.replace(pattern as RegExp, replacement as string)
     })
 
     // Compress similar verbs
