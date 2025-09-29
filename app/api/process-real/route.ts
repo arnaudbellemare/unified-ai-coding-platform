@@ -142,14 +142,15 @@ export async function POST(request: NextRequest) {
     console.log(`🚀 Starting real AI processing: ${model} for task: ${task}`)
 
     // Check if we have the required environment variables
-    const hasOpenRouterKey = process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_API_KEY !== 'your-openrouter-api-key'
+    const hasOpenRouterKey =
+      process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_API_KEY !== 'your-openrouter-api-key'
     const hasDatabase = process.env.DATABASE_URL && process.env.DATABASE_URL !== 'your-database-url'
 
     // If we don't have the required environment variables, use intelligent fallback
     if (!hasOpenRouterKey) {
       console.log('⚠️ No OpenRouter API key found, using intelligent fallback')
       const intelligentResponse = await generateIntelligentResponse(prompt, task, model)
-      
+
       return NextResponse.json({
         success: true,
         aiResponse: {
@@ -210,7 +211,6 @@ export async function POST(request: NextRequest) {
 
     // Step 1: Run all optimization engines in parallel
     console.log('🧠 Running optimization engines...')
-    const advancedCloudflareOptimizer = new AdvancedCloudflareOptimizer()
 
     const optimizationPromises = [
       researchOptimizer.optimizeWithResearch(prompt, task, model).catch((err) => ({ error: err.message })),

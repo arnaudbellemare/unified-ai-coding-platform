@@ -429,7 +429,9 @@ export default function UnifiedAllInOne() {
           console.error('❌ Process-real API fetch failed:', error)
           // Provide more specific error message
           const errorMessage = error instanceof Error ? error.message : 'Unknown fetch error'
-          throw new Error(`Network error: ${errorMessage}. This might be due to missing environment variables on Vercel.`)
+          throw new Error(
+            `Network error: ${errorMessage}. This might be due to missing environment variables on Vercel.`,
+          )
         }
       }
 
@@ -626,7 +628,9 @@ What specific aspect would you like me to focus on or elaborate further?`
       } catch (jsonError) {
         console.error('JSON parsing error:', jsonError)
         console.error('Response text:', await response.text())
-        throw new Error(`Invalid response format from server: ${jsonError instanceof Error ? jsonError.message : 'Unknown error'}`)
+        throw new Error(
+          `Invalid response format from server: ${jsonError instanceof Error ? jsonError.message : 'Unknown error'}`,
+        )
       }
 
       if (!data.success) {
