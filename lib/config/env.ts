@@ -43,8 +43,8 @@ export function getEnvironmentConfig(): EnvironmentConfig {
 
   return {
     // Database
-    hasDatabase: !!process.env.POSTGRES_URL,
-    postgresUrl: process.env.POSTGRES_URL,
+    hasDatabase: !!(process.env.POSTGRES_URL || process.env.DATABASE_URL),
+    postgresUrl: process.env.POSTGRES_URL || process.env.DATABASE_URL,
 
     // AI Gateway
     hasAIGateway: !!process.env.AI_GATEWAY_API_KEY,

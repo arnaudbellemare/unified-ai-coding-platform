@@ -208,7 +208,7 @@ export async function POST(request: NextRequest) {
       hasKey: !!process.env.OPENROUTER_API_KEY,
       keyLength: process.env.OPENROUTER_API_KEY?.length || 0,
       keyPrefix: process.env.OPENROUTER_API_KEY?.substring(0, 15) || 'none',
-      keyEnd: process.env.OPENROUTER_API_KEY?.substring(-10) || 'none'
+      keyEnd: process.env.OPENROUTER_API_KEY?.substring(-10) || 'none',
     })
 
     const openRouterClient = new OpenRouterClient({

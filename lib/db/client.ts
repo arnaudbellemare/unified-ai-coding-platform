@@ -22,7 +22,11 @@ function initializeDatabase() {
   }
 
   try {
-    client = postgres(process.env.POSTGRES_URL!)
+    const postgresUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL
+    if (!postgresUrl) {
+      throw new Error('No database URL provided')
+    }
+    client = postgres(postgresUrl)
     db = drizzle(client, { schema })
     console.log('[Database] Connected to PostgreSQL')
   } catch (error) {

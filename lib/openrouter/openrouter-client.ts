@@ -46,7 +46,7 @@ export class OpenRouterClient {
       hasApiKey: !!config.apiKey,
       apiKeyLength: config.apiKey?.length || 0,
       apiKeyPrefix: config.apiKey?.substring(0, 15) || 'none',
-      baseURL: config.baseURL || 'https://openrouter.ai/api/v1'
+      baseURL: config.baseURL || 'https://openrouter.ai/api/v1',
     })
     this.client = new OpenAI({
       apiKey: config.apiKey,
