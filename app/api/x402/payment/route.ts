@@ -1,9 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+export async function GET() {
+  return NextResponse.json({
+    success: true,
+    message: 'X402 payment endpoint is working',
+    methods: ['POST'],
+    timestamp: new Date().toISOString(),
+  })
+}
+
 export async function POST(request: NextRequest) {
+  console.log('🚀 X402 Payment API called:', {
+    method: request.method,
+    url: request.url,
+    headers: Object.fromEntries(request.headers.entries()),
+    timestamp: new Date().toISOString(),
+  })
+
   try {
     // Read the request body as text first to handle potential JSON parsing issues
     const bodyText = await request.text()
+    
+    console.log('📝 Request body received:', {
+      bodyLength: bodyText.length,
+      bodyPreview: bodyText.substring(0, 200),
+    })
 
     if (!bodyText) {
       return NextResponse.json(

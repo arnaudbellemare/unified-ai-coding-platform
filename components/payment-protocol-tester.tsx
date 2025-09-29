@@ -36,6 +36,17 @@ export function PaymentProtocolTester() {
     setResult(null)
 
     try {
+      // Step 0: Test if endpoint is reachable
+      console.log('🔍 Testing endpoint connectivity...')
+      try {
+        const connectivityTest = await fetch('/api/x402/payment', {
+          method: 'GET',
+        })
+        console.log('Connectivity test result:', connectivityTest.status, await connectivityTest.text())
+      } catch (connectError) {
+        console.error('Endpoint connectivity test failed:', connectError)
+      }
+
       // Step 1: Test payment requirement detection
       console.log('🧪 Testing payment requirement detection...')
       console.log('User wallet address:', user.wallet?.address)
