@@ -362,6 +362,64 @@ export function MarketingLanding({
         `}</style>
       </section>
 
+      {/* Agentic e‑Commerce Advantage (GEO) */}
+      <section className="max-w-6xl mx-auto px-6 py-8">
+        <div className="rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-md p-6 md:p-8 shadow-[0_10px_28px_rgba(0,0,0,0.06)]">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h3 className="text-2xl md:text-3xl font-black tracking-tight text-black">
+                Agentic e‑Commerce Advantage
+                <span className="ml-2 align-middle inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-black text-white">GEO</span>
+              </h3>
+              <p className="mt-2 text-gray-900 max-w-3xl">
+                Get chosen first by AI agents. We expose catalog/search endpoints and rank offers using
+                relevance, trust, price efficiency, fulfillment reliability, and x402 sponsorship budgets —
+                Generative Engine Optimization (GEO) for agentic commerce.
+              </p>
+            </div>
+            <div className="shrink-0">
+              <Button variant="outline" className="bg-white border-gray-300 text-black hover:bg-gray-200">Get featured</Button>
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">Ranking signals</div>
+                <ul className="mt-2 text-sm text-gray-900 space-y-1">
+                  <li>• Relevance to query</li>
+                  <li>• Price & optimization score</li>
+                  <li>• Reliability & delivery speed</li>
+                  <li>• Trust signals (ratings, audits)</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">Boost placement with x402</div>
+                <p className="mt-2 text-sm text-gray-900">
+                  Allocate sponsorship budgets (per search, per click, per checkout) using x402. Fully
+                  transparent, pay-per-use, and auditable.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">Merchant advantage</div>
+                <ul className="mt-2 text-sm text-gray-900 space-y-1">
+                  <li>• Be first choice in agent results</li>
+                  <li>• Real-time GEO analytics & ROAS</li>
+                  <li>• One feed: catalog → search → checkout</li>
+                  <li>• Instant reimbursements on Base</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="max-w-6xl mx-auto px-6 py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
