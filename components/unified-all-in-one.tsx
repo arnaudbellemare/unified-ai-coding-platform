@@ -632,7 +632,7 @@ What specific aspect would you like me to focus on or elaborate further?`
         data = JSON.parse(responseText)
       } catch (jsonError) {
         console.error('JSON parsing error:', jsonError)
-        console.error('Response text:', await response.text())
+        // Note: responseText is already captured above, no need to read response.text() again
         throw new Error(
           `Invalid response format from server: ${jsonError instanceof Error ? jsonError.message : 'Unknown error'}`,
         )

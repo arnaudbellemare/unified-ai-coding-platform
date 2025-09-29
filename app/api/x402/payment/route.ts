@@ -4,12 +4,15 @@ export async function POST(request: NextRequest) {
   try {
     // Read the request body as text first to handle potential JSON parsing issues
     const bodyText = await request.text()
-    
+
     if (!bodyText) {
-      return NextResponse.json({ 
-        error: 'Empty request body',
-        details: 'No JSON data received'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Empty request body',
+          details: 'No JSON data received',
+        },
+        { status: 400 },
+      )
     }
 
     let requestData
@@ -17,27 +20,33 @@ export async function POST(request: NextRequest) {
       requestData = JSON.parse(bodyText)
     } catch (parseError) {
       console.error('JSON parsing error:', parseError)
-      return NextResponse.json({ 
-        error: 'Invalid JSON format',
-        details: parseError instanceof Error ? parseError.message : 'Unknown parsing error',
-        receivedBody: bodyText.substring(0, 200) // Log first 200 chars for debugging
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Invalid JSON format',
+          details: parseError instanceof Error ? parseError.message : 'Unknown parsing error',
+          receivedBody: bodyText.substring(0, 200), // Log first 200 chars for debugging
+        },
+        { status: 400 },
+      )
     }
 
     const { amount, currency, recipient, network, walletAddress, privyUserId, paymentMethod } = requestData
 
     if (!amount || !currency || !recipient || !network || !walletAddress) {
-      return NextResponse.json({ 
-        error: 'Missing required payment parameters',
-        details: {
-          amount: !!amount,
-          currency: !!currency,
-          recipient: !!recipient,
-          network: !!network,
-          walletAddress: !!walletAddress
+      return NextResponse.json(
+        {
+          error: 'Missing required payment parameters',
+          details: {
+            amount: !!amount,
+            currency: !!currency,
+            recipient: !!recipient,
+            network: !!network,
+            walletAddress: !!walletAddress,
+          },
+          receivedData: requestData,
         },
-        receivedData: requestData
-      }, { status: 400 })
+        { status: 400 },
+      )
     }
 
     // Simulate x402 payment processing with Privy integration

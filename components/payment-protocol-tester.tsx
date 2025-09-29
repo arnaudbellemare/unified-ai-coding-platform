@@ -65,17 +65,17 @@ export function PaymentProtocolTester() {
       console.log('Response status:', response.status)
       console.log('Response headers:', Object.fromEntries(response.headers.entries()))
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Payment API error response:', errorText)
-        throw new Error(`Payment API error: ${response.status} - ${errorText}`)
-      }
-
+      // Read response body once
       const responseText = await response.text()
       console.log('Raw response text:', responseText)
 
       if (!responseText) {
         throw new Error('Empty response from payment API')
+      }
+
+      if (!response.ok) {
+        console.error('Payment API error response:', responseText)
+        throw new Error(`Payment API error: ${response.status} - ${responseText}`)
       }
 
       let data
@@ -84,7 +84,9 @@ export function PaymentProtocolTester() {
       } catch (parseError) {
         console.error('JSON parsing error:', parseError)
         console.error('Response text that failed to parse:', responseText)
-        throw new Error(`Failed to parse JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`)
+        throw new Error(
+          `Failed to parse JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
+        )
       }
 
       if (response.ok) {
