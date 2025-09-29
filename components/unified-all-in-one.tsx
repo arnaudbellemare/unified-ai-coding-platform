@@ -655,7 +655,7 @@ What specific aspect would you like me to focus on or elaborate further?`
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center">
-          <h1 className="text-6xl font-black tracking-wider text-black" style={{ fontFamily: 'Epika Serif, serif' }}>
+          <h1 className="text-6xl font-black tracking-wider text-black" style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
             VERCLIBASE
           </h1>
         </div>
@@ -910,12 +910,16 @@ What specific aspect would you like me to focus on or elaborate further?`
                   <Badge variant="outline">Provider: {result.summary?.provider || 'default'}</Badge>
                   <Badge variant="outline">
                     Cost: $
-                    {(parseFloat(
-                      result.summary?.costSavings?.optimized ||
-                      result.summary?.totalCost ||
-                      (typeof result.aiResponse?.cost === 'object' ? result.aiResponse?.cost?.total : result.aiResponse?.cost) ||
-                      0
-                    ) || 0).toFixed(6)}
+                    {(
+                      parseFloat(
+                        result.summary?.costSavings?.optimized ||
+                          result.summary?.totalCost ||
+                          (typeof result.aiResponse?.cost === 'object'
+                            ? result.aiResponse?.cost?.total
+                            : result.aiResponse?.cost) ||
+                          0,
+                      ) || 0
+                    ).toFixed(6)}
                   </Badge>
                 </div>
 
