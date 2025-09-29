@@ -34,6 +34,19 @@ export function MarketingLanding({
       <section
         className="relative overflow-hidden"
         style={{ '--c1': c1, '--c2': c2, '--c3': c3 } as React.CSSProperties}
+        onMouseMove={(e) => {
+          const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect()
+          const x = (e.clientX - rect.left) / rect.width
+          const y = (e.clientY - rect.top) / rect.height
+          const mx = (x - 0.5) * 2
+          const my = (y - 0.5) * 2
+          e.currentTarget.style.setProperty('--mx', mx.toFixed(3))
+          e.currentTarget.style.setProperty('--my', my.toFixed(3))
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.setProperty('--mx', '0')
+          e.currentTarget.style.setProperty('--my', '0')
+        }}
       >
         {disableAnimatedBg ? (
           <div
@@ -94,8 +107,8 @@ export function MarketingLanding({
             {/* Right: Orbiting mini cards */}
             <div className="hidden md:block">
               <div className="relative h-[420px]">
-                {/* Twin ellipse rings for structure */}
-                <svg className="absolute inset-0" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
+                {/* Twin ellipse rings for structure (parallax) */}
+                <svg className="absolute inset-0 parallax" data-depth="1" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
                   <ellipse cx="50" cy="50" rx="42" ry="28" fill="none" stroke="rgba(34,197,94,0.6)" strokeWidth="0.8" />
                   <ellipse
                     cx="50"
@@ -109,33 +122,33 @@ export function MarketingLanding({
                 </svg>
                 <div className="absolute -inset-6 rounded-full opacity-25 bg-conic-spot" />
 
-                <div className="absolute left-1/2 top-[8%] -translate-x-1/2 animate-sway-1">
+                <div className="absolute left-1/2 top-[8%] -translate-x-1/2 animate-sway-1 parallax" data-depth="2">
                   <MiniCard
-                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
+                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_14px_38px_rgba(0,0,0,0.12)] transition-shadow"
                     icon={<Search className="h-4 w-4 text-blue-600" />}
                     title="ACP Search"
                     desc="Query & rank"
                   />
                 </div>
-                <div className="absolute left-[6%] top-[58%] animate-sway-2">
+                <div className="absolute left-[6%] top-[58%] animate-sway-2 parallax" data-depth="3">
                   <MiniCard
-                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
+                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_14px_38px_rgba(0,0,0,0.12)] transition-shadow"
                     icon={<CreditCard className="h-4 w-4 text-emerald-600" />}
                     title="x402"
                     desc="Checkout"
                   />
                 </div>
-                <div className="absolute right-[6%] top-[46%] animate-sway-3">
+                <div className="absolute right-[6%] top-[46%] animate-sway-3 parallax" data-depth="2.6">
                   <MiniCard
-                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
+                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_14px_38px_rgba(0,0,0,0.12)] transition-shadow"
                     icon={<Sliders className="h-4 w-4 text-indigo-600" />}
                     title="Optimizers"
                     desc="Reduce tokens"
                   />
                 </div>
-                <div className="absolute left-[36%] bottom-[4%] animate-sway-2">
+                <div className="absolute left-[36%] bottom-[4%] animate-sway-2 parallax" data-depth="3.2">
                   <MiniCard
-                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
+                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_14px_38px_rgba(0,0,0,0.12)] transition-shadow"
                     icon={<Brain className="h-4 w-4 text-purple-600" />}
                     title="AI"
                     desc="OpenRouter"
@@ -147,7 +160,8 @@ export function MarketingLanding({
         </div>
         <style jsx>{`
           .bg-conic-spot {
-            background: radial-gradient(54% 38% at 60% 40%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 60%),
+            background:
+              radial-gradient(54% 38% at 60% 40%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 60%),
               radial-gradient(50% 36% at 60% 40%, color-mix(in srgb, var(--c2) 18%, transparent), transparent 60%),
               radial-gradient(48% 34% at 60% 40%, color-mix(in srgb, var(--c3) 16%, transparent), transparent 60%);
             transform-origin: 60% 40%;
@@ -185,6 +199,13 @@ export function MarketingLanding({
             animation: vrcl-orb-2 22s ease-in-out infinite;
             opacity: 0.45;
           }
+          /* Parallax utility: use mouse offsets */
+          .parallax { transform: translate3d(calc(var(--mx, 0) * var(--depth, 1) * 6px), calc(var(--my, 0) * var(--depth, 1) * 6px), 0); transition: transform 120ms ease-out; }
+          .parallax[data-depth="1"] { --depth: 1; }
+          .parallax[data-depth="2"] { --depth: 2; }
+          .parallax[data-depth="2.6"] { --depth: 2.6; }
+          .parallax[data-depth="3"] { --depth: 3; }
+          .parallax[data-depth="3.2"] { --depth: 3.2; }
           .animate-gradient-text {
             background-size: 200% 200%;
             animation: gradientShift 8s ease infinite;
@@ -201,11 +222,28 @@ export function MarketingLanding({
           .animate-slide-up-3 {
             animation: slideUp 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 260ms both;
           }
-          .animate-sway-1 { animation: sway 6s ease-in-out infinite; }
-          .animate-sway-2 { animation: sway 7.5s ease-in-out infinite alternate; }
-          .animate-sway-3 { animation: sway 5.5s ease-in-out infinite reverse; }
-          @keyframes vrcl-rotate { to { transform: rotate(360deg); } }
-          @keyframes vrcl-float { 0% { transform: translate3d(0,-6px,0) scale(1.02); } 100% { transform: translate3d(8px,6px,0) scale(1.04); } }
+          .animate-sway-1 {
+            animation: sway 6s ease-in-out infinite;
+          }
+          .animate-sway-2 {
+            animation: sway 7.5s ease-in-out infinite alternate;
+          }
+          .animate-sway-3 {
+            animation: sway 5.5s ease-in-out infinite reverse;
+          }
+          @keyframes vrcl-rotate {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+          @keyframes vrcl-float {
+            0% {
+              transform: translate3d(0, -6px, 0) scale(1.02);
+            }
+            100% {
+              transform: translate3d(8px, 6px, 0) scale(1.04);
+            }
+          }
           @keyframes vrcl-orb-1 {
             0% {
               transform: translate3d(0, 0, 0);
@@ -257,7 +295,14 @@ export function MarketingLanding({
               transform: translateY(0);
             }
           }
-          @keyframes sway { 0% { transform: translateY(-6px) translateX(0px) } 100% { transform: translateY(6px) translateX(6px) } }
+          @keyframes sway {
+            0% {
+              transform: translateY(-6px) translateX(0px);
+            }
+            100% {
+              transform: translateY(6px) translateX(6px);
+            }
+          }
         `}</style>
       </section>
 
