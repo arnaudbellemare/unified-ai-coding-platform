@@ -38,9 +38,11 @@ export function PaymentProtocolTester() {
     try {
       // Step 1: Test payment requirement detection
       console.log('🧪 Testing payment requirement detection...')
+      console.log('User wallet address:', user.wallet?.address)
+      console.log('User ID:', user.id)
 
       const paymentRequest = {
-        amount: parseFloat(testAmount),
+        amount: parseFloat(testAmount) || 0.01,
         currency: 'USDC',
         recipient: process.env.NEXT_PUBLIC_X402_RECIPIENT_ADDRESS || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
         network: 'base-sepolia',
@@ -51,6 +53,8 @@ export function PaymentProtocolTester() {
         prompt: testPrompt,
       }
 
+      console.log('Payment request:', paymentRequest)
+
       // Test x402 payment endpoint
       const response = await fetch('/api/x402/payment', {
         method: 'POST',
@@ -58,7 +62,30 @@ export function PaymentProtocolTester() {
         body: JSON.stringify(paymentRequest),
       })
 
-      const data = await response.json()
+      console.log('Response status:', response.status)
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('Payment API error response:', errorText)
+        throw new Error(`Payment API error: ${response.status} - ${errorText}`)
+      }
+
+      const responseText = await response.text()
+      console.log('Raw response text:', responseText)
+
+      if (!responseText) {
+        throw new Error('Empty response from payment API')
+      }
+
+      let data
+      try {
+        data = JSON.parse(responseText)
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError)
+        console.error('Response text that failed to parse:', responseText)
+        throw new Error(`Failed to parse JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`)
+      }
 
       if (response.ok) {
         setResult({
