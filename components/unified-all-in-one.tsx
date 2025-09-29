@@ -106,19 +106,41 @@ export default function UnifiedAllInOne() {
         console.log(`Loaded ${data.models.length} models from ${data.source}`)
       } else {
         console.error('Both model endpoints failed, using hardcoded fallback')
-        // 15 Most cost-effective AI models (sorted by cost efficiency)
-        const fallbackModels = [
-          {
-            id: 'mistralai/mistral-7b-instruct:free',
-            name: 'Mistral 7B Instruct (Free)',
-            description: 'Ultra-efficient small model for quick tasks - FREE',
-            pricing: { prompt: 0, completion: 0 },
-            context_length: 32768,
-            providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
-            supportsProviderSelection: true,
-            recommendedProvider: 'mistral',
-            providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0 },
-          },
+            // FREE AI models (sorted by cost efficiency)
+            const fallbackModels = [
+              {
+                id: 'mistralai/mistral-7b-instruct:free',
+                name: 'Mistral 7B Instruct (FREE)',
+                description: 'Ultra-efficient small model for quick tasks - COMPLETELY FREE',
+                pricing: { prompt: 0, completion: 0 },
+                context_length: 32768,
+                providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
+                supportsProviderSelection: true,
+                recommendedProvider: 'mistral',
+                providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0 },
+              },
+              {
+                id: 'meta-llama/llama-3.2-3b-instruct:free',
+                name: 'Llama 3.2 3B Instruct (FREE)',
+                description: "Meta's ultra-lightweight model - COMPLETELY FREE",
+                pricing: { prompt: 0, completion: 0 },
+                context_length: 128000,
+                providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
+                supportsProviderSelection: true,
+                recommendedProvider: 'meta',
+                providerMetrics: { averageLatency: 60, reliability: 0.96, costPerToken: 0 },
+              },
+              {
+                id: 'microsoft/phi-3-mini-128k-instruct:free',
+                name: 'Phi-3 Mini 128K (FREE)',
+                description: "Microsoft's compact reasoning model - COMPLETELY FREE",
+                pricing: { prompt: 0, completion: 0 },
+                context_length: 128000,
+                providers: [{ id: 'microsoft', name: 'Microsoft', latency: 110, reliability: 0.96 }],
+                supportsProviderSelection: true,
+                recommendedProvider: 'microsoft',
+                providerMetrics: { averageLatency: 110, reliability: 0.96, costPerToken: 0 },
+              },
           {
             id: 'openai/gpt-4o-mini-2024-07-18',
             name: 'GPT-4o Mini',
@@ -282,18 +304,40 @@ export default function UnifiedAllInOne() {
       }
     } catch (error) {
       console.error('Failed to load models:', error)
-      // Use hardcoded models as final fallback
+      // Use FREE models as final fallback
       const fallbackModels = [
         {
           id: 'mistralai/mistral-7b-instruct:free',
-          name: 'Mistral 7B Instruct (Free)',
-          description: 'Ultra-efficient small model for quick tasks - FREE',
+          name: 'Mistral 7B Instruct (FREE)',
+          description: 'Ultra-efficient small model for quick tasks - COMPLETELY FREE',
           pricing: { prompt: 0, completion: 0 },
           context_length: 32768,
           providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
           supportsProviderSelection: true,
           recommendedProvider: 'mistral',
           providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0 },
+        },
+        {
+          id: 'meta-llama/llama-3.2-3b-instruct:free',
+          name: 'Llama 3.2 3B Instruct (FREE)',
+          description: "Meta's ultra-lightweight model - COMPLETELY FREE",
+          pricing: { prompt: 0, completion: 0 },
+          context_length: 128000,
+          providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
+          supportsProviderSelection: true,
+          recommendedProvider: 'meta',
+          providerMetrics: { averageLatency: 60, reliability: 0.96, costPerToken: 0 },
+        },
+        {
+          id: 'microsoft/phi-3-mini-128k-instruct:free',
+          name: 'Phi-3 Mini 128K (FREE)',
+          description: "Microsoft's compact reasoning model - COMPLETELY FREE",
+          pricing: { prompt: 0, completion: 0 },
+          context_length: 128000,
+          providers: [{ id: 'microsoft', name: 'Microsoft', latency: 110, reliability: 0.96 }],
+          supportsProviderSelection: true,
+          recommendedProvider: 'microsoft',
+          providerMetrics: { averageLatency: 110, reliability: 0.96, costPerToken: 0 },
         },
         {
           id: 'openai/gpt-4o-mini-2024-07-18',
@@ -355,7 +399,7 @@ export default function UnifiedAllInOne() {
       // Try real process endpoint first with timeout
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout
-      
+
       let response
       try {
         response = await fetch('/api/process-real', {
@@ -386,7 +430,7 @@ export default function UnifiedAllInOne() {
         console.log('Real process API failed or timed out, trying fallback...')
         setCurrentStep('Using fallback API...')
         setProgress(60)
-        
+
         try {
           response = await fetch('/api/process-simple', {
             method: 'POST',
@@ -401,7 +445,7 @@ export default function UnifiedAllInOne() {
           console.log('Fallback API also failed, using local fallback...')
           setCurrentStep('Using local fallback...')
           setProgress(70)
-          
+
           // Create a local fallback response
           const fallbackData = {
             success: true,
@@ -440,11 +484,11 @@ export default function UnifiedAllInOne() {
             },
             timestamp: new Date().toISOString(),
           }
-          
+
           // Skip the response processing and go directly to results
           setCurrentStep('Calculating results...')
           setProgress(75)
-          
+
           const finalResult: UnifiedResult = fallbackData
           setProgress(100)
           setCurrentStep('Complete!')
@@ -649,17 +693,26 @@ export default function UnifiedAllInOne() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center p-3 bg-green-50 rounded-lg">
                     <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
-                    <div className="text-lg font-bold text-green-600">{result.summary.costSavings.percentage}%</div>
+                    <div className="text-lg font-bold text-green-600">
+                      {result.summary?.costSavings?.percentage || 
+                       result.summary?.savings?.savingsPercentage || 
+                       result.optimization?.costReduction || 
+                       0}%
+                    </div>
                     <div className="text-xs text-gray-600">Cost Saved</div>
                   </div>
                   <div className="text-center p-3 bg-blue-50 rounded-lg">
                     <TrendingUp className="h-6 w-6 mx-auto text-blue-600 mb-1" />
-                    <div className="text-lg font-bold text-blue-600">{result.summary.tokenSavings.percentage}%</div>
+                    <div className="text-lg font-bold text-blue-600">
+                      {result.summary?.tokenSavings?.percentage || 
+                       result.optimization?.tokenReduction || 
+                       0}%
+                    </div>
                     <div className="text-xs text-gray-600">Tokens Saved</div>
                   </div>
                   <div className="text-center p-3 bg-purple-50 rounded-lg">
                     <Zap className="h-6 w-6 mx-auto text-purple-600 mb-1" />
-                    <div className="text-lg font-bold text-purple-600">{result.summary.performanceScore || 90}%</div>
+                    <div className="text-lg font-bold text-purple-600">{result.summary?.performanceScore || 90}%</div>
                     <div className="text-xs text-gray-600">Quality</div>
                   </div>
                 </div>

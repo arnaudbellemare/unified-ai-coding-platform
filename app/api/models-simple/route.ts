@@ -2,18 +2,40 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    // 15 Most cost-effective AI models (sorted by cost efficiency)
+    // FREE and cost-effective AI models (sorted by cost efficiency)
     const models = [
       {
-        id: 'mistral-7b-instruct',
-        name: 'Mistral 7B Instruct',
-        description: 'Ultra-efficient small model for quick tasks',
-        pricing: { prompt: 0.2, completion: 0.2 },
-        context_length: 32000,
+        id: 'mistralai/mistral-7b-instruct:free',
+        name: 'Mistral 7B Instruct (FREE)',
+        description: 'Ultra-efficient small model for quick tasks - COMPLETELY FREE',
+        pricing: { prompt: 0, completion: 0 },
+        context_length: 32768,
         providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
         supportsProviderSelection: true,
         recommendedProvider: 'mistral',
-        providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0.2 },
+        providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0 },
+      },
+      {
+        id: 'meta-llama/llama-3.2-3b-instruct:free',
+        name: 'Llama 3.2 3B Instruct (FREE)',
+        description: "Meta's ultra-lightweight model - COMPLETELY FREE",
+        pricing: { prompt: 0, completion: 0 },
+        context_length: 128000,
+        providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
+        supportsProviderSelection: true,
+        recommendedProvider: 'meta',
+        providerMetrics: { averageLatency: 60, reliability: 0.96, costPerToken: 0 },
+      },
+      {
+        id: 'microsoft/phi-3-mini-128k-instruct:free',
+        name: 'Phi-3 Mini 128K (FREE)',
+        description: "Microsoft's compact reasoning model - COMPLETELY FREE",
+        pricing: { prompt: 0, completion: 0 },
+        context_length: 128000,
+        providers: [{ id: 'microsoft', name: 'Microsoft', latency: 110, reliability: 0.96 }],
+        supportsProviderSelection: true,
+        recommendedProvider: 'microsoft',
+        providerMetrics: { averageLatency: 110, reliability: 0.96, costPerToken: 0 },
       },
       {
         id: 'gpt-4o-mini',
