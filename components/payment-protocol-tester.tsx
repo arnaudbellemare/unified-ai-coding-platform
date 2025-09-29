@@ -174,7 +174,7 @@ export function PaymentProtocolTester() {
                   Connected: {user.wallet?.address?.slice(0, 6)}...{user.wallet?.address?.slice(-4)}
                 </span>
                 <Badge variant="secondary" className="ml-auto">
-                  {user.wallet?.chainId === '84532' ? 'Base Sepolia' : 'Unknown Chain'}
+                  Base Network
                 </Badge>
               </>
             ) : (
