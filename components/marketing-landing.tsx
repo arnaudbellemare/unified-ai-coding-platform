@@ -111,9 +111,21 @@ export function MarketingLanding({
               <div className="relative h-[420px]">
                 <div className="absolute inset-0 bg-beams opacity-30" />
                 <div className="grid grid-cols-2 gap-4 absolute inset-0 place-content-center">
-                  <FeatureTile icon={<Search className="h-5 w-5 text-blue-600" />} title="ACP Search" desc="Query & rank" />
-                  <FeatureTile icon={<Sliders className="h-5 w-5 text-indigo-600" />} title="Optimizers" desc="Reduce tokens" />
-                  <FeatureTile icon={<CreditCard className="h-5 w-5 text-emerald-600" />} title="x402" desc="Checkout" />
+                  <FeatureTile
+                    icon={<Search className="h-5 w-5 text-blue-600" />}
+                    title="AGENTIC COMMERCE"
+                    desc="Query & rank PRIORITY"
+                  />
+                  <FeatureTile
+                    icon={<Sliders className="h-5 w-5 text-indigo-600" />}
+                    title="Optimizers"
+                    desc="Reduce tokens COST FOR AGENTS"
+                  />
+                  <FeatureTile
+                    icon={<CreditCard className="h-5 w-5 text-emerald-600" />}
+                    title="x402"
+                    desc="Checkout"
+                  />
                   <FeatureTile icon={<Brain className="h-5 w-5 text-purple-600" />} title="AI" desc="OpenRouter" />
                 </div>
               </div>
@@ -123,9 +135,13 @@ export function MarketingLanding({
         <style jsx>{`
           .bg-rayburst {
             background:
-              radial-gradient(closest-side, rgba(255,255,255,0.9), transparent 60%),
-              repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c1) 8%, transparent) 0 8deg, transparent 8deg 14deg);
-            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0,0,0,0.9), transparent 70%);
+              radial-gradient(closest-side, rgba(255, 255, 255, 0.9), transparent 60%),
+              repeating-conic-gradient(
+                from 0deg,
+                color-mix(in srgb, var(--c1) 8%, transparent) 0 8deg,
+                transparent 8deg 14deg
+              );
+            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0, 0, 0, 0.9), transparent 70%);
             transform: translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), 0);
             transition: transform 120ms ease-out;
           }
