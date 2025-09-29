@@ -106,41 +106,41 @@ export default function UnifiedAllInOne() {
         console.log(`Loaded ${data.models.length} models from ${data.source}`)
       } else {
         console.error('Both model endpoints failed, using hardcoded fallback')
-            // FREE AI models (sorted by cost efficiency)
-            const fallbackModels = [
-              {
-                id: 'mistralai/mistral-7b-instruct:free',
-                name: 'Mistral 7B Instruct (FREE)',
-                description: 'Ultra-efficient small model for quick tasks - COMPLETELY FREE',
-                pricing: { prompt: 0, completion: 0 },
-                context_length: 32768,
-                providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
-                supportsProviderSelection: true,
-                recommendedProvider: 'mistral',
-                providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0 },
-              },
-              {
-                id: 'meta-llama/llama-3.2-3b-instruct:free',
-                name: 'Llama 3.2 3B Instruct (FREE)',
-                description: "Meta's ultra-lightweight model - COMPLETELY FREE",
-                pricing: { prompt: 0, completion: 0 },
-                context_length: 128000,
-                providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
-                supportsProviderSelection: true,
-                recommendedProvider: 'meta',
-                providerMetrics: { averageLatency: 60, reliability: 0.96, costPerToken: 0 },
-              },
-              {
-                id: 'microsoft/phi-3-mini-128k-instruct:free',
-                name: 'Phi-3 Mini 128K (FREE)',
-                description: "Microsoft's compact reasoning model - COMPLETELY FREE",
-                pricing: { prompt: 0, completion: 0 },
-                context_length: 128000,
-                providers: [{ id: 'microsoft', name: 'Microsoft', latency: 110, reliability: 0.96 }],
-                supportsProviderSelection: true,
-                recommendedProvider: 'microsoft',
-                providerMetrics: { averageLatency: 110, reliability: 0.96, costPerToken: 0 },
-              },
+        // FREE AI models (sorted by cost efficiency)
+        const fallbackModels = [
+          {
+            id: 'mistralai/mistral-7b-instruct:free',
+            name: 'Mistral 7B Instruct (FREE)',
+            description: 'Ultra-efficient small model for quick tasks - COMPLETELY FREE',
+            pricing: { prompt: 0, completion: 0 },
+            context_length: 32768,
+            providers: [{ id: 'mistral', name: 'Mistral', latency: 80, reliability: 0.97 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'mistral',
+            providerMetrics: { averageLatency: 80, reliability: 0.97, costPerToken: 0 },
+          },
+          {
+            id: 'meta-llama/llama-3.2-3b-instruct:free',
+            name: 'Llama 3.2 3B Instruct (FREE)',
+            description: "Meta's ultra-lightweight model - COMPLETELY FREE",
+            pricing: { prompt: 0, completion: 0 },
+            context_length: 128000,
+            providers: [{ id: 'meta', name: 'Meta', latency: 60, reliability: 0.96 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'meta',
+            providerMetrics: { averageLatency: 60, reliability: 0.96, costPerToken: 0 },
+          },
+          {
+            id: 'microsoft/phi-3-mini-128k-instruct:free',
+            name: 'Phi-3 Mini 128K (FREE)',
+            description: "Microsoft's compact reasoning model - COMPLETELY FREE",
+            pricing: { prompt: 0, completion: 0 },
+            context_length: 128000,
+            providers: [{ id: 'microsoft', name: 'Microsoft', latency: 110, reliability: 0.96 }],
+            supportsProviderSelection: true,
+            recommendedProvider: 'microsoft',
+            providerMetrics: { averageLatency: 110, reliability: 0.96, costPerToken: 0 },
+          },
           {
             id: 'openai/gpt-4o-mini-2024-07-18',
             name: 'GPT-4o Mini',
@@ -694,19 +694,18 @@ export default function UnifiedAllInOne() {
                   <div className="text-center p-3 bg-green-50 rounded-lg">
                     <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
                     <div className="text-lg font-bold text-green-600">
-                      {result.summary?.costSavings?.percentage || 
-                       result.summary?.savings?.savingsPercentage || 
-                       result.optimization?.costReduction || 
-                       0}%
+                      {result.summary?.costSavings?.percentage ||
+                        result.summary?.savings?.savingsPercentage ||
+                        result.optimization?.costReduction ||
+                        0}
+                      %
                     </div>
                     <div className="text-xs text-gray-600">Cost Saved</div>
                   </div>
                   <div className="text-center p-3 bg-blue-50 rounded-lg">
                     <TrendingUp className="h-6 w-6 mx-auto text-blue-600 mb-1" />
                     <div className="text-lg font-bold text-blue-600">
-                      {result.summary?.tokenSavings?.percentage || 
-                       result.optimization?.tokenReduction || 
-                       0}%
+                      {result.summary?.tokenSavings?.percentage || result.optimization?.tokenReduction || 0}%
                     </div>
                     <div className="text-xs text-gray-600">Tokens Saved</div>
                   </div>
@@ -718,25 +717,29 @@ export default function UnifiedAllInOne() {
                 </div>
 
                 {/* Optimized Prompt */}
-                {result.summary.optimizedPrompt && (
+                {(result.summary?.optimizedPrompt || result.optimization?.optimizedPrompt) && (
                   <div className="space-y-2">
                     <h4 className="font-medium">Optimized Prompt</h4>
-                    <div className="p-3 bg-gray-50 rounded-lg text-sm">{result.summary.optimizedPrompt}</div>
+                    <div className="p-3 bg-gray-50 rounded-lg text-sm">
+                      {result.summary?.optimizedPrompt || result.optimization?.optimizedPrompt}
+                    </div>
                   </div>
                 )}
 
                 {/* AI Response */}
-                {result.summary.aiResponse && (
+                {(result.summary?.aiResponse || result.aiResponse?.content) && (
                   <div className="space-y-2">
                     <h4 className="font-medium">AI Response</h4>
-                    <div className="p-3 bg-blue-50 rounded-lg text-sm">{result.summary.aiResponse}</div>
+                    <div className="p-3 bg-blue-50 rounded-lg text-sm">
+                      {result.summary?.aiResponse || result.aiResponse?.content}
+                    </div>
                   </div>
                 )}
 
                 {/* Advanced Optimizer Results */}
-                {result.summary.optimizationEngines && (
+                {result.summary?.optimizationEngines && (
                   <div className="space-y-3">
-                    <h4 className="font-medium">🚀 Advanced Optimization Engines</h4>
+                    <h4 className="font-medium">Advanced Optimization Engines</h4>
                     <div className="grid grid-cols-2 gap-2">
                       {result.summary.optimizationEngines.map((engine: string) => (
                         <Badge
@@ -790,9 +793,14 @@ export default function UnifiedAllInOne() {
 
                 {/* Model & Provider Info */}
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline">Model: {getModelDisplayName(result.summary.model)}</Badge>
-                  <Badge variant="outline">Provider: {result.summary.provider}</Badge>
-                  <Badge variant="outline">Cost: ${result.summary.costSavings.optimized.toFixed(6)}</Badge>
+                  <Badge variant="outline">Model: {getModelDisplayName(result.summary?.model || result.aiResponse?.model)}</Badge>
+                  <Badge variant="outline">Provider: {result.summary?.provider || 'default'}</Badge>
+                  <Badge variant="outline">
+                    Cost: ${(result.summary?.costSavings?.optimized || 
+                             result.summary?.totalCost || 
+                             result.aiResponse?.cost || 
+                             0).toFixed(6)}
+                  </Badge>
                 </div>
 
                 {/* Action Buttons */}
@@ -829,12 +837,18 @@ export default function UnifiedAllInOne() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  ${result.summary.costSavings.reduction.toFixed(6)}
+                  ${(result.summary?.costSavings?.reduction || 
+                     result.summary?.savings?.savingsAmount || 
+                     0).toFixed(6)}
                 </div>
                 <div className="text-sm text-gray-600">Cost Savings</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{result.summary.tokenSavings.reduction}</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {result.summary?.tokenSavings?.reduction || 
+                   result.optimization?.tokenReduction || 
+                   0}
+                </div>
                 <div className="text-sm text-gray-600">Tokens Saved</div>
               </div>
               <div className="text-center">
