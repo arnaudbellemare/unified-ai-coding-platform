@@ -118,11 +118,11 @@ export function AcpDemo() {
                   <div className="flex items-center gap-2">
                     <div className="font-semibold text-black">{o.title}</div>
                     {typeof o.score === 'number' && (
-                      <Badge variant="outline" className="text-xs">GEO {Math.round(o.score)}</Badge>
+                      <Badge variant="outline" className="text-xs">
+                        GEO {Math.round(o.score)}
+                      </Badge>
                     )}
-                    {o.sponsored && (
-                      <Badge className="bg-emerald-600 text-white text-xs">Sponsored</Badge>
-                    )}
+                    {o.sponsored && <Badge className="bg-emerald-600 text-white text-xs">Sponsored</Badge>}
                   </div>
                   <div className="text-xs text-gray-800">
                     ${o.effectivePrice.toFixed(2)} {o.currency} • {o.inStock ? 'In stock' : 'Out of stock'}

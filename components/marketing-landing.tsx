@@ -58,12 +58,12 @@ export function MarketingLanding({
           />
         ) : (
           <div className="pointer-events-none absolute inset-0">
-            {/* Rayburst backdrop (parallax) */}
-            <div className="absolute inset-0 bg-rayburst opacity-60" />
-            {/* Slow rotating rays for motion */}
-            <div className="absolute -inset-[8%] bg-rayburst-rotating opacity-35" />
+            {/* Flowing gradient backdrop */}
+            <div className="absolute inset-0 bg-flow opacity-80" />
+            {/* Morphing mesh blobs for depth */}
+            <div className="absolute inset-0 bg-mesh-blobs opacity-45" />
             {/* Ambient spotlight */}
-            <div className="absolute inset-0 bg-conic-spot opacity-35" />
+            <div className="absolute inset-0 bg-conic-spot opacity-25" />
             {/* Interactive cursor spotlight */}
             <div className="absolute inset-0 bg-cursor-spot" />
             {/* Soft moving orbs for depth */}
@@ -142,26 +142,25 @@ export function MarketingLanding({
           </div>
         </div>
         <style jsx>{`
-          .bg-rayburst {
-            background:
-              radial-gradient(closest-side, rgba(255, 255, 255, 0.9), transparent 60%),
-              repeating-conic-gradient(
-                from 0deg,
-                color-mix(in srgb, var(--c1) 8%, transparent) 0 8deg,
-                transparent 8deg 14deg
-              );
-            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0, 0, 0, 0.9), transparent 70%);
-            transform: translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), 0);
+          .bg-flow {
+            background: linear-gradient(
+              120deg,
+              color-mix(in srgb, var(--c1) 35%, transparent) 0%,
+              color-mix(in srgb, var(--c2) 35%, transparent) 50%,
+              color-mix(in srgb, var(--c3) 30%, transparent) 100%
+            );
+            background-size: 200% 200%;
+            animation: flowShift 18s ease-in-out infinite alternate;
+            transform: translate3d(calc(var(--mx, 0) * 4px), calc(var(--my, 0) * 4px), 0);
             transition: transform 120ms ease-out;
           }
-          .bg-rayburst-rotating {
-            background: repeating-conic-gradient(
-              from 0deg,
-              color-mix(in srgb, var(--c2) 10%, transparent) 0 10deg,
-              transparent 10deg 16deg
-            );
-            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0, 0, 0, 0.8), transparent 70%);
-            animation: raysRotate 32s linear infinite;
+          .bg-mesh-blobs {
+            background:
+              radial-gradient(28% 22% at 15% 20%, color-mix(in srgb, var(--c1) 22%, transparent), transparent 70%),
+              radial-gradient(26% 20% at 85% 30%, color-mix(in srgb, var(--c2) 20%, transparent), transparent 70%),
+              radial-gradient(30% 24% at 35% 80%, color-mix(in srgb, var(--c3) 18%, transparent), transparent 70%);
+            animation: blobDrift 22s ease-in-out infinite;
+            filter: blur(10px) saturate(115%);
           }
           .bg-conic-spot {
             background:
@@ -287,11 +286,7 @@ export function MarketingLanding({
               transform: rotate(360deg);
             }
           }
-          @keyframes raysRotate {
-            to {
-              transform: rotate(360deg);
-            }
-          }
+          @keyframes flowShift { 0% { background-position: 0% 50% } 100% { background-position: 100% 50% } }
           @keyframes vrcl-float {
             0% {
               transform: translate3d(0, -6px, 0) scale(1.02);
@@ -299,6 +294,11 @@ export function MarketingLanding({
             100% {
               transform: translate3d(8px, 6px, 0) scale(1.04);
             }
+          }
+          @keyframes blobDrift {
+            0% { transform: translate3d(0,0,0) }
+            50% { transform: translate3d(-10px, 6px, 0) }
+            100% { transform: translate3d(6px, -4px, 0) }
           }
           @keyframes vrcl-orb-1 {
             0% {
