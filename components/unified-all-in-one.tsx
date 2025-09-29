@@ -868,10 +868,7 @@ What specific aspect would you like me to focus on or elaborate further?`
                   <div className="text-center p-3 bg-green-50 rounded-lg">
                     <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
                     <div className="text-lg font-bold text-green-600">
-                      {result.summary?.costSavings?.percentage ||
-                        result.optimization?.costReduction ||
-                        0}
-                      %
+                      {result.summary?.costSavings?.percentage || result.optimization?.costReduction || 0}%
                     </div>
                     <div className="text-xs text-gray-600">Cost Saved</div>
                   </div>
@@ -976,7 +973,6 @@ What specific aspect would you like me to focus on or elaborate further?`
                     {(
                       parseFloat(
                         result.summary?.costSavings?.optimized ||
-                          result.summary?.totalCost ||
                           (typeof result.aiResponse?.cost === 'object'
                             ? result.aiResponse?.cost?.total
                             : result.aiResponse?.cost) ||
