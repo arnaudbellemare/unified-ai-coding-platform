@@ -18,9 +18,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Verclibase',
-  description:
-    'AI-powered coding platform with advanced optimization, x402 payments, and multi-model support',
+  title: 'VERCLIBASE',
+  description: 'AI-powered coding platform with advanced optimization, x402 payments, and multi-model support',
 }
 
 export default function RootLayout({

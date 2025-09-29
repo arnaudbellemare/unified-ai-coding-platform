@@ -5,7 +5,7 @@
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
 2. Click "New OAuth App"
 3. Fill in the details:
-   - **Application name**: `Verclibase`
+   - **Application name**: `VERCLIBASE`
    - **Homepage URL**: `https://verclibase.vercel.app`
    - **Authorization callback URL**: `https://verclibase.vercel.app/api/auth/github`
 4. Click "Register application"

@@ -1,17 +1,17 @@
-# 🚀 VERCLIBASE SETUP - OpenRouter + x402 + Vercel Sandbox
+# VERCLIBASE SETUP - OpenRouter + x402 + Vercel Sandbox
 
 ## **VERCLIBASE OVERVIEW**
 
 This is **Verclibase** - the **PRODUCTION-READY** AI coding platform with:
-- ✅ **Real OpenRouter API calls** with cost optimization
-- ✅ **x402 Protocol** for API call fee reimbursement
-- ✅ **Vercel Sandbox** deployment for testing
-- ✅ **AgentKit optimization** with real cost tracking
-- ✅ **Multi-optimizer integration** (Research, GEPA, CAPO, Cloudflare)
+- **Real OpenRouter API calls** with cost optimization
+- **x402 Protocol** for API call fee reimbursement
+- **Vercel Sandbox** deployment for testing
+- **AgentKit optimization** with real cost tracking
+- **Multi-optimizer integration** (Research, GEPA, CAPO, Cloudflare)
 
 ---
 
-## 🔧 **REQUIRED ENVIRONMENT VARIABLES**
+## **REQUIRED ENVIRONMENT VARIABLES**
 
 ### **Vercel Dashboard Setup:**
 Go to your Vercel project → Settings → Environment Variables
@@ -101,7 +101,7 @@ curl -X POST "https://verclibase.vercel.app/api/process-real" \
 
 ---
 
-## 📊 **REAL SYSTEM FEATURES**
+## **REAL SYSTEM FEATURES**
 
 ### **OpenRouter Integration:**
 - **Live model fetching** from OpenRouter API
