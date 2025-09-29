@@ -204,6 +204,13 @@ export async function POST(request: NextRequest) {
     const capoOptimizer = new CAPOEnhancedOptimizer()
     const cloudflareOptimizer = new CloudflareCodeModeOptimizer()
     const advancedCloudflareOptimizer = new AdvancedCloudflareOptimizer()
+    console.log('🔑 OpenRouter API Key Debug:', {
+      hasKey: !!process.env.OPENROUTER_API_KEY,
+      keyLength: process.env.OPENROUTER_API_KEY?.length || 0,
+      keyPrefix: process.env.OPENROUTER_API_KEY?.substring(0, 15) || 'none',
+      keyEnd: process.env.OPENROUTER_API_KEY?.substring(-10) || 'none'
+    })
+
     const openRouterClient = new OpenRouterClient({
       apiKey: process.env.OPENROUTER_API_KEY!,
       baseURL: 'https://openrouter.ai/api/v1',
