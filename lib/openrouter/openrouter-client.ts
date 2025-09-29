@@ -140,35 +140,72 @@ export class OpenRouterClient {
     cost: number
   }> {
     try {
-      const pricing = await this.getModelPricing(modelId)
-
-      const response = await this.client.chat.completions.create({
-        model: modelId,
-        messages: messages as any,
-        temperature: options?.temperature || 0.7,
-        max_tokens: options?.max_tokens || 1000,
-        top_p: options?.top_p || 1,
-        frequency_penalty: options?.frequency_penalty || 0,
-        presence_penalty: options?.presence_penalty || 0,
+      console.log('🔄 OpenRouter generateText called:', {
+        modelId,
+        messagesLength: messages.length,
+        apiKeyPrefix: this.config.apiKey?.substring(0, 15) || 'none'
       })
 
-      const usage = response.usage
+      const pricing = await this.getModelPricing(modelId)
+
+      // Use direct fetch for OpenRouter instead of OpenAI SDK
+      const response = await fetch(`${this.config.baseURL || 'https://openrouter.ai/api/v1'}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://verclibase.com',
+          'X-Title': 'VERCLIBASE'
+        },
+        body: JSON.stringify({
+          model: modelId,
+          messages: messages,
+          temperature: options?.temperature || 0.7,
+          max_tokens: options?.max_tokens || 1000,
+          top_p: options?.top_p || 1,
+          frequency_penalty: options?.frequency_penalty || 0,
+          presence_penalty: options?.presence_penalty || 0,
+        }),
+      })
+
+      if (!response.ok) {
+        console.error('🔴 OpenRouter API error:', {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries())
+        })
+        throw new Error(`OpenRouter API error: ${response.status} - ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      console.log('✅ OpenRouter response received:', {
+        model: data.model,
+        usage: data.usage,
+        contentLength: data.choices?.[0]?.message?.content?.length || 0
+      })
+
+      if (!data.choices?.[0]?.message?.content) {
+        console.error('❌ OpenRouter response missing content:', data)
+        throw new Error('No content in OpenRouter response')
+      }
+
+      const usage = data.usage || {}
       const cost = this.calculateCost(
         modelId,
-        usage?.prompt_tokens || 0,
-        usage?.completion_tokens || 0,
+        usage.prompt_tokens || 0,
+        usage.completion_tokens || 0,
         pricing || undefined,
       )
 
       return {
-        content: response.choices[0]?.message?.content || '',
+        content: data.choices[0].message.content,
         usage: {
-          prompt_tokens: usage?.prompt_tokens || 0,
-          completion_tokens: usage?.completion_tokens || 0,
-          total_tokens: usage?.total_tokens || 0,
+          prompt_tokens: usage.prompt_tokens || 0,
+          completion_tokens: usage.completion_tokens || 0,
+          total_tokens: usage.total_tokens || 0,
           total_cost: cost,
         },
-        model: response.model,
+        model: data.model,
         cost,
       }
     } catch (error) {
@@ -195,42 +232,72 @@ export class OpenRouterClient {
     cost: number
   }> {
     try {
-      const pricing = await this.getModelPricing(modelId)
-
-      const response = await this.client.chat.completions.create({
-        model: modelId,
-        messages: [
-          ...messages,
-          {
-            role: 'system' as const,
-            content: `You must respond with valid JSON that matches this schema: ${JSON.stringify(schema)}`,
-          },
-        ],
-        temperature: options?.temperature || 0.3,
-        max_tokens: options?.max_tokens || 2000,
-        response_format: { type: 'json_object' },
+      console.log('🔄 OpenRouter generateStructuredOutput called:', {
+        modelId,
+        schema: typeof schema
       })
 
-      const usage = response.usage
+      const pricing = await this.getModelPricing(modelId)
+
+      // Use direct fetch for OpenRouter instead of OpenAI SDK
+      const response = await fetch(`${this.config.baseURL || 'https://openrouter.ai/api/v1'}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://verclibase.com',
+          'X-Title': 'VERCLIBASE'
+        },
+        body: JSON.stringify({
+          model: modelId,
+          messages: [
+            ...messages,
+            {
+              role: 'system',
+              content: `You must respond with valid JSON that matches this schema: ${JSON.stringify(schema)}`,
+            },
+          ],
+          temperature: options?.temperature || 0.3,
+          max_tokens: options?.max_tokens || 2000,
+          response_format: { type: 'json_object' },
+        }),
+      })
+
+      if (!response.ok) {
+        console.error('🔴 OpenRouter structured output error:', {
+          status: response.status,
+          statusText: response.statusText
+        })
+        throw new Error(`OpenRouter API error: ${response.status} - ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (!data.choices?.[0]?.message?.content) {
+        console.error('❌ OpenRouter structured response missing content:', data)
+        throw new Error('No content in OpenRouter structured response')
+      }
+
+      const usage = data.usage || {}
       const cost = this.calculateCost(
         modelId,
-        usage?.prompt_tokens || 0,
-        usage?.completion_tokens || 0,
+        usage.prompt_tokens || 0,
+        usage.completion_tokens || 0,
         pricing || undefined,
       )
 
-      const content = response.choices[0]?.message?.content || '{}'
+      const content = data.choices[0].message.content
       const object = JSON.parse(content) as T
 
       return {
         object,
         usage: {
-          prompt_tokens: usage?.prompt_tokens || 0,
-          completion_tokens: usage?.completion_tokens || 0,
-          total_tokens: usage?.total_tokens || 0,
+          prompt_tokens: usage.prompt_tokens || 0,
+          completion_tokens: usage.completion_tokens || 0,
+          total_tokens: usage.total_tokens || 0,
           total_cost: cost,
         },
-        model: response.model,
+        model: data.model,
         cost,
       }
     } catch (error) {
