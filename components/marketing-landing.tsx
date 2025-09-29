@@ -369,16 +369,48 @@ export function MarketingLanding({
             <div>
               <h3 className="text-2xl md:text-3xl font-black tracking-tight text-black">
                 Agentic e‑Commerce Advantage
-                <span className="ml-2 align-middle inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-black text-white">GEO</span>
+                <span className="ml-2 align-middle inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-black text-white">
+                  GEO
+                </span>
               </h3>
               <p className="mt-2 text-gray-900 max-w-3xl">
-                Get chosen first by AI agents. We expose catalog/search endpoints and rank offers using
-                relevance, trust, price efficiency, fulfillment reliability, and x402 sponsorship budgets —
-                Generative Engine Optimization (GEO) for agentic commerce.
+                Get chosen first by AI agents. We expose catalog/search endpoints and rank offers using relevance,
+                trust, price efficiency, fulfillment reliability, and x402 sponsorship budgets — Generative Engine
+                Optimization (GEO) for agentic commerce.
               </p>
             </div>
             <div className="shrink-0">
-              <Button variant="outline" className="bg-white border-gray-300 text-black hover:bg-gray-200">Get featured</Button>
+              <Button
+                variant="outline"
+                className="bg-white border-gray-300 text-black hover:bg-gray-200"
+                onClick={async () => {
+                  try {
+                    const example = {
+                      id: 'verclibase-demo-merchant',
+                      name: 'Verclibase Demo Merchant',
+                      description: 'High-trust, Base-native merchant for agentic commerce',
+                      url: 'https://verclibase.vercel.app',
+                      trust: { rating: 4.8, onTimeRate: 0.99, returnRate: 0.03 },
+                      sponsoredBudgetUSD: 250,
+                    }
+                    const res = await fetch('/api/acp/merchant', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(example),
+                    })
+                    const data = await res.json().catch(() => ({}))
+                    const ok = res.ok && data?.success
+                    const msg = ok
+                      ? 'Your merchant is now featured for agentic GEO ranking.'
+                      : `Request failed: ${data?.error || res.statusText}`
+                    alert(msg)
+                  } catch (e) {
+                    alert('Network error while featuring merchant')
+                  }
+                }}
+              >
+                Get featured
+              </Button>
             </div>
           </div>
 
@@ -399,8 +431,8 @@ export function MarketingLanding({
               <CardContent className="p-5">
                 <div className="font-semibold text-black">Boost placement with x402</div>
                 <p className="mt-2 text-sm text-gray-900">
-                  Allocate sponsorship budgets (per search, per click, per checkout) using x402. Fully
-                  transparent, pay-per-use, and auditable.
+                  Allocate sponsorship budgets (per search, per click, per checkout) using x402. Fully transparent,
+                  pay-per-use, and auditable.
                 </p>
               </CardContent>
             </Card>
