@@ -105,7 +105,7 @@ export function MarketingLanding({
                   <Button size="lg" onClick={onPrimary} className="bg-black text-white hover:bg-black/90">
                     Start free
                   </Button>
-                  <Button size="lg" variant="outline" className="bg-white border-gray-300 text-black hover:bg-gray-100">
+                  <Button size="lg" variant="outline" className="bg-white border-gray-300 text-black hover:bg-gray-200">
                     View demo
                   </Button>
                 </div>
@@ -152,9 +152,12 @@ export function MarketingLanding({
             transition: transform 120ms ease-out;
           }
           .bg-rayburst-rotating {
-            background:
-              repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c2) 10%, transparent) 0 10deg, transparent 10deg 16deg);
-            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0,0,0,0.8), transparent 70%);
+            background: repeating-conic-gradient(
+              from 0deg,
+              color-mix(in srgb, var(--c2) 10%, transparent) 0 10deg,
+              transparent 10deg 16deg
+            );
+            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0, 0, 0, 0.8), transparent 70%);
             animation: raysRotate 32s linear infinite;
           }
           .bg-conic-spot {
@@ -187,11 +190,15 @@ export function MarketingLanding({
             mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0, 0, 0, 0.9), transparent 70%);
           }
           .bg-cursor-spot {
-            background: radial-gradient(220px 160px at calc(50% + var(--mx,0) * 60px) calc(40% + var(--my,0) * 60px), rgba(255,255,255,0.45), transparent 70%);
+            background: radial-gradient(
+              220px 160px at calc(50% + var(--mx, 0) * 60px) calc(40% + var(--my, 0) * 60px),
+              rgba(255, 255, 255, 0.45),
+              transparent 70%
+            );
             transition: background-position 120ms ease-out;
           }
           .bg-fade-bottom {
-            background: linear-gradient(to bottom, transparent 55%, rgba(255,255,255,0.75) 82%, #ffffff 100%);
+            background: linear-gradient(to bottom, transparent 55%, rgba(255, 255, 255, 0.75) 82%, #ffffff 100%);
           }
           .bg-orb {
             border-radius: 9999px;
@@ -265,14 +272,23 @@ export function MarketingLanding({
           .animate-sway-3 {
             animation: sway 5.5s ease-in-out infinite reverse;
           }
-          .tilt { transform-style: preserve-3d; }
-          .tilt:hover { transform: perspective(800px) rotateX(calc(var(--my,0) * -4deg)) rotateY(calc(var(--mx,0) * 6deg)); transition: transform 160ms ease; }
+          .tilt {
+            transform-style: preserve-3d;
+          }
+          .tilt:hover {
+            transform: perspective(800px) rotateX(calc(var(--my, 0) * -4deg)) rotateY(calc(var(--mx, 0) * 6deg));
+            transition: transform 160ms ease;
+          }
           @keyframes vrcl-rotate {
             to {
               transform: rotate(360deg);
             }
           }
-          @keyframes raysRotate { to { transform: rotate(360deg); } }
+          @keyframes raysRotate {
+            to {
+              transform: rotate(360deg);
+            }
+          }
           @keyframes vrcl-float {
             0% {
               transform: translate3d(0, -6px, 0) scale(1.02);
