@@ -134,7 +134,7 @@ function PrivyProviderInner({ children }: PrivyProviderProps) {
 }
 
 export function PrivyProvider({ children }: PrivyProviderProps) {
-  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID
+  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'cmfow1b160026l60btyr8fjp5'
 
   // If no valid Privy App ID, render children without Privy
   if (!appId || appId === 'demo-app-id') {

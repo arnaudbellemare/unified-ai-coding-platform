@@ -22,15 +22,16 @@ Key details:
 • Co-written with Amy Allen and producer John Ryan
 
 The song became Carpenter's breakthrough hit and first top 40 success, establishing her as a major pop artist. The music video's dark humor and empowerment themes resonated strongly with audiences.`
-  } else if (prompt.toLowerCase().includes('resume') && (
-    prompt.toLowerCase().includes('how to') ||
-    prompt.toLowerCase().includes('create') ||
-    prompt.toLowerCase().includes('write') ||
-    prompt.toLowerCase().includes('make') ||
-    prompt.toLowerCase().includes('build') ||
-    prompt.toLowerCase().includes('guide') ||
-    prompt.toLowerCase().includes('help')
-  )) {
+  } else if (
+    prompt.toLowerCase().includes('resume') &&
+    (prompt.toLowerCase().includes('how to') ||
+      prompt.toLowerCase().includes('create') ||
+      prompt.toLowerCase().includes('write') ||
+      prompt.toLowerCase().includes('make') ||
+      prompt.toLowerCase().includes('build') ||
+      prompt.toLowerCase().includes('guide') ||
+      prompt.toLowerCase().includes('help'))
+  ) {
     content = `Here's a comprehensive guide to creating an effective resume:
 
 **RESUME STRUCTURE:**
@@ -58,14 +59,15 @@ The song became Carpenter's breakthrough hit and first top 40 success, establish
 • Being too vague about achievements
 
 Need help with a specific section or industry?`
-  } else if (prompt.toLowerCase().includes('resume') && (
-    prompt.toLowerCase().includes('continue') ||
-    prompt.toLowerCase().includes('from where') ||
-    prompt.toLowerCase().includes('text') ||
-    prompt.toLowerCase().includes('story') ||
-    prompt.toLowerCase().includes('paragraph') ||
-    prompt.toLowerCase().includes('sentence')
-  )) {
+  } else if (
+    prompt.toLowerCase().includes('resume') &&
+    (prompt.toLowerCase().includes('continue') ||
+      prompt.toLowerCase().includes('from where') ||
+      prompt.toLowerCase().includes('text') ||
+      prompt.toLowerCase().includes('story') ||
+      prompt.toLowerCase().includes('paragraph') ||
+      prompt.toLowerCase().includes('sentence'))
+  ) {
     content = `I understand you want me to continue or resume the text you provided. However, I don't have access to the previous text you're referring to. 
 
 To help you continue your text, please:

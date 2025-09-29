@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Brain, Zap, DollarSign, CheckCircle, Clock, TrendingUp, Settings, Play, Download } from 'lucide-react'
 import { GitHubAuthButton } from './github-auth-button'
+import { PaymentProtocolTester } from './payment-protocol-tester'
 
 interface Model {
   id: string
@@ -990,6 +991,9 @@ What specific aspect would you like me to focus on or elaborate further?`
           </CardContent>
         </Card>
       )}
+
+      {/* Payment Protocol Tester */}
+      <PaymentProtocolTester />
     </div>
   )
 }

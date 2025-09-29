@@ -41,15 +41,16 @@ Key points about the song:
 The song became Carpenter's first top 40 hit and helped establish her as a major pop artist. The lyrics and music video both emphasize themes of moving on and finding strength after a breakup.
 
 Would you like me to elaborate on any specific aspect of the song, its cultural impact, or Sabrina Carpenter's career?`
-    } else if (prompt.toLowerCase().includes('resume') && (
-      prompt.toLowerCase().includes('how to') ||
-      prompt.toLowerCase().includes('create') ||
-      prompt.toLowerCase().includes('write') ||
-      prompt.toLowerCase().includes('make') ||
-      prompt.toLowerCase().includes('build') ||
-      prompt.toLowerCase().includes('guide') ||
-      prompt.toLowerCase().includes('help')
-    )) {
+    } else if (
+      prompt.toLowerCase().includes('resume') &&
+      (prompt.toLowerCase().includes('how to') ||
+        prompt.toLowerCase().includes('create') ||
+        prompt.toLowerCase().includes('write') ||
+        prompt.toLowerCase().includes('make') ||
+        prompt.toLowerCase().includes('build') ||
+        prompt.toLowerCase().includes('guide') ||
+        prompt.toLowerCase().includes('help'))
+    ) {
       aiResponse = `I'd be happy to help you with your resume! Here's a comprehensive guide:
 
 **Resume Structure:**
@@ -74,14 +75,15 @@ Would you like me to elaborate on any specific aspect of the song, its cultural 
 - Being too generic
 
 Would you like me to help you write a specific section or review your current resume?`
-    } else if (prompt.toLowerCase().includes('resume') && (
-      prompt.toLowerCase().includes('continue') ||
-      prompt.toLowerCase().includes('from where') ||
-      prompt.toLowerCase().includes('text') ||
-      prompt.toLowerCase().includes('story') ||
-      prompt.toLowerCase().includes('paragraph') ||
-      prompt.toLowerCase().includes('sentence')
-    )) {
+    } else if (
+      prompt.toLowerCase().includes('resume') &&
+      (prompt.toLowerCase().includes('continue') ||
+        prompt.toLowerCase().includes('from where') ||
+        prompt.toLowerCase().includes('text') ||
+        prompt.toLowerCase().includes('story') ||
+        prompt.toLowerCase().includes('paragraph') ||
+        prompt.toLowerCase().includes('sentence'))
+    ) {
       aiResponse = `I understand you want me to continue or resume the text you provided. However, I don't have access to the previous text you're referring to. 
 
 To help you continue your text, please:

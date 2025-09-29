@@ -21,15 +21,16 @@ export async function POST(request: NextRequest) {
 
     if (prompt.toLowerCase().includes('feather') || prompt.toLowerCase().includes('sabrina')) {
       aiResponse = `"Feather" by Sabrina Carpenter is a 2023 dance-pop anthem about post-breakup empowerment. The song celebrates freedom and relief after ending a toxic relationship. It reached #21 on the Billboard Hot 100 and became her first #1 on the Pop Airplay chart. The music video caused controversy for its church scenes depicting the "deaths" of men who mistreated her. Carpenter co-wrote it with Amy Allen and producer John Ryan.`
-    } else if (prompt.toLowerCase().includes('resume') && (
-      prompt.toLowerCase().includes('how to') ||
-      prompt.toLowerCase().includes('create') ||
-      prompt.toLowerCase().includes('write') ||
-      prompt.toLowerCase().includes('make') ||
-      prompt.toLowerCase().includes('build') ||
-      prompt.toLowerCase().includes('guide') ||
-      prompt.toLowerCase().includes('help')
-    )) {
+    } else if (
+      prompt.toLowerCase().includes('resume') &&
+      (prompt.toLowerCase().includes('how to') ||
+        prompt.toLowerCase().includes('create') ||
+        prompt.toLowerCase().includes('write') ||
+        prompt.toLowerCase().includes('make') ||
+        prompt.toLowerCase().includes('build') ||
+        prompt.toLowerCase().includes('guide') ||
+        prompt.toLowerCase().includes('help'))
+    ) {
       aiResponse = `Here's how to create a strong resume:
 
 **Structure:**
@@ -53,14 +54,15 @@ export async function POST(request: NextRequest) {
 - Spelling errors
 
 Need help with a specific section?`
-    } else if (prompt.toLowerCase().includes('resume') && (
-      prompt.toLowerCase().includes('continue') ||
-      prompt.toLowerCase().includes('from where') ||
-      prompt.toLowerCase().includes('text') ||
-      prompt.toLowerCase().includes('story') ||
-      prompt.toLowerCase().includes('paragraph') ||
-      prompt.toLowerCase().includes('sentence')
-    )) {
+    } else if (
+      prompt.toLowerCase().includes('resume') &&
+      (prompt.toLowerCase().includes('continue') ||
+        prompt.toLowerCase().includes('from where') ||
+        prompt.toLowerCase().includes('text') ||
+        prompt.toLowerCase().includes('story') ||
+        prompt.toLowerCase().includes('paragraph') ||
+        prompt.toLowerCase().includes('sentence'))
+    ) {
       aiResponse = `I understand you want me to continue or resume the text you provided. However, I don't have access to the previous text you're referring to. 
 
 To help you continue your text, please:
