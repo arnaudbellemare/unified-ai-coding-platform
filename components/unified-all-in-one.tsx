@@ -910,12 +910,12 @@ What specific aspect would you like me to focus on or elaborate further?`
                   <Badge variant="outline">Provider: {result.summary?.provider || 'default'}</Badge>
                   <Badge variant="outline">
                     Cost: $
-                    {(
+                    {(parseFloat(
                       result.summary?.costSavings?.optimized ||
                       result.summary?.totalCost ||
-                      result.aiResponse?.cost ||
+                      (typeof result.aiResponse?.cost === 'object' ? result.aiResponse?.cost?.total : result.aiResponse?.cost) ||
                       0
-                    ).toFixed(6)}
+                    ) || 0).toFixed(6)}
                   </Badge>
                 </div>
 

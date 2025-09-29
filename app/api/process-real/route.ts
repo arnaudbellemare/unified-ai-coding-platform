@@ -9,7 +9,7 @@ import { RealX402PaymentService } from '@/lib/x402/real-x402-payments'
 // Intelligent fallback response generator
 async function generateIntelligentResponse(prompt: string, task: string, model: string) {
   let content = ''
-  
+
   if (prompt.toLowerCase().includes('feather') || prompt.toLowerCase().includes('sabrina')) {
     content = `"Feather" by Sabrina Carpenter is a 2023 dance-pop anthem about post-breakup empowerment and liberation. The song celebrates the freedom and relief one feels after ending a toxic relationship.
 
@@ -54,13 +54,22 @@ Need help with a specific section or industry?`
     const mathMatch = prompt.match(/(\d+)\s*([+\-*/])\s*(\d+)/)
     if (mathMatch) {
       const [, num1, op, num2] = mathMatch
-      const a = parseInt(num1), b = parseInt(num2)
+      const a = parseInt(num1),
+        b = parseInt(num2)
       let result = 0
       switch (op) {
-        case '+': result = a + b; break
-        case '-': result = a - b; break
-        case '*': result = a * b; break
-        case '/': result = b !== 0 ? a / b : Infinity; break
+        case '+':
+          result = a + b
+          break
+        case '-':
+          result = a - b
+          break
+        case '*':
+          result = a * b
+          break
+        case '/':
+          result = b !== 0 ? a / b : Infinity
+          break
       }
       content = `Calculation: ${a} ${op} ${b} = ${result}`
     } else {
@@ -88,7 +97,7 @@ What specific aspect would you like me to focus on or elaborate further?`
       prompt_tokens: Math.ceil(prompt.length / 4),
       completion_tokens: Math.ceil(content.length / 4),
       total_tokens: Math.ceil((prompt.length + content.length) / 4),
-    }
+    },
   }
 }
 
@@ -197,7 +206,7 @@ export async function POST(request: NextRequest) {
           temperature: 0.7,
         },
       )
-      
+
       // If response is empty or just whitespace, use intelligent fallback
       if (!aiResponse.content || aiResponse.content.trim().length < 10) {
         console.log('AI response is empty, using intelligent fallback...')
