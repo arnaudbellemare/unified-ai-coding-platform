@@ -58,7 +58,9 @@ export function MarketingLanding({
           />
         ) : (
           <div className="pointer-events-none absolute inset-0">
-            {/* Ambient spotlight (no rotation) */}
+            {/* Rayburst backdrop */}
+            <div className="absolute inset-0 bg-rayburst opacity-70" />
+            {/* Ambient spotlight */}
             <div className="absolute inset-0 bg-conic-spot opacity-35" />
             {/* Soft moving orbs for depth */}
             <div className="absolute -top-10 -left-6 w-[420px] h-[420px] bg-orb orb-1" />
@@ -104,47 +106,29 @@ export function MarketingLanding({
               </div>
             </div>
 
-            {/* Right: Flow pipeline (no circles) */}
+            {/* Right: Feature tiles (clean grid, no circles) */}
             <div className="hidden md:block">
               <div className="relative h-[420px]">
-                {/* Animated beams background for depth */}
-                <div className="absolute inset-0 bg-beams opacity-45" />
-                {/* Curved pipeline path */}
-                <svg className="absolute inset-0 parallax" data-depth="1" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
-                  <defs>
-                    <linearGradient id="pipeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="var(--c1)" />
-                      <stop offset="50%" stopColor="var(--c2)" />
-                      <stop offset="100%" stopColor="var(--c3)" />
-                    </linearGradient>
-                    <filter id="pipeGlow" x="-50%" y="-50%" width="200%" height="200%">
-                      <feGaussianBlur stdDeviation="1.2" result="coloredBlur" />
-                      <feMerge>
-                        <feMergeNode in="coloredBlur" />
-                        <feMergeNode in="SourceGraphic" />
-                      </feMerge>
-                    </filter>
-                  </defs>
-                  <path d="M 6 34 C 28 10, 72 10, 94 34 S 74 74, 50 82 S 22 86, 8 70" fill="none" stroke="url(#pipeGrad)" strokeWidth="1.6" filter="url(#pipeGlow)" strokeLinecap="round" />
-                </svg>
-                {/* Nodes along the pipeline */}
-                <div className="absolute left-[50%] top-[6%] -translate-x-1/2 animate-sway-1 parallax" data-depth="2">
-                  <MiniCard className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover:shadow-[0_16px_42px_rgba(0,0,0,0.14)] transition-shadow" icon={<Search className="h-4 w-4 text-blue-600" />} title="ACP Search" desc="Query & rank" />
-                </div>
-                <div className="absolute right-[6%] top-[40%] animate-sway-3 parallax" data-depth="2.4">
-                  <MiniCard className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover:shadow-[0_16px_42px_rgba(0,0,0,0.14)] transition-shadow" icon={<Sliders className="h-4 w-4 text-indigo-600" />} title="Optimizers" desc="Reduce tokens" />
-                </div>
-                <div className="absolute left-[8%] top-[56%] animate-sway-2 parallax" data-depth="3">
-                  <MiniCard className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover:shadow-[0_16px_42px_rgba(0,0,0,0.14)] transition-shadow" icon={<CreditCard className="h-4 w-4 text-emerald-600" />} title="x402" desc="Checkout" />
-                </div>
-                <div className="absolute left-[36%] bottom-[6%] animate-sway-2 parallax" data-depth="3.2">
-                  <MiniCard className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover:shadow-[0_16px_42px_rgba(0,0,0,0.14)] transition-shadow" icon={<Brain className="h-4 w-4 text-purple-600" />} title="AI" desc="OpenRouter" />
+                <div className="absolute inset-0 bg-beams opacity-30" />
+                <div className="grid grid-cols-2 gap-4 absolute inset-0 place-content-center">
+                  <FeatureTile icon={<Search className="h-5 w-5 text-blue-600" />} title="ACP Search" desc="Query & rank" />
+                  <FeatureTile icon={<Sliders className="h-5 w-5 text-indigo-600" />} title="Optimizers" desc="Reduce tokens" />
+                  <FeatureTile icon={<CreditCard className="h-5 w-5 text-emerald-600" />} title="x402" desc="Checkout" />
+                  <FeatureTile icon={<Brain className="h-5 w-5 text-purple-600" />} title="AI" desc="OpenRouter" />
                 </div>
               </div>
             </div>
           </div>
         </div>
         <style jsx>{`
+          .bg-rayburst {
+            background:
+              radial-gradient(closest-side, rgba(255,255,255,0.9), transparent 60%),
+              repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c1) 8%, transparent) 0 8deg, transparent 8deg 14deg);
+            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0,0,0,0.9), transparent 70%);
+            transform: translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), 0);
+            transition: transform 120ms ease-out;
+          }
           .bg-conic-spot {
             background:
               radial-gradient(54% 38% at 60% 40%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 60%),
@@ -164,11 +148,15 @@ export function MarketingLanding({
           }
           .bg-beams {
             background:
-              repeating-linear-gradient(120deg, color-mix(in srgb, var(--c1) 20%, transparent) 0 2px, transparent 2px 18px),
+              repeating-linear-gradient(
+                120deg,
+                color-mix(in srgb, var(--c1) 20%, transparent) 0 2px,
+                transparent 2px 18px
+              ),
               radial-gradient(60% 40% at 65% 35%, color-mix(in srgb, var(--c2) 12%, transparent), transparent 60%),
               radial-gradient(50% 30% at 35% 70%, color-mix(in srgb, var(--c3) 10%, transparent), transparent 60%);
             filter: blur(6px) saturate(115%);
-            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0,0,0,0.9), transparent 70%);
+            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0, 0, 0, 0.9), transparent 70%);
           }
           .bg-orb {
             border-radius: 9999px;
@@ -376,6 +364,20 @@ export function MarketingLanding({
           </Card>
         </div>
       </section>
+    </div>
+  )
+}
+
+function FeatureTile({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5">{icon}</div>
+        <div>
+          <div className="font-semibold text-black leading-tight">{title}</div>
+          <div className="text-sm text-gray-800 leading-snug">{desc}</div>
+        </div>
+      </div>
     </div>
   )
 }
