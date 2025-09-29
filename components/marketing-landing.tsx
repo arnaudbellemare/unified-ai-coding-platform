@@ -104,55 +104,41 @@ export function MarketingLanding({
               </div>
             </div>
 
-            {/* Right: Orbiting mini cards */}
+            {/* Right: Flow pipeline (no circles) */}
             <div className="hidden md:block">
               <div className="relative h-[420px]">
-                {/* Twin ellipse rings for structure (parallax) */}
+                {/* Animated beams background for depth */}
+                <div className="absolute inset-0 bg-beams opacity-45" />
+                {/* Curved pipeline path */}
                 <svg className="absolute inset-0 parallax" data-depth="1" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
-                  <ellipse cx="50" cy="50" rx="42" ry="28" fill="none" stroke="rgba(34,197,94,0.6)" strokeWidth="0.8" />
-                  <ellipse
-                    cx="50"
-                    cy="50"
-                    rx="34"
-                    ry="22"
-                    fill="none"
-                    stroke="rgba(34,197,94,0.35)"
-                    strokeWidth="0.6"
-                  />
+                  <defs>
+                    <linearGradient id="pipeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="var(--c1)" />
+                      <stop offset="50%" stopColor="var(--c2)" />
+                      <stop offset="100%" stopColor="var(--c3)" />
+                    </linearGradient>
+                    <filter id="pipeGlow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="1.2" result="coloredBlur" />
+                      <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <path d="M 6 34 C 28 10, 72 10, 94 34 S 74 74, 50 82 S 22 86, 8 70" fill="none" stroke="url(#pipeGrad)" strokeWidth="1.6" filter="url(#pipeGlow)" strokeLinecap="round" />
                 </svg>
-                <div className="absolute -inset-6 rounded-full opacity-25 bg-conic-spot" />
-
-                <div className="absolute left-1/2 top-[8%] -translate-x-1/2 animate-sway-1 parallax" data-depth="2">
-                  <MiniCard
-                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_14px_38px_rgba(0,0,0,0.12)] transition-shadow"
-                    icon={<Search className="h-4 w-4 text-blue-600" />}
-                    title="ACP Search"
-                    desc="Query & rank"
-                  />
+                {/* Nodes along the pipeline */}
+                <div className="absolute left-[50%] top-[6%] -translate-x-1/2 animate-sway-1 parallax" data-depth="2">
+                  <MiniCard className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover:shadow-[0_16px_42px_rgba(0,0,0,0.14)] transition-shadow" icon={<Search className="h-4 w-4 text-blue-600" />} title="ACP Search" desc="Query & rank" />
                 </div>
-                <div className="absolute left-[6%] top-[58%] animate-sway-2 parallax" data-depth="3">
-                  <MiniCard
-                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_14px_38px_rgba(0,0,0,0.12)] transition-shadow"
-                    icon={<CreditCard className="h-4 w-4 text-emerald-600" />}
-                    title="x402"
-                    desc="Checkout"
-                  />
+                <div className="absolute right-[6%] top-[40%] animate-sway-3 parallax" data-depth="2.4">
+                  <MiniCard className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover:shadow-[0_16px_42px_rgba(0,0,0,0.14)] transition-shadow" icon={<Sliders className="h-4 w-4 text-indigo-600" />} title="Optimizers" desc="Reduce tokens" />
                 </div>
-                <div className="absolute right-[6%] top-[46%] animate-sway-3 parallax" data-depth="2.6">
-                  <MiniCard
-                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_14px_38px_rgba(0,0,0,0.12)] transition-shadow"
-                    icon={<Sliders className="h-4 w-4 text-indigo-600" />}
-                    title="Optimizers"
-                    desc="Reduce tokens"
-                  />
+                <div className="absolute left-[8%] top-[56%] animate-sway-2 parallax" data-depth="3">
+                  <MiniCard className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover:shadow-[0_16px_42px_rgba(0,0,0,0.14)] transition-shadow" icon={<CreditCard className="h-4 w-4 text-emerald-600" />} title="x402" desc="Checkout" />
                 </div>
-                <div className="absolute left-[36%] bottom-[4%] animate-sway-2 parallax" data-depth="3.2">
-                  <MiniCard
-                    className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_14px_38px_rgba(0,0,0,0.12)] transition-shadow"
-                    icon={<Brain className="h-4 w-4 text-purple-600" />}
-                    title="AI"
-                    desc="OpenRouter"
-                  />
+                <div className="absolute left-[36%] bottom-[6%] animate-sway-2 parallax" data-depth="3.2">
+                  <MiniCard className="bg-white/95 backdrop-blur-md border-gray-100 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover:shadow-[0_16px_42px_rgba(0,0,0,0.14)] transition-shadow" icon={<Brain className="h-4 w-4 text-purple-600" />} title="AI" desc="OpenRouter" />
                 </div>
               </div>
             </div>
@@ -175,6 +161,14 @@ export function MarketingLanding({
               radial-gradient(40% 30% at 90% 60%, color-mix(in srgb, var(--c3) 22%, transparent), transparent 60%);
             filter: blur(2px) saturate(120%);
             animation: vrcl-float 14s ease-in-out infinite alternate;
+          }
+          .bg-beams {
+            background:
+              repeating-linear-gradient(120deg, color-mix(in srgb, var(--c1) 20%, transparent) 0 2px, transparent 2px 18px),
+              radial-gradient(60% 40% at 65% 35%, color-mix(in srgb, var(--c2) 12%, transparent), transparent 60%),
+              radial-gradient(50% 30% at 35% 70%, color-mix(in srgb, var(--c3) 10%, transparent), transparent 60%);
+            filter: blur(6px) saturate(115%);
+            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0,0,0,0.9), transparent 70%);
           }
           .bg-orb {
             border-radius: 9999px;
@@ -200,12 +194,29 @@ export function MarketingLanding({
             opacity: 0.45;
           }
           /* Parallax utility: use mouse offsets */
-          .parallax { transform: translate3d(calc(var(--mx, 0) * var(--depth, 1) * 6px), calc(var(--my, 0) * var(--depth, 1) * 6px), 0); transition: transform 120ms ease-out; }
-          .parallax[data-depth="1"] { --depth: 1; }
-          .parallax[data-depth="2"] { --depth: 2; }
-          .parallax[data-depth="2.6"] { --depth: 2.6; }
-          .parallax[data-depth="3"] { --depth: 3; }
-          .parallax[data-depth="3.2"] { --depth: 3.2; }
+          .parallax {
+            transform: translate3d(
+              calc(var(--mx, 0) * var(--depth, 1) * 6px),
+              calc(var(--my, 0) * var(--depth, 1) * 6px),
+              0
+            );
+            transition: transform 120ms ease-out;
+          }
+          .parallax[data-depth='1'] {
+            --depth: 1;
+          }
+          .parallax[data-depth='2'] {
+            --depth: 2;
+          }
+          .parallax[data-depth='2.6'] {
+            --depth: 2.6;
+          }
+          .parallax[data-depth='3'] {
+            --depth: 3;
+          }
+          .parallax[data-depth='3.2'] {
+            --depth: 3.2;
+          }
           .animate-gradient-text {
             background-size: 200% 200%;
             animation: gradientShift 8s ease infinite;
