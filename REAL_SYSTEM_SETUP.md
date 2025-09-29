@@ -1,8 +1,8 @@
-# 🚀 REAL SYSTEM SETUP - OpenRouter + x402 + Vercel Sandbox
+# 🚀 VERCLIBASE SETUP - OpenRouter + x402 + Vercel Sandbox
 
-## **REAL SYSTEM OVERVIEW**
+## **VERCLIBASE OVERVIEW**
 
-This is the **PRODUCTION-READY** unified AI system with:
+This is **Verclibase** - the **PRODUCTION-READY** AI coding platform with:
 - ✅ **Real OpenRouter API calls** with cost optimization
 - ✅ **x402 Protocol** for API call fee reimbursement
 - ✅ **Vercel Sandbox** deployment for testing
@@ -33,7 +33,7 @@ GITHUB_CLIENT_SECRET=your_github_client_secret
 DATABASE_URL=your_supabase_database_url
 
 # App Configuration
-NEXT_PUBLIC_APP_URL=https://unified-ai-coding-platform-abqg.vercel.app
+NEXT_PUBLIC_APP_URL=https://verclibase.vercel.app
 NODE_ENV=production
 ```
 
@@ -86,15 +86,15 @@ The system is configured for Vercel Sandbox with:
 ### **Testing Commands:**
 ```bash
 # Test real models API
-curl "https://unified-ai-coding-platform-abqg.vercel.app/api/models-real"
+curl "https://verclibase.vercel.app/api/models-real"
 
 # Test real AI processing
-curl -X POST "https://unified-ai-coding-platform-abqg.vercel.app/api/process-real" \
+curl -X POST "https://verclibase.vercel.app/api/process-real" \
   -H "Content-Type: application/json" \
   -d '{"prompt":"Hello world","task":"Test task","model":"gpt-4o-mini"}'
 
 # Test x402 reimbursement
-curl -X POST "https://unified-ai-coding-platform-abqg.vercel.app/api/process-real" \
+curl -X POST "https://verclibase.vercel.app/api/process-real" \
   -H "Content-Type: application/json" \
   -d '{"prompt":"Test prompt","task":"Test task","model":"gpt-4o-mini","userId":"test-user"}'
 ```
@@ -144,7 +144,7 @@ git push origin main
 ### **3. Test Real System:**
 ```bash
 # Visit your Vercel URL
-https://unified-ai-coding-platform-abqg.vercel.app
+https://verclibase.vercel.app
 
 # Click "🧪 Test System" to run comprehensive tests
 # Try AI processing - you'll see real costs and x402 reimbursement
@@ -200,4 +200,4 @@ https://unified-ai-coding-platform-abqg.vercel.app
 4. **Monitor Costs** and x402 reimbursements
 5. **Optimize** based on real usage data
 
-**Your unified AI system is now 100% real with actual OpenRouter API calls, x402 reimbursement, and Vercel Sandbox deployment!**
+**Verclibase is now 100% operational with actual OpenRouter API calls, x402 reimbursement, and Vercel Sandbox deployment!**

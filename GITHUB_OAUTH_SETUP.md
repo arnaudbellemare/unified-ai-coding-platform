@@ -5,9 +5,9 @@
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
 2. Click "New OAuth App"
 3. Fill in the details:
-   - **Application name**: `Unified AI Coding Platform`
-   - **Homepage URL**: `https://unified-ai-coding-platform.vercel.app`
-   - **Authorization callback URL**: `https://unified-ai-coding-platform.vercel.app/api/auth/github`
+   - **Application name**: `Verclibase`
+   - **Homepage URL**: `https://verclibase.vercel.app`
+   - **Authorization callback URL**: `https://verclibase.vercel.app/api/auth/github`
 4. Click "Register application"
 5. Copy the **Client ID** and **Client Secret**
 
@@ -22,13 +22,13 @@ In your Vercel dashboard:
 ```
 GITHUB_CLIENT_ID=your_github_client_id_here
 GITHUB_CLIENT_SECRET=your_github_client_secret_here
-NEXT_PUBLIC_APP_URL=https://unified-ai-coding-platform.vercel.app
+NEXT_PUBLIC_APP_URL=https://verclibase.vercel.app
 ```
 
 ## Step 3: Test the OAuth Flow
 
 Once configured, users can authenticate by visiting:
-`https://unified-ai-coding-platform.vercel.app/api/auth/github`
+`https://verclibase.vercel.app/api/auth/github`
 
 ## Current Status
 

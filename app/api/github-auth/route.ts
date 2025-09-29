@@ -46,13 +46,13 @@ export async function GET(request: NextRequest) {
                   <div class="step">
                     <strong>1. Create GitHub OAuth App:</strong><br>
                     Go to <a href="https://github.com/settings/developers" target="_blank">GitHub Developer Settings</a><br>
-                    Create new OAuth app with callback URL: <code>https://unified-ai-coding-platform.vercel.app/api/github-auth</code>
+                    Create new OAuth app with callback URL: <code>https://verclibase.vercel.app/api/github-auth</code>
                   </div>
                   <div class="step">
                     <strong>2. Add Environment Variables to Vercel:</strong><br>
                     <code>GITHUB_CLIENT_ID=your_client_id</code><br>
                     <code>GITHUB_CLIENT_SECRET=your_client_secret</code><br>
-                    <code>NEXT_PUBLIC_APP_URL=https://unified-ai-coding-platform.vercel.app</code>
+                    <code>NEXT_PUBLIC_APP_URL=https://verclibase.vercel.app</code>
                   </div>
                   <div class="step">
                     <strong>3. Redeploy your Vercel app</strong>
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
         )
       }
 
-      const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'https://unified-ai-coding-platform.vercel.app'}/api/github-auth`
+      const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'https://verclibase.vercel.app'}/api/github-auth`
       const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo,user&state=${Date.now()}`
 
       return NextResponse.redirect(githubAuthUrl)
@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
 
     // Create response with user data and token
     const response = NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'https://unified-ai-coding-platform.vercel.app'}/?github_connected=true`,
+      `${process.env.NEXT_PUBLIC_APP_URL || 'https://verclibase.vercel.app'}/?github_connected=true`,
     )
 
     // Set secure HTTP-only cookie with the access token
@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('GitHub OAuth error:', error)
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'https://unified-ai-coding-platform.vercel.app'}/?github_error=true`,
+      `${process.env.NEXT_PUBLIC_APP_URL || 'https://verclibase.vercel.app'}/?github_error=true`,
     )
   }
 }

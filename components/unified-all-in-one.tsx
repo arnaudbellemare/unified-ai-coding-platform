@@ -438,7 +438,7 @@ export default function UnifiedAllInOne() {
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2">
           <Sparkles className="h-8 w-8 text-blue-600" />
-          <h1 className="text-3xl font-bold">Unified AI System</h1>
+          <h1 className="text-3xl font-bold">Verclibase</h1>
         </div>
         <p className="text-gray-600">One system for optimization, AI generation, and cost management</p>
         <div className="flex justify-center">

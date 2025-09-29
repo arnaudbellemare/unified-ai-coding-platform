@@ -18,9 +18,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Coding Agent Template',
+  title: 'Verclibase',
   description:
-    'AI-powered coding agent template supporting Claude Code, OpenAI Codex CLI, Cursor CLI, and opencode with Vercel Sandbox',
+    'AI-powered coding platform with advanced optimization, x402 payments, and multi-model support',
 }
 
 export default function RootLayout({
