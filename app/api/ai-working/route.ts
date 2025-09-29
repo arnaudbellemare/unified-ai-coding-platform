@@ -9,12 +9,9 @@ export async function POST(request: NextRequest) {
       body = text ? JSON.parse(text) : {}
     } catch (parseError) {
       console.error('JSON parse error:', parseError)
-      return NextResponse.json(
-        { success: false, error: 'Invalid JSON format' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Invalid JSON format' }, { status: 400 })
     }
-    
+
     const { prompt, task, model = 'mistralai/mistral-7b-instruct:free' } = body
 
     console.log(`🚀 AI Working endpoint called with: "${prompt}"`)
