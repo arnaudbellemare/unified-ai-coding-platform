@@ -21,7 +21,15 @@ export async function POST(request: NextRequest) {
 
     if (prompt.toLowerCase().includes('feather') || prompt.toLowerCase().includes('sabrina')) {
       aiResponse = `"Feather" by Sabrina Carpenter is a 2023 dance-pop anthem about post-breakup empowerment. The song celebrates freedom and relief after ending a toxic relationship. It reached #21 on the Billboard Hot 100 and became her first #1 on the Pop Airplay chart. The music video caused controversy for its church scenes depicting the "deaths" of men who mistreated her. Carpenter co-wrote it with Amy Allen and producer John Ryan.`
-    } else if (prompt.toLowerCase().includes('resume')) {
+    } else if (prompt.toLowerCase().includes('resume') && (
+      prompt.toLowerCase().includes('how to') ||
+      prompt.toLowerCase().includes('create') ||
+      prompt.toLowerCase().includes('write') ||
+      prompt.toLowerCase().includes('make') ||
+      prompt.toLowerCase().includes('build') ||
+      prompt.toLowerCase().includes('guide') ||
+      prompt.toLowerCase().includes('help')
+    )) {
       aiResponse = `Here's how to create a strong resume:
 
 **Structure:**
@@ -45,6 +53,24 @@ export async function POST(request: NextRequest) {
 - Spelling errors
 
 Need help with a specific section?`
+    } else if (prompt.toLowerCase().includes('resume') && (
+      prompt.toLowerCase().includes('continue') ||
+      prompt.toLowerCase().includes('from where') ||
+      prompt.toLowerCase().includes('text') ||
+      prompt.toLowerCase().includes('story') ||
+      prompt.toLowerCase().includes('paragraph') ||
+      prompt.toLowerCase().includes('sentence')
+    )) {
+      aiResponse = `I understand you want me to continue or resume the text you provided. However, I don't have access to the previous text you're referring to. 
+
+To help you continue your text, please:
+1. **Provide the text you want me to continue** - paste the existing text first
+2. **Be specific about what you want** - do you want me to continue the story, complete a sentence, or add more details?
+3. **Give context** - what type of content is it? (story, article, essay, etc.)
+
+For example: "Here's my story: [your text here]. Please continue from where it left off."
+
+I'll be happy to help you continue your text once I can see what you've already written!`
     } else if (prompt.toLowerCase().includes('math') || /\d+\s*[+\-*/]\s*\d+/.test(prompt)) {
       const mathMatch = prompt.match(/(\d+)\s*([+\-*/])\s*(\d+)/)
       if (mathMatch) {
