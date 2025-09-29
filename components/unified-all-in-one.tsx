@@ -655,9 +655,16 @@ What specific aspect would you like me to focus on or elaborate further?`
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center">
-          <h1 className="text-6xl font-black tracking-wider text-black" style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
-            VERCLIBASE
-          </h1>
+            <h1
+              className="text-6xl font-black tracking-tight text-black"
+              style={{
+                fontFamily:
+                  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                letterSpacing: '-0.05em',
+              }}
+            >
+              Verclibase
+            </h1>
         </div>
         <p className="text-gray-600">One system for optimization, AI generation, and cost management</p>
         <div className="flex justify-center">
