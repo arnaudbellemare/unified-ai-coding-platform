@@ -2,7 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    // Handle potential empty or malformed JSON
+    let body
+    try {
+      const text = await request.text()
+      body = text ? JSON.parse(text) : {}
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError)
+      return NextResponse.json(
+        { success: false, error: 'Invalid JSON format' },
+        { status: 400 }
+      )
+    }
+    
     const { prompt, task, model = 'mistralai/mistral-7b-instruct:free' } = body
 
     if (!prompt || !task) {
@@ -16,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // Simulate a more realistic AI response based on the actual prompt
     let aiResponse = ''
-    
+
     if (prompt.toLowerCase().includes('feather') || prompt.toLowerCase().includes('sabrina carpenter')) {
       aiResponse = `Based on your prompt about "Feather" by Sabrina Carpenter:
 
@@ -64,15 +76,23 @@ Would you like me to help you write a specific section or review your current re
         const num1 = parseInt(mathMatch[1])
         const num2 = parseInt(mathMatch[2])
         const operator = prompt.match(/[+\-*/]/)?.[0]
-        
+
         let result = 0
         switch (operator) {
-          case '+': result = num1 + num2; break
-          case '-': result = num1 - num2; break
-          case '*': result = num1 * num2; break
-          case '/': result = num2 !== 0 ? num1 / num2 : Infinity; break
+          case '+':
+            result = num1 + num2
+            break
+          case '-':
+            result = num1 - num2
+            break
+          case '*':
+            result = num1 * num2
+            break
+          case '/':
+            result = num2 !== 0 ? num1 / num2 : Infinity
+            break
         }
-        
+
         aiResponse = `The calculation ${num1} ${operator} ${num2} = ${result}`
       } else {
         aiResponse = `I can help with math calculations! Please provide a simple equation like "2+2" or "10*5" and I'll calculate it for you.`

@@ -2,14 +2,26 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    // Handle potential empty or malformed JSON
+    let body
+    try {
+      const text = await request.text()
+      body = text ? JSON.parse(text) : {}
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError)
+      return NextResponse.json(
+        { success: false, error: 'Invalid JSON format' },
+        { status: 400 }
+      )
+    }
+    
     const { prompt, task, model = 'mistralai/mistral-7b-instruct:free' } = body
 
     console.log(`🚀 AI Working endpoint called with: "${prompt}"`)
 
     // Generate a smart response based on the prompt
     let aiResponse = ''
-    
+
     if (prompt.toLowerCase().includes('feather') || prompt.toLowerCase().includes('sabrina')) {
       aiResponse = `"Feather" by Sabrina Carpenter is a 2023 dance-pop anthem about post-breakup empowerment. The song celebrates freedom and relief after ending a toxic relationship. It reached #21 on the Billboard Hot 100 and became her first #1 on the Pop Airplay chart. The music video caused controversy for its church scenes depicting the "deaths" of men who mistreated her. Carpenter co-wrote it with Amy Allen and producer John Ryan.`
     } else if (prompt.toLowerCase().includes('resume')) {
@@ -40,13 +52,22 @@ Need help with a specific section?`
       const mathMatch = prompt.match(/(\d+)\s*([+\-*/])\s*(\d+)/)
       if (mathMatch) {
         const [, num1, op, num2] = mathMatch
-        const a = parseInt(num1), b = parseInt(num2)
+        const a = parseInt(num1),
+          b = parseInt(num2)
         let result = 0
         switch (op) {
-          case '+': result = a + b; break
-          case '-': result = a - b; break
-          case '*': result = a * b; break
-          case '/': result = b !== 0 ? a / b : Infinity; break
+          case '+':
+            result = a + b
+            break
+          case '-':
+            result = a - b
+            break
+          case '*':
+            result = a * b
+            break
+          case '/':
+            result = b !== 0 ? a / b : Infinity
+            break
         }
         aiResponse = `${a} ${op} ${b} = ${result}`
       } else {
@@ -84,9 +105,6 @@ Need help with a specific section?`
     })
   } catch (error) {
     console.error('AI Working API error:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to process request' },
-      { status: 500 },
-    )
+    return NextResponse.json({ success: false, error: 'Failed to process request' }, { status: 500 })
   }
 }

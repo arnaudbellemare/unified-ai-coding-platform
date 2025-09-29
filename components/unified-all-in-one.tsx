@@ -445,7 +445,7 @@ export default function UnifiedAllInOne() {
           console.log('Fallback API also failed, trying simple AI endpoint...')
           setCurrentStep('Using simple AI endpoint...')
           setProgress(70)
-          
+
           try {
             const workingResponse = await fetch('/api/ai-working', {
               method: 'POST',
@@ -456,13 +456,13 @@ export default function UnifiedAllInOne() {
                 model: selectedModel,
               }),
             })
-            
+
             if (workingResponse.ok) {
               const workingData = await workingResponse.json()
               if (workingData.success) {
                 setCurrentStep('Calculating results...')
                 setProgress(75)
-                
+
                 const finalResult: UnifiedResult = workingData
                 setProgress(100)
                 setCurrentStep('Complete!')
@@ -473,10 +473,10 @@ export default function UnifiedAllInOne() {
           } catch (workingError) {
             console.log('Working AI endpoint failed, using local fallback...')
           }
-          
+
           // Create an intelligent local fallback response
           let smartResponse = ''
-          
+
           if (prompt.toLowerCase().includes('feather') || prompt.toLowerCase().includes('sabrina')) {
             smartResponse = `"Feather" by Sabrina Carpenter is a 2023 dance-pop anthem about post-breakup empowerment and liberation. The song celebrates the freedom and relief one feels after ending a toxic relationship. 
 
@@ -521,13 +521,22 @@ Need help with a specific section or industry?`
             const mathMatch = prompt.match(/(\d+)\s*([+\-*/])\s*(\d+)/)
             if (mathMatch) {
               const [, num1, op, num2] = mathMatch
-              const a = parseInt(num1), b = parseInt(num2)
+              const a = parseInt(num1),
+                b = parseInt(num2)
               let result = 0
               switch (op) {
-                case '+': result = a + b; break
-                case '-': result = a - b; break
-                case '*': result = a * b; break
-                case '/': result = b !== 0 ? a / b : Infinity; break
+                case '+':
+                  result = a + b
+                  break
+                case '-':
+                  result = a - b
+                  break
+                case '*':
+                  result = a * b
+                  break
+                case '/':
+                  result = b !== 0 ? a / b : Infinity
+                  break
               }
               smartResponse = `Calculation: ${a} ${op} ${b} = ${result}`
             } else {
