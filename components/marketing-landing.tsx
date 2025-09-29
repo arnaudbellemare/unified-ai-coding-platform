@@ -286,7 +286,14 @@ export function MarketingLanding({
               transform: rotate(360deg);
             }
           }
-          @keyframes flowShift { 0% { background-position: 0% 50% } 100% { background-position: 100% 50% } }
+          @keyframes flowShift {
+            0% {
+              background-position: 0% 50%;
+            }
+            100% {
+              background-position: 100% 50%;
+            }
+          }
           @keyframes vrcl-float {
             0% {
               transform: translate3d(0, -6px, 0) scale(1.02);
@@ -296,9 +303,15 @@ export function MarketingLanding({
             }
           }
           @keyframes blobDrift {
-            0% { transform: translate3d(0,0,0) }
-            50% { transform: translate3d(-10px, 6px, 0) }
-            100% { transform: translate3d(6px, -4px, 0) }
+            0% {
+              transform: translate3d(0, 0, 0);
+            }
+            50% {
+              transform: translate3d(-10px, 6px, 0);
+            }
+            100% {
+              transform: translate3d(6px, -4px, 0);
+            }
           }
           @keyframes vrcl-orb-1 {
             0% {
@@ -360,6 +373,90 @@ export function MarketingLanding({
             }
           }
         `}</style>
+      </section>
+
+      {/* GEO Playbook (what matters + how to win) */}
+      <section className="max-w-6xl mx-auto px-6 py-8">
+        <div className="rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-md p-6 md:p-8 shadow-[0_10px_28px_rgba(0,0,0,0.06)]">
+          <h3 className="text-2xl md:text-3xl font-black tracking-tight text-black">GEO playbook for agentic commerce</h3>
+          <p className="mt-2 text-gray-900 max-w-4xl">
+            GEO is the AI equivalent of SEO. Agents recommend what is structured, reliable, and cost‑efficient. Below is
+            how brands become the first choice in agent results.
+          </p>
+
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">1) Ranking signals</div>
+                <ul className="mt-2 text-sm text-gray-900 space-y-1">
+                  <li>• Placement bias: top/middle rows win</li>
+                  <li>• Trust: +0.1 rating ≈ −67% price effect</li>
+                  <li>• Reviews: 2× count ≈ −37% price effect</li>
+                  <li>• Reliability: stock/ETA accuracy</li>
+                  <li>• Cost: price + optimization score</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">2) Technical framework</div>
+                <ul className="mt-2 text-sm text-gray-900 space-y-1">
+                  <li>• Product feed API with real‑time updates</li>
+                  <li>• Structured specs (schema‑like fields)</li>
+                  <li>• `/api/acp/search` for agent queries</li>
+                  <li>• `/api/acp/rank-explain` to debug signals</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">3) Sponsored placement (x402)</div>
+                <ul className="mt-2 text-sm text-gray-900 space-y-1">
+                  <li>• Budgets per search/click/checkout</li>
+                  <li>• Labelled “Sponsored”, auditable</li>
+                  <li>• Optimize with ROAS + placement multipliers</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">4) Content & data</div>
+                <ul className="mt-2 text-sm text-gray-900 space-y-1">
+                  <li>• Concise, factual descriptions</li>
+                  <li>• Full specs & attributes (machine‑readable)</li>
+                  <li>• Verified reviews & policy transparency</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">5) Metrics that matter</div>
+                <ul className="mt-2 text-sm text-gray-900 space-y-1">
+                  <li>• AIGVR, AECR visibility/citation</li>
+                  <li>• CER/SRS extraction & relevance</li>
+                  <li>• GEO score, impressions → checkout, ROAS</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-gray-200 bg-white">
+              <CardContent className="p-5">
+                <div className="font-semibold text-black">6) Future‑proofing</div>
+                <ul className="mt-2 text-sm text-gray-900 space-y-1">
+                  <li>• Clean data architecture</li>
+                  <li>• Real‑time inventory/pricing</li>
+                  <li>• Adapters for new agent platforms</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </section>
 
       {/* Agentic e‑Commerce Advantage (GEO) */}
