@@ -88,46 +88,70 @@ export function AcpDemo() {
   }
 
   return (
-    <Card>
+    <Card className="bg-white border-gray-200">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">Agentic Commerce Demo (ACP + x402)</CardTitle>
+        <CardTitle className="flex items-center gap-2 text-black">Agentic Commerce Demo (ACP + x402)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex gap-2">
           <input
-            className="flex-1 border rounded px-3 py-2 text-sm"
+            className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm bg-white text-black placeholder-gray-500"
             placeholder="Search products (e.g., blue shirt)"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <Button onClick={search} disabled={loading}>
+          <Button onClick={search} disabled={loading} className="bg-blue-600 text-white hover:bg-blue-700">
             {loading ? 'Searching...' : 'Search'}
           </Button>
         </div>
 
-        {message && <div className="text-sm text-gray-700">{message}</div>}
+        {message && <div className="text-sm text-blue-700">{message}</div>}
 
         <div className="space-y-2">
           {offers.slice(0, 6).map((o) => (
-            <div key={o.variantId} className="flex items-center justify-between border rounded p-3 bg-white shadow-sm">
+            <div
+              key={o.variantId}
+              className="flex items-center justify-between border border-gray-200 rounded-lg p-3 bg-white shadow-sm"
+            >
               <div className="flex items-center gap-3">
                 <div className="text-sm">
-                  <div className="font-semibold text-black">{o.title}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="font-semibold text-black">{o.title}</div>
+                    {typeof o.score === 'number' && (
+                      <Badge variant="outline" className="text-xs">GEO {Math.round(o.score)}</Badge>
+                    )}
+                    {o.sponsored && (
+                      <Badge className="bg-emerald-600 text-white text-xs">Sponsored</Badge>
+                    )}
+                  </div>
                   <div className="text-xs text-gray-800">
                     ${o.effectivePrice.toFixed(2)} {o.currency} • {o.inStock ? 'In stock' : 'Out of stock'}
                     {typeof o.etaDays === 'number' ? ` • ETA ${o.etaDays}d` : ''}
-                    {o.label ? ' • ' : ''}
-                    {o.label && <Badge variant="outline">{o.label}</Badge>}
+                    {o.merchantName ? ` • ${o.merchantName}` : ''}
                   </div>
+                  {o.reasons && o.reasons.length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {o.reasons.slice(0, 3).map((r) => (
+                        <Badge key={r.key} variant="outline" className="text-[10px]">
+                          {r.key}: {Math.round(r.value * 100)}%
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
-              <Button size="sm" onClick={() => checkout(o)} disabled={!o.inStock}>
+              <Button
+                size="sm"
+                onClick={() => checkout(o)}
+                disabled={!o.inStock}
+                className="bg-blue-600 text-white hover:bg-blue-700"
+              >
                 Checkout
               </Button>
             </div>
           ))}
           {offers.length === 0 && !loading && (
-            <div className="text-sm text-gray-500">No results yet. Try another query.</div>
+            <div className="text-sm text-gray-700">No results yet. Try another query.</div>
           )}
         </div>
       </CardContent>
