@@ -81,8 +81,11 @@ export function MarketingLanding({
             <div>
               <div
                 aria-label="verclibase on base"
-                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25),_0_6px_18px_rgba(0,0,0,0.12)] animate-fade-in border border-white/20"
-                style={{ background: 'linear-gradient(90deg, var(--c1), var(--c2))' }}
+                className="inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 text-xs font-semibold leading-none tracking-tight text-white backdrop-blur-sm ring-1 ring-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),_0_8px_20px_rgba(0,0,0,0.12)] animate-fade-in transition-[background,box-shadow,transform] duration-300 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.35),_0_12px_28px_rgba(0,0,0,0.16)] hover:-translate-y-0.5"
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0) 60%), linear-gradient(90deg, var(--c1), var(--c2))',
+                }}
               >
                 verclibase <span className="opacity-90">on base</span>
               </div>
