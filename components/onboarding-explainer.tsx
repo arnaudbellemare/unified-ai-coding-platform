@@ -24,8 +24,8 @@ const onboardingSteps: OnboardingStep[] = [
       'Email-based wallet creation (no crypto knowledge needed)',
       'Connect MetaMask, WalletConnect, or other wallets',
       'Automatic Base network configuration',
-      'Secure private key management'
-    ]
+      'Secure private key management',
+    ],
   },
   {
     id: 'pay-per-use',
@@ -36,8 +36,8 @@ const onboardingSteps: OnboardingStep[] = [
       'Pay only when you run AI tasks',
       'Transparent pricing with real-time cost display',
       'Automatic cost optimization saves you money',
-      'x402 payment protocol for instant settlements'
-    ]
+      'x402 payment protocol for instant settlements',
+    ],
   },
   {
     id: 'optimization',
@@ -48,8 +48,8 @@ const onboardingSteps: OnboardingStep[] = [
       'Up to 20% cost reduction through prompt optimization',
       'Multiple optimization engines (MIT, Google, Stanford research)',
       'Real-time cost comparison and recommendations',
-      'Automatic model selection for best price/performance'
-    ]
+      'Automatic model selection for best price/performance',
+    ],
   },
   {
     id: 'sandbox',
@@ -60,9 +60,9 @@ const onboardingSteps: OnboardingStep[] = [
       'One-click deployment to Vercel sandbox',
       'Real GitHub integration for code management',
       'Live testing environment with custom domains',
-      'Automatic CI/CD pipeline setup'
-    ]
-  }
+      'Automatic CI/CD pipeline setup',
+    ],
+  },
 ]
 
 export function OnboardingExplainer() {
@@ -101,33 +101,25 @@ export function OnboardingExplainer() {
               <h3 className="font-semibold mb-2 flex items-center gap-2">
                 <Wallet className="h-4 w-4 text-blue-600" /> Connect Your Wallet
               </h3>
-              <p className="text-sm text-gray-600">
-                Click "Connect Wallet" to get started with AI processing
-              </p>
+              <p className="text-sm text-gray-600">Click "Connect Wallet" to get started with AI processing</p>
             </div>
             <div className="p-4 border rounded-lg">
               <h3 className="font-semibold mb-2 flex items-center gap-2">
                 <Code className="h-4 w-4 text-blue-600" /> Try AI Processing
               </h3>
-              <p className="text-sm text-gray-600">
-                Enter a prompt and see real-time cost optimization in action
-              </p>
+              <p className="text-sm text-gray-600">Enter a prompt and see real-time cost optimization in action</p>
             </div>
             <div className="p-4 border rounded-lg">
               <h3 className="font-semibold mb-2 flex items-center gap-2">
                 <Code className="h-4 w-4 text-purple-600" /> Deploy to Sandbox
               </h3>
-              <p className="text-sm text-gray-600">
-                Test your code in a real Vercel deployment environment
-              </p>
+              <p className="text-sm text-gray-600">Test your code in a real Vercel deployment environment</p>
             </div>
             <div className="p-4 border rounded-lg">
               <h3 className="font-semibold mb-2 flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-emerald-600" /> Pay Only What You Use
               </h3>
-              <p className="text-sm text-gray-600">
-                No subscriptions - pay per AI task with automatic optimization
-              </p>
+              <p className="text-sm text-gray-600">No subscriptions - pay per AI task with automatic optimization</p>
             </div>
           </div>
           <div className="text-center">
@@ -161,9 +153,7 @@ export function OnboardingExplainer() {
         {/* Current Step */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center">
-            <div className="p-4 bg-blue-100 rounded-full">
-              {currentStepData.icon}
-            </div>
+            <div className="p-4 bg-blue-100 rounded-full">{currentStepData.icon}</div>
           </div>
           <div>
             <h3 className="text-xl font-semibold">{currentStepData.title}</h3>
@@ -209,7 +199,7 @@ export function OnboardingExplainer() {
             <span className="text-gray-900">{Math.round(((currentStep + 1) / onboardingSteps.length) * 100)}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${((currentStep + 1) / onboardingSteps.length) * 100}%` }}
             />
@@ -218,11 +208,7 @@ export function OnboardingExplainer() {
 
         {/* Navigation */}
         <div className="flex justify-between">
-          <Button 
-            onClick={prevStep} 
-            variant="outline" 
-            disabled={currentStep === 0}
-          >
+          <Button onClick={prevStep} variant="outline" disabled={currentStep === 0}>
             Previous
           </Button>
           <Button onClick={nextStep} className="flex items-center gap-2">

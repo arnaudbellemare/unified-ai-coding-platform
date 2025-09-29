@@ -13,9 +13,9 @@ export function ProductionSetupGuide() {
   const copyToClipboard = async (text: string, itemId: string) => {
     try {
       await navigator.clipboard.writeText(text)
-      setCopiedItems(prev => new Set([...prev, itemId]))
+      setCopiedItems((prev) => new Set([...prev, itemId]))
       setTimeout(() => {
-        setCopiedItems(prev => {
+        setCopiedItems((prev) => {
           const newSet = new Set(prev)
           newSet.delete(itemId)
           return newSet
@@ -27,17 +27,8 @@ export function ProductionSetupGuide() {
   }
 
   const CopyButton = ({ text, itemId }: { text: string; itemId: string }) => (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={() => copyToClipboard(text, itemId)}
-      className="ml-2"
-    >
-      {copiedItems.has(itemId) ? (
-        <Check className="h-4 w-4 text-green-500" />
-      ) : (
-        <Copy className="h-4 w-4" />
-      )}
+    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(text, itemId)} className="ml-2">
+      {copiedItems.has(itemId) ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
     </Button>
   )
 
@@ -45,53 +36,53 @@ export function ProductionSetupGuide() {
     {
       key: 'NEXT_PUBLIC_PRIVY_APP_ID',
       value: 'cmfow1b160026l60btyr8fjp5',
-      description: 'Your Privy App ID for wallet integration'
+      description: 'Your Privy App ID for wallet integration',
     },
     {
       key: 'PRIVY_APP_SECRET',
       value: '65w5PQjrQasjEr3A4ffzbvrZMsj6Hve9bNxLR31yeXRoTAJrweTBeZLiqnGTGwLGzQjB3ezYDZ6MWv57dqUn83HF',
-      description: 'Your Privy App Secret'
+      description: 'Your Privy App Secret',
     },
     {
       key: 'OPENROUTER_API_KEY',
       value: 'your_openrouter_api_key_here',
-      description: 'OpenRouter API key for AI model access'
+      description: 'OpenRouter API key for AI model access',
     },
     {
       key: 'X402_PRODUCTION_PRIVATE_KEY',
       value: 'your_base_mainnet_wallet_private_key_here',
-      description: 'Base mainnet wallet private key for x402 payments'
+      description: 'Base mainnet wallet private key for x402 payments',
     },
     {
       key: 'NEXT_PUBLIC_X402_PRODUCTION_RECIPIENT_ADDRESS',
       value: 'your_base_mainnet_recipient_address_here',
-      description: 'Your Base mainnet wallet address to receive payments'
+      description: 'Your Base mainnet wallet address to receive payments',
     },
     {
       key: 'DATABASE_URL',
       value: 'your_supabase_database_url_here',
-      description: 'Supabase PostgreSQL database connection string'
+      description: 'Supabase PostgreSQL database connection string',
     },
     {
       key: 'GITHUB_CLIENT_ID',
       value: 'your_github_client_id',
-      description: 'GitHub OAuth Client ID'
+      description: 'GitHub OAuth Client ID',
     },
     {
       key: 'GITHUB_CLIENT_SECRET',
       value: 'your_github_client_secret',
-      description: 'GitHub OAuth Client Secret'
+      description: 'GitHub OAuth Client Secret',
     },
     {
       key: 'NEXTAUTH_SECRET',
       value: 'your_nextauth_secret',
-      description: 'NextAuth.js secret for session encryption'
+      description: 'NextAuth.js secret for session encryption',
     },
     {
       key: 'NEXTAUTH_URL',
       value: 'https://your-app-name.vercel.app',
-      description: 'Your production Vercel app URL'
-    }
+      description: 'Your production Vercel app URL',
+    },
   ]
 
   const deploymentSteps = [
@@ -115,7 +106,7 @@ export function ProductionSetupGuide() {
             </div>
           ))}
         </div>
-      )
+      ),
     },
     {
       title: '2. Configure Base Mainnet',
@@ -134,7 +125,7 @@ export function ProductionSetupGuide() {
             Your app will automatically use Base mainnet for production deployments.
           </p>
         </div>
-      )
+      ),
     },
     {
       title: '3. Enable x402 Payment Protocol',
@@ -154,7 +145,7 @@ export function ProductionSetupGuide() {
             Users pay only for the AI processing they actually use, with automatic optimization to reduce costs.
           </p>
         </div>
-      )
+      ),
     },
     {
       title: '4. Deploy to Vercel',
@@ -177,8 +168,8 @@ export function ProductionSetupGuide() {
             </a>
           </Button>
         </div>
-      )
-    }
+      ),
+    },
   ]
 
   return (
@@ -217,9 +208,7 @@ export function ProductionSetupGuide() {
                   <CardTitle className="text-lg">{step.title}</CardTitle>
                   <CardDescription>{step.description}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  {step.content}
-                </CardContent>
+                <CardContent>{step.content}</CardContent>
               </Card>
             ))}
           </div>
@@ -249,24 +238,24 @@ export function ProductionSetupGuide() {
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="text-center p-4 border rounded-lg">
                   <h4 className="font-semibold text-green-600">Free Tier</h4>
-                  <p className="text-sm text-gray-700 mt-1">
-                    Use free models (Mistral, Llama, Phi) with optimization
-                  </p>
-                  <Badge variant="outline" className="mt-2">$0.00</Badge>
+                  <p className="text-sm text-gray-700 mt-1">Use free models (Mistral, Llama, Phi) with optimization</p>
+                  <Badge variant="outline" className="mt-2">
+                    $0.00
+                  </Badge>
                 </div>
                 <div className="text-center p-4 border rounded-lg">
                   <h4 className="font-semibold text-blue-600">Pay Per Use</h4>
-                  <p className="text-sm text-gray-700 mt-1">
-                    Premium models with automatic cost optimization
-                  </p>
-                  <Badge variant="outline" className="mt-2">$0.001-$0.05</Badge>
+                  <p className="text-sm text-gray-700 mt-1">Premium models with automatic cost optimization</p>
+                  <Badge variant="outline" className="mt-2">
+                    $0.001-$0.05
+                  </Badge>
                 </div>
                 <div className="text-center p-4 border rounded-lg">
                   <h4 className="font-semibold text-purple-600">Sandbox Deploy</h4>
-                  <p className="text-sm text-gray-700 mt-1">
-                    Deploy to Vercel sandbox for testing
-                  </p>
-                  <Badge variant="outline" className="mt-2">Included</Badge>
+                  <p className="text-sm text-gray-700 mt-1">Deploy to Vercel sandbox for testing</p>
+                  <Badge variant="outline" className="mt-2">
+                    Included
+                  </Badge>
                 </div>
               </div>
             </CardContent>

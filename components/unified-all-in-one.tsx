@@ -426,7 +426,10 @@ export default function UnifiedAllInOne() {
           console.log('Real process API timed out, trying fallback...')
           response = null
         } else {
-          throw error
+          console.error('❌ Process-real API fetch failed:', error)
+          // Provide more specific error message
+          const errorMessage = error instanceof Error ? error.message : 'Unknown fetch error'
+          throw new Error(`Network error: ${errorMessage}. This might be due to missing environment variables on Vercel.`)
         }
       }
 
@@ -622,7 +625,8 @@ What specific aspect would you like me to focus on or elaborate further?`
         data = JSON.parse(responseText)
       } catch (jsonError) {
         console.error('JSON parsing error:', jsonError)
-        throw new Error('Invalid response format from server')
+        console.error('Response text:', await response.text())
+        throw new Error(`Invalid response format from server: ${jsonError instanceof Error ? jsonError.message : 'Unknown error'}`)
       }
 
       if (!data.success) {
@@ -674,7 +678,7 @@ What specific aspect would you like me to focus on or elaborate further?`
         <p className="text-gray-600">One system for optimization, AI generation, and cost management</p>
         <div className="flex justify-center gap-4">
           <GitHubAuthButton />
-          <Button 
+          <Button
             onClick={() => setShowProductionGuide(!showProductionGuide)}
             variant="outline"
             className="border-gray-300 text-gray-900 hover:bg-gray-100"
@@ -689,16 +693,14 @@ What specific aspect would you like me to focus on or elaborate further?`
         <div className="mb-8">
           <OnboardingExplainer />
           <div className="text-center mt-4">
-            <Button 
-              onClick={() => setShowOnboarding(false)} 
+            <Button
+              onClick={() => setShowOnboarding(false)}
               variant="outline"
               className="mr-2 border-gray-300 text-gray-900 hover:bg-gray-100"
             >
               Skip Tutorial
             </Button>
-            <Button onClick={() => setShowOnboarding(false)}>
-              Start Using VERCLIBASE
-            </Button>
+            <Button onClick={() => setShowOnboarding(false)}>Start Using VERCLIBASE</Button>
           </div>
         </div>
       )}
@@ -916,7 +918,8 @@ What specific aspect would you like me to focus on or elaborate further?`
                       ))}
                     </div>
                     <div className="text-sm text-gray-800">
-                      Selected: <span className="font-medium text-gray-900">{result.summary.selectedEngine}</span> engine
+                      Selected: <span className="font-medium text-gray-900">{result.summary.selectedEngine}</span>{' '}
+                      engine
                     </div>
                   </div>
                 )}

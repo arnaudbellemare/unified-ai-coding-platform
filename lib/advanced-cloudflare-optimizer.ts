@@ -4,7 +4,7 @@
  * - KV Cache Compression (up to 64x memory reduction)
  * - Speculative Decoding (40-70% speed improvements)
  * - Code Mode enhancements
- * 
+ *
  * Based on:
  * - https://blog.cloudflare.com/making-workers-ai-faster/
  * - https://blog.cloudflare.com/code-mode/
@@ -53,11 +53,15 @@ export class AdvancedCloudflareOptimizer {
 
     // Step 2: Apply Speculative Decoding
     const speculativeOptimized = this.applySpeculativeDecoding(kvCompressed)
-    console.log(`🔮 Speculative: ${Math.ceil(kvCompressed.length / 4)} → ${Math.ceil(speculativeOptimized.length / 4)} tokens`)
+    console.log(
+      `🔮 Speculative: ${Math.ceil(kvCompressed.length / 4)} → ${Math.ceil(speculativeOptimized.length / 4)} tokens`,
+    )
 
     // Step 3: Apply Code Mode enhancements
     const codeModeOptimized = this.applyCodeModeEnhancement(speculativeOptimized, taskType)
-    console.log(`💻 Code Mode: ${Math.ceil(speculativeOptimized.length / 4)} → ${Math.ceil(codeModeOptimized.length / 4)} tokens`)
+    console.log(
+      `💻 Code Mode: ${Math.ceil(speculativeOptimized.length / 4)} → ${Math.ceil(codeModeOptimized.length / 4)} tokens`,
+    )
 
     // Calculate metrics
     const originalTokens = Math.ceil(prompt.length / 4)
@@ -76,18 +80,18 @@ export class AdvancedCloudflareOptimizer {
       kvCacheCompression: {
         compressionRatio: originalTokens / optimizedTokens,
         performanceRetention: 95,
-        memoryReduction: Math.min(64, (originalTokens - optimizedTokens) / originalTokens * 100)
+        memoryReduction: Math.min(64, ((originalTokens - optimizedTokens) / originalTokens) * 100),
       },
       speculativeDecoding: {
         speedImprovement: this.calculateSpeedImprovement(prompt, codeModeOptimized),
         patternMatches: this.countPatternMatches(prompt),
-        predictionAccuracy: 92
+        predictionAccuracy: 92,
       },
       codeModeEnhancement: {
         apiConversion: true,
         typeScriptOptimization: true,
-        toolHandlingImprovement: 150 // 150% improvement as mentioned in blog
-      }
+        toolHandlingImprovement: 150, // 150% improvement as mentioned in blog
+      },
     }
   }
 
@@ -100,14 +104,56 @@ export class AdvancedCloudflareOptimizer {
 
     // Low-attention words (similar to KV cache eviction)
     const lowAttentionWords = [
-      'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
-      'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did',
-      'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'shall', 'very', 'really',
-      'quite', 'rather', 'somewhat', 'pretty', 'fairly', 'extremely', 'highly', 'thoroughly'
+      'the',
+      'a',
+      'an',
+      'and',
+      'or',
+      'but',
+      'in',
+      'on',
+      'at',
+      'to',
+      'for',
+      'of',
+      'with',
+      'by',
+      'is',
+      'are',
+      'was',
+      'were',
+      'be',
+      'been',
+      'being',
+      'have',
+      'has',
+      'had',
+      'do',
+      'does',
+      'did',
+      'will',
+      'would',
+      'could',
+      'should',
+      'may',
+      'might',
+      'must',
+      'can',
+      'shall',
+      'very',
+      'really',
+      'quite',
+      'rather',
+      'somewhat',
+      'pretty',
+      'fairly',
+      'extremely',
+      'highly',
+      'thoroughly',
     ]
 
     // Remove low-attention words (like KV cache eviction)
-    lowAttentionWords.forEach(word => {
+    lowAttentionWords.forEach((word) => {
       const regex = new RegExp(`\\b${word}\\b`, 'gi')
       optimized = optimized.replace(regex, '').trim()
     })
@@ -156,7 +202,7 @@ export class AdvancedCloudflareOptimizer {
       [/machine\s+learning\s+algorithms/gi, 'ML algorithms'],
       [/artificial\s+intelligence/gi, 'AI'],
       [/natural\s+language\s+processing/gi, 'NLP'],
-      [/neural\s+networks/gi, 'neural nets']
+      [/neural\s+networks/gi, 'neural nets'],
     ]
 
     patternPredictions.forEach(([pattern, replacement]) => {
@@ -203,7 +249,7 @@ export class AdvancedCloudflareOptimizer {
 
   private initializeCommonSequences(): void {
     // Common sequences for speculative decoding
-    this.commonSequences.set('knock knock', ['who\'s there?'])
+    this.commonSequences.set('knock knock', ["who's there?"])
     this.commonSequences.set('hello world', ['program', 'example', 'code'])
     this.commonSequences.set('machine learning', ['algorithms', 'models', 'training'])
     this.commonSequences.set('artificial intelligence', ['AI', 'ML', 'neural networks'])
@@ -216,7 +262,7 @@ export class AdvancedCloudflareOptimizer {
 
   private calculateThroughputImprovement(tokenReduction: number): number {
     // Based on Cloudflare's 3.44x and 5.18x improvements
-    const baseImprovement = 1 + (tokenReduction / 100)
+    const baseImprovement = 1 + tokenReduction / 100
     return Math.min(5.18, baseImprovement * 2) // Cap at 5.18x
   }
 
@@ -224,7 +270,7 @@ export class AdvancedCloudflareOptimizer {
     const originalLength = original.length
     const optimizedLength = optimized.length
     const reduction = (originalLength - optimizedLength) / originalLength
-    
+
     // Base improvement from length reduction, capped at 70% like Cloudflare
     return Math.min(70, reduction * 100)
   }

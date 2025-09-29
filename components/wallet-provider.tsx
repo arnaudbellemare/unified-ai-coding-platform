@@ -23,9 +23,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
   if (skipPrivy) {
     return (
       <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={config}>
-          {children}
-        </WagmiProvider>
+        <WagmiProvider config={config}>{children}</WagmiProvider>
       </QueryClientProvider>
     )
   }

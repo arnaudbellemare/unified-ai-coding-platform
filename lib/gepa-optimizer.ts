@@ -193,23 +193,39 @@ export class GEPACostOptimizer {
     const technique = optimizationTechniques[variationIndex % optimizationTechniques.length]
     const optimized = technique(originalPrompt)
 
-    console.log(`🧬 GEPA variation ${variationIndex}: ${Math.ceil(originalPrompt.length / 4)} → ${Math.ceil(optimized.length / 4)} tokens`)
+    console.log(
+      `🧬 GEPA variation ${variationIndex}: ${Math.ceil(originalPrompt.length / 4)} → ${Math.ceil(optimized.length / 4)} tokens`,
+    )
     return optimized
   }
 
   private removeFillerWords(prompt: string): string {
     const fillerWords = [
-      'please', 'could you', 'would you', 'can you', 'i need you to', 'i want you to',
-      'very', 'really', 'quite', 'extremely', 'highly', 'thoroughly', 'comprehensively',
-      'in detail', 'in great detail', 'with examples', 'with specific examples'
+      'please',
+      'could you',
+      'would you',
+      'can you',
+      'i need you to',
+      'i want you to',
+      'very',
+      'really',
+      'quite',
+      'extremely',
+      'highly',
+      'thoroughly',
+      'comprehensively',
+      'in detail',
+      'in great detail',
+      'with examples',
+      'with specific examples',
     ]
-    
+
     let optimized = prompt
-    fillerWords.forEach(word => {
+    fillerWords.forEach((word) => {
       const regex = new RegExp(`\\b${word}\\b`, 'gi')
       optimized = optimized.replace(regex, '').trim()
     })
-    
+
     // Clean up multiple spaces
     optimized = optimized.replace(/\s+/g, ' ').trim()
     return optimized
@@ -217,7 +233,7 @@ export class GEPACostOptimizer {
 
   private compressRedundancy(prompt: string): string {
     let optimized = prompt
-    
+
     // Remove redundant phrases
     const redundantPatterns = [
       [/explain\s+in\s+detail/gi, 'explain'],
@@ -227,28 +243,62 @@ export class GEPACostOptimizer {
       [/write\s+a\s+detailed\s+explanation/gi, 'explain'],
       [/create\s+a\s+comprehensive\s+guide/gi, 'explain'],
     ]
-    
+
     redundantPatterns.forEach(([pattern, replacement]) => {
       optimized = optimized.replace(pattern, replacement)
     })
-    
+
     // Compress similar verbs
     optimized = optimized.replace(/\b(explain|describe|write|create|provide|give)\s+/gi, 'explain ')
-    
+
     return optimized.trim()
   }
 
   private extractKeyTerms(prompt: string): string {
     const words = prompt.split(/\s+/)
-    const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should']
-    
-    const keyTerms = words.filter(word => {
+    const stopWords = [
+      'the',
+      'a',
+      'an',
+      'and',
+      'or',
+      'but',
+      'in',
+      'on',
+      'at',
+      'to',
+      'for',
+      'of',
+      'with',
+      'by',
+      'is',
+      'are',
+      'was',
+      'were',
+      'be',
+      'been',
+      'being',
+      'have',
+      'has',
+      'had',
+      'do',
+      'does',
+      'did',
+      'will',
+      'would',
+      'could',
+      'should',
+    ]
+
+    const keyTerms = words.filter((word) => {
       const lower = word.toLowerCase()
-      return !stopWords.includes(lower) && 
-             !lower.endsWith('ly') && // Remove adverbs
-             word.length > 2
+      return (
+        !stopWords.includes(lower) &&
+        !lower.endsWith('ly') && // Remove adverbs
+        word.length > 2
+      )
     })
-    
+
     // Take top 60% of key terms
     const targetLength = Math.ceil(keyTerms.length * 0.6)
     return keyTerms.slice(0, targetLength).join(' ')
@@ -256,18 +306,18 @@ export class GEPACostOptimizer {
 
   private convertToDirectInstructions(prompt: string): string {
     let optimized = prompt
-    
+
     // Remove politeness markers
     optimized = optimized.replace(/^(please|could you|would you|can you|i need you to|i want you to)\s+/gi, '')
-    
+
     // Convert questions to commands
     optimized = optimized.replace(/\?$/, '')
-    
+
     // Remove unnecessary context
     optimized = optimized.replace(/act as\s+an?\s+\w+/gi, '')
     optimized = optimized.replace(/you are\s+a\s+\w+/gi, '')
     optimized = optimized.replace(/with\s+\d+\s+years?\s+of\s+experience/gi, '')
-    
+
     return optimized.trim()
   }
 

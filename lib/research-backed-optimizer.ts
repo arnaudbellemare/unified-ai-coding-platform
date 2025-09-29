@@ -230,13 +230,15 @@ export class ResearchBackedOptimizer {
     if (Math.ceil(optimized.length / 4) > targetTokens) {
       // Extract key nouns and verbs, remove adjectives and adverbs
       const words = optimized.split(/\s+/)
-      const keyWords = words.filter(word => {
+      const keyWords = words.filter((word) => {
         const lower = word.toLowerCase()
-        return !['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'].includes(lower) &&
-               !lower.endsWith('ly') && // Remove adverbs
-               word.length > 2
+        return (
+          !['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'].includes(lower) &&
+          !lower.endsWith('ly') && // Remove adverbs
+          word.length > 2
+        )
       })
-      
+
       if (keyWords.length > targetTokens / 2) {
         optimized = keyWords.slice(0, Math.ceil(targetTokens / 2)).join(' ')
       }
@@ -259,7 +261,7 @@ export class ResearchBackedOptimizer {
     ]
 
     let zeroShotPrompt = prompt
-    fewShotPatterns.forEach(pattern => {
+    fewShotPatterns.forEach((pattern) => {
       zeroShotPrompt = zeroShotPrompt.replace(pattern, '').trim()
     })
 
