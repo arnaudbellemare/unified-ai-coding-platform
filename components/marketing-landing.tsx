@@ -64,6 +64,8 @@ export function MarketingLanding({
             <div className="absolute -inset-[8%] bg-rayburst-rotating opacity-35" />
             {/* Ambient spotlight */}
             <div className="absolute inset-0 bg-conic-spot opacity-35" />
+            {/* Interactive cursor spotlight */}
+            <div className="absolute inset-0 bg-cursor-spot" />
             {/* Soft moving orbs for depth */}
             <div className="absolute -top-10 -left-6 w-[420px] h-[420px] bg-orb orb-1" />
             <div className="absolute bottom-[-40px] right-[-20px] w-[380px] h-[380px] bg-orb orb-2" />
@@ -149,6 +151,12 @@ export function MarketingLanding({
             transform: translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), 0);
             transition: transform 120ms ease-out;
           }
+          .bg-rayburst-rotating {
+            background:
+              repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c2) 10%, transparent) 0 10deg, transparent 10deg 16deg);
+            mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0,0,0,0.8), transparent 70%);
+            animation: raysRotate 32s linear infinite;
+          }
           .bg-conic-spot {
             background:
               radial-gradient(54% 38% at 60% 40%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 60%),
@@ -177,6 +185,13 @@ export function MarketingLanding({
               radial-gradient(50% 30% at 35% 70%, color-mix(in srgb, var(--c3) 10%, transparent), transparent 60%);
             filter: blur(6px) saturate(115%);
             mask-image: radial-gradient(70% 50% at 50% 40%, rgba(0, 0, 0, 0.9), transparent 70%);
+          }
+          .bg-cursor-spot {
+            background: radial-gradient(220px 160px at calc(50% + var(--mx,0) * 60px) calc(40% + var(--my,0) * 60px), rgba(255,255,255,0.45), transparent 70%);
+            transition: background-position 120ms ease-out;
+          }
+          .bg-fade-bottom {
+            background: linear-gradient(to bottom, transparent 55%, rgba(255,255,255,0.75) 82%, #ffffff 100%);
           }
           .bg-orb {
             border-radius: 9999px;
@@ -250,11 +265,14 @@ export function MarketingLanding({
           .animate-sway-3 {
             animation: sway 5.5s ease-in-out infinite reverse;
           }
+          .tilt { transform-style: preserve-3d; }
+          .tilt:hover { transform: perspective(800px) rotateX(calc(var(--my,0) * -4deg)) rotateY(calc(var(--mx,0) * 6deg)); transition: transform 160ms ease; }
           @keyframes vrcl-rotate {
             to {
               transform: rotate(360deg);
             }
           }
+          @keyframes raysRotate { to { transform: rotate(360deg); } }
           @keyframes vrcl-float {
             0% {
               transform: translate3d(0, -6px, 0) scale(1.02);
@@ -390,7 +408,7 @@ export function MarketingLanding({
 
 function FeatureTile({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow">
+    <div className="rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow tilt">
       <div className="flex items-start gap-3">
         <div className="mt-0.5">{icon}</div>
         <div>
