@@ -62,12 +62,18 @@ export default function VercelSandboxTester() {
         }
 
         if (endpoint.type === 'api') {
+          // Clone the response to avoid "body stream already read" error
+          const responseClone = response.clone()
           try {
             const data = await response.json()
             result.response.data = data
           } catch (jsonError) {
-            const text = await response.text()
-            result.response.text = text.substring(0, 200) + '...'
+            try {
+              const text = await responseClone.text()
+              result.response.text = text.substring(0, 200) + '...'
+            } catch (textError) {
+              result.response.text = 'Unable to read response body'
+            }
           }
         }
 

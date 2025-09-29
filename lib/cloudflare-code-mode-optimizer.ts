@@ -123,7 +123,8 @@ Generate TypeScript code that:
 Return only the TypeScript code, no explanations.`
 
     try {
-      const response = await fetch('/api/openrouter/generate', {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+      const response = await fetch(`${baseUrl}/api/openrouter/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

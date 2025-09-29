@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
         optimizedPrompt = bestOptimization.optimized
       }
     }
-    
+
     const costReduction = bestOptimization && 'costReduction' in bestOptimization ? bestOptimization.costReduction : 0
 
     console.log(`✅ Best optimization: ${bestOptimizer} (${costReduction}% reduction)`)
