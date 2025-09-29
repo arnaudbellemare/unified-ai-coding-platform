@@ -58,8 +58,10 @@ export function MarketingLanding({
           />
         ) : (
           <div className="pointer-events-none absolute inset-0">
-            {/* Rayburst backdrop */}
-            <div className="absolute inset-0 bg-rayburst opacity-70" />
+            {/* Rayburst backdrop (parallax) */}
+            <div className="absolute inset-0 bg-rayburst opacity-60" />
+            {/* Slow rotating rays for motion */}
+            <div className="absolute -inset-[8%] bg-rayburst-rotating opacity-35" />
             {/* Ambient spotlight */}
             <div className="absolute inset-0 bg-conic-spot opacity-35" />
             {/* Soft moving orbs for depth */}
@@ -67,6 +69,8 @@ export function MarketingLanding({
             <div className="absolute bottom-[-40px] right-[-20px] w-[380px] h-[380px] bg-orb orb-2" />
             {/* Subtle texture */}
             <div className="absolute inset-0 bg-blobs opacity-45" />
+            {/* Bottom fade to white */}
+            <div className="absolute inset-0 bg-fade-bottom" />
           </div>
         )}
         <div className="relative max-w-6xl mx-auto px-6 pt-14 pb-8">
@@ -113,13 +117,13 @@ export function MarketingLanding({
                 <div className="grid grid-cols-2 gap-4 absolute inset-0 place-content-center">
                   <FeatureTile
                     icon={<Search className="h-5 w-5 text-blue-600" />}
-                    title="AGENTIC COMMERCE"
-                    desc="Query & rank PRIORITY"
+                    title="Agentic e-Commerce"
+                    desc="Query & rank priority"
                   />
                   <FeatureTile
                     icon={<Sliders className="h-5 w-5 text-indigo-600" />}
                     title="Optimizers"
-                    desc="Reduce tokens COST FOR AGENTS"
+                    desc="Reduce tokens cost for agents"
                   />
                   <FeatureTile
                     icon={<CreditCard className="h-5 w-5 text-emerald-600" />}
