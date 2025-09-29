@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Search, CreditCard, Brain, Sliders, Database, BarChart } from 'lucide-react'
@@ -16,6 +16,13 @@ export function MarketingLanding({
   disableAnimatedBg?: boolean
   theme?: LandingTheme
 }) {
+  const [styleVariant, setStyleVariant] = useState<'classic' | 'ayocin'>('classic')
+  useEffect(() => {
+    try {
+      const v = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('style') : null
+      if (v === 'ayocin') setStyleVariant('ayocin')
+    } catch (_) {}
+  }, [])
   const [c1, c2, c3] = useMemo(() => {
     const palette: Record<LandingTheme, [string, string, string]> = {
       home: ['#0ea5e9', '#60a5fa', '#22d3ee'],
@@ -89,7 +96,14 @@ export function MarketingLanding({
               >
                 verclibase <span className="opacity-90">on base</span>
               </div>
-              <div className="mt-3 inline-block rounded-2xl bg-white/85 backdrop-blur-md shadow-[0_6px_30px_rgba(0,0,0,0.06)] px-5 py-4 md:px-6 md:py-5 animate-fade-in">
+              <div className={`${styleVariant === 'ayocin' ? 'gradient-ring rounded-[22px] p-[1px] mt-3 inline-block' : ''}`}>
+                <div
+                  className={`${
+                    styleVariant === 'ayocin'
+                      ? 'rounded-[20px] glass-card shadow-[0_8px_28px_rgba(0,0,0,0.08)] px-5 py-4 md:px-6 md:py-6'
+                      : 'mt-3 inline-block rounded-2xl bg-white/85 backdrop-blur-md shadow-[0_6px_30px_rgba(0,0,0,0.06)] px-5 py-4 md:px-6 md:py-5'
+                  } animate-fade-in`}
+                >
                 <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.95] animate-slide-up-1 text-black">
                   Build
                   <span
@@ -112,6 +126,7 @@ export function MarketingLanding({
                     View demo
                   </Button>
                 </div>
+                </div>
               </div>
             </div>
 
@@ -119,7 +134,7 @@ export function MarketingLanding({
             <div className="hidden md:block">
               <div className="relative h-[420px]">
                 <div className="absolute inset-0 bg-beams opacity-30" />
-                <div className="grid grid-cols-2 gap-4 absolute inset-0 place-content-center">
+                <div className={`grid grid-cols-2 gap-4 absolute inset-0 place-content-center ${styleVariant === 'ayocin' ? 'p-2' : ''}`}>
                   <FeatureTile
                     icon={<Search className="h-5 w-5 text-blue-600" />}
                     title="Agentic e-Commerce"
@@ -142,6 +157,8 @@ export function MarketingLanding({
           </div>
         </div>
         <style jsx>{`
+          .gradient-ring { background: linear-gradient(90deg, var(--c1), var(--c2)); }
+          .glass-card { background: rgba(255,255,255,0.88); backdrop-filter: saturate(120%) blur(8px); }
           .bg-flow {
             background: linear-gradient(
               120deg,
@@ -378,7 +395,9 @@ export function MarketingLanding({
       {/* GEO Playbook (what matters + how to win) */}
       <section className="max-w-6xl mx-auto px-6 py-8">
         <div className="rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-md p-6 md:p-8 shadow-[0_10px_28px_rgba(0,0,0,0.06)]">
-          <h3 className="text-2xl md:text-3xl font-black tracking-tight text-black">GEO playbook for agentic commerce</h3>
+          <h3 className="text-2xl md:text-3xl font-black tracking-tight text-black">
+            GEO playbook for agentic commerce
+          </h3>
           <p className="mt-2 text-gray-900 max-w-4xl">
             GEO is the AI equivalent of SEO. Agents recommend what is structured, reliable, and cost‑efficient. Below is
             how brands become the first choice in agent results.
