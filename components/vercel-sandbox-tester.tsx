@@ -20,14 +20,14 @@ export default function VercelSandboxTester() {
   const [isRunning, setIsRunning] = useState(false)
 
   const testEndpoints = [
-    { name: 'Main Page', url: '/', type: 'page' },
-    { name: 'Real Models API', url: '/api/models-real', type: 'api' },
-    { name: 'Real Process API', url: '/api/process-real', type: 'api' },
-    { name: 'Real OpenRouter Generate', url: '/api/openrouter/real-generate', type: 'api' },
-    { name: 'Models API (Fallback)', url: '/api/models-simple', type: 'api' },
-    { name: 'Process API (Fallback)', url: '/api/process-simple', type: 'api' },
-    { name: 'GitHub Auth API', url: '/api/github-auth', type: 'api' },
-    { name: 'Test Sandbox', url: '/api/test-sandbox', type: 'api' },
+    { name: 'Main Page', url: '/', type: 'page', method: 'GET' },
+    { name: 'Real Models API', url: '/api/models-real', type: 'api', method: 'GET' },
+    { name: 'Real Process API', url: '/api/process-real', type: 'api', method: 'POST' },
+    { name: 'Real OpenRouter Generate', url: '/api/openrouter/real-generate', type: 'api', method: 'POST' },
+    { name: 'Models API (Fallback)', url: '/api/models-simple', type: 'api', method: 'GET' },
+    { name: 'Process API (Fallback)', url: '/api/process-simple', type: 'api', method: 'POST' },
+    { name: 'GitHub Auth API', url: '/api/github-auth', type: 'api', method: 'GET' },
+    { name: 'Test Sandbox', url: '/api/test-sandbox', type: 'api', method: 'GET' },
   ]
 
   const runTests = async () => {
@@ -46,9 +46,33 @@ export default function VercelSandboxTester() {
       ])
 
       try {
-        const response = await fetch(endpoint.url, {
-          method: endpoint.type === 'api' ? 'GET' : 'GET',
-        })
+        let fetchOptions: RequestInit = {
+          method: endpoint.method || 'GET',
+        }
+
+        // Add request body for POST endpoints
+        if (endpoint.method === 'POST') {
+          fetchOptions.headers = { 'Content-Type': 'application/json' }
+          if (endpoint.url.includes('process')) {
+            fetchOptions.body = JSON.stringify({
+              prompt: 'Test prompt for API testing',
+              task: 'Test task description',
+              model: 'mistralai/mistral-7b-instruct:free',
+              provider: 'auto',
+              userId: 'test-user-' + Date.now()
+            })
+          } else if (endpoint.url.includes('openrouter/real-generate')) {
+            fetchOptions.body = JSON.stringify({
+              prompt: 'Test prompt for OpenRouter testing',
+              model: 'mistralai/mistral-7b-instruct:free',
+              provider: 'auto',
+              task: 'Test task',
+              userId: 'test-user-' + Date.now()
+            })
+          }
+        }
+
+        const response = await fetch(endpoint.url, fetchOptions)
 
         let result: TestResult = {
           endpoint: endpoint.name,
