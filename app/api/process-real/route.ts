@@ -61,15 +61,30 @@ export async function POST(request: NextRequest) {
       const result = optimizationResults[i]
       if (result && !('error' in result)) {
         const costReduction = 'costReduction' in result ? result.costReduction : 0
-        if (!bestOptimization || costReduction > ('costReduction' in bestOptimization ? bestOptimization.costReduction : 0)) {
+        if (
+          !bestOptimization ||
+          costReduction > ('costReduction' in bestOptimization ? bestOptimization.costReduction : 0)
+        ) {
           bestOptimization = result
           bestOptimizer = ['research', 'gepa', 'capo', 'cloudflare'][i]
         }
       }
     }
 
-    const optimizedPrompt = bestOptimization?.optimizedPrompt || prompt
-    const costReduction = bestOptimization?.costReduction || 0
+    // Extract optimized prompt based on the optimization type
+    let optimizedPrompt = prompt
+    if (bestOptimization) {
+      if ('optimizedPrompt' in bestOptimization) {
+        optimizedPrompt = bestOptimization.optimizedPrompt
+      } else if ('optimizedCode' in bestOptimization) {
+        // For Cloudflare Code Mode, use the original prompt but note it's been optimized to code
+        optimizedPrompt = prompt
+      } else if ('optimized' in bestOptimization) {
+        optimizedPrompt = bestOptimization.optimized
+      }
+    }
+    
+    const costReduction = bestOptimization && 'costReduction' in bestOptimization ? bestOptimization.costReduction : 0
 
     console.log(`✅ Best optimization: ${bestOptimizer} (${costReduction}% reduction)`)
 
