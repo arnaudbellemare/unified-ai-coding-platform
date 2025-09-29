@@ -17,7 +17,7 @@ export function SimplifiedHome() {
               onClick={() => setShowTesting(true)}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-colors"
             >
-                  Test System
+              Test System
             </button>
           </div>
         </div>

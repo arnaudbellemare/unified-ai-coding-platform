@@ -19,7 +19,6 @@ import {
   Settings,
   Play,
   Download,
-  Sparkles,
 } from 'lucide-react'
 import { GitHubAuthButton } from './github-auth-button'
 
@@ -436,9 +435,10 @@ export default function UnifiedAllInOne() {
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-2">
-          <Sparkles className="h-8 w-8 text-blue-600" />
-          <h1 className="text-xs font-black tracking-wider text-black" style={{ fontFamily: 'Epika Serif, serif' }}>VERCLIBASE</h1>
+        <div className="flex items-center justify-center">
+          <h1 className="text-6xl font-black tracking-wider text-black" style={{ fontFamily: 'Epika Serif, serif' }}>
+            VERCLIBASE
+          </h1>
         </div>
         <p className="text-gray-600">One system for optimization, AI generation, and cost management</p>
         <div className="flex justify-center">
