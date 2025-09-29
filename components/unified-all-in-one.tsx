@@ -869,7 +869,6 @@ What specific aspect would you like me to focus on or elaborate further?`
                     <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
                     <div className="text-lg font-bold text-green-600">
                       {result.summary?.costSavings?.percentage ||
-                        result.summary?.savings?.savingsPercentage ||
                         result.optimization?.costReduction ||
                         0}
                       %
@@ -1021,7 +1020,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  ${(result.summary?.costSavings?.reduction || result.summary?.savings?.savingsAmount || 0).toFixed(6)}
+                  ${(result.summary?.costSavings?.reduction || 0).toFixed(6)}
                 </div>
                 <div className="text-sm text-gray-600">Cost Savings</div>
               </div>
