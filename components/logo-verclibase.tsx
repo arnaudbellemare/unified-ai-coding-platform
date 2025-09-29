@@ -27,5 +27,3 @@ export function LogoVerclibase({ color = '#0000FF' }: { color?: string }) {
     </div>
   )
 }
-
-

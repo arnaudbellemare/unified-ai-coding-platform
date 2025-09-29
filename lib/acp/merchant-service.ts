@@ -51,5 +51,3 @@ class MerchantService {
 }
 
 export const merchantService = new MerchantService()
-
-

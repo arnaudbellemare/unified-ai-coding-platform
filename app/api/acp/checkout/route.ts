@@ -16,22 +16,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const {
-      items,
-      totalAmount,
-      currency = 'USDC',
-      paymentMethod = 'x402',
-      metadata = {}
-    } = body
+    const { items, totalAmount, currency = 'USDC', paymentMethod = 'x402', metadata = {} } = body
 
     // Validate required fields
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
         {
           error: 'Invalid items',
-          message: 'Items array is required and must not be empty'
+          message: 'Items array is required and must not be empty',
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -39,9 +33,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Invalid amount',
-          message: 'Total amount must be greater than 0'
+          message: 'Total amount must be greater than 0',
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -50,26 +44,29 @@ export async function POST(request: NextRequest) {
       itemsCount: items.length,
       totalAmount,
       currency,
-      paymentMethod
+      paymentMethod,
     })
 
     // Process payment through ACP service
-    const checkoutResult = await acpService.processCheckout({
-      items,
-      totalAmount,
-      currency,
-      paymentMethod: paymentMethod || 'x402',
-      metadata
-    }, user.id)
+    const checkoutResult = await acpService.processCheckout(
+      {
+        items,
+        totalAmount,
+        currency,
+        paymentMethod: paymentMethod || 'x402',
+        metadata,
+      },
+      user.id,
+    )
 
     if (!checkoutResult.success) {
       return NextResponse.json(
         {
           error: 'Payment processing failed',
           message: 'Unable to process ACP checkout',
-          details: checkoutResult.error
+          details: checkoutResult.error,
         },
-        { status: 402 }
+        { status: 402 },
       )
     }
 
@@ -86,19 +83,19 @@ export async function POST(request: NextRequest) {
         ...metadata,
         verclibaseTransaction: true,
         acpVersion: '1.0',
-        processedBy: 'VERCLIBASE'
+        processedBy: 'VERCLIBASE',
       },
       timestamp: new Date().toISOString(),
       // ACP-specific fields
       merchant: {
         id: 'verclibase',
         name: 'VERCLIBASE',
-        url: 'https://verclibase.com'
+        url: 'https://verclibase.com',
       },
       buyer: {
         id: user.id,
-        type: 'ai_agent'
-      }
+        type: 'ai_agent',
+      },
     }
 
     console.log('✅ ACP Checkout completed:', checkoutResponse.id)
@@ -106,17 +103,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       checkout: checkoutResponse,
-      message: 'ACP checkout completed successfully'
+      message: 'ACP checkout completed successfully',
     })
-
   } catch (error) {
     console.error('❌ ACP Checkout error:', error)
     return NextResponse.json(
       {
         error: 'Checkout processing failed',
-        message: 'Internal server error during ACP checkout'
+        message: 'Internal server error during ACP checkout',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -134,12 +130,7 @@ export async function GET() {
       version: '1.0',
       supported: true,
       merchant: config,
-      capabilities: [
-        'checkout_initiation',
-        'payment_processing',
-        'order_fulfillment',
-        'refund_handling'
-      ]
-    }
+      capabilities: ['checkout_initiation', 'payment_processing', 'order_fulfillment', 'refund_handling'],
+    },
   })
 }

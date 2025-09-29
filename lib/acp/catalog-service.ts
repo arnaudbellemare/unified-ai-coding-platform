@@ -200,9 +200,10 @@ class CatalogService {
         }
 
         const effectivePrice = this.computeEffectivePrice(v.price, p.shipping?.fixedCost)
-        const merchantOverride = v.attributes && typeof v.attributes['merchantId'] === 'string'
-          ? merchantService.get(String(v.attributes['merchantId']))
-          : undefined
+        const merchantOverride =
+          v.attributes && typeof v.attributes['merchantId'] === 'string'
+            ? merchantService.get(String(v.attributes['merchantId']))
+            : undefined
 
         const merchantName = merchantOverride?.name || p.merchant?.name || config.name
         const merchantId = merchantOverride?.id || p.merchant?.id || config.id
@@ -236,7 +237,10 @@ class CatalogService {
     for (const c of candidates) {
       const product = this.products.get(c.productId)!
 
-      const relevanceTxt = this.textRelevance(query, `${product.title} ${product.description || ''} ${(product.tags || []).join(' ')}`)
+      const relevanceTxt = this.textRelevance(
+        query,
+        `${product.title} ${product.description || ''} ${(product.tags || []).join(' ')}`,
+      )
       const relevanceAttr = this.attributesMatchScore(filters.attributes, c.attributes)
       const relevance = Math.max(relevanceTxt, relevanceAttr)
 
@@ -245,7 +249,8 @@ class CatalogService {
       const eta = typeof c.etaDays === 'number' ? c.etaDays : 7
       const etaScore = Math.max(0, Math.min(1, 1 - eta / 14)) // faster better
 
-      const trust = merchantService.get(c.merchantId || '')?.trust || product.merchant?.trust || { rating: 4, onTimeRate: 0.95, returnRate: 0.08 }
+      const trust = merchantService.get(c.merchantId || '')?.trust ||
+        product.merchant?.trust || { rating: 4, onTimeRate: 0.95, returnRate: 0.08 }
       const trustScore = Math.min(1, (trust.rating / 5) * 0.6 + trust.onTimeRate * 0.3 + (1 - trust.returnRate) * 0.1)
 
       // Sponsored lift if minimally relevant
@@ -255,17 +260,21 @@ class CatalogService {
       // Final score
       const score =
         0.35 * relevance +
-        0.20 * priceScore +
+        0.2 * priceScore +
         0.15 * availability +
         0.15 * trustScore +
-        0.10 * etaScore +
+        0.1 * etaScore +
         0.05 * 1 + // diversity placeholder
         sponsoredLift
 
       c.score = Number(score.toFixed(6))
       c.reasons = [
         { key: 'relevance', value: Number(relevance.toFixed(3)) },
-        { key: 'priceScore', value: Number(priceScore.toFixed(3)), note: `effective ${c.effectivePrice} ${c.currency}` },
+        {
+          key: 'priceScore',
+          value: Number(priceScore.toFixed(3)),
+          note: `effective ${c.effectivePrice} ${c.currency}`,
+        },
         { key: 'availability', value: availability },
         { key: 'etaScore', value: Number(etaScore.toFixed(3)), note: `${eta}d` },
         { key: 'trust', value: Number(trustScore.toFixed(3)) },
@@ -274,11 +283,9 @@ class CatalogService {
     }
 
     // Sort by score desc, then price asc
-    candidates.sort((a, b) => (b.score - a.score) || (a.effectivePrice - b.effectivePrice))
+    candidates.sort((a, b) => b.score - a.score || a.effectivePrice - b.effectivePrice)
     return candidates
   }
 }
 
 export const catalogService = new CatalogService()
-
-

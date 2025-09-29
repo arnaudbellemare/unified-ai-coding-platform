@@ -288,7 +288,11 @@ export function PaymentProtocolTester() {
 
           {/* Test Buttons */}
           <div className="flex gap-2">
-            <Button onClick={testPaymentProtocol} disabled={!authenticated || isLoading} className="flex-1 bg-blue-600 text-white hover:bg-blue-700">
+            <Button
+              onClick={testPaymentProtocol}
+              disabled={!authenticated || isLoading}
+              className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
+            >
               <CreditCard className="h-4 w-4 mr-2 text-white" />
               Test x402 Payment
             </Button>

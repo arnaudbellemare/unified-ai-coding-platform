@@ -34,21 +34,20 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             error: 'Method not supported',
-            supportedMethods: ['checkout', 'get_capabilities', 'get_payment_methods', 'process_payment']
+            supportedMethods: ['checkout', 'get_capabilities', 'get_payment_methods', 'process_payment'],
           },
-          { status: 400 }
+          { status: 400 },
         )
       }
     }
-
   } catch (error) {
     console.error('❌ ACP MCP error:', error)
     return NextResponse.json(
       {
         error: 'ACP MCP processing failed',
-        message: 'Internal server error during ACP MCP operation'
+        message: 'Internal server error during ACP MCP operation',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -61,9 +60,9 @@ async function handleCheckout(params: any) {
     return NextResponse.json(
       {
         error: 'Authentication required',
-        message: 'AI agent must be authenticated'
+        message: 'AI agent must be authenticated',
       },
-      { status: 401 }
+      { status: 401 },
     )
   }
 
@@ -71,27 +70,33 @@ async function handleCheckout(params: any) {
     return NextResponse.json(
       {
         error: 'Missing required parameters',
-        message: 'Items and amount are required'
+        message: 'Items and amount are required',
       },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
   // Process through ACP service
-  const checkoutResult = await acpService.processCheckout({
-    items,
-    totalAmount: amount,
-    currency,
-    paymentMethod: paymentMethod || 'x402',
-    metadata: { acpMethod: 'checkout' }
-  }, user.id)
+  const checkoutResult = await acpService.processCheckout(
+    {
+      items,
+      totalAmount: amount,
+      currency,
+      paymentMethod: paymentMethod || 'x402',
+      metadata: { acpMethod: 'checkout' },
+    },
+    user.id,
+  )
 
   if (!checkoutResult.success) {
-    return NextResponse.json({
-      success: false,
-      error: checkoutResult.error,
-      message: 'ACP checkout failed'
-    }, { status: 402 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: checkoutResult.error,
+        message: 'ACP checkout failed',
+      },
+      { status: 402 },
+    )
   }
 
   return NextResponse.json({
@@ -103,8 +108,8 @@ async function handleCheckout(params: any) {
       amount,
       currency,
       items,
-      processedAt: new Date().toISOString()
-    }
+      processedAt: new Date().toISOString(),
+    },
   })
 }
 
@@ -116,28 +121,23 @@ async function handleGetCapabilities() {
     result: {
       acpVersion: '1.0',
       merchantId: config.id,
-      capabilities: [
-        'ai_agent_commerce',
-        'cost_optimization',
-        'real_time_processing',
-        'multi_model_support'
-      ],
+      capabilities: ['ai_agent_commerce', 'cost_optimization', 'real_time_processing', 'multi_model_support'],
       supportedModels: [
         'openai/gpt-4',
         'anthropic/claude-3',
         'mistral/mistral-large',
         'x-ai/grok-4-fast',
         'nvidia/nemotron-nano-9b-v2',
-        'deepseek/deepseek-chat-v3.1'
+        'deepseek/deepseek-chat-v3.1',
       ],
       paymentMethods: config.supportedPaymentMethods,
       currencies: config.supportedCurrencies,
       merchantInfo: {
         name: config.name,
         description: config.description,
-        url: config.url
-      }
-    }
+        url: config.url,
+      },
+    },
   })
 }
 
@@ -155,10 +155,10 @@ async function handleGetPaymentMethods() {
           description: 'Traditional payment processing',
           networks: ['card', 'bank_transfer'],
           currencies: ['USD', 'EUR', 'GBP'],
-          features: ['recurring_payments', 'fraud_protection', 'global_support']
-        }
-      ]
-    }
+          features: ['recurring_payments', 'fraud_protection', 'global_support'],
+        },
+      ],
+    },
   })
 }
 
@@ -170,9 +170,9 @@ async function handleProcessPayment(params: any) {
     return NextResponse.json(
       {
         error: 'Authentication required',
-        message: 'AI agent must be authenticated'
+        message: 'AI agent must be authenticated',
       },
-      { status: 401 }
+      { status: 401 },
     )
   }
 
@@ -180,29 +180,35 @@ async function handleProcessPayment(params: any) {
     return NextResponse.json(
       {
         error: 'Payment method not supported',
-        message: 'Currently only x402 payments are supported'
+        message: 'Currently only x402 payments are supported',
       },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
   // Process through ACP service
-  const paymentResult = await acpService.processPayment({
-    amount,
-    currency,
-    paymentMethod,
-    metadata: {
-      ...metadata,
-      acpMethod: 'process_payment'
-    }
-  }, user.id)
+  const paymentResult = await acpService.processPayment(
+    {
+      amount,
+      currency,
+      paymentMethod,
+      metadata: {
+        ...metadata,
+        acpMethod: 'process_payment',
+      },
+    },
+    user.id,
+  )
 
   if (!paymentResult.success) {
-    return NextResponse.json({
-      success: false,
-      error: paymentResult.error,
-      message: 'ACP payment failed'
-    }, { status: 402 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: paymentResult.error,
+        message: 'ACP payment failed',
+      },
+      { status: 402 },
+    )
   }
 
   return NextResponse.json({
@@ -213,7 +219,7 @@ async function handleProcessPayment(params: any) {
       amount,
       currency,
       network: 'base-sepolia',
-      processedAt: new Date().toISOString()
-    }
+      processedAt: new Date().toISOString(),
+    },
   })
 }

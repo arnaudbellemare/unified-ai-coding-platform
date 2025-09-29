@@ -932,10 +932,10 @@ What specific aspect would you like me to focus on or elaborate further?`
                     <h4 className="font-medium text-gray-900">📊 Performance Metrics</h4>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="text-center p-2 bg-blue-50 rounded">
-                    <div className="text-sm font-medium text-white bg-blue-600 px-2 py-1 rounded">
+                        <div className="text-sm font-medium text-white bg-blue-600 px-2 py-1 rounded">
                           {result.performanceMetrics.qualityScore}%
                         </div>
-                    <div className="text-xs text-gray-900">Quality Score</div>
+                        <div className="text-xs text-gray-900">Quality Score</div>
                       </div>
                       <div className="text-center p-2 bg-green-50 rounded">
                         <div className="text-sm font-medium text-green-600">
@@ -943,14 +943,14 @@ What specific aspect would you like me to focus on or elaborate further?`
                         </div>
                         <div className="text-xs text-gray-600">Cost Efficiency</div>
                       </div>
-                  <div className="text-center p-2 bg-purple-50 rounded">
+                      <div className="text-center p-2 bg-purple-50 rounded">
                         <div className="text-sm font-medium text-purple-600">
                           {result.performanceMetrics.optimizationSpeed}%
                         </div>
                         <div className="text-xs text-gray-600">Speed</div>
                       </div>
-                  <div className="text-center p-2 bg-orange-50 rounded">
-                    <div className="text-sm font-medium text-orange-600">
+                      <div className="text-center p-2 bg-orange-50 rounded">
+                        <div className="text-sm font-medium text-orange-600">
                           {result.performanceMetrics.reliabilityScore}%
                         </div>
                         <div className="text-xs text-gray-600">Reliability</div>

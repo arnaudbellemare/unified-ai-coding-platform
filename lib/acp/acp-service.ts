@@ -64,35 +64,33 @@ export class ACPService {
       url: 'https://verclibase.com',
       supportedCurrencies: ['USDC', 'USD'],
       supportedPaymentMethods: ['x402', 'stripe', 'crypto'],
-      features: [
-        'ai_agent_execution',
-        'cost_optimization',
-        'real_time_processing',
-        'multi_model_support'
-      ],
+      features: ['ai_agent_execution', 'cost_optimization', 'real_time_processing', 'multi_model_support'],
       paymentProviders: [
         {
           id: 'x402',
           name: 'x402 Foundation',
           description: 'Internet-native payments for AI agents',
           supportedNetworks: ['base', 'ethereum', 'polygon'],
-          currencies: ['USDC', 'ETH']
+          currencies: ['USDC', 'ETH'],
         },
         {
           id: 'stripe',
           name: 'Stripe',
           description: 'Traditional payment processing',
           supportedNetworks: ['card', 'bank'],
-          currencies: ['USD', 'EUR', 'GBP']
-        }
-      ]
+          currencies: ['USD', 'EUR', 'GBP'],
+        },
+      ],
     }
   }
 
   /**
    * Process ACP checkout request
    */
-  async processCheckout(request: ACPCheckoutRequest, userId: string): Promise<{
+  async processCheckout(
+    request: ACPCheckoutRequest,
+    userId: string,
+  ): Promise<{
     success: boolean
     checkoutId?: string
     paymentId?: string
@@ -104,7 +102,7 @@ export class ACPService {
         userId,
         itemsCount: request.items.length,
         totalAmount: request.totalAmount,
-        currency: request.currency || 'USDC'
+        currency: request.currency || 'USDC',
       })
 
       const demoMode = process.env.SKIP_X402 === 'true'
@@ -119,16 +117,15 @@ export class ACPService {
         const paymentResult = await this.getX402Service().processPayment({
           amount: request.totalAmount,
           currency: request.currency || 'USDC',
-          recipient:
-            process.env.NEXT_PUBLIC_X402_RECIPIENT_ADDRESS || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+          recipient: process.env.NEXT_PUBLIC_X402_RECIPIENT_ADDRESS || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
           userId,
           metadata: {
             ...request.metadata,
             acpTransaction: true,
             items: request.items,
             initiatedBy: 'ai_agent',
-            acpVersion: '1.0'
-          }
+            acpVersion: '1.0',
+          },
         })
         paymentId = paymentResult.transactionId
       }
@@ -137,15 +134,14 @@ export class ACPService {
         success: true,
         checkoutId: `acp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         paymentId,
-        status: 'completed'
+        status: 'completed',
       }
-
     } catch (error) {
       console.error('❌ ACP Checkout failed:', error)
       return {
         success: false,
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       }
     }
   }
@@ -153,7 +149,10 @@ export class ACPService {
   /**
    * Process ACP payment request
    */
-  async processPayment(request: ACPPaymentRequest, userId: string): Promise<{
+  async processPayment(
+    request: ACPPaymentRequest,
+    userId: string,
+  ): Promise<{
     success: boolean
     paymentId?: string
     status: string
@@ -172,22 +171,21 @@ export class ACPService {
         metadata: {
           ...request.metadata,
           acpPayment: true,
-          paymentMethod: request.paymentMethod
-        }
+          paymentMethod: request.paymentMethod,
+        },
       })
 
       return {
         success: true,
         paymentId: paymentResult.transactionId,
-        status: 'completed'
+        status: 'completed',
       }
-
     } catch (error) {
       console.error('❌ ACP Payment failed:', error)
       return {
         success: false,
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       }
     }
   }
@@ -196,12 +194,7 @@ export class ACPService {
    * Check if VERCLIBASE supports ACP for the given request
    */
   canHandleACP(request: any): boolean {
-    return (
-      request.items &&
-      Array.isArray(request.items) &&
-      request.totalAmount &&
-      request.totalAmount > 0
-    )
+    return request.items && Array.isArray(request.items) && request.totalAmount && request.totalAmount > 0
   }
 
   /**
@@ -220,8 +213,8 @@ export class ACPService {
         name: 'x402 Foundation',
         description: 'Internet-native payments for AI agents',
         networks: ['base', 'ethereum', 'polygon'],
-        currencies: ['USDC', 'ETH']
-      }
+        currencies: ['USDC', 'ETH'],
+      },
     ]
   }
 }
