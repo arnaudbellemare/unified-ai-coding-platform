@@ -206,7 +206,7 @@ export class AdvancedCloudflareOptimizer {
     ]
 
     patternPredictions.forEach(([pattern, replacement]) => {
-      optimized = optimized.replace(pattern, replacement)
+      optimized = optimized.replace(pattern as RegExp, replacement as string)
     })
 
     return optimized
