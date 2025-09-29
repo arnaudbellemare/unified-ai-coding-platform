@@ -39,10 +39,16 @@ export function PaymentProtocolTester() {
       // Step 0: Test if endpoint is reachable
       console.log('🔍 Testing endpoint connectivity...')
       try {
-        const connectivityTest = await fetch('/api/x402/payment', {
+        const connectivityTest = await fetch('/api/x402/simple-payment', {
           method: 'GET',
         })
-        console.log('Connectivity test result:', connectivityTest.status, await connectivityTest.text())
+        console.log('Simple endpoint connectivity test result:', connectivityTest.status, await connectivityTest.text())
+        
+        // Also test the original endpoint
+        const originalTest = await fetch('/api/x402/payment', {
+          method: 'GET',
+        })
+        console.log('Original endpoint connectivity test result:', originalTest.status, await originalTest.text())
       } catch (connectError) {
         console.error('Endpoint connectivity test failed:', connectError)
       }
@@ -66,12 +72,26 @@ export function PaymentProtocolTester() {
 
       console.log('Payment request:', paymentRequest)
 
-      // Test x402 payment endpoint
-      const response = await fetch('/api/x402/payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentRequest),
-      })
+      // Test simple x402 payment endpoint first
+      console.log('🧪 Testing simple x402 payment endpoint...')
+      let response
+      try {
+        response = await fetch('/api/x402/simple-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(paymentRequest),
+        })
+        console.log('Simple endpoint response status:', response.status)
+      } catch (simpleError) {
+        console.error('Simple endpoint failed, trying original:', simpleError)
+        // Fallback to original endpoint
+        response = await fetch('/api/x402/payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(paymentRequest),
+        })
+        console.log('Original endpoint response status:', response.status)
+      }
 
       console.log('Response status:', response.status)
       console.log('Response headers:', Object.fromEntries(response.headers.entries()))
