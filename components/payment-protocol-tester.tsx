@@ -43,7 +43,7 @@ export function PaymentProtocolTester() {
           method: 'GET',
         })
         console.log('Simple endpoint connectivity test result:', connectivityTest.status, await connectivityTest.text())
-        
+
         // Also test the original endpoint
         const originalTest = await fetch('/api/x402/payment', {
           method: 'GET',

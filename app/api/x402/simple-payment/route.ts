@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   try {
     console.log('🚀 Simple X402 Payment API called')
-    
+
     const body = await request.json()
     console.log('📝 Request body:', body)
 
@@ -29,11 +29,14 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('❌ Simple X402 payment error:', error)
-    return NextResponse.json({ 
-      success: false,
-      error: 'Failed to process simple X402 payment',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to process simple X402 payment',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 },
+    )
   }
 }
 

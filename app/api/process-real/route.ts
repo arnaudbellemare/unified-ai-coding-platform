@@ -143,12 +143,20 @@ export async function POST(request: NextRequest) {
 
     // Check if we have the required environment variables
     const hasOpenRouterKey =
-      process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_API_KEY !== 'your-openrouter-api-key'
+      process.env.OPENROUTER_API_KEY && 
+      process.env.OPENROUTER_API_KEY !== 'your-openrouter-api-key' &&
+      process.env.OPENROUTER_API_KEY.length > 20 // Ensure it's a real API key
     const hasDatabase = process.env.DATABASE_URL && process.env.DATABASE_URL !== 'your-database-url'
+
+    console.log('🔍 Environment check:', {
+      hasOpenRouterKey,
+      keyLength: process.env.OPENROUTER_API_KEY?.length || 0,
+      keyPrefix: process.env.OPENROUTER_API_KEY?.substring(0, 10) || 'none'
+    })
 
     // If we don't have the required environment variables, use intelligent fallback
     if (!hasOpenRouterKey) {
-      console.log('⚠️ No OpenRouter API key found, using intelligent fallback')
+      console.log('⚠️ No valid OpenRouter API key found, using intelligent fallback')
       const intelligentResponse = await generateIntelligentResponse(prompt, task, model)
 
       return NextResponse.json({
