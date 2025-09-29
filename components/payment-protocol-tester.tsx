@@ -38,7 +38,7 @@ export function PaymentProtocolTester() {
     try {
       // Step 1: Test payment requirement detection
       console.log('🧪 Testing payment requirement detection...')
-      
+
       const paymentRequest = {
         amount: parseFloat(testAmount),
         currency: 'USDC',
@@ -98,7 +98,7 @@ export function PaymentProtocolTester() {
 
     try {
       console.log('🧪 Testing AI processing with payment...')
-      
+
       const response = await fetch('/api/process-real', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -170,7 +170,7 @@ export function PaymentProtocolTester() {
             {authenticated && user ? (
               <>
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm">
+                <span className="text-sm text-gray-900">
                   Connected: {user.wallet?.address?.slice(0, 6)}...{user.wallet?.address?.slice(-4)}
                 </span>
                 <Badge variant="secondary" className="ml-auto">
@@ -226,11 +226,7 @@ export function PaymentProtocolTester() {
 
           {/* Test Buttons */}
           <div className="flex gap-2">
-            <Button
-              onClick={testPaymentProtocol}
-              disabled={!authenticated || isLoading}
-              className="flex-1"
-            >
+            <Button onClick={testPaymentProtocol} disabled={!authenticated || isLoading} className="flex-1">
               <CreditCard className="h-4 w-4 mr-2" />
               Test x402 Payment
             </Button>
@@ -252,19 +248,25 @@ export function PaymentProtocolTester() {
                 <CardTitle className="text-sm flex items-center gap-2">
                   {getStatusIcon(result.success)}
                   Test Result
-                  <Badge className={getStatusColor(result.success)}>
-                    {result.success ? 'SUCCESS' : 'FAILED'}
-                  </Badge>
+                  <Badge className={getStatusColor(result.success)}>{result.success ? 'SUCCESS' : 'FAILED'}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
                 <p className="text-sm mb-2">{result.message}</p>
                 {result.transactionId && (
                   <div className="space-y-1 text-xs text-gray-600">
-                    <p><strong>Transaction ID:</strong> {result.transactionId}</p>
-                    <p><strong>Amount:</strong> {result.amount} {result.currency}</p>
-                    <p><strong>Network:</strong> {result.network}</p>
-                    <p><strong>Status:</strong> {result.status}</p>
+                    <p>
+                      <strong>Transaction ID:</strong> {result.transactionId}
+                    </p>
+                    <p>
+                      <strong>Amount:</strong> {result.amount} {result.currency}
+                    </p>
+                    <p>
+                      <strong>Network:</strong> {result.network}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> {result.status}
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -274,18 +276,28 @@ export function PaymentProtocolTester() {
           {/* Instructions */}
           <Card className="bg-blue-50 border-blue-200">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
+              <CardTitle className="text-sm flex items-center gap-2 text-blue-900">
                 <AlertTriangle className="h-4 w-4 text-blue-600" />
                 Testing Instructions
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="text-xs space-y-1 text-blue-800">
-                <p>1. <strong>Connect Wallet:</strong> Click "Connect Wallet" to link your Base Sepolia wallet</p>
-                <p>2. <strong>Test Payment:</strong> Click "Test x402 Payment" to simulate a payment</p>
-                <p>3. <strong>Test AI Processing:</strong> Click "Test AI Processing" to test with paid models</p>
-                <p>4. <strong>Expected Behavior:</strong> Paid models should return HTTP 402 (Payment Required)</p>
-                <p>5. <strong>Free Models:</strong> Should process successfully without payment</p>
+                <p>
+                  1. <strong>Connect Wallet:</strong> Click "Connect Wallet" to link your Base Sepolia wallet
+                </p>
+                <p>
+                  2. <strong>Test Payment:</strong> Click "Test x402 Payment" to simulate a payment
+                </p>
+                <p>
+                  3. <strong>Test AI Processing:</strong> Click "Test AI Processing" to test with paid models
+                </p>
+                <p>
+                  4. <strong>Expected Behavior:</strong> Paid models should return HTTP 402 (Payment Required)
+                </p>
+                <p>
+                  5. <strong>Free Models:</strong> Should process successfully without payment
+                </p>
               </div>
             </CardContent>
           </Card>

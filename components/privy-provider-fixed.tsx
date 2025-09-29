@@ -145,7 +145,7 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
     <PrivySDKProvider
       appId={appId}
       config={{
-        loginMethods: ['email', 'google', 'twitter', 'wallet'],
+        loginMethods: ['email', 'wallet'],
         appearance: {
           theme: 'light',
           accentColor: '#676FFF',

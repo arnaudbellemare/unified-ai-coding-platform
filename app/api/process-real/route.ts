@@ -3,6 +3,7 @@ import { ResearchBackedOptimizer } from '@/lib/research-backed-optimizer'
 import { GEPACostOptimizer } from '@/lib/gepa-optimizer'
 import { CAPOEnhancedOptimizer } from '@/lib/capo-enhanced-optimizer'
 import { CloudflareCodeModeOptimizer } from '@/lib/cloudflare-code-mode-optimizer'
+import { AdvancedCloudflareOptimizer } from '@/lib/advanced-cloudflare-optimizer'
 import { OpenRouterClient } from '@/lib/openrouter/openrouter-client'
 import { RealX402PaymentService } from '@/lib/x402/real-x402-payments'
 
@@ -160,6 +161,8 @@ export async function POST(request: NextRequest) {
 
     // Step 1: Run all optimization engines in parallel
     console.log('🧠 Running optimization engines...')
+    const advancedCloudflareOptimizer = new AdvancedCloudflareOptimizer()
+    
     const optimizationPromises = [
       researchOptimizer.optimizeWithResearch(prompt, task, model).catch((err) => ({ error: err.message })),
       gepaOptimizer.optimizePrompt(prompt, model, 0.8).catch((err) => ({ error: err.message })),
@@ -172,6 +175,7 @@ export async function POST(request: NextRequest) {
         })
         .catch((err) => ({ error: err.message })),
       cloudflareOptimizer.optimizeWithCodeMode(prompt, task, model).catch((err) => ({ error: err.message })),
+      advancedCloudflareOptimizer.optimize(prompt, task).catch((err) => ({ error: err.message })),
     ]
 
     const optimizationResults = await Promise.all(optimizationPromises)
@@ -189,7 +193,7 @@ export async function POST(request: NextRequest) {
           costReduction > ('costReduction' in bestOptimization ? bestOptimization.costReduction : 0)
         ) {
           bestOptimization = result
-          bestOptimizer = ['research', 'gepa', 'capo', 'cloudflare'][i]
+          bestOptimizer = ['research', 'gepa', 'capo', 'cloudflare', 'advanced_cloudflare'][i]
         }
       }
     }
@@ -343,7 +347,7 @@ export async function POST(request: NextRequest) {
         },
         optimizedPrompt: optimizedPrompt,
         performanceScore: 95,
-        optimizationEngines: ['research', 'gepa', 'capo', 'cloudflare'],
+        optimizationEngines: ['research', 'gepa', 'capo', 'cloudflare', 'advanced_cloudflare'],
         selectedEngine: bestOptimizer,
       },
       optimization: {

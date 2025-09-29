@@ -11,8 +11,12 @@ export function GitHubAuthButton() {
   }
 
   return (
-    <Button onClick={handleGitHubAuth} className="flex items-center gap-2" variant="outline">
-      <Github className="h-4 w-4" />
+    <Button 
+      onClick={handleGitHubAuth} 
+      className="flex items-center gap-2 border-gray-300 text-gray-900 hover:bg-gray-100" 
+      variant="outline"
+    >
+      <Github className="h-4 w-4 text-gray-900" />
       Connect GitHub
     </Button>
   )

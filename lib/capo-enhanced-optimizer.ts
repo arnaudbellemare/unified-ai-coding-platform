@@ -169,8 +169,13 @@ export class CAPOEnhancedOptimizer {
    */
   private applyLightOptimization(prompt: string): string {
     return prompt
-      .replace(/\b(please|kindly|would you|could you)\b/gi, '')
-      .replace(/\b(very|really|quite|rather)\b/gi, '')
+      .replace(/\b(please|kindly|would you|could you|can you|i need you to|i want you to)\b/gi, '')
+      .replace(/\b(very|really|quite|rather|extremely|highly|thoroughly|comprehensively)\b/gi, '')
+      .replace(/\bin detail\b/gi, '')
+      .replace(/\bin great detail\b/gi, '')
+      .replace(/\bwith examples\b/gi, '')
+      .replace(/\bwith specific examples\b/gi, '')
+      .replace(/\bwith detailed examples\b/gi, '')
       .replace(/\s+/g, ' ')
       .trim()
   }
@@ -180,11 +185,21 @@ export class CAPOEnhancedOptimizer {
    */
   private applyMediumOptimization(prompt: string): string {
     return prompt
-      .replace(/\b(please|kindly|would you|could you|I would like you to)\b/gi, '')
-      .replace(/\b(very|really|quite|rather|somewhat|pretty|fairly)\b/gi, '')
-      .replace(/\b(the|a|an|and|or|but|in|on|at|to|for|of|with|by)\b/gi, '') // Entropy removal
+      .replace(/\b(please|kindly|would you|could you|I would like you to|can you|i need you to|i want you to)\b/gi, '')
+      .replace(/\b(very|really|quite|rather|somewhat|pretty|fairly|extremely|highly|thoroughly|comprehensively)\b/gi, '')
+      .replace(/\b(the|a|an|and|or|but|in|on|at|to|for|of|with|by|is|are|was|were|be|been|being)\b/gi, '') // Entropy removal
       .replace(/\b(comprehensive|detailed|thorough|extensive)\b/gi, 'complete')
       .replace(/\b(optimization|improvement|enhancement)\b/gi, 'optimize')
+      .replace(/\bin detail\b/gi, '')
+      .replace(/\bin great detail\b/gi, '')
+      .replace(/\bwith examples\b/gi, '')
+      .replace(/\bwith specific examples\b/gi, '')
+      .replace(/\bwith detailed examples\b/gi, '')
+      .replace(/\bexplain\s+in\s+detail\b/gi, 'explain')
+      .replace(/\bexplain\s+thoroughly\b/gi, 'explain')
+      .replace(/\bexplain\s+comprehensively\b/gi, 'explain')
+      .replace(/\bprovide\s+a\s+detailed\s+explanation\b/gi, 'explain')
+      .replace(/\bwrite\s+a\s+detailed\s+explanation\b/gi, 'explain')
       .replace(/\s+/g, ' ')
       .trim()
   }

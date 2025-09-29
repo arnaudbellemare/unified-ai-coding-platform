@@ -62,7 +62,7 @@ export function UsageDisplay({ onUpgrade }: UsageDisplayProps = {}) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-blue-800 mb-3">
+          <p className="text-sm text-blue-900 mb-3">
             Sign in with GitHub to start creating AI-powered tasks and track your usage.
           </p>
           <Button onClick={() => (window.location.href = '/api/auth/github')} className="w-full">

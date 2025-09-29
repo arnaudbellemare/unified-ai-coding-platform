@@ -17,6 +17,19 @@ interface WalletProviderProps {
 export function WalletProvider({ children }: WalletProviderProps) {
   const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'cmfow1b160026l60btyr8fjp5'
 
+  // Temporary: Skip Privy provider if there are issues
+  const skipPrivy = process.env.NODE_ENV === 'development' && process.env.SKIP_PRIVY === 'true'
+
+  if (skipPrivy) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <WagmiProvider config={config}>
+          {children}
+        </WagmiProvider>
+      </QueryClientProvider>
+    )
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={config}>
@@ -27,13 +40,13 @@ export function WalletProvider({ children }: WalletProviderProps) {
               theme: 'light',
               accentColor: '#676FFF',
             },
-            loginMethods: ['email', 'wallet', 'google', 'twitter', 'discord'],
+            loginMethods: ['email', 'wallet'],
             embeddedWallets: {
               ethereum: {
                 createOnLogin: 'users-without-wallets',
               },
             },
-            defaultChain: baseSepolia,
+            defaultChain: base,
             supportedChains: [base, baseSepolia],
             mfa: {
               noPromptOnMfaRequired: false,

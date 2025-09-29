@@ -12,6 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Brain, Zap, DollarSign, CheckCircle, Clock, TrendingUp, Settings, Play, Download } from 'lucide-react'
 import { GitHubAuthButton } from './github-auth-button'
 import { PaymentProtocolTester } from './payment-protocol-tester'
+import { OnboardingExplainer, ValueProposition } from './onboarding-explainer'
+import { ProductionSetupGuide } from './production-setup-guide'
 
 interface Model {
   id: string
@@ -80,6 +82,8 @@ export default function UnifiedAllInOne() {
   const [result, setResult] = useState<UnifiedResult | null>(null)
   const [progress, setProgress] = useState(0)
   const [currentStep, setCurrentStep] = useState('')
+  const [showOnboarding, setShowOnboarding] = useState(true)
+  const [showProductionGuide, setShowProductionGuide] = useState(false)
   // Authentication removed - system works for everyone
 
   // Load models on component mount
@@ -668,17 +672,57 @@ What specific aspect would you like me to focus on or elaborate further?`
           </h1>
         </div>
         <p className="text-gray-600">One system for optimization, AI generation, and cost management</p>
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-4">
           <GitHubAuthButton />
+          <Button 
+            onClick={() => setShowProductionGuide(!showProductionGuide)}
+            variant="outline"
+            className="border-gray-300 text-gray-900 hover:bg-gray-100"
+          >
+            {showProductionGuide ? 'Hide' : 'Show'} Production Setup
+          </Button>
         </div>
       </div>
+
+      {/* Onboarding Explainer */}
+      {showOnboarding && (
+        <div className="mb-8">
+          <OnboardingExplainer />
+          <div className="text-center mt-4">
+            <Button 
+              onClick={() => setShowOnboarding(false)} 
+              variant="outline"
+              className="mr-2 border-gray-300 text-gray-900 hover:bg-gray-100"
+            >
+              Skip Tutorial
+            </Button>
+            <Button onClick={() => setShowOnboarding(false)}>
+              Start Using VERCLIBASE
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Value Proposition */}
+      {!showOnboarding && (
+        <div className="mb-8">
+          <ValueProposition />
+        </div>
+      )}
+
+      {/* Production Setup Guide */}
+      {showProductionGuide && (
+        <div className="mb-8">
+          <ProductionSetupGuide />
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Panel */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-gray-900">
               <Brain className="h-5 w-5" />
               Input & Configuration
             </CardTitle>
@@ -686,7 +730,7 @@ What specific aspect would you like me to focus on or elaborate further?`
           <CardContent className="space-y-4">
             {/* Model Selection */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">AI Model</label>
+              <label className="text-sm font-medium text-gray-900">AI Model</label>
               <Select value={selectedModel} onValueChange={setSelectedModel}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select AI model" />
@@ -713,7 +757,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             {/* Provider Selection */}
             {availableModels.find((m) => m.id === selectedModel)?.supportsProviderSelection && (
               <div className="space-y-2">
-                <label className="text-sm font-medium">Provider</label>
+                <label className="text-sm font-medium text-gray-900">Provider</label>
                 <Select value={selectedProvider} onValueChange={setSelectedProvider}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select provider" />
@@ -744,7 +788,7 @@ What specific aspect would you like me to focus on or elaborate further?`
 
             {/* Prompt Input */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Your Prompt</label>
+              <label className="text-sm font-medium text-gray-900">Your Prompt</label>
               <Textarea
                 placeholder="Enter your prompt here..."
                 value={prompt}
@@ -755,7 +799,7 @@ What specific aspect would you like me to focus on or elaborate further?`
 
             {/* Task Description */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Task Description</label>
+              <label className="text-sm font-medium text-gray-900">Task Description</label>
               <Input
                 placeholder="Describe what you want to achieve..."
                 value={task}
@@ -788,7 +832,7 @@ What specific aspect would you like me to focus on or elaborate further?`
         {/* Results Panel */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-gray-900">
               <CheckCircle className="h-5 w-5" />
               Results & Analytics
             </CardTitle>
@@ -798,8 +842,8 @@ What specific aspect would you like me to focus on or elaborate further?`
               <div className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>{currentStep}</span>
-                    <span>{progress}%</span>
+                    <span className="text-gray-900">{currentStep}</span>
+                    <span className="text-gray-900">{progress}%</span>
                   </div>
                   <Progress value={progress} className="w-full" />
                 </div>
@@ -848,8 +892,8 @@ What specific aspect would you like me to focus on or elaborate further?`
                 {/* AI Response */}
                 {(result.summary?.aiResponse || result.aiResponse?.content) && (
                   <div className="space-y-2">
-                    <h4 className="font-medium">AI Response</h4>
-                    <div className="p-3 bg-blue-50 rounded-lg text-sm">
+                    <h4 className="font-medium text-gray-900">AI Response</h4>
+                    <div className="p-3 bg-blue-50 rounded-lg text-sm text-gray-900">
                       {result.summary?.aiResponse || result.aiResponse?.content}
                     </div>
                   </div>
@@ -858,7 +902,7 @@ What specific aspect would you like me to focus on or elaborate further?`
                 {/* Advanced Optimizer Results */}
                 {result.summary?.optimizationEngines && (
                   <div className="space-y-3">
-                    <h4 className="font-medium">Advanced Optimization Engines</h4>
+                    <h4 className="font-medium text-gray-900">Advanced Optimization Engines</h4>
                     <div className="grid grid-cols-2 gap-2">
                       {result.summary.optimizationEngines.map((engine: string) => (
                         <Badge
@@ -871,8 +915,8 @@ What specific aspect would you like me to focus on or elaborate further?`
                         </Badge>
                       ))}
                     </div>
-                    <div className="text-sm text-gray-600">
-                      Selected: <span className="font-medium">{result.summary.selectedEngine}</span> engine
+                    <div className="text-sm text-gray-800">
+                      Selected: <span className="font-medium text-gray-900">{result.summary.selectedEngine}</span> engine
                     </div>
                   </div>
                 )}
@@ -880,7 +924,7 @@ What specific aspect would you like me to focus on or elaborate further?`
                 {/* Performance Metrics */}
                 {result.performanceMetrics && (
                   <div className="space-y-3">
-                    <h4 className="font-medium">📊 Performance Metrics</h4>
+                    <h4 className="font-medium text-gray-900">📊 Performance Metrics</h4>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="text-center p-2 bg-blue-50 rounded">
                         <div className="text-sm font-medium text-blue-600">

@@ -171,19 +171,78 @@ export class ResearchBackedOptimizer {
    * Stanford Research: Minimize prompt length (15-25 tokens for simple, 40-60 for complex)
    */
   private minimizePromptLength(prompt: string, targetModel: string): string {
-    const targetTokens = this.parameters.taskComplexity === 'simple' ? 20 : 50
+    const targetTokens = this.parameters.taskComplexity === 'simple' ? 15 : 40
     const currentTokens = Math.ceil(prompt.length / 4) // Rough token estimation
 
     if (currentTokens <= targetTokens) {
       return prompt
     }
 
-    // Extract key information and remove redundancy
-    const words = prompt.split(/\s+/)
-    const keyWords = this.extractKeyWords(words)
-    const optimized = keyWords.slice(0, targetTokens).join(' ')
+    // Aggressive length reduction techniques
+    let optimized = prompt
 
-    console.log(`📏 Stanford optimization: ${currentTokens} → ${Math.ceil(optimized.length / 4)} tokens`)
+    // Remove filler words and phrases
+    const fillerPatterns = [
+      /please\s+/gi,
+      /could you\s+/gi,
+      /would you\s+/gi,
+      /i need you to\s+/gi,
+      /i want you to\s+/gi,
+      /can you\s+/gi,
+      /i would like you to\s+/gi,
+      /\bvery\b/gi,
+      /\breally\b/gi,
+      /\bquite\b/gi,
+      /\bextremely\b/gi,
+      /\bhighly\b/gi,
+      /\bthoroughly\b/gi,
+      /\bcomprehensively\b/gi,
+      /\bin detail\b/gi,
+      /\bin great detail\b/gi,
+      /\bwith examples\b/gi,
+      /\bwith specific examples\b/gi,
+      /\bwith detailed examples\b/gi,
+    ]
+
+    fillerPatterns.forEach((pattern) => {
+      optimized = optimized.replace(pattern, '').trim()
+    })
+
+    // Remove redundant phrases
+    const redundantPatterns = [
+      /explain\s+in\s+detail/gi,
+      /explain\s+thoroughly/gi,
+      /explain\s+comprehensively/gi,
+      /provide\s+a\s+detailed\s+explanation/gi,
+      /give\s+me\s+a\s+comprehensive\s+guide/gi,
+      /write\s+a\s+detailed\s+explanation/gi,
+      /create\s+a\s+comprehensive\s+guide/gi,
+    ]
+
+    redundantPatterns.forEach((pattern) => {
+      optimized = optimized.replace(pattern, 'explain').trim()
+    })
+
+    // Compress multiple similar requests into one
+    optimized = optimized.replace(/\b(explain|describe|write|create|provide|give)\s+/gi, 'explain ')
+
+    // Aggressive compression for long prompts
+    if (Math.ceil(optimized.length / 4) > targetTokens) {
+      // Extract key nouns and verbs, remove adjectives and adverbs
+      const words = optimized.split(/\s+/)
+      const keyWords = words.filter(word => {
+        const lower = word.toLowerCase()
+        return !['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'].includes(lower) &&
+               !lower.endsWith('ly') && // Remove adverbs
+               word.length > 2
+      })
+      
+      if (keyWords.length > targetTokens / 2) {
+        optimized = keyWords.slice(0, Math.ceil(targetTokens / 2)).join(' ')
+      }
+    }
+
+    console.log(`🎯 Stanford optimization: Reduced from ${currentTokens} to ${Math.ceil(optimized.length / 4)} tokens`)
     return optimized
   }
 
@@ -191,15 +250,31 @@ export class ResearchBackedOptimizer {
    * MIT Research: Convert to zero-shot prompts (avoid few-shot examples)
    */
   private convertToZeroShot(prompt: string, taskDescription: string): string {
-    // Remove few-shot examples
-    const fewShotPattern = /(?:Example|For example|Here's how|Let me show you).*?(?=\n\n|\n[A-Z]|$)/gi
-    const zeroShotPrompt = prompt.replace(fewShotPattern, '').trim()
+    // Remove few-shot examples aggressively
+    const fewShotPatterns = [
+      /(?:Example|For example|Here's how|Let me show you|Here are some examples|Below is an example).*?(?=\n\n|\n[A-Z]|$)/gis,
+      /(?:1\.|2\.|3\.|4\.|5\.).*?(?=\n\n|\n[A-Z]|$)/gis,
+      /(?:Step \d+|First|Second|Third|Fourth|Fifth).*?(?=\n\n|\n[A-Z]|$)/gis,
+      /(?:Input:|Output:|Result:|Answer:).*?(?=\n\n|\n[A-Z]|$)/gis,
+    ]
 
-    // Add clear instructions instead
-    const clearInstructions = `Task: ${taskDescription}\n\nInstructions: ${zeroShotPrompt}`
+    let zeroShotPrompt = prompt
+    fewShotPatterns.forEach(pattern => {
+      zeroShotPrompt = zeroShotPrompt.replace(pattern, '').trim()
+    })
+
+    // Remove numbered lists and examples
+    zeroShotPrompt = zeroShotPrompt.replace(/^\d+\.\s+/gm, '').trim()
+    zeroShotPrompt = zeroShotPrompt.replace(/\n\s*\n/g, '\n').trim()
+
+    // Convert to direct instruction format
+    const directInstructions = zeroShotPrompt
+      .replace(/^(please|could you|would you|can you|i need you to|i want you to)\s+/gi, '')
+      .replace(/\s+$/, '')
+      .trim()
 
     console.log('🎯 MIT optimization: Converted to zero-shot prompt')
-    return clearInstructions
+    return directInstructions
   }
 
   /**
