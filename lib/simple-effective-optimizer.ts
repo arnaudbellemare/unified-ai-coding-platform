@@ -148,12 +148,18 @@ export class SimpleEffectiveOptimizer {
     let optimized = prompt
 
     // Stanford Research: Minimize prompt length for cost efficiency
-    if (verbosityLevel === 'high') {
-      // Aggressive length reduction based on Stanford studies
-      optimized = optimized.replace(/\b(comprehensive|detailed|thorough|extensive|complete|full|entire)\s+/gi, '')
-      optimized = optimized.replace(/\b(advanced|sophisticated|complex|elaborate)\s+/gi, '')
-      optimized = optimized.replace(/\b(professional|high-quality|excellent|perfect)\s+/gi, '')
-    }
+    // Apply aggressive optimization for all verbosity levels
+    optimized = optimized.replace(/\b(comprehensive|detailed|thorough|extensive|complete|full|entire)\s+/gi, '')
+    optimized = optimized.replace(/\b(advanced|sophisticated|complex|elaborate)\s+/gi, '')
+    optimized = optimized.replace(/\b(professional|high-quality|excellent|perfect)\s+/gi, '')
+    
+    // Additional aggressive reductions
+    optimized = optimized.replace(/\b(including|with|featuring|containing)\s+/gi, '')
+    optimized = optimized.replace(/\b(and the|and future|and regulatory)\s+/gi, 'and')
+    optimized = optimized.replace(/\b(applications|systems|technologies|platforms|solutions)\s+/gi, (match) => {
+      // Keep the word but remove if it's redundant
+      return match
+    })
 
     // MIT Research: Zero-shot conversion and instruction following
     optimized = optimized.replace(/\bexplain how to\b/gi, 'how to')
@@ -181,6 +187,42 @@ export class SimpleEffectiveOptimizer {
       optimized = optimized.replace(/\b(include|contain|have|feature)\s+/gi, '')
       optimized = optimized.replace(/\b(should|must|need to|have to)\s+/gi, '')
     }
+    
+    // Additional aggressive optimizations for better cost savings
+    optimized = optimized.replace(/\b(artificial intelligence|machine learning|deep learning|natural language processing|computer vision|robotic process automation|predictive analytics|clinical decision support systems|electronic health records|patient monitoring|drug discovery|medical imaging|telemedicine)\b/gi, (match) => {
+      const abbreviations = {
+        'artificial intelligence': 'AI',
+        'machine learning': 'ML', 
+        'deep learning': 'DL',
+        'natural language processing': 'NLP',
+        'computer vision': 'CV',
+        'robotic process automation': 'RPA',
+        'predictive analytics': 'PA',
+        'clinical decision support systems': 'CDSS',
+        'electronic health records': 'EHR',
+        'patient monitoring': 'PM',
+        'drug discovery': 'DD',
+        'medical imaging': 'MI',
+        'telemedicine': 'TM'
+      }
+      return abbreviations[match.toLowerCase()] || match
+    })
+    
+    // Remove redundant conjunctions and connectors
+    optimized = optimized.replace(/\b(and also|and then|and so|and thus|and therefore|and moreover|and furthermore)\b/gi, 'and')
+    optimized = optimized.replace(/\b(but also|but then|but so|but thus|but therefore)\b/gi, 'but')
+    optimized = optimized.replace(/\b(as well as|in addition to|along with|together with)\b/gi, 'and')
+    
+    // Compress common healthcare phrases
+    optimized = optimized.replace(/\b(healthcare delivery|patient outcomes|cost reduction|regulatory considerations)\b/gi, (match) => {
+      const compressions = {
+        'healthcare delivery': 'healthcare',
+        'patient outcomes': 'outcomes', 
+        'cost reduction': 'cost',
+        'regulatory considerations': 'regulatory'
+      }
+      return compressions[match.toLowerCase()] || match
+    })
 
     return optimized.trim()
   }
