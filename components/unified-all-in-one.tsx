@@ -686,7 +686,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             <Button
               onClick={() => setShowProductionGuide(!showProductionGuide)}
               variant="outline"
-              className="border-white text-white hover:bg-white/10"
+              className="border-white text-white hover:bg-white hover:text-black transition-colors"
             >
               {showProductionGuide ? 'Hide' : 'Show'} Production Setup
             </Button>
@@ -702,7 +702,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             <Button
               onClick={() => setShowOnboarding(false)}
               variant="outline"
-              className="mr-2 border-white text-white hover:bg-white/10"
+              className="mr-2 border-white text-white hover:bg-white hover:text-black transition-colors"
             >
               Skip Tutorial
             </Button>
@@ -1113,7 +1113,9 @@ What specific aspect would you like me to focus on or elaborate further?`
                             : result.aiResponse?.cost) ||
                           0,
                       ) || 0
-                    ).toFixed(6)}
+                    ) < 0.000001 ? 
+                      (parseFloat(result.aiResponse?.cost || 0)).toExponential(2) :
+                      parseFloat(result.aiResponse?.cost || 0).toFixed(6)}
                   </Badge>
                 </div>
 
@@ -1151,7 +1153,9 @@ What specific aspect would you like me to focus on or elaborate further?`
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  ${(result.summary?.costSavings?.reduction || 0).toFixed(6)}
+                  ${(result.summary?.costSavings?.reduction || 0) < 0.000001 ? 
+                    (result.summary?.costSavings?.reduction || 0).toExponential(2) :
+                    (result.summary?.costSavings?.reduction || 0).toFixed(6)}
                 </div>
                 <div className="text-sm text-gray-600">Cost Savings</div>
               </div>

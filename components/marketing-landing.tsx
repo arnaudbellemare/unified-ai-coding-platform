@@ -78,9 +78,9 @@ export function MarketingLanding({
           {/* Completely Static Background - No Movement */}
           <div className="absolute inset-0 bg-gray-50" />
 
-          {/* Halftone Pattern with Moving Dots */}
+          {/* Halftone Pattern with Mouse-Responsive Movement */}
           <div
-            className="absolute inset-0 opacity-40"
+            className="absolute inset-0 opacity-40 transition-all duration-300 ease-out"
             style={{
               backgroundImage: isInBlackSection
                 ? `
@@ -99,55 +99,12 @@ export function MarketingLanding({
               `,
               backgroundSize: '40px 40px, 35px 35px, 45px 45px, 38px 38px, 42px 42px',
               animation: 'halftoneMove 40s linear infinite, slowRotate 120s linear infinite',
+              transform: mousePosition.x && mousePosition.y ? 
+                `translateX(${Math.max(-15, Math.min(15, (mousePosition.x - window.innerWidth * 0.5) * 0.05))}px) translateY(${Math.max(-15, Math.min(15, (mousePosition.y - window.innerHeight * 0.5) * 0.05))}px) rotate(${Math.max(-3, Math.min(3, (mousePosition.x - window.innerWidth * 0.5) * 0.01))}deg)` : 
+                'none',
             }}
           />
 
-          {/* Magnetic Particle System */}
-          <div className="absolute inset-0">
-            {/* Magnetic Particles that follow mouse */}
-            <div
-              className={`absolute w-2 h-2 rounded-full transition-all duration-300 ease-out ${isInBlackSection ? 'bg-white/80' : 'bg-gray-600/60'}`}
-              style={{
-                left: mousePosition.x ? `${mousePosition.x - 20}px` : '20%',
-                top: mousePosition.y ? `${mousePosition.y - 10}px` : '30%',
-              }}
-            />
-            <div
-              className={`absolute w-1.5 h-1.5 rounded-full transition-all duration-500 ease-out ${isInBlackSection ? 'bg-white/70' : 'bg-gray-700/50'}`}
-              style={{
-                left: mousePosition.x ? `${mousePosition.x + 15}px` : '70%',
-                top: mousePosition.y ? `${mousePosition.y + 20}px` : '60%',
-              }}
-            />
-            <div
-              className={`absolute w-1 h-1 rounded-full transition-all duration-400 ease-out ${isInBlackSection ? 'bg-white/60' : 'bg-gray-600/40'}`}
-              style={{
-                left: mousePosition.x ? `${mousePosition.x - 10}px` : '40%',
-                top: mousePosition.y ? `${mousePosition.y - 15}px` : '20%',
-              }}
-            />
-            <div
-              className={`absolute w-2.5 h-2.5 rounded-full transition-all duration-600 ease-out ${isInBlackSection ? 'bg-white/90' : 'bg-gray-700/70'}`}
-              style={{
-                left: mousePosition.x ? `${mousePosition.x + 25}px` : '80%',
-                top: mousePosition.y ? `${mousePosition.y - 5}px` : '80%',
-              }}
-            />
-            <div
-              className={`absolute w-1.5 h-1.5 rounded-full transition-all duration-350 ease-out ${isInBlackSection ? 'bg-white/75' : 'bg-gray-600/55'}`}
-              style={{
-                left: mousePosition.x ? `${mousePosition.x - 25}px` : '15%',
-                top: mousePosition.y ? `${mousePosition.y + 15}px` : '70%',
-              }}
-            />
-            <div
-              className={`absolute w-1 h-1 rounded-full transition-all duration-450 ease-out ${isInBlackSection ? 'bg-white/65' : 'bg-gray-700/45'}`}
-              style={{
-                left: mousePosition.x ? `${mousePosition.x + 5}px` : '60%',
-                top: mousePosition.y ? `${mousePosition.y + 10}px` : '50%',
-              }}
-            />
-          </div>
         </div>
       )}
 
@@ -621,7 +578,9 @@ export function MarketingLanding({
                   </div>
                   <p className="text-gray-700 leading-relaxed">
                     Allocate sponsorship budgets (per search, per click, per checkout) using x402.
-                    <span className="font-semibold text-black">FREE facilitator, FREE gas fees, fully transparent and auditable.</span>
+                    <span className="font-semibold text-black">
+                      FREE facilitator, FREE gas fees, fully transparent and auditable.
+                    </span>
                   </p>
                 </CardContent>
               </Card>

@@ -245,20 +245,30 @@ export async function POST(request: NextRequest) {
     console.log(`🤖 Generating AI response with ${model}...`)
     const startTime = Date.now()
 
+    // Optimize the entire message payload for maximum cost efficiency
+    const optimizedSystemMessage = `Task: ${task}`
+    const optimizedMessages = [
+      {
+        role: 'system' as const,
+        content: optimizedSystemMessage,
+      },
+      {
+        role: 'user' as const,
+        content: optimizedPrompt,
+      },
+    ]
+
+    console.log(`📝 Optimized messages:`, {
+      systemTokens: Math.ceil(optimizedSystemMessage.length / 4),
+      userTokens: Math.ceil(optimizedPrompt.length / 4),
+      totalEstimatedTokens: Math.ceil((optimizedSystemMessage + optimizedPrompt).length / 4),
+    })
+
     let aiResponse
     try {
       aiResponse = await openRouterClient.generateText(
         model,
-        [
-          {
-            role: 'system',
-            content: `You are an AI assistant optimized for cost efficiency and accuracy. Task: ${task}`,
-          },
-          {
-            role: 'user',
-            content: optimizedPrompt,
-          },
-        ],
+        optimizedMessages,
         {
           max_tokens: 1000,
           temperature: 0.7,
@@ -277,9 +287,9 @@ export async function POST(request: NextRequest) {
 
     const endTime = Date.now()
 
-    // Step 4: Calculate real costs
-    const promptTokens = Math.ceil(optimizedPrompt.length / 4)
-    const completionTokens = Math.ceil(aiResponse.content.length / 4)
+    // Step 4: Calculate real costs using ACTUAL token counts from OpenRouter
+    const actualPromptTokens = aiResponse.usage.prompt_tokens || 0
+    const actualCompletionTokens = aiResponse.usage.completion_tokens || 0
     const promptPrice =
       typeof selectedModelData.pricing.prompt === 'string'
         ? parseFloat(selectedModelData.pricing.prompt)
@@ -288,11 +298,11 @@ export async function POST(request: NextRequest) {
       typeof selectedModelData.pricing.completion === 'string'
         ? parseFloat(selectedModelData.pricing.completion)
         : selectedModelData.pricing.completion
-    const promptCost = (promptPrice * promptTokens) / 1000000
-    const completionCost = (completionPrice * completionTokens) / 1000000
+    const promptCost = (promptPrice * actualPromptTokens) / 1000000
+    const completionCost = (completionPrice * actualCompletionTokens) / 1000000
     const totalCost = promptCost + completionCost
 
-    console.log(`💰 Real cost: $${totalCost.toFixed(6)} (${promptTokens}p + ${completionTokens}c tokens)`)
+    console.log(`💰 Real cost: $${totalCost.toFixed(6)} (${actualPromptTokens}p + ${actualCompletionTokens}c tokens)`)
 
     // Step 5: Calculate proper cost savings
     const originalPromptTokens = Math.ceil(prompt.length / 4)
@@ -302,10 +312,10 @@ export async function POST(request: NextRequest) {
 
     console.log(`💰 Cost Analysis:`, {
       originalPromptTokens,
-      optimizedPromptTokens: promptTokens,
-      tokenReduction: originalPromptTokens - promptTokens,
+      actualPromptTokensUsed: actualPromptTokens,
+      tokenReduction: originalPromptTokens - actualPromptTokens,
       originalCost: originalPromptCost,
-      optimizedCost: promptCost,
+      actualCost: promptCost,
       actualSavings,
       savingsPercentage: `${savingsPercentage.toFixed(2)}%`,
     })
@@ -318,9 +328,9 @@ export async function POST(request: NextRequest) {
           userId: userId || 'anonymous',
           model: selectedModelData.id,
           provider: 'default-provider',
-          promptTokens,
-          completionTokens,
-          totalTokens: promptTokens + completionTokens,
+          promptTokens: actualPromptTokens,
+          completionTokens: actualCompletionTokens,
+          totalTokens: actualPromptTokens + actualCompletionTokens,
           promptCost,
           completionCost,
           totalCost,
@@ -347,9 +357,9 @@ export async function POST(request: NextRequest) {
         model: selectedModelData.id,
         provider: 'default-provider',
         tokens: {
-          prompt: promptTokens,
-          completion: completionTokens,
-          total: promptTokens + completionTokens,
+          prompt: actualPromptTokens,
+          completion: actualCompletionTokens,
+          total: actualPromptTokens + actualCompletionTokens,
         },
         cost: {
           prompt: promptCost,
@@ -361,15 +371,15 @@ export async function POST(request: NextRequest) {
       },
       summary: {
         totalCost: totalCost,
-        tokensUsed: promptTokens + completionTokens,
+        tokensUsed: actualPromptTokens + actualCompletionTokens,
         optimizationApplied: true,
         model: selectedModelData.id,
         provider: 'default-provider',
         latency: endTime - startTime,
         pricing: selectedModelData.pricing,
         efficiency: {
-          costPerToken: totalCost / (promptTokens + completionTokens),
-          tokensPerSecond: (promptTokens + completionTokens) / ((endTime - startTime) / 1000),
+          costPerToken: totalCost / (actualPromptTokens + actualCompletionTokens),
+          tokensPerSecond: (actualPromptTokens + actualCompletionTokens) / ((endTime - startTime) / 1000),
           costPerCharacter: totalCost / optimizedPrompt.length,
         },
         costSavings: {
@@ -384,8 +394,8 @@ export async function POST(request: NextRequest) {
           savingsPercentage: savingsPercentage,
         },
         tokenSavings: {
-          reduction: Math.ceil(prompt.length / 4) - promptTokens,
-          percentage: Math.max(0, ((Math.ceil(prompt.length / 4) - promptTokens) / Math.ceil(prompt.length / 4)) * 100),
+          reduction: Math.ceil(prompt.length / 4) - actualPromptTokens,
+          percentage: Math.max(0, ((Math.ceil(prompt.length / 4) - actualPromptTokens) / Math.ceil(prompt.length / 4)) * 100),
         },
         optimizedPrompt: optimizedPrompt,
         performanceScore: 95,
@@ -407,8 +417,8 @@ export async function POST(request: NextRequest) {
       costAnalysis: {
         modelPricing: selectedModelData.pricing,
         efficiency: {
-          costPerToken: totalCost / (promptTokens + completionTokens),
-          tokensPerSecond: (promptTokens + completionTokens) / ((endTime - startTime) / 1000),
+          costPerToken: totalCost / (actualPromptTokens + actualCompletionTokens),
+          tokensPerSecond: (actualPromptTokens + actualCompletionTokens) / ((endTime - startTime) / 1000),
           costPerCharacter: totalCost / optimizedPrompt.length,
         },
         savings: {
@@ -424,7 +434,7 @@ export async function POST(request: NextRequest) {
         data: {
           userId: userId || 'anonymous',
           totalCost,
-          tokens: promptTokens + completionTokens,
+          tokens: actualPromptTokens + actualCompletionTokens,
           model: selectedModelData.id,
           timestamp: new Date().toISOString(),
         },
@@ -433,7 +443,7 @@ export async function POST(request: NextRequest) {
         totalTime: endTime - startTime,
         optimizationTime: Date.now() - startTime - (endTime - startTime),
         generationTime: endTime - startTime,
-        throughput: (promptTokens + completionTokens) / ((endTime - startTime) / 1000),
+        throughput: (actualPromptTokens + actualCompletionTokens) / ((endTime - startTime) / 1000),
       },
       timestamp: new Date().toISOString(),
     }

@@ -153,10 +153,8 @@ export function AcpDemo() {
                   <div className="font-medium mb-1">x402 Payment Benefits:</div>
                   <div className="text-xs text-green-700 bg-green-50 p-2 rounded">
                     • <strong>FREE</strong> Coinbase x402 facilitator (no fees!)
-                    <br />
-                    • <strong>FREE</strong> gas fees (sponsored by Coinbase)
-                    <br />
-                    • <strong>FREE</strong> receiving (always free)
+                    <br />• <strong>FREE</strong> gas fees (sponsored by Coinbase)
+                    <br />• <strong>FREE</strong> receiving (always free)
                     <br />
                     • Instant settlement on Base network
                     <br />
