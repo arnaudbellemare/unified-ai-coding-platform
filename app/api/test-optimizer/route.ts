@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('🧠 Testing Simple Effective Optimizer...')
-    
+
     // Test the optimizer
     const startTime = Date.now()
     const optimizationResult = simpleEffectiveOptimizer.optimizePrompt(prompt, verbosityLevel)
@@ -20,7 +20,9 @@ export async function POST(request: NextRequest) {
     console.log(`✅ Optimization completed in ${optimizationTime}ms`)
     console.log(`📝 Original: "${prompt}" (${optimizationResult.originalTokens} tokens)`)
     console.log(`✨ Optimized: "${optimizationResult.optimizedPrompt}" (${optimizationResult.optimizedTokens} tokens)`)
-    console.log(`💰 Token Reduction: ${optimizationResult.tokenReduction} tokens (${optimizationResult.costReduction.toFixed(1)}%)`)
+    console.log(
+      `💰 Token Reduction: ${optimizationResult.tokenReduction} tokens (${optimizationResult.costReduction.toFixed(1)}%)`,
+    )
     console.log(`🔧 Strategies: ${optimizationResult.strategies.join(', ')}`)
 
     return NextResponse.json({
@@ -34,20 +36,20 @@ export async function POST(request: NextRequest) {
         costReduction: optimizationResult.costReduction,
         strategies: optimizationResult.strategies,
         verbosityLevel: optimizationResult.verbosityLevel,
-        optimizationTime: optimizationTime
+        optimizationTime: optimizationTime,
       },
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
     console.error('Optimizer test error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Optimizer test failed', 
+      {
+        success: false,
+        error: 'Optimizer test failed',
         details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
-      }, 
-      { status: 500 }
+      },
+      { status: 500 },
     )
   }
 }

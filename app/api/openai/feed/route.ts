@@ -17,7 +17,7 @@ export async function GET() {
     return p.variants.map((v) => {
       const price = typeof v.price === 'number' ? Number(v.price.toFixed(2)) : v.price
       const availability = v.inStock ? 'in_stock' : 'out_of_stock'
-      const inventoryQty = v.inStock ? (Number((v.attributes as any)?.inventory_quantity) || 25) : 0
+      const inventoryQty = v.inStock ? Number((v.attributes as any)?.inventory_quantity) || 25 : 0
       const color = (v.attributes as any)?.color
       const size = (v.attributes as any)?.size
 
@@ -90,7 +90,39 @@ export async function GET_CSV() {
   const res = await GET()
   const { items } = (await res.json()) as any
   const headers = [
-    'enable_search','enable_checkout','id','mpn','title','description','link','condition','product_category','brand','material','weight','price','availability','inventory_quantity','image_link','additional_image_link','seller_name','seller_url','seller_privacy_policy','seller_tos','return_policy','return_window','shipping','delivery_estimate','product_review_count','product_review_rating','return_rate','item_group_id','item_group_title','color','size','offer_id'
+    'enable_search',
+    'enable_checkout',
+    'id',
+    'mpn',
+    'title',
+    'description',
+    'link',
+    'condition',
+    'product_category',
+    'brand',
+    'material',
+    'weight',
+    'price',
+    'availability',
+    'inventory_quantity',
+    'image_link',
+    'additional_image_link',
+    'seller_name',
+    'seller_url',
+    'seller_privacy_policy',
+    'seller_tos',
+    'return_policy',
+    'return_window',
+    'shipping',
+    'delivery_estimate',
+    'product_review_count',
+    'product_review_rating',
+    'return_rate',
+    'item_group_id',
+    'item_group_title',
+    'color',
+    'size',
+    'offer_id',
   ]
   const lines = [headers.join(',')]
   for (const it of items) {
@@ -114,7 +146,39 @@ export async function GET_TSV() {
   const res = await GET()
   const { items } = (await res.json()) as any
   const headers = [
-    'enable_search','enable_checkout','id','mpn','title','description','link','condition','product_category','brand','material','weight','price','availability','inventory_quantity','image_link','additional_image_link','seller_name','seller_url','seller_privacy_policy','seller_tos','return_policy','return_window','shipping','delivery_estimate','product_review_count','product_review_rating','return_rate','item_group_id','item_group_title','color','size','offer_id'
+    'enable_search',
+    'enable_checkout',
+    'id',
+    'mpn',
+    'title',
+    'description',
+    'link',
+    'condition',
+    'product_category',
+    'brand',
+    'material',
+    'weight',
+    'price',
+    'availability',
+    'inventory_quantity',
+    'image_link',
+    'additional_image_link',
+    'seller_name',
+    'seller_url',
+    'seller_privacy_policy',
+    'seller_tos',
+    'return_policy',
+    'return_window',
+    'shipping',
+    'delivery_estimate',
+    'product_review_count',
+    'product_review_rating',
+    'return_rate',
+    'item_group_id',
+    'item_group_title',
+    'color',
+    'size',
+    'offer_id',
   ]
   const lines = [headers.join('\t')]
   for (const it of items) {

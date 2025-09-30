@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
       console.log('📋 Current key info:', {
         exists: !!process.env.OPENROUTER_API_KEY,
         length: process.env.OPENROUTER_API_KEY?.length || 0,
-        isPlaceholder: process.env.OPENROUTER_API_KEY === 'your-openrouter-api-key'
+        isPlaceholder: process.env.OPENROUTER_API_KEY === 'your-openrouter-api-key',
       })
       const intelligentResponse = await generateIntelligentResponse(prompt, task, model)
 
@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
 
     // Step 1: Use simple effective optimizer based on proven CAPO, GEPA, Cloudflare, and AI research
     console.log('🧠 Running simple effective optimizer...')
-    
+
     const optimizationResult = simpleEffectiveOptimizer.optimizePrompt(prompt, verbosityLevel || 'medium')
     const optimizedPrompt = optimizationResult.optimizedPrompt
     const costReduction = optimizationResult.costReduction
@@ -236,7 +236,9 @@ export async function POST(request: NextRequest) {
     console.log(`✅ Simple Effective Optimizer Results:`)
     console.log(`📝 Original: "${prompt}" (${optimizationResult.originalTokens} tokens)`)
     console.log(`✨ Optimized: "${optimizedPrompt}" (${optimizationResult.optimizedTokens} tokens)`)
-    console.log(`💰 Token Reduction: ${optimizationResult.tokenReduction} tokens (${optimizationResult.costReduction.toFixed(1)}%)`)
+    console.log(
+      `💰 Token Reduction: ${optimizationResult.tokenReduction} tokens (${optimizationResult.costReduction.toFixed(1)}%)`,
+    )
     console.log(`🔧 Strategies: ${optimizationResult.strategies.join(', ')}`)
 
     // Step 3: Make real AI generation call
@@ -297,7 +299,7 @@ export async function POST(request: NextRequest) {
     const originalPromptCost = (promptPrice * originalPromptTokens) / 1000000
     const actualSavings = originalPromptCost - promptCost
     const savingsPercentage = originalPromptCost > 0 ? (actualSavings / originalPromptCost) * 100 : 0
-    
+
     console.log(`💰 Cost Analysis:`, {
       originalPromptTokens,
       optimizedPromptTokens: promptTokens,
@@ -305,7 +307,7 @@ export async function POST(request: NextRequest) {
       originalCost: originalPromptCost,
       optimizedCost: promptCost,
       actualSavings,
-      savingsPercentage: `${savingsPercentage.toFixed(2)}%`
+      savingsPercentage: `${savingsPercentage.toFixed(2)}%`,
     })
 
     // Step 6: Process x402 reimbursement

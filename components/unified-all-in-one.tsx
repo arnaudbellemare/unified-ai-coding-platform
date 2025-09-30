@@ -827,8 +827,8 @@ What specific aspect would you like me to focus on or elaborate further?`
                   className={`text-xs ${verbosityLevel === 'low' ? 'bg-blue-100 border-blue-300 text-blue-800' : 'bg-white text-gray-700 border-gray-300'}`}
                   onClick={() => {
                     setVerbosityLevel('low')
-                    setPrompt("Write a simple function to calculate the factorial of a number")
-                    setTask("Create a basic factorial function with error handling")
+                    setPrompt('Write a simple function to calculate the factorial of a number')
+                    setTask('Create a basic factorial function with error handling')
                   }}
                 >
                   🎯 Low
@@ -839,8 +839,12 @@ What specific aspect would you like me to focus on or elaborate further?`
                   className={`text-xs ${verbosityLevel === 'medium' ? 'bg-purple-100 border-purple-300 text-purple-800' : 'bg-white text-gray-700 border-gray-300'}`}
                   onClick={() => {
                     setVerbosityLevel('medium')
-                    setPrompt("Create a comprehensive React component library with TypeScript, including buttons, forms, modals, and navigation components")
-                    setTask("Build a reusable component library with proper TypeScript types, Storybook documentation, and unit tests")
+                    setPrompt(
+                      'Create a comprehensive React component library with TypeScript, including buttons, forms, modals, and navigation components',
+                    )
+                    setTask(
+                      'Build a reusable component library with proper TypeScript types, Storybook documentation, and unit tests',
+                    )
                   }}
                 >
                   ⚖️ Medium
@@ -851,8 +855,12 @@ What specific aspect would you like me to focus on or elaborate further?`
                   className={`text-xs ${verbosityLevel === 'high' ? 'bg-green-100 border-green-300 text-green-800' : 'bg-white text-gray-700 border-gray-300'}`}
                   onClick={() => {
                     setVerbosityLevel('high')
-                    setPrompt("Please create a detailed, comprehensive, and thorough analysis of the current state of artificial intelligence in healthcare, including machine learning applications, deep learning models, natural language processing systems, computer vision technologies, robotic process automation, predictive analytics, clinical decision support systems, electronic health records integration, patient monitoring solutions, drug discovery platforms, medical imaging analysis, telemedicine platforms, and the future implications of AI in healthcare delivery, patient outcomes, cost reduction, and regulatory considerations.")
-                    setTask("Provide an in-depth research analysis covering all aspects of AI in healthcare with detailed examples, case studies, technical specifications, implementation strategies, and future outlook")
+                    setPrompt(
+                      'Please create a detailed, comprehensive, and thorough analysis of the current state of artificial intelligence in healthcare, including machine learning applications, deep learning models, natural language processing systems, computer vision technologies, robotic process automation, predictive analytics, clinical decision support systems, electronic health records integration, patient monitoring solutions, drug discovery platforms, medical imaging analysis, telemedicine platforms, and the future implications of AI in healthcare delivery, patient outcomes, cost reduction, and regulatory considerations.',
+                    )
+                    setTask(
+                      'Provide an in-depth research analysis covering all aspects of AI in healthcare with detailed examples, case studies, technical specifications, implementation strategies, and future outlook',
+                    )
                   }}
                 >
                   🔬 High
@@ -900,20 +908,17 @@ What specific aspect would you like me to focus on or elaborate further?`
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <div className="w-8 h-8 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-                    <div className="absolute inset-0 w-8 h-8 border-2 border-transparent border-r-blue-400 rounded-full animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
+                    <div
+                      className="absolute inset-0 w-8 h-8 border-2 border-transparent border-r-blue-400 rounded-full animate-spin"
+                      style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}
+                    ></div>
                   </div>
                   <div className="flex-1">
-                    <div className="text-lg font-semibold text-gray-900 animate-pulse">
-                      {currentStep}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Optimizing your request with advanced AI engines...
-                    </div>
+                    <div className="text-lg font-semibold text-gray-900 animate-pulse">{currentStep}</div>
+                    <div className="text-sm text-gray-500">Optimizing your request with advanced AI engines...</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600 animate-pulse">
-                      {progress}%
-                    </div>
+                    <div className="text-2xl font-bold text-slate-700 animate-pulse">{progress}%</div>
                   </div>
                 </div>
 
@@ -921,8 +926,8 @@ What specific aspect would you like me to focus on or elaborate further?`
                 <div className="space-y-3">
                   <div className="relative">
                     <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full transition-all duration-1000 ease-out relative"
+                      <div
+                        className="h-full bg-gradient-to-r from-slate-600 via-gray-700 to-slate-800 rounded-full transition-all duration-1000 ease-out relative"
                         style={{ width: `${progress}%` }}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
@@ -937,24 +942,30 @@ What specific aspect would you like me to focus on or elaborate further?`
                       <span>Complete</span>
                     </div>
                   </div>
-                  
+
                   {/* Processing steps animation */}
                   <div className="grid grid-cols-3 gap-2">
-                    <div className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
-                      progress > 10 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'
-                    }`}>
+                    <div
+                      className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
+                        progress > 10 ? 'bg-slate-100 text-slate-800' : 'bg-gray-100 text-gray-500'
+                      }`}
+                    >
                       <div className="font-medium">Research</div>
                       <div className="text-xs">Stanford & MIT</div>
                     </div>
-                    <div className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
-                      progress > 40 ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-500'
-                    }`}>
+                    <div
+                      className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
+                        progress > 40 ? 'bg-gray-100 text-gray-800' : 'bg-gray-100 text-gray-500'
+                      }`}
+                    >
                       <div className="font-medium">GEPA</div>
                       <div className="text-xs">Evolution</div>
                     </div>
-                    <div className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
-                      progress > 70 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'
-                    }`}>
+                    <div
+                      className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
+                        progress > 70 ? 'bg-slate-200 text-slate-900' : 'bg-gray-100 text-gray-500'
+                      }`}
+                    >
                       <div className="font-medium">Cloudflare</div>
                       <div className="text-xs">Advanced</div>
                     </div>
@@ -963,9 +974,18 @@ What specific aspect would you like me to focus on or elaborate further?`
 
                 {/* Loading dots animation */}
                 <div className="flex justify-center space-x-1">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  <div
+                    className="w-2 h-2 bg-slate-600 rounded-full animate-bounce"
+                    style={{ animationDelay: '0ms' }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-700 rounded-full animate-bounce"
+                    style={{ animationDelay: '150ms' }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-slate-800 rounded-full animate-bounce"
+                    style={{ animationDelay: '300ms' }}
+                  ></div>
                 </div>
               </div>
             )}
@@ -977,14 +997,20 @@ What specific aspect would you like me to focus on or elaborate further?`
                   <div className="text-center p-3 bg-green-50 rounded-lg">
                     <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
                     <div className="text-lg font-bold text-green-600">
-                      {Number(result.summary?.costSavings?.percentage || result.optimization?.costReduction || 0).toFixed(2)}%
+                      {Number(
+                        result.summary?.costSavings?.percentage || result.optimization?.costReduction || 0,
+                      ).toFixed(2)}
+                      %
                     </div>
                     <div className="text-xs text-gray-600">Cost Saved</div>
                   </div>
                   <div className="text-center p-3 bg-blue-600 rounded-lg">
                     <TrendingUp className="h-6 w-6 mx-auto text-white mb-1" />
                     <div className="text-lg font-bold text-white">
-                      {Number(result.summary?.tokenSavings?.percentage || result.optimization?.tokenReduction || 0).toFixed(1)}%
+                      {Number(
+                        result.summary?.tokenSavings?.percentage || result.optimization?.tokenReduction || 0,
+                      ).toFixed(1)}
+                      %
                     </div>
                     <div className="text-xs text-white">Tokens Saved</div>
                   </div>

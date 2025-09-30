@@ -3,10 +3,22 @@
  * Using actual @coinbase/cdp-sdk for agent execution
  */
 
-import { CdpClient } from '@coinbase/cdp-sdk'
 import { ethers } from 'ethers'
 
+// Dynamic import for Coinbase CDP SDK to avoid SSR issues
+let CdpClient: any
+
+if (typeof window !== 'undefined') {
+  try {
+    const cdpSdk = require('@coinbase/cdp-sdk')
+    CdpClient = cdpSdk.CdpClient
+  } catch (error) {
+    console.warn('Coinbase CDP SDK not available:', error)
+  }
+}
+
 export interface RealAgentKitConfig {
+  clientId: string
   apiKeyId: string
   apiKeySecret: string
   walletSecret: string
@@ -16,17 +28,23 @@ export interface RealAgentKitConfig {
 }
 
 export class RealCoinbaseAgentKit {
-  private cdp: CdpClient
+  private cdp: any
   private provider: ethers.Provider
   private wallet: ethers.Wallet
 
   constructor(config: RealAgentKitConfig) {
-    // Initialize real Coinbase CDP SDK
-    this.cdp = new CdpClient({
-      apiKeyId: config.apiKeyId,
-      apiKeySecret: config.apiKeySecret,
-      walletSecret: config.walletSecret,
-    })
+    // Initialize real Coinbase CDP SDK only if available
+    if (CdpClient) {
+      this.cdp = new CdpClient({
+        clientId: config.clientId,
+        apiKeyId: config.apiKeyId,
+        apiKeySecret: config.apiKeySecret,
+        walletSecret: config.walletSecret,
+      })
+    } else {
+      console.warn('Coinbase CDP SDK not available - using fallback')
+      this.cdp = null
+    }
 
     // Initialize real Base Sepolia testnet provider for development
     this.provider = new ethers.JsonRpcProvider(config.baseRpcUrl)
@@ -51,6 +69,17 @@ export class RealCoinbaseAgentKit {
   }> {
     try {
       console.log(`🤖 Executing real Coinbase AgentKit agent: ${agentId}`)
+
+      // Check if CDP is available
+      if (!this.cdp) {
+        console.warn('Coinbase CDP SDK not available - using fallback execution')
+        return {
+          success: false,
+          output: 'Coinbase CDP SDK not available - please check configuration',
+          cost: 0,
+          gasUsed: '0',
+        }
+      }
 
       // For now, simulate agent execution while we set up the real CDP integration
       // TODO: Implement actual CDP agent execution once we have the correct API

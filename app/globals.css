@@ -133,3 +133,374 @@ button {
     background-position: -200% 0;
   }
 }
+
+/* Monochromatic Gradient Motion Animations */
+@keyframes monochromeFlow {
+  0%, 100% {
+    background: radial-gradient(ellipse 900px 700px at 25% 20%, rgba(240, 240, 240, 0.3), transparent 70%),
+                radial-gradient(ellipse 600px 400px at 75% 80%, rgba(60, 60, 60, 0.2), transparent 60%),
+                radial-gradient(ellipse 800px 500px at 50% 30%, rgba(200, 200, 200, 0.25), transparent 65%),
+                linear-gradient(135deg, rgba(100, 100, 100, 0.3) 0%, rgba(150, 150, 150, 0.2) 50%, rgba(40, 40, 40, 0.3) 100%);
+  }
+  50% {
+    background: radial-gradient(ellipse 950px 750px at 30% 25%, rgba(245, 245, 245, 0.25), transparent 72%),
+                radial-gradient(ellipse 650px 450px at 70% 75%, rgba(55, 55, 55, 0.15), transparent 62%),
+                radial-gradient(ellipse 850px 550px at 45% 35%, rgba(190, 190, 190, 0.2), transparent 67%),
+                linear-gradient(135deg, rgba(105, 105, 105, 0.25) 0%, rgba(155, 155, 155, 0.15) 50%, rgba(35, 35, 35, 0.25) 100%);
+  }
+}
+
+@keyframes halftoneMove {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  12.5% {
+    background-position: 12.5% 12.5%, 8% 18%, 18% 8%, 10% 20%, 15% 10%;
+  }
+  25% {
+    background-position: 25% 25%, 15% 35%, 35% 15%, 20% 40%, 30% 20%;
+  }
+  37.5% {
+    background-position: 37.5% 37.5%, 22% 52%, 52% 22%, 30% 60%, 45% 30%;
+  }
+  50% {
+    background-position: 50% 50%, 30% 70%, 70% 30%, 40% 80%, 60% 40%;
+  }
+  62.5% {
+    background-position: 62.5% 62.5%, 38% 82%, 82% 38%, 50% 90%, 75% 50%;
+  }
+  75% {
+    background-position: 75% 75%, 45% 85%, 85% 45%, 60% 90%, 80% 60%;
+  }
+  87.5% {
+    background-position: 87.5% 87.5%, 52% 92%, 92% 52%, 70% 95%, 85% 70%;
+  }
+  100% {
+    background-position: 100% 100%, 60% 100%, 100% 60%, 80% 100%, 100% 80%;
+  }
+}
+
+@keyframes lightBandFlow {
+  0%, 100% {
+    transform: translateX(0) translateY(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(3px) translateY(-1px) scale(1.005);
+    opacity: 0.4;
+  }
+}
+
+@keyframes shadowFlow {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  12.5% {
+    opacity: 0.75;
+    transform: scale(1.02);
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+  37.5% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+  62.5% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
+  75% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+  87.5% {
+    opacity: 0.75;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  12.5% {
+    background-position: 12.5% 12.5%, 15% 10%, 10% 15%, 17.5% 7.5%;
+  }
+  25% {
+    background-position: 25% 25%, 30% 20%, 20% 30%, 35% 15%;
+  }
+  37.5% {
+    background-position: 37.5% 37.5%, 45% 30%, 30% 45%, 52.5% 22.5%;
+  }
+  50% {
+    background-position: 50% 50%, 60% 40%, 40% 60%, 70% 30%;
+  }
+  62.5% {
+    background-position: 62.5% 62.5%, 75% 50%, 50% 75%, 87.5% 37.5%;
+  }
+  75% {
+    background-position: 75% 75%, 90% 60%, 60% 90%, 85% 45%;
+  }
+  87.5% {
+    background-position: 87.5% 87.5%, 105% 70%, 70% 105%, 102.5% 52.5%;
+  }
+  100% {
+    background-position: 100% 100%, 120% 80%, 80% 120%, 100% 60%;
+  }
+}
+
+@keyframes subtleBreath {
+  0%, 100% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.005);
+  }
+}
+
+@keyframes slowRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Liquid Ripple Animations */
+@keyframes liquidRipple {
+  0% {
+    transform: scale(0) translateX(0) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) translateX(20px) translateY(-10px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5) translateX(40px) translateY(-20px);
+    opacity: 0;
+  }
+}
+
+@keyframes liquidRipple2 {
+  0% {
+    transform: scale(0) translateX(0) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) translateX(-15px) translateY(15px);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3) translateX(-30px) translateY(30px);
+    opacity: 0;
+  }
+}
+
+@keyframes liquidRipple3 {
+  0% {
+    transform: scale(0) translateX(0) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1) translateX(25px) translateY(8px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.2) translateX(50px) translateY(16px);
+    opacity: 0;
+  }
+}
+
+@keyframes liquidSurface {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  25% {
+    transform: translateY(-2px) scale(1.01);
+  }
+  50% {
+    transform: translateY(1px) scale(0.99);
+  }
+  75% {
+    transform: translateY(-1px) scale(1.005);
+  }
+}
+
+@keyframes liquidSphere {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotateX(0deg) rotateY(0deg);
+  }
+  25% {
+    transform: translateY(-3px) scale(1.02) rotateX(5deg) rotateY(10deg);
+  }
+  50% {
+    transform: translateY(-1px) scale(0.98) rotateX(-3deg) rotateY(-5deg);
+  }
+  75% {
+    transform: translateY(-2px) scale(1.01) rotateX(2deg) rotateY(8deg);
+  }
+}
+
+@keyframes liquidGlow {
+  0%, 100% {
+    opacity: 0.3;
+    filter: blur(8px);
+  }
+  50% {
+    opacity: 0.6;
+    filter: blur(12px);
+  }
+}
+
+/* Radial Gradient Utility */
+.bg-gradient-radial {
+  background-image: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+/* Realistic Water Drop Ripple Animations */
+@keyframes realisticRipple {
+  0% {
+    transform: scale(0);
+    opacity: 0.9;
+    box-shadow: 
+      0 0 0 0 rgba(156, 163, 175, 0.6),
+      inset 0 0 0 0 rgba(75, 85, 99, 0.3);
+  }
+  25% {
+    opacity: 0.8;
+    box-shadow: 
+      0 0 0 2px rgba(156, 163, 175, 0.5),
+      inset 0 0 0 1px rgba(75, 85, 99, 0.4);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 
+      0 0 0 4px rgba(156, 163, 175, 0.4),
+      inset 0 0 0 2px rgba(75, 85, 99, 0.3);
+  }
+  75% {
+    opacity: 0.3;
+    box-shadow: 
+      0 0 0 6px rgba(156, 163, 175, 0.2),
+      inset 0 0 0 3px rgba(75, 85, 99, 0.2);
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+    box-shadow: 
+      0 0 0 8px rgba(156, 163, 175, 0.1),
+      inset 0 0 0 4px rgba(75, 85, 99, 0.1);
+  }
+}
+
+@keyframes realisticRipple2 {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
+    box-shadow: 
+      0 0 0 0 rgba(156, 163, 175, 0.5),
+      inset 0 0 0 0 rgba(75, 85, 99, 0.2);
+  }
+  30% {
+    opacity: 0.7;
+    box-shadow: 
+      0 0 0 1.5px rgba(156, 163, 175, 0.4),
+      inset 0 0 0 0.8px rgba(75, 85, 99, 0.3);
+  }
+  60% {
+    opacity: 0.4;
+    box-shadow: 
+      0 0 0 3px rgba(156, 163, 175, 0.3),
+      inset 0 0 0 1.5px rgba(75, 85, 99, 0.2);
+  }
+  100% {
+    transform: scale(5);
+    opacity: 0;
+    box-shadow: 
+      0 0 0 6px rgba(156, 163, 175, 0.1),
+      inset 0 0 0 3px rgba(75, 85, 99, 0.1);
+  }
+}
+
+@keyframes realisticRipple3 {
+  0% {
+    transform: scale(0);
+    opacity: 0.7;
+    box-shadow: 
+      0 0 0 0 rgba(156, 163, 175, 0.4),
+      inset 0 0 0 0 rgba(75, 85, 99, 0.2);
+  }
+  40% {
+    opacity: 0.5;
+    box-shadow: 
+      0 0 0 1px rgba(156, 163, 175, 0.3),
+      inset 0 0 0 0.5px rgba(75, 85, 99, 0.2);
+  }
+  80% {
+    opacity: 0.2;
+    box-shadow: 
+      0 0 0 2.5px rgba(156, 163, 175, 0.2),
+      inset 0 0 0 1px rgba(75, 85, 99, 0.1);
+  }
+  100% {
+    transform: scale(6);
+    opacity: 0;
+    box-shadow: 
+      0 0 0 4px rgba(156, 163, 175, 0.05),
+      inset 0 0 0 2px rgba(75, 85, 99, 0.05);
+  }
+}
+
+@keyframes waterDropRebound {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    box-shadow: 
+      0 0 0 0 rgba(156, 163, 175, 0.8),
+      inset 0 0 0 0 rgba(75, 85, 99, 0.4);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.1);
+    box-shadow: 
+      0 0 0 2px rgba(156, 163, 175, 0.6),
+      inset 0 0 0 1px rgba(75, 85, 99, 0.3);
+  }
+}
+
+@keyframes waterSurface {
+  0%, 100% {
+    transform: translateY(0px);
+    filter: brightness(1);
+  }
+  25% {
+    transform: translateY(-1px);
+    filter: brightness(1.02);
+  }
+  50% {
+    transform: translateY(0.5px);
+    filter: brightness(0.98);
+  }
+  75% {
+    transform: translateY(-0.5px);
+    filter: brightness(1.01);
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}

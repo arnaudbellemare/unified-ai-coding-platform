@@ -10,13 +10,16 @@ export function SimplifiedHome() {
   const [showTesting, setShowTesting] = useState(false)
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {!showTesting ? (
         <div>
           <MarketingLanding onPrimary={() => window.scrollTo({ top: 600, behavior: 'smooth' })} />
-          <UnifiedAllInOne />
-          <div className="max-w-6xl mx-auto p-6">
-            <AcpDemo />
+          {/* Black overlay section - covers from UnifiedAllInOne to end */}
+          <div className="bg-black relative z-20">
+            <UnifiedAllInOne />
+            <div className="max-w-6xl mx-auto p-6">
+              <AcpDemo />
+            </div>
           </div>
           <div className="fixed bottom-4 right-4">
             <button

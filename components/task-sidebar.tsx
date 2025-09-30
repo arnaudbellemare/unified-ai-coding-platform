@@ -67,7 +67,7 @@ export function TaskSidebar({ tasks, onTaskSelect, width = 288 }: TaskSidebarPro
   }
 
   return (
-    <div className="h-full border-r bg-muted p-3 overflow-y-auto" style={{ width: `${width}px` }}>
+    <div className="h-full border-r bg-muted p-3 overflow-y-auto rounded-none" style={{ width: `${width}px` }}>
       <div className="mb-3">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold">

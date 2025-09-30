@@ -16,10 +16,17 @@ import { DevAuth } from '@/lib/auth/dev-auth'
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('[Tasks API] GET request received')
+    
     // Check if development mode is enabled (when no API keys configured)
-    if (DevAuth.isDevMode()) {
+    const isDevMode = DevAuth.isDevMode()
+    console.log('[Tasks API] Dev mode check:', isDevMode)
+    
+    if (isDevMode) {
+      console.log('[Tasks API] Development mode detected, returning mock tasks')
       const { getMockTasks } = await import('@/lib/config/dev-config')
       const mockTasks = getMockTasks()
+      console.log('[Tasks API] Returning', mockTasks.length, 'mock tasks')
       return NextResponse.json({ tasks: mockTasks })
     }
 
@@ -53,7 +60,8 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error fetching tasks:', error)
+    console.error('[Tasks API] Error fetching tasks:', error)
+    console.error('[Tasks API] Error stack:', error instanceof Error ? error.stack : 'No stack trace')
     // Never surface a hard error to the client; keep UI stable
     return NextResponse.json({ tasks: [], error: 'Failed to fetch tasks' })
   }

@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize real Coinbase AgentKit with Base Sepolia testnet
     const realAgentKit = new RealCoinbaseAgentKit({
+      clientId: process.env.COINBASE_CDP_CLIENT_ID!,
       apiKeyId: process.env.COINBASE_CDP_API_KEY_ID!,
       apiKeySecret: process.env.COINBASE_CDP_API_KEY_SECRET!,
       walletSecret: process.env.COINBASE_CDP_WALLET_SECRET!,

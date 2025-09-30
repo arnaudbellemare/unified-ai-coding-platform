@@ -126,24 +126,25 @@ export function AcpDemo() {
                   )}
                   {o.sponsored && <Badge className="bg-emerald-600 text-white text-xs">Sponsored</Badge>}
                 </div>
-                
+
                 <div className="text-sm text-gray-700">
                   <div className="font-medium mb-1">Product Description:</div>
                   <div className="text-xs text-gray-600 mb-2">
-                    {o.title.includes('Blue Cotton') 
+                    {o.title.includes('Blue Cotton')
                       ? 'Classic crew neck t-shirt in vibrant blue, made from premium cotton blend for comfort and durability.'
                       : 'Thick, durable cotton tee in slate blue, heavyweight construction for long-lasting wear.'}
                   </div>
-                  
+
                   <div className="font-medium mb-1">x402 Payment Benefits:</div>
                   <div className="text-xs text-green-700 bg-green-50 p-2 rounded">
-                    • Instant settlement on Base network<br/>
-                    • No credit card fees or chargebacks<br/>
-                    • Transparent cost: ${o.effectivePrice.toFixed(2)} {o.currency}<br/>
-                    • {o.inStock ? 'In stock' : 'Out of stock'} • ETA {o.etaDays || 5}d
+                    • Instant settlement on Base network
+                    <br />
+                    • No credit card fees or chargebacks
+                    <br />• Transparent cost: ${o.effectivePrice.toFixed(2)} {o.currency}
+                    <br />• {o.inStock ? 'In stock' : 'Out of stock'} • ETA {o.etaDays || 5}d
                   </div>
                 </div>
-                
+
                 <Button
                   size="sm"
                   onClick={() => checkout(o)}

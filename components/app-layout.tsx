@@ -40,7 +40,7 @@ export const useTasks = () => {
 
 function SidebarLoader({ width }: { width: number }) {
   return (
-    <div className="h-full border-r bg-muted p-3 overflow-y-auto" style={{ width: `${width}px` }}>
+    <div className="h-full border-r bg-muted p-3 overflow-y-auto rounded-none" style={{ width: `${width}px` }}>
       <div className="mb-3">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold">Loading Tasks...</h2>
@@ -120,6 +120,17 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
   // Fetch tasks on component mount
   useEffect(() => {
     fetchTasks()
+    
+    // Circuit breaker: force loading to false after 10 seconds
+    const circuitBreaker = setTimeout(() => {
+      if (isLoading) {
+        console.warn('[Tasks] Circuit breaker triggered - forcing loading to false')
+        setIsLoading(false)
+        setTasks([])
+      }
+    }, 10000)
+    
+    return () => clearTimeout(circuitBreaker)
   }, [])
 
   // (Reverted) No circuit-breaker; rely on normal fetch lifecycle
@@ -166,14 +177,33 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
   }, [toggleSidebar])
 
   const fetchTasks = async () => {
+    // Prevent multiple concurrent requests
+    if (isLoading) {
+      console.log('[Tasks] Request already in progress, skipping...')
+      return
+    }
+
     try {
+      setIsLoading(true)
+      
       // Always use relative path and guard against transient network errors
       const controller = new AbortController()
-      const timeoutMs = 12000
-      const timeout = setTimeout(() => controller.abort(), timeoutMs)
+      const timeoutMs = 3000 // Even faster timeout for quicker fallback
+      const timeout = setTimeout(() => {
+        console.warn(`Tasks request timed out after ${timeoutMs}ms; aborting`)
+        controller.abort()
+      }, timeoutMs)
+      
       let response: Response
       try {
-        response = await fetch('/api/tasks', { signal: controller.signal, cache: 'no-store' })
+        response = await fetch('/api/tasks', { 
+          signal: controller.signal, 
+          cache: 'no-store',
+          headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache'
+          }
+        })
       } catch (err: any) {
         if (err && err.name === 'AbortError') {
           console.warn(`Tasks request timed out after ${timeoutMs}ms; showing empty list`)
@@ -181,32 +211,45 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
           setIsLoading(false)
           return
         }
-        throw err
+        console.warn('Network error fetching tasks:', err)
+        setTasks([])
+        setIsLoading(false)
+        return
       } finally {
         clearTimeout(timeout)
       }
 
+      // Handle non-200 responses gracefully
+      if (!response.ok) {
+        console.warn(`Tasks API returned ${response.status}: ${response.statusText}`)
+        setTasks([])
+        setIsLoading(false)
+        return
+      }
+
       const contentType = response.headers.get('content-type') || ''
       let data: any = {}
-      if (contentType.includes('application/json')) {
-        data = await response.json().catch(() => ({}))
-      } else {
-        // Non-JSON (e.g., HTML error page) → treat as empty data
-        await response.text().catch(() => '')
+      
+      try {
+        if (contentType.includes('application/json')) {
+          data = await response.json()
+        } else {
+          // Non-JSON response → treat as empty data
+          await response.text()
+          data = {}
+        }
+      } catch (parseError) {
+        console.warn('Failed to parse tasks response:', parseError)
         data = {}
       }
 
-      if (response.ok) {
-        setTasks(Array.isArray(data.tasks) ? data.tasks : [])
-      } else {
-        console.error('Failed to fetch tasks:', response.status, response.statusText)
-        setTasks(Array.isArray(data.tasks) ? data.tasks : [])
-      }
-      setIsLoading(false)
+      setTasks(Array.isArray(data.tasks) ? data.tasks : [])
     } catch (error) {
       // Soft-fail: keep UI responsive with empty list
-      console.error('Error fetching tasks:', error)
+      console.warn('Error fetching tasks (using empty list):', error)
       setTasks([])
+    } finally {
+      // Always set loading to false in finally block
       setIsLoading(false)
     }
   }
@@ -320,7 +363,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
           }}
         >
           <div
-            className="h-full overflow-hidden"
+            className="h-full overflow-hidden rounded-none"
             style={{
               width: `${sidebarWidth}px`,
             }}

@@ -122,7 +122,9 @@ export function AgenticWorkflowDemo() {
           <CardContent className="p-5 space-y-3">
             <div className="font-semibold text-black">2. Optimize & generate</div>
             <div className="text-sm text-gray-900">Optimized:</div>
-            <pre className="text-xs bg-gray-50 rounded p-2 text-gray-900 whitespace-pre-wrap min-h-[56px]">{optimized}</pre>
+            <pre className="text-xs bg-gray-50 rounded p-2 text-gray-900 whitespace-pre-wrap min-h-[56px]">
+              {optimized}
+            </pre>
             <div className="flex gap-2">
               <Button variant="outline" className="text-black" disabled={loading || !optimized} onClick={doGenerate}>
                 Generate
@@ -141,7 +143,7 @@ export function AgenticWorkflowDemo() {
             <div className="font-semibold text-black">3. Activity</div>
             <div className="text-sm text-gray-900">Step: {step}</div>
             <pre className="text-xs bg-gray-50 rounded p-2 text-gray-900 whitespace-pre-wrap min-h-[120px]">
-{log.join('\n')}
+              {log.join('\n')}
             </pre>
             {step === 'deploy' && (
               <div className="text-sm text-gray-900">Ready to deploy to Vercel Sandbox or push to GitHub.</div>
@@ -152,5 +154,3 @@ export function AgenticWorkflowDemo() {
     </section>
   )
 }
-
-

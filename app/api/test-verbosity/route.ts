@@ -4,20 +4,37 @@ import { ResearchBackedOptimizer } from '@/lib/research-backed-optimizer'
 export async function POST(request: NextRequest) {
   try {
     const { prompt, verbosityLevel } = await request.json()
-    
+
     if (!prompt) {
       return NextResponse.json({ success: false, error: 'Prompt is required' }, { status: 400 })
     }
 
-    const testPrompt = prompt || "Write a comprehensive guide on how to build a React application with TypeScript, including setup, components, state management, testing, and deployment best practices."
-    
+    const testPrompt =
+      prompt ||
+      'Write a comprehensive guide on how to build a React application with TypeScript, including setup, components, state management, testing, and deployment best practices.'
+
     const optimizer = new ResearchBackedOptimizer()
-    
+
     // Test all verbosity levels
     const results = await Promise.all([
-      optimizer.optimizeWithResearch(testPrompt, 'Create a detailed tutorial', 'meta-llama/llama-3.2-3b-instruct:free', 'low'),
-      optimizer.optimizeWithResearch(testPrompt, 'Create a detailed tutorial', 'meta-llama/llama-3.2-3b-instruct:free', 'medium'),
-      optimizer.optimizeWithResearch(testPrompt, 'Create a detailed tutorial', 'meta-llama/llama-3.2-3b-instruct:free', 'high'),
+      optimizer.optimizeWithResearch(
+        testPrompt,
+        'Create a detailed tutorial',
+        'meta-llama/llama-3.2-3b-instruct:free',
+        'low',
+      ),
+      optimizer.optimizeWithResearch(
+        testPrompt,
+        'Create a detailed tutorial',
+        'meta-llama/llama-3.2-3b-instruct:free',
+        'medium',
+      ),
+      optimizer.optimizeWithResearch(
+        testPrompt,
+        'Create a detailed tutorial',
+        'meta-llama/llama-3.2-3b-instruct:free',
+        'high',
+      ),
     ])
 
     return NextResponse.json({
@@ -56,13 +73,16 @@ export async function POST(request: NextRequest) {
           tokenImprovement: results[2].tokenReduction - results[0].tokenReduction,
           costImprovement: results[2].costReduction - results[0].costReduction,
         },
-      }
+      },
     })
   } catch (error) {
     console.error('Verbosity test error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 },
+    )
   }
 }

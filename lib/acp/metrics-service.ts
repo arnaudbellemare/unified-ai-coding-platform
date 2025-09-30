@@ -52,5 +52,3 @@ class GeoMetricsService {
 }
 
 export const geoMetrics = new GeoMetricsService()
-
-

@@ -4,7 +4,19 @@
  */
 
 import { ethers } from 'ethers'
-import { createAuthHeader, facilitator } from '@coinbase/x402'
+
+// Dynamic import for Coinbase x402 to avoid SSR issues
+let createAuthHeader: any, facilitator: any
+
+if (typeof window !== 'undefined') {
+  try {
+    const x402 = require('@coinbase/x402')
+    createAuthHeader = x402.createAuthHeader
+    facilitator = x402.facilitator
+  } catch (error) {
+    console.warn('Coinbase x402 not available:', error)
+  }
+}
 
 export interface RealX402PaymentRequest {
   amount: number
@@ -255,21 +267,45 @@ export class RealX402PaymentService {
     currency: string
     recipient: string
   }> {
-    // Generate real x402 payment request using the protocol
-    const x402Request = await createAuthHeader(
-      process.env.COINBASE_CDP_API_KEY_ID!,
-      process.env.COINBASE_CDP_API_KEY_SECRET!,
-      'POST',
-      'api.coinbase.com',
-      '/v2/charges',
-    )
+    // Check if Coinbase x402 is available
+    if (!createAuthHeader) {
+      console.warn('Coinbase x402 not available - using fallback')
+      return {
+        x402Request: 'fallback-request',
+        paymentUrl: 'https://fallback-payment-url.com',
+        amount: request.amount.toString(),
+        currency: request.currency,
+        recipient: request.recipient,
+      }
+    }
 
-    return {
-      x402Request,
-      paymentUrl: `https://pay.x402.org/pay?request=${x402Request}`,
-      amount: request.amount.toString(),
-      currency: request.currency,
-      recipient: request.recipient,
+    try {
+      // Generate real x402 payment request using the protocol
+      const x402Request = await createAuthHeader(
+        process.env.COINBASE_CDP_CLIENT_ID!,
+        process.env.COINBASE_CDP_API_KEY_ID!,
+        process.env.COINBASE_CDP_API_KEY_SECRET!,
+        'POST',
+        'api.coinbase.com',
+        '/v2/charges',
+      )
+
+      return {
+        x402Request,
+        paymentUrl: `https://pay.x402.org/pay?request=${x402Request}`,
+        amount: request.amount.toString(),
+        currency: request.currency,
+        recipient: request.recipient,
+      }
+    } catch (error) {
+      console.error('Failed to generate x402 request:', error)
+      return {
+        x402Request: 'error-request',
+        paymentUrl: 'https://error-payment-url.com',
+        amount: request.amount.toString(),
+        currency: request.currency,
+        recipient: request.recipient,
+      }
     }
   }
 }

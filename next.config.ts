@@ -8,6 +8,17 @@ const nextConfig: NextConfig = {
   },
   // Skip static optimization for API routes to avoid build-time errors
   skipTrailingSlashRedirect: true,
+  // Enable Turbopack configuration
+  experimental: {
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+  },
   images: {
     remotePatterns: [
       {
@@ -48,6 +59,16 @@ const nextConfig: NextConfig = {
         path: false,
         crypto: false,
       }
+    }
+
+    // Exclude Coinbase packages from server-side rendering
+    if (isServer) {
+      config.externals = config.externals || []
+      config.externals.push({
+        '@coinbase/cdp-sdk': 'commonjs @coinbase/cdp-sdk',
+        '@coinbase/x402': 'commonjs @coinbase/x402',
+        '@coinbase/wallet-sdk': 'commonjs @coinbase/wallet-sdk',
+      })
     }
 
     return config

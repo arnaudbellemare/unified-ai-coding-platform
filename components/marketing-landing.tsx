@@ -3,6 +3,7 @@
 import React, { useMemo, useEffect, useState } from 'react'
 import { LogoVerclibase } from '@/components/logo-verclibase'
 import { AcpDemo } from '@/components/acp-demo'
+import { OnboardingExplainer } from '@/components/onboarding-explainer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Search, CreditCard, Brain, Sliders, Database, BarChart, TrendingUp } from 'lucide-react'
@@ -19,12 +20,44 @@ export function MarketingLanding({
   theme?: LandingTheme
 }) {
   const [styleVariant, setStyleVariant] = useState<'classic' | 'ayocin' | 'mcpay'>('classic')
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isInBlackSection, setIsInBlackSection] = useState(false)
+  
   useEffect(() => {
     try {
       const v = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('style') : null
       if (v === 'ayocin') setStyleVariant('ayocin')
       if (v === 'mcpay') setStyleVariant('mcpay')
     } catch (_) {}
+
+    // Global mouse tracking for animated background
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY })
+    }
+
+    const handleMouseLeave = () => {
+      setMousePosition({ x: 0, y: 0 })
+    }
+
+    // Scroll detection for black section
+    const handleScroll = () => {
+      const scrollY = window.scrollY
+      const windowHeight = window.innerHeight
+      // Detect if we're in the UnifiedAllInOne section (roughly after hero section)
+      setIsInBlackSection(scrollY > windowHeight * 0.5)
+    }
+
+    if (typeof window !== 'undefined') {
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseleave', handleMouseLeave)
+      window.addEventListener('scroll', handleScroll)
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('mouseleave', handleMouseLeave)
+        window.removeEventListener('scroll', handleScroll)
+      }
+    }
   }, [])
   const [c1, c2, c3] = useMemo(() => {
     const palette: Record<LandingTheme, [string, string, string]> = {
@@ -39,65 +72,110 @@ export function MarketingLanding({
   }, [theme])
 
   return (
-    <div className={styleVariant === 'mcpay' ? 'bg-[#0b0e14]' : 'bg-white'}>
-      {styleVariant === 'mcpay' && (
-        <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b0e14]/80 backdrop-blur supports-[backdrop-filter]:bg-[#0b0e14]/60">
-          <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-            <LogoVerclibase />
-            <nav className="hidden md:flex items-center gap-6 text-sm">
-              <a className="text-white/80 hover:text-white" href="#build">Build</a>
-              <a className="text-white/80 hover:text-white" href="#browse">Browse</a>
-              <a className="text-white/80 hover:text-white" href="#monetize">Monetize</a>
+    <div className={styleVariant === 'mcpay' ? 'bg-[#0b0e14]' : 'bg-gray-50'}>
+      {/* Fixed Animated Background that follows scroll */}
+      {!disableAnimatedBg && (
+        <div className="fixed inset-0 pointer-events-none z-0">
+          {/* Completely Static Background - No Movement */}
+          <div 
+            className="absolute inset-0 bg-gray-50"
+          />
+          
+          {/* Halftone Pattern with Moving Dots */}
+          <div 
+            className="absolute inset-0 opacity-40"
+            style={{
+              backgroundImage: isInBlackSection ? `
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.6) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 60% 70%, rgba(255, 255, 255, 0.9) 2.5px, transparent 2.5px),
+                radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.7) 1.8px, transparent 1.8px),
+                radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.8) 2.2px, transparent 2.2px)
+              ` : `
+                radial-gradient(circle at 20% 30%, rgba(120, 120, 120, 0.6) 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, rgba(100, 100, 100, 0.5) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 60% 70%, rgba(140, 140, 140, 0.7) 2.5px, transparent 2.5px),
+                radial-gradient(circle at 30% 80%, rgba(110, 110, 110, 0.55) 1.8px, transparent 1.8px),
+                radial-gradient(circle at 70% 50%, rgba(130, 130, 130, 0.65) 2.2px, transparent 2.2px)
+              `,
+              backgroundSize: '40px 40px, 35px 35px, 45px 45px, 38px 38px, 42px 42px',
+              animation: 'halftoneMove 40s linear infinite, slowRotate 120s linear infinite',
+            }}
+          />
+          
+          {/* Magnetic Particle System */}
+          <div className="absolute inset-0">
+            {/* Magnetic Particles that follow mouse */}
+            <div 
+              className={`absolute w-2 h-2 rounded-full transition-all duration-300 ease-out ${isInBlackSection ? 'bg-white/80' : 'bg-gray-600/60'}`}
+              style={{ 
+                left: mousePosition.x ? `${mousePosition.x - 20}px` : '20%',
+                top: mousePosition.y ? `${mousePosition.y - 10}px` : '30%',
+              }}
+            />
+            <div 
+              className={`absolute w-1.5 h-1.5 rounded-full transition-all duration-500 ease-out ${isInBlackSection ? 'bg-white/70' : 'bg-gray-700/50'}`}
+              style={{ 
+                left: mousePosition.x ? `${mousePosition.x + 15}px` : '70%',
+                top: mousePosition.y ? `${mousePosition.y + 20}px` : '60%',
+              }}
+            />
+            <div 
+              className={`absolute w-1 h-1 rounded-full transition-all duration-400 ease-out ${isInBlackSection ? 'bg-white/60' : 'bg-gray-600/40'}`}
+              style={{ 
+                left: mousePosition.x ? `${mousePosition.x - 10}px` : '40%',
+                top: mousePosition.y ? `${mousePosition.y - 15}px` : '20%',
+              }}
+            />
+            <div 
+              className={`absolute w-2.5 h-2.5 rounded-full transition-all duration-600 ease-out ${isInBlackSection ? 'bg-white/90' : 'bg-gray-700/70'}`}
+              style={{ 
+                left: mousePosition.x ? `${mousePosition.x + 25}px` : '80%',
+                top: mousePosition.y ? `${mousePosition.y - 5}px` : '80%',
+              }}
+            />
+            <div 
+              className={`absolute w-1.5 h-1.5 rounded-full transition-all duration-350 ease-out ${isInBlackSection ? 'bg-white/75' : 'bg-gray-600/55'}`}
+              style={{ 
+                left: mousePosition.x ? `${mousePosition.x - 25}px` : '15%',
+                top: mousePosition.y ? `${mousePosition.y + 15}px` : '70%',
+              }}
+            />
+            <div 
+              className={`absolute w-1 h-1 rounded-full transition-all duration-450 ease-out ${isInBlackSection ? 'bg-white/65' : 'bg-gray-700/45'}`}
+              style={{ 
+                left: mousePosition.x ? `${mousePosition.x + 5}px` : '60%',
+                top: mousePosition.y ? `${mousePosition.y + 10}px` : '50%',
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Page Content with proper z-index */}
+      <div className="relative z-10">
+        {styleVariant === 'mcpay' && (
+          <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b0e14]/80 backdrop-blur supports-[backdrop-filter]:bg-[#0b0e14]/60">
+            <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+              <LogoVerclibase />
+              <nav className="hidden md:flex items-center gap-6 text-sm">
+              <a className="text-white/80 hover:text-white" href="#build">
+                Build
+              </a>
+              <a className="text-white/80 hover:text-white" href="#browse">
+                Browse
+              </a>
+              <a className="text-white/80 hover:text-white" href="#monetize">
+                Monetize
+              </a>
               <Button className="bg-white text-black hover:bg-white/90">Connect</Button>
             </nav>
           </div>
         </header>
       )}
-      {/* Hero with subtle radial/conic background */}
-      <section
-        className="relative overflow-hidden"
-        style={{ '--c1': c1, '--c2': c2, '--c3': c3 } as React.CSSProperties}
-        onMouseMove={(e) => {
-          const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect()
-          const x = (e.clientX - rect.left) / rect.width
-          const y = (e.clientY - rect.top) / rect.height
-          const mx = (x - 0.5) * 2
-          const my = (y - 0.5) * 2
-          e.currentTarget.style.setProperty('--mx', mx.toFixed(3))
-          e.currentTarget.style.setProperty('--my', my.toFixed(3))
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.setProperty('--mx', '0')
-          e.currentTarget.style.setProperty('--my', '0')
-        }}
-      >
-        {disableAnimatedBg ? (
-          <div
-            className="pointer-events-none absolute inset-0 opacity-60"
-            style={{
-              backgroundImage:
-                'radial-gradient(1200px 600px at 60% -10%, rgba(0,0,0,0.06), transparent 60%), conic-gradient(from 80deg at 65% -20%, rgba(0,0,0,0.04), transparent 70%)',
-            }}
-          />
-        ) : (
-          <div className="pointer-events-none absolute inset-0">
-            {/* Flowing gradient backdrop */}
-            <div className="absolute inset-0 bg-flow opacity-80" />
-            {/* Morphing mesh blobs for depth */}
-            <div className="absolute inset-0 bg-mesh-blobs opacity-45" />
-            {/* Ambient spotlight */}
-            <div className="absolute inset-0 bg-conic-spot opacity-25" />
-            {/* Interactive cursor spotlight */}
-            <div className="absolute inset-0 bg-cursor-spot" />
-            {/* Soft moving orbs for depth */}
-            <div className="absolute -top-10 -left-6 w-[420px] h-[420px] bg-orb orb-1" />
-            <div className="absolute bottom-[-40px] right-[-20px] w-[380px] h-[380px] bg-orb orb-2" />
-            {/* Subtle texture */}
-            <div className="absolute inset-0 bg-blobs opacity-45" />
-            {/* Bottom fade to white */}
-            <div className="absolute inset-0 bg-fade-bottom" />
-          </div>
-        )}
+      {/* Hero with interactive monochromatic background */}
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
         <div className="relative max-w-6xl mx-auto px-6 pt-14 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             {/* Left: Animated headline + CTAs */}
@@ -114,30 +192,52 @@ export function MarketingLanding({
                   className={`${
                     styleVariant === 'ayocin'
                       ? 'rounded-[20px] glass-card shadow-[0_8px_28px_rgba(0,0,0,0.08)] px-5 py-4 md:px-6 md:py-6'
-                      : 'mt-3 inline-block rounded-2xl ' + (styleVariant === 'mcpay' ? 'bg-black/50' : 'bg-white/85') + ' backdrop-blur-md shadow-[0_6px_30px_rgba(0,0,0,0.06)] px-5 py-4 md:px-6 md:py-5'
-                  } animate-fade-in`}
+                      : 'mt-3 inline-block rounded-2xl ' +
+                        (styleVariant === 'mcpay' ? 'bg-black/50' : 'bg-white/85') +
+                        ' backdrop-blur-md shadow-[0_6px_30px_rgba(0,0,0,0.06)] px-5 py-4 md:px-6 md:py-5'
+                  } animate-fade-in hover:scale-[1.02] hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] transition-all duration-500 cursor-pointer`}
                 >
-                  <h1 className={`text-5xl md:text-7xl font-black tracking-tight leading-[0.95] animate-slide-up-1 ${styleVariant === 'mcpay' ? 'text-white' : 'text-black'}`}>
+                  <h1
+                    className={`text-5xl md:text-7xl font-black tracking-tight leading-[0.95] animate-slide-up-1 ${styleVariant === 'mcpay' ? 'text-white' : 'text-black drop-shadow-lg'}`}
+                  >
                     Rank higher in
                     <span
-                      className="mx-2 inline-block bg-gradient-to-r from-[var(--c1)] via-[var(--c2)] to-[var(--c3)] bg-clip-text text-transparent animate-gradient-text"
-                      style={{ textShadow: '0 1px 1px rgba(0,0,0,0.18)' }}
+                      className="mx-2 inline-block bg-gradient-to-r from-indigo-900 via-blue-600 via-blue-300 to-gray-400 bg-clip-text text-transparent font-bold"
+                      style={{ 
+                        textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                        backgroundSize: '300% 300%',
+                        animation: 'gradientShift 8s ease-in-out infinite'
+                      }}
                     >
                       AI search results
                     </span>
                   </h1>
-                  <p className={`mt-4 max-w-xl animate-slide-up-2 ${styleVariant === 'mcpay' ? 'text-gray-200' : 'text-gray-900'}`}>
-                    Optimize your product listings to rank higher when AI agents search. Structured feeds, trust signals, 
-                    and x402 sponsorship for maximum visibility.
+                  <p
+                    className={`mt-4 max-w-xl animate-slide-up-2 ${styleVariant === 'mcpay' ? 'text-gray-200' : 'text-gray-800 drop-shadow-sm'}`}
+                  >
+                    Optimize your product listings to rank higher when AI agents search. Structured feeds, trust
+                    signals, and x402 sponsorship for maximum visibility.
                   </p>
                   <div className="mt-6 flex gap-3 animate-slide-up-3">
-                    <Button size="lg" onClick={onPrimary} className={styleVariant === 'mcpay' ? 'bg-[#1134ff] text-white hover:bg-[#1134ff]/90' : 'bg-black text-white hover:bg-black/90'}>
+                    <Button
+                      size="lg"
+                      onClick={onPrimary}
+                      className={
+                        styleVariant === 'mcpay'
+                          ? 'bg-[#1134ff] text-white hover:bg-[#1134ff]/90 hover:scale-105 hover:shadow-[0_8px_25px_rgba(17,52,255,0.4)] transition-all duration-300'
+                          : 'bg-black text-white hover:bg-black/90 hover:scale-105 hover:shadow-[0_8px_25px_rgba(0,0,0,0.4)] transition-all duration-300'
+                      }
+                    >
                       Start free
                     </Button>
-                    <Button 
-                      size="lg" 
-                      variant="outline" 
-                      className={styleVariant === 'mcpay' ? 'bg-white text-black hover:bg-gray-100' : 'bg-white border-gray-300 text-black hover:bg-gray-200'}
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className={
+                        styleVariant === 'mcpay'
+                          ? 'bg-white text-black hover:bg-gray-100 hover:text-gray-700 hover:scale-105 hover:shadow-[0_8px_25px_rgba(255,255,255,0.4)] transition-all duration-300'
+                          : 'bg-white border-gray-300 text-black hover:bg-gray-200 hover:text-gray-700 hover:scale-105 hover:shadow-[0_8px_25px_rgba(0,0,0,0.2)] transition-all duration-300'
+                      }
                       onClick={() => {
                         // Scroll to the AI Search section
                         const aiSearchSection = document.querySelector('[data-geo-section]')
@@ -175,7 +275,11 @@ export function MarketingLanding({
                     title="x402 Sponsorship"
                     desc="Boost visibility"
                   />
-                  <FeatureTile icon={<Brain className="h-5 w-5 text-purple-600" />} title="Trust Signals" desc="Ratings & reliability" />
+                  <FeatureTile
+                    icon={<Brain className="h-5 w-5 text-purple-600" />}
+                    title="Trust Signals"
+                    desc="Ratings & reliability"
+                  />
                 </div>
               </div>
             </div>
@@ -422,11 +526,14 @@ export function MarketingLanding({
         `}</style>
       </section>
 
+      {/* How VERCLIBASE Works - with Water Ripple Effect */}
+      <OnboardingExplainer />
+
       {/* GEO Playbook section removed per request */}
 
       {/* Agentic e‑Commerce Advantage (GEO) */}
-      <section className="max-w-6xl mx-auto px-6 py-12" data-geo-section>
-        <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-8 md:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
+      <section className="max-w-6xl mx-auto px-6 py-12 bg-gradient-to-b from-gray-50 to-gray-50" data-geo-section>
+        <div className="rounded-3xl bg-gray-50 p-8 md:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.03)]">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex-1">
               <h3 className="text-3xl md:text-4xl font-black tracking-tight text-black">
@@ -437,8 +544,9 @@ export function MarketingLanding({
               </h3>
               <p className="mt-4 text-lg text-gray-700 max-w-4xl leading-relaxed">
                 Get chosen first by AI agents. We expose catalog/search endpoints and rank offers using relevance,
-                trust, price efficiency, fulfillment reliability, and x402 sponsorship budgets — 
-                <span className="font-semibold text-black">Generative Engine Optimization (GEO)</span> for agentic commerce.
+                trust, price efficiency, fulfillment reliability, and x402 sponsorship budgets —
+                <span className="font-semibold text-black">Generative Engine Optimization (GEO)</span> for agentic
+                commerce.
               </p>
             </div>
             <div className="shrink-0">
@@ -478,7 +586,7 @@ export function MarketingLanding({
 
           {/* Top row of cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-            <Card className="border-gray-200 bg-white hover:shadow-lg transition-shadow duration-300">
+            <Card className="bg-gray-50 hover:shadow-lg transition-shadow duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
@@ -507,7 +615,7 @@ export function MarketingLanding({
               </CardContent>
             </Card>
 
-            <Card className="border-gray-200 bg-white hover:shadow-lg transition-shadow duration-300">
+            <Card className="bg-gray-50 hover:shadow-lg transition-shadow duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
@@ -516,13 +624,13 @@ export function MarketingLanding({
                   <div className="font-bold text-lg text-black">Boost Placement with x402</div>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  Allocate sponsorship budgets (per search, per click, per checkout) using x402. 
+                  Allocate sponsorship budgets (per search, per click, per checkout) using x402.
                   <span className="font-semibold text-black">Fully transparent, pay-per-use, and auditable.</span>
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-gray-200 bg-white hover:shadow-lg transition-shadow duration-300">
+            <Card className="bg-gray-50 hover:shadow-lg transition-shadow duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
@@ -555,13 +663,13 @@ export function MarketingLanding({
       </section>
 
       {/* Core Features */}
-      <section className="max-w-6xl mx-auto px-6 py-6">
+      <section className="max-w-6xl mx-auto px-6 py-6 bg-gray-50">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-black mb-2">How AI Search Optimization Works</h2>
           <p className="text-gray-600">The complete system for ranking higher in AI results</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="border-gray-200 bg-white hover:shadow-md transition-shadow">
+          <Card className="bg-gray-50 hover:shadow-md transition-shadow">
             <CardContent className="p-5">
               <div className="font-semibold text-black">AI-Optimized Product Feeds</div>
               <p className="text-sm text-gray-900 mt-1">
@@ -569,7 +677,7 @@ export function MarketingLanding({
               </p>
             </CardContent>
           </Card>
-          <Card className="border-gray-200 bg-white hover:shadow-md transition-shadow">
+          <Card className="bg-gray-50 hover:shadow-md transition-shadow">
             <CardContent className="p-5">
               <div className="font-semibold text-black">AI Ranking Signals</div>
               <p className="text-sm text-gray-900 mt-1">
@@ -577,7 +685,7 @@ export function MarketingLanding({
               </p>
             </CardContent>
           </Card>
-          <Card className="border-gray-200 bg-white hover:shadow-md transition-shadow">
+          <Card className="bg-gray-50 hover:shadow-md transition-shadow">
             <CardContent className="p-5">
               <div className="font-semibold text-black">x402 Sponsored Placement</div>
               <p className="text-sm text-gray-900 mt-1">
@@ -642,7 +750,7 @@ export function MarketingLanding({
           </Card>
         </div>
       </section>
-
+      </div>
     </div>
   )
 }

@@ -68,6 +68,7 @@ const onboardingSteps: OnboardingStep[] = [
 export function OnboardingExplainer() {
   const [currentStep, setCurrentStep] = useState(0)
   const [isCompleted, setIsCompleted] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   const nextStep = () => {
     if (currentStep < onboardingSteps.length - 1) {
@@ -83,68 +84,177 @@ export function OnboardingExplainer() {
     }
   }
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    setMousePosition({ x, y })
+  }
+
+  const handleMouseLeave = () => {
+    setMousePosition({ x: 0, y: 0 })
+  }
+
   if (isCompleted) {
     return (
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center mb-4">
-            <CheckCircle className="h-12 w-12 text-green-500" />
-          </div>
-          <CardTitle className="text-2xl font-bold">Ready to Start Building!</CardTitle>
-          <CardDescription className="text-lg">
-            You're all set to use VERCLIBASE. Here's what you can do now:
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold mb-2 flex items-center gap-2">
-                <Wallet className="h-4 w-4 text-blue-600" /> Connect Your Wallet
-              </h3>
-              <p className="text-sm text-gray-600">Click "Connect Wallet" to get started with AI processing</p>
+      <div className="relative w-full max-w-4xl mx-auto" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+        {/* Light Background */}
+        <div className="absolute inset-0 bg-black rounded-xl overflow-hidden" style={{ zIndex: -1 }}>
+          {/* Dark Water Surface Base */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" style={{ animation: 'waterSurface 8s ease-in-out infinite' }} />
+        </div>
+        
+        <Card className="relative z-10 bg-white/98 backdrop-blur-sm border-gray-300 shadow-2xl">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center mb-4">
+              <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold mb-2 flex items-center gap-2">
-                <Code className="h-4 w-4 text-blue-600" /> Try AI Processing
-              </h3>
-              <p className="text-sm text-gray-600">Enter a prompt and see real-time cost optimization in action</p>
+            <CardTitle className="text-2xl font-bold text-black drop-shadow-sm">Ready to Start Building!</CardTitle>
+            <CardDescription className="text-lg text-gray-800 drop-shadow-sm">
+              You're all set to use VERCLIBASE. Here's what you can do now:
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-4 border border-gray-200 rounded-lg bg-white/90">
+                <h3 className="font-semibold mb-2 flex items-center gap-2 text-black">
+                  <Wallet className="h-4 w-4 text-blue-600" /> Connect Your Wallet
+                </h3>
+                <p className="text-sm text-gray-700">Click "Connect Wallet" to get started with AI processing</p>
+              </div>
+              <div className="p-4 border border-gray-200 rounded-lg bg-white/90">
+                <h3 className="font-semibold mb-2 flex items-center gap-2 text-black">
+                  <Code className="h-4 w-4 text-purple-600" /> Try AI Processing
+                </h3>
+                <p className="text-sm text-gray-700">Enter a prompt and see real-time cost optimization in action</p>
+              </div>
+              <div className="p-4 border border-gray-200 rounded-lg bg-white/90">
+                <h3 className="font-semibold mb-2 flex items-center gap-2 text-black">
+                  <Code className="h-4 w-4 text-purple-600" /> Deploy to Sandbox
+                </h3>
+                <p className="text-sm text-gray-700">Test your code in a real Vercel deployment environment</p>
+              </div>
+              <div className="p-4 border border-gray-200 rounded-lg bg-white/90">
+                <h3 className="font-semibold mb-2 flex items-center gap-2 text-black">
+                  <DollarSign className="h-4 w-4 text-green-600" /> Pay Only What You Use
+                </h3>
+                <p className="text-sm text-gray-700">No subscriptions - pay per AI task with automatic optimization</p>
+              </div>
             </div>
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold mb-2 flex items-center gap-2">
-                <Code className="h-4 w-4 text-purple-600" /> Deploy to Sandbox
-              </h3>
-              <p className="text-sm text-gray-600">Test your code in a real Vercel deployment environment</p>
+            <div className="text-center">
+              <Button onClick={() => setIsCompleted(false)} variant="outline" className="bg-gray-200 text-gray-800 hover:bg-gray-300 border-gray-300">
+                Review Again
+              </Button>
             </div>
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold mb-2 flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-emerald-600" /> Pay Only What You Use
-              </h3>
-              <p className="text-sm text-gray-600">No subscriptions - pay per AI task with automatic optimization</p>
-            </div>
-          </div>
-          <div className="text-center">
-            <Button onClick={() => setIsCompleted(false)} variant="outline">
-              Review Again
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   const currentStepData = onboardingSteps[currentStep]
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <div className="relative w-full max-w-4xl mx-auto" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+      {/* Light Background */}
+      <div className="absolute inset-0 bg-black rounded-xl overflow-hidden" style={{ zIndex: -1 }}>
+        {/* Dark Water Surface Base */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" style={{ animation: 'waterSurface 8s ease-in-out infinite' }} />
+        
+        {/* Magnetic Water Ripples - Follow Mouse */}
+        <div 
+          className="absolute w-40 h-40 transition-all duration-300 ease-out"
+          style={{ 
+            left: mousePosition.x ? `${mousePosition.x - 80}px` : '50%',
+            top: mousePosition.y ? `${mousePosition.y - 80}px` : '50%',
+            transform: mousePosition.x ? 'translate(0, 0)' : 'translate(-50%, -50%)',
+          }}
+        >
+          <div className="absolute inset-0 rounded-full border-2 border-gray-600/40" style={{ animation: 'realisticRipple 3s ease-out infinite', animationDelay: '0s' }} />
+          <div className="absolute inset-0 rounded-full border-2 border-gray-600/35" style={{ animation: 'realisticRipple2 4s ease-out infinite', animationDelay: '1s' }} />
+          <div className="absolute inset-0 rounded-full border-2 border-gray-600/30" style={{ animation: 'realisticRipple3 5s ease-out infinite', animationDelay: '2s' }} />
+        </div>
+        
+        {/* Secondary Magnetic Ripple */}
+        <div 
+          className="absolute w-32 h-32 transition-all duration-500 ease-out"
+          style={{ 
+            left: mousePosition.x ? `${mousePosition.x - 64}px` : '75%',
+            top: mousePosition.y ? `${mousePosition.y - 32}px` : '33%',
+            transform: mousePosition.x ? 'translate(0, 0)' : 'translate(0, 0)',
+          }}
+        >
+          <div className="absolute inset-0 rounded-full border-2 border-gray-300/35" style={{ animation: 'realisticRipple 3.5s ease-out infinite', animationDelay: '1.5s' }} />
+          <div className="absolute inset-0 rounded-full border-2 border-gray-300/30" style={{ animation: 'realisticRipple2 4.5s ease-out infinite', animationDelay: '3s' }} />
+        </div>
+        
+        {/* Tertiary Magnetic Ripple */}
+        <div 
+          className="absolute w-28 h-28 transition-all duration-700 ease-out"
+          style={{ 
+            left: mousePosition.x ? `${mousePosition.x - 28}px` : '25%',
+            top: mousePosition.y ? `${mousePosition.y + 32}px` : '67%',
+            transform: mousePosition.x ? 'translate(0, 0)' : 'translate(0, 0)',
+          }}
+        >
+          <div className="absolute inset-0 rounded-full border-2 border-gray-300/30" style={{ animation: 'realisticRipple3 4s ease-out infinite', animationDelay: '2.5s' }} />
+          <div className="absolute inset-0 rounded-full border-2 border-gray-300/25" style={{ animation: 'realisticRipple 3.8s ease-out infinite', animationDelay: '4s' }} />
+        </div>
+        
+        {/* Magnetic Water Drop */}
+        <div 
+          className="absolute w-6 h-6 transition-all duration-200 ease-out"
+          style={{ 
+            left: mousePosition.x ? `${mousePosition.x - 3}px` : '50%',
+            top: mousePosition.y ? `${mousePosition.y - 3}px` : '50%',
+            transform: mousePosition.x ? 'translate(0, 0)' : 'translate(-50%, -50%)',
+          }}
+        >
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-300/40 to-gray-500/30" style={{ animation: 'waterDropRebound 2s ease-in-out infinite' }} />
+        </div>
+        
+        {/* Magnetic Surface Details */}
+        <div className="absolute inset-0 opacity-30">
+          <div 
+            className="absolute w-2 h-2 bg-gray-300/40 rounded-full transition-all duration-400 ease-out"
+            style={{ 
+              left: mousePosition.x ? `${mousePosition.x - 8}px` : '33%',
+              top: mousePosition.y ? `${mousePosition.y - 16}px` : '25%',
+              animation: 'pulse 2s ease-in-out infinite',
+              animationDelay: '0.5s'
+            }}
+          />
+          <div 
+            className="absolute w-3 h-3 bg-gray-300/35 rounded-full transition-all duration-600 ease-out"
+            style={{ 
+              left: mousePosition.x ? `${mousePosition.x + 16}px` : '67%',
+              top: mousePosition.y ? `${mousePosition.y + 24}px` : '75%',
+              animation: 'pulse 2.5s ease-in-out infinite',
+              animationDelay: '2s'
+            }}
+          />
+          <div 
+            className="absolute w-2 h-2 bg-gray-300/30 rounded-full transition-all duration-800 ease-out"
+            style={{ 
+              left: mousePosition.x ? `${mousePosition.x - 16}px` : '67%',
+              top: mousePosition.y ? `${mousePosition.y + 16}px` : '75%',
+              animation: 'pulse 3s ease-in-out infinite',
+              animationDelay: '3.5s'
+            }}
+          />
+        </div>
+      </div>
+      
+      <Card className="relative z-10 bg-white/98 backdrop-blur-sm border-gray-300 shadow-2xl">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-2xl font-bold">How VERCLIBASE Works</CardTitle>
-            <CardDescription className="text-lg">
+            <CardTitle className="text-2xl font-bold text-black drop-shadow-sm">How VERCLIBASE Works</CardTitle>
+            <CardDescription className="text-lg text-gray-800 drop-shadow-sm">
               The complete AI coding platform with pay-per-use pricing and automatic optimization
             </CardDescription>
           </div>
-          <Badge variant="secondary" className="text-sm">
+          <Badge variant="secondary" className="text-sm text-gray-800 bg-gray-200 border border-gray-300">
             Step {currentStep + 1} of {onboardingSteps.length}
           </Badge>
         </div>
@@ -156,8 +266,8 @@ export function OnboardingExplainer() {
             <div className="p-4 bg-blue-100 rounded-full">{currentStepData.icon}</div>
           </div>
           <div>
-            <h3 className="text-xl font-semibold">{currentStepData.title}</h3>
-            <p className="text-gray-600 mt-2">{currentStepData.description}</p>
+            <h3 className="text-xl font-semibold text-black drop-shadow-sm">{currentStepData.title}</h3>
+            <p className="text-gray-800 mt-2 drop-shadow-sm">{currentStepData.description}</p>
           </div>
         </div>
 
@@ -166,7 +276,7 @@ export function OnboardingExplainer() {
           {currentStepData.benefits.map((benefit, index) => (
             <div key={index} className="flex items-start gap-2">
               <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-              <span className="text-sm">{benefit}</span>
+              <span className="text-sm text-gray-900 drop-shadow-sm">{benefit}</span>
             </div>
           ))}
         </div>
@@ -208,7 +318,7 @@ export function OnboardingExplainer() {
 
         {/* Navigation */}
         <div className="flex justify-between">
-          <Button onClick={prevStep} variant="outline" disabled={currentStep === 0}>
+          <Button onClick={prevStep} variant="outline" disabled={currentStep === 0} className="text-gray-800 border-gray-300 bg-white hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-200">
             Previous
           </Button>
           <Button onClick={nextStep} className="flex items-center gap-2">
@@ -217,7 +327,8 @@ export function OnboardingExplainer() {
           </Button>
         </div>
       </CardContent>
-    </Card>
+      </Card>
+    </div>
   )
 }
 
