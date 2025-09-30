@@ -192,7 +192,7 @@ export class SimpleEffectiveOptimizer {
     optimized = optimized.replace(
       /\b(artificial intelligence|machine learning|deep learning|natural language processing|computer vision|robotic process automation|predictive analytics|clinical decision support systems|electronic health records|patient monitoring|drug discovery|medical imaging|telemedicine)\b/gi,
       (match) => {
-        const abbreviations = {
+        const abbreviations: Record<string, string> = {
           'artificial intelligence': 'AI',
           'machine learning': 'ML',
           'deep learning': 'DL',
@@ -223,7 +223,7 @@ export class SimpleEffectiveOptimizer {
     optimized = optimized.replace(
       /\b(healthcare delivery|patient outcomes|cost reduction|regulatory considerations)\b/gi,
       (match) => {
-        const compressions = {
+        const compressions: Record<string, string> = {
           'healthcare delivery': 'healthcare',
           'patient outcomes': 'outcomes',
           'cost reduction': 'cost',

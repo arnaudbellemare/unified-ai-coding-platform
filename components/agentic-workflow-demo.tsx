@@ -29,7 +29,7 @@ export function AgenticWorkflowDemo() {
         body: JSON.stringify({ prompt, model }),
       })
       const text = await res.text()
-      let json = {}
+      let json: any = {}
       if (text) {
         try {
           json = JSON.parse(text)
@@ -62,7 +62,7 @@ export function AgenticWorkflowDemo() {
         body: JSON.stringify({ prompt: optimized || prompt, model }),
       })
       const text = await res.text()
-      let json = {}
+      let json: any = {}
       if (text) {
         try {
           json = JSON.parse(text)
@@ -93,7 +93,7 @@ export function AgenticWorkflowDemo() {
         body: JSON.stringify({ items: [{ id: 'demo', qty: 1, price: 0.01 }] }),
       })
       const text = await res.text()
-      let json = {}
+      let json: any = {}
       if (text) {
         try {
           json = JSON.parse(text)
