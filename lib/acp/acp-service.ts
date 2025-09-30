@@ -116,9 +116,10 @@ export class ACPService {
         // Process payment through x402
         const paymentResult = await this.getX402Service().processPayment({
           amount: request.totalAmount,
-          currency: request.currency || 'USDC',
+          currency: (request.currency || 'USDC') as 'USDC' | 'ETH',
           recipient: process.env.NEXT_PUBLIC_X402_RECIPIENT_ADDRESS || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
-          userId,
+          agentId: userId,
+          description: `ACP checkout for ${request.items.length} items`,
           metadata: {
             ...request.metadata,
             acpTransaction: true,
@@ -127,7 +128,7 @@ export class ACPService {
             acpVersion: '1.0',
           },
         })
-        paymentId = paymentResult.transactionId
+        paymentId = paymentResult.transactionHash
       }
 
       return {
@@ -165,9 +166,10 @@ export class ACPService {
 
       const paymentResult = await this.getX402Service().processPayment({
         amount: request.amount,
-        currency: request.currency,
+        currency: request.currency as 'USDC' | 'ETH',
         recipient: process.env.NEXT_PUBLIC_X402_RECIPIENT_ADDRESS || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
-        userId,
+        agentId: userId,
+        description: `ACP payment for ${request.paymentMethod}`,
         metadata: {
           ...request.metadata,
           acpPayment: true,
@@ -177,7 +179,7 @@ export class ACPService {
 
       return {
         success: true,
-        paymentId: paymentResult.transactionId,
+        paymentId: paymentResult.transactionHash,
         status: 'completed',
       }
     } catch (error) {

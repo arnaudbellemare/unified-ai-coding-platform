@@ -525,7 +525,6 @@ export function MarketingLanding({
           `}</style>
         </section>
 
-
         {/* GEO Playbook section removed per request */}
 
         {/* Agentic e‑Commerce Advantage (GEO) */}
@@ -718,7 +717,6 @@ export function MarketingLanding({
             </Card>
           </div>
         </details>
-
       </div>
     </div>
   )

@@ -7,7 +7,10 @@ import { acpService } from '@/lib/acp/acp-service'
  * Maps our in‑memory catalog to the OpenAI Product Feed spec fields.
  * Spec reference: https://developers.openai.com/commerce/specs/feed
  */
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const format = searchParams.get('format') || 'json'
+
   const products = catalogService.listProducts()
   const merchant = acpService.getMerchantConfig()
 
@@ -83,12 +86,18 @@ export async function GET() {
     })
   })
 
+  // Handle different formats via query parameter
+  if (format === 'csv') {
+    return getCSVResponse(feed)
+  } else if (format === 'tsv') {
+    return getTSVResponse(feed)
+  }
+
   return NextResponse.json({ success: true, format: 'json', items: feed })
 }
 
-export async function GET_CSV() {
-  const res = await GET()
-  const { items } = (await res.json()) as any
+// Helper functions for different output formats
+function getCSVResponse(items: any[]) {
   const headers = [
     'enable_search',
     'enable_checkout',
@@ -142,9 +151,7 @@ export async function GET_CSV() {
   })
 }
 
-export async function GET_TSV() {
-  const res = await GET()
-  const { items } = (await res.json()) as any
+function getTSVResponse(items: any[]) {
   const headers = [
     'enable_search',
     'enable_checkout',

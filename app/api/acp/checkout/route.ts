@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('🛒 ACP Checkout initiated:', {
-      userId: user.id,
+      userId: user?.id || 'guest',
       itemsCount: items.length,
       totalAmount,
       currency,
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
         paymentMethod: paymentMethod || 'x402',
         metadata,
       },
-      user.id,
+      user?.id || 'guest',
     )
 
     if (!checkoutResult.success) {
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
         url: 'https://verclibase.com',
       },
       buyer: {
-        id: user.id,
+        id: user?.id || 'guest',
         type: 'ai_agent',
       },
     }

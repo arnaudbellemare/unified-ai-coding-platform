@@ -60,6 +60,7 @@ export class ResearchBackedOptimizer {
       targetModel: 'gpt-4o-mini',
       modelSize: 'medium',
       taskComplexity: 'simple',
+      verbosityLevel: 'medium',
       enableMetaPrompting: false,
       enableCaching: true,
       enableChunking: true,
