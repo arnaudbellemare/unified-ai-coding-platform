@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { PaymentMethodSelector } from '@/components/payment-method-selector'
 
 interface RankedOffer {
   productId: string
@@ -29,6 +30,26 @@ export function AcpDemo() {
   const [offers, setOffers] = useState<RankedOffer[]>([])
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'x402' | undefined>()
+  const [showPaymentSelector, setShowPaymentSelector] = useState(false)
+
+  const handleCheckout = async (offer: RankedOffer) => {
+    setShowPaymentSelector(true)
+  }
+
+  const handlePaymentMethodSelect = async (method: 'stripe' | 'x402') => {
+    setSelectedPaymentMethod(method)
+    setShowPaymentSelector(false)
+
+    // Here you would implement the actual checkout logic
+    if (method === 'stripe') {
+      // Redirect to Stripe checkout
+      setMessage('Redirecting to Stripe checkout...')
+    } else if (method === 'x402') {
+      // Handle x402 payment
+      setMessage('Initiating x402 payment...')
+    }
+  }
 
   const search = async () => {
     setLoading(true)
@@ -166,11 +187,11 @@ export function AcpDemo() {
 
                 <Button
                   size="sm"
-                  onClick={() => checkout(o)}
+                  onClick={() => handleCheckout(o)}
                   disabled={!o.inStock}
                   className="w-full bg-blue-600 text-white hover:bg-blue-700"
                 >
-                  Pay with x402
+                  Choose Payment Method
                 </Button>
               </div>
             </div>
@@ -179,6 +200,16 @@ export function AcpDemo() {
             <div className="text-sm text-gray-700">No results yet. Try another query.</div>
           )}
         </div>
+
+        {/* Payment Method Selector */}
+        {showPaymentSelector && (
+          <div className="mt-6 p-6 border-t bg-gray-50">
+            <PaymentMethodSelector
+              onSelect={handlePaymentMethodSelect}
+              selectedMethod={selectedPaymentMethod}
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   )

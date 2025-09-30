@@ -34,6 +34,38 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
     // Simulate fetching protocol comparison data
     const mockComparison = [
       {
+        protocol: 'stripe',
+        name: 'Stripe',
+        decentralization: 'Centralized',
+        automation: 'Good',
+        cost: 'Medium',
+        speed: 'Fast',
+        reversibility: 'Yes',
+        micropayments: 'Limited',
+        advantages: [
+          'Traditional card payments',
+          'Apple Pay & Google Pay',
+          'Full checkout experience',
+          'Tax calculation',
+          'Shipping collection',
+          'Promo codes support',
+          'Chargeback protection',
+          'Fraud prevention'
+        ],
+        disadvantages: [
+          'Higher fees for small amounts',
+          'Requires traditional banking',
+          'Limited micropayment support',
+          'Geographic restrictions'
+        ],
+        useCases: [
+          'E-commerce stores',
+          'SaaS subscriptions',
+          'Marketplace payments',
+          'Traditional businesses'
+        ]
+      },
+      {
         protocol: 'x402',
         name: 'x402 Foundation',
         decentralization: 'Semi-Decentralized',

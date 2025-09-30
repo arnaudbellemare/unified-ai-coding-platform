@@ -84,18 +84,18 @@ export function MarketingLanding({
             style={{
               backgroundImage: isInBlackSection
                 ? `
-                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
-                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.6) 1.5px, transparent 1.5px),
-                radial-gradient(circle at 60% 70%, rgba(255, 255, 255, 0.9) 2.5px, transparent 2.5px),
-                radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.7) 1.8px, transparent 1.8px),
-                radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.8) 2.2px, transparent 2.2px)
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8) 1.2px, transparent 1.2px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.6) 0.9px, transparent 0.9px),
+                radial-gradient(circle at 60% 70%, rgba(255, 255, 255, 0.9) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.7) 1.1px, transparent 1.1px),
+                radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.8) 1.3px, transparent 1.3px)
               `
                 : `
-                radial-gradient(circle at 20% 30%, rgba(120, 120, 120, 0.6) 2px, transparent 2px),
-                radial-gradient(circle at 80% 20%, rgba(100, 100, 100, 0.5) 1.5px, transparent 1.5px),
-                radial-gradient(circle at 60% 70%, rgba(140, 140, 140, 0.7) 2.5px, transparent 2.5px),
-                radial-gradient(circle at 30% 80%, rgba(110, 110, 110, 0.55) 1.8px, transparent 1.8px),
-                radial-gradient(circle at 70% 50%, rgba(130, 130, 130, 0.65) 2.2px, transparent 2.2px)
+                radial-gradient(circle at 20% 30%, rgba(120, 120, 120, 0.6) 1.2px, transparent 1.2px),
+                radial-gradient(circle at 80% 20%, rgba(100, 100, 100, 0.5) 0.9px, transparent 0.9px),
+                radial-gradient(circle at 60% 70%, rgba(140, 140, 140, 0.7) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 30% 80%, rgba(110, 110, 110, 0.55) 1.1px, transparent 1.1px),
+                radial-gradient(circle at 70% 50%, rgba(130, 130, 130, 0.65) 1.3px, transparent 1.3px)
               `,
               backgroundSize: '40px 40px, 35px 35px, 45px 45px, 38px 38px, 42px 42px',
               animation: 'halftoneMove 40s linear infinite, slowRotate 120s linear infinite',
