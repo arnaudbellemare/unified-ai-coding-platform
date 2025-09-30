@@ -154,11 +154,11 @@ export function MarketingLanding({
                     } animate-fade-in hover:scale-[1.02] hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] transition-all duration-500 cursor-pointer`}
                   >
                     <h1
-                      className={`text-5xl md:text-7xl font-black tracking-tight leading-[0.95] animate-slide-up-1 ${styleVariant === 'mcpay' ? 'text-white' : 'text-black drop-shadow-lg'}`}
+                      className={`text-5xl md:text-7xl font-black tracking-tight leading-[0.95] ${styleVariant === 'mcpay' ? 'text-white' : 'text-black drop-shadow-lg'}`}
                     >
-                      Rank higher in
+                      <span className="animate-text-reveal-1 inline-block">Rank higher in</span>
                       <span
-                        className="mx-2 inline-block bg-gradient-to-r from-indigo-900 via-blue-600 via-blue-300 to-gray-400 bg-clip-text text-transparent font-bold"
+                        className="mx-2 inline-block bg-gradient-to-r from-indigo-900 via-blue-600 via-blue-300 to-gray-400 bg-clip-text text-transparent font-bold animate-text-reveal-2"
                         style={{
                           textShadow: '0 2px 4px rgba(0,0,0,0.1)',
                           backgroundSize: '300% 300%',
@@ -169,12 +169,12 @@ export function MarketingLanding({
                       </span>
                     </h1>
                     <p
-                      className={`mt-4 max-w-xl animate-slide-up-2 ${styleVariant === 'mcpay' ? 'text-gray-200' : 'text-gray-800 drop-shadow-sm'}`}
+                      className={`mt-4 max-w-xl animate-text-reveal-3 ${styleVariant === 'mcpay' ? 'text-gray-200' : 'text-gray-800 drop-shadow-sm'}`}
                     >
                       Optimize your product listings to rank higher when AI agents search. Structured feeds, trust
                       signals, and x402 sponsorship for maximum visibility.
                     </p>
-                    <div className="mt-6 flex gap-3 animate-slide-up-3">
+                    <div className="mt-6 flex gap-3 animate-text-reveal-4">
                       <Button
                         size="lg"
                         onClick={onPrimary}

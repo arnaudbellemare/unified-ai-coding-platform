@@ -504,3 +504,56 @@ button {
     background-position: 100% 50%;
   }
 }
+
+/* Text Reveal Animation */
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes textRevealStagger {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-text-reveal {
+  animation: textReveal 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-text-reveal-1 {
+  animation: textRevealStagger 0.8s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.animate-text-reveal-2 {
+  animation: textRevealStagger 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-text-reveal-3 {
+  animation: textRevealStagger 0.8s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+.animate-text-reveal-4 {
+  animation: textRevealStagger 0.8s ease-out 0.4s forwards;
+  opacity: 0;
+}
+
+.animate-text-reveal-5 {
+  animation: textRevealStagger 0.8s ease-out 0.5s forwards;
+  opacity: 0;
+}
