@@ -414,7 +414,7 @@ export default function UnifiedAllInOne() {
           body: JSON.stringify({
             prompt,
             task,
-            model: selectedModel,
+            model: selectedModel, // This is already a string ID
             provider: selectedProvider,
             verbosityLevel,
             userId: 'user-' + Date.now(), // Generate user ID for tracking

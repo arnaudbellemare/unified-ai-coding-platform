@@ -621,7 +621,7 @@ export function MarketingLanding({
                   </div>
                   <p className="text-gray-700 leading-relaxed">
                     Allocate sponsorship budgets (per search, per click, per checkout) using x402.
-                    <span className="font-semibold text-black">Fully transparent, pay-per-use, and auditable.</span>
+                    <span className="font-semibold text-black">FREE facilitator, FREE gas fees, fully transparent and auditable.</span>
                   </p>
                 </CardContent>
               </Card>

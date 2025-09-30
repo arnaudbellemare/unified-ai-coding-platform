@@ -42,15 +42,30 @@ export function AcpDemo() {
           filters: { currency: 'USD', maxPrice: 200 },
         }),
       })
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`)
+      }
+
       const data = await res.json()
-      setOffers(
-        (data.results || []).map((r: any) => ({
-          ...r,
-          image: r.image || r.images?.[0] || '/next.svg',
-        })),
-      )
+      console.log('ACP Search Response:', data) // Debug log
+
+      if (data.success && Array.isArray(data.results)) {
+        setOffers(
+          data.results.map((r: any) => ({
+            ...r,
+            image: r.image || r.images?.[0] || '/next.svg',
+          })),
+        )
+        setMessage(null)
+      } else {
+        setMessage(`Search failed: ${data.error || 'Invalid response format'}`)
+        setOffers([])
+      }
     } catch (e) {
-      setMessage('Search failed')
+      console.error('ACP Search Error:', e)
+      setMessage(`Search failed: ${e instanceof Error ? e.message : 'Unknown error'}`)
+      setOffers([])
     } finally {
       setLoading(false)
     }
@@ -137,10 +152,16 @@ export function AcpDemo() {
 
                   <div className="font-medium mb-1">x402 Payment Benefits:</div>
                   <div className="text-xs text-green-700 bg-green-50 p-2 rounded">
+                    • <strong>FREE</strong> Coinbase x402 facilitator (no fees!)
+                    <br />
+                    • <strong>FREE</strong> gas fees (sponsored by Coinbase)
+                    <br />
+                    • <strong>FREE</strong> receiving (always free)
+                    <br />
                     • Instant settlement on Base network
                     <br />
                     • No credit card fees or chargebacks
-                    <br />• Transparent cost: ${o.effectivePrice.toFixed(2)} {o.currency}
+                    <br />• Total cost: ${o.effectivePrice.toFixed(2)} {o.currency} (product only)
                     <br />• {o.inStock ? 'In stock' : 'Out of stock'} • ETA {o.etaDays || 5}d
                   </div>
                 </div>

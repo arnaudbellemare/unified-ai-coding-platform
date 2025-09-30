@@ -143,6 +143,8 @@ export async function GET(request: NextRequest) {
     return response
   } catch (error) {
     console.error('GitHub OAuth error:', error)
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/?github_error=true`)
+    return NextResponse.redirect(
+      `${process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/?github_error=true`,
+    )
   }
 }
