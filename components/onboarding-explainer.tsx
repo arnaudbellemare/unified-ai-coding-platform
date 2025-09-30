@@ -101,9 +101,12 @@ export function OnboardingExplainer() {
         {/* Light Background */}
         <div className="absolute inset-0 bg-black rounded-xl overflow-hidden" style={{ zIndex: -1 }}>
           {/* Dark Water Surface Base */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" style={{ animation: 'waterSurface 8s ease-in-out infinite' }} />
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800"
+            style={{ animation: 'waterSurface 8s ease-in-out infinite' }}
+          />
         </div>
-        
+
         <Card className="relative z-10 bg-white/98 backdrop-blur-sm border-gray-300 shadow-2xl">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
@@ -142,7 +145,11 @@ export function OnboardingExplainer() {
               </div>
             </div>
             <div className="text-center">
-              <Button onClick={() => setIsCompleted(false)} variant="outline" className="bg-gray-200 text-gray-800 hover:bg-gray-300 border-gray-300">
+              <Button
+                onClick={() => setIsCompleted(false)}
+                variant="outline"
+                className="bg-gray-200 text-gray-800 hover:bg-gray-300 border-gray-300"
+              >
                 Review Again
               </Button>
             </div>
@@ -159,174 +166,206 @@ export function OnboardingExplainer() {
       {/* Light Background */}
       <div className="absolute inset-0 bg-black rounded-xl overflow-hidden" style={{ zIndex: -1 }}>
         {/* Dark Water Surface Base */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" style={{ animation: 'waterSurface 8s ease-in-out infinite' }} />
-        
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800"
+          style={{ animation: 'waterSurface 8s ease-in-out infinite' }}
+        />
+
         {/* Magnetic Water Ripples - Follow Mouse */}
-        <div 
+        <div
           className="absolute w-40 h-40 transition-all duration-300 ease-out"
-          style={{ 
+          style={{
             left: mousePosition.x ? `${mousePosition.x - 80}px` : '50%',
             top: mousePosition.y ? `${mousePosition.y - 80}px` : '50%',
             transform: mousePosition.x ? 'translate(0, 0)' : 'translate(-50%, -50%)',
           }}
         >
-          <div className="absolute inset-0 rounded-full border-2 border-gray-600/40" style={{ animation: 'realisticRipple 3s ease-out infinite', animationDelay: '0s' }} />
-          <div className="absolute inset-0 rounded-full border-2 border-gray-600/35" style={{ animation: 'realisticRipple2 4s ease-out infinite', animationDelay: '1s' }} />
-          <div className="absolute inset-0 rounded-full border-2 border-gray-600/30" style={{ animation: 'realisticRipple3 5s ease-out infinite', animationDelay: '2s' }} />
+          <div
+            className="absolute inset-0 rounded-full border-2 border-gray-600/40"
+            style={{ animation: 'realisticRipple 3s ease-out infinite', animationDelay: '0s' }}
+          />
+          <div
+            className="absolute inset-0 rounded-full border-2 border-gray-600/35"
+            style={{ animation: 'realisticRipple2 4s ease-out infinite', animationDelay: '1s' }}
+          />
+          <div
+            className="absolute inset-0 rounded-full border-2 border-gray-600/30"
+            style={{ animation: 'realisticRipple3 5s ease-out infinite', animationDelay: '2s' }}
+          />
         </div>
-        
+
         {/* Secondary Magnetic Ripple */}
-        <div 
+        <div
           className="absolute w-32 h-32 transition-all duration-500 ease-out"
-          style={{ 
+          style={{
             left: mousePosition.x ? `${mousePosition.x - 64}px` : '75%',
             top: mousePosition.y ? `${mousePosition.y - 32}px` : '33%',
             transform: mousePosition.x ? 'translate(0, 0)' : 'translate(0, 0)',
           }}
         >
-          <div className="absolute inset-0 rounded-full border-2 border-gray-300/35" style={{ animation: 'realisticRipple 3.5s ease-out infinite', animationDelay: '1.5s' }} />
-          <div className="absolute inset-0 rounded-full border-2 border-gray-300/30" style={{ animation: 'realisticRipple2 4.5s ease-out infinite', animationDelay: '3s' }} />
+          <div
+            className="absolute inset-0 rounded-full border-2 border-gray-300/35"
+            style={{ animation: 'realisticRipple 3.5s ease-out infinite', animationDelay: '1.5s' }}
+          />
+          <div
+            className="absolute inset-0 rounded-full border-2 border-gray-300/30"
+            style={{ animation: 'realisticRipple2 4.5s ease-out infinite', animationDelay: '3s' }}
+          />
         </div>
-        
+
         {/* Tertiary Magnetic Ripple */}
-        <div 
+        <div
           className="absolute w-28 h-28 transition-all duration-700 ease-out"
-          style={{ 
+          style={{
             left: mousePosition.x ? `${mousePosition.x - 28}px` : '25%',
             top: mousePosition.y ? `${mousePosition.y + 32}px` : '67%',
             transform: mousePosition.x ? 'translate(0, 0)' : 'translate(0, 0)',
           }}
         >
-          <div className="absolute inset-0 rounded-full border-2 border-gray-300/30" style={{ animation: 'realisticRipple3 4s ease-out infinite', animationDelay: '2.5s' }} />
-          <div className="absolute inset-0 rounded-full border-2 border-gray-300/25" style={{ animation: 'realisticRipple 3.8s ease-out infinite', animationDelay: '4s' }} />
+          <div
+            className="absolute inset-0 rounded-full border-2 border-gray-300/30"
+            style={{ animation: 'realisticRipple3 4s ease-out infinite', animationDelay: '2.5s' }}
+          />
+          <div
+            className="absolute inset-0 rounded-full border-2 border-gray-300/25"
+            style={{ animation: 'realisticRipple 3.8s ease-out infinite', animationDelay: '4s' }}
+          />
         </div>
-        
+
         {/* Magnetic Water Drop */}
-        <div 
+        <div
           className="absolute w-6 h-6 transition-all duration-200 ease-out"
-          style={{ 
+          style={{
             left: mousePosition.x ? `${mousePosition.x - 3}px` : '50%',
             top: mousePosition.y ? `${mousePosition.y - 3}px` : '50%',
             transform: mousePosition.x ? 'translate(0, 0)' : 'translate(-50%, -50%)',
           }}
         >
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-300/40 to-gray-500/30" style={{ animation: 'waterDropRebound 2s ease-in-out infinite' }} />
+          <div
+            className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-300/40 to-gray-500/30"
+            style={{ animation: 'waterDropRebound 2s ease-in-out infinite' }}
+          />
         </div>
-        
+
         {/* Magnetic Surface Details */}
         <div className="absolute inset-0 opacity-30">
-          <div 
+          <div
             className="absolute w-2 h-2 bg-gray-300/40 rounded-full transition-all duration-400 ease-out"
-            style={{ 
+            style={{
               left: mousePosition.x ? `${mousePosition.x - 8}px` : '33%',
               top: mousePosition.y ? `${mousePosition.y - 16}px` : '25%',
               animation: 'pulse 2s ease-in-out infinite',
-              animationDelay: '0.5s'
+              animationDelay: '0.5s',
             }}
           />
-          <div 
+          <div
             className="absolute w-3 h-3 bg-gray-300/35 rounded-full transition-all duration-600 ease-out"
-            style={{ 
+            style={{
               left: mousePosition.x ? `${mousePosition.x + 16}px` : '67%',
               top: mousePosition.y ? `${mousePosition.y + 24}px` : '75%',
               animation: 'pulse 2.5s ease-in-out infinite',
-              animationDelay: '2s'
+              animationDelay: '2s',
             }}
           />
-          <div 
+          <div
             className="absolute w-2 h-2 bg-gray-300/30 rounded-full transition-all duration-800 ease-out"
-            style={{ 
+            style={{
               left: mousePosition.x ? `${mousePosition.x - 16}px` : '67%',
               top: mousePosition.y ? `${mousePosition.y + 16}px` : '75%',
               animation: 'pulse 3s ease-in-out infinite',
-              animationDelay: '3.5s'
+              animationDelay: '3.5s',
             }}
           />
         </div>
       </div>
-      
+
       <Card className="relative z-10 bg-white/98 backdrop-blur-sm border-gray-300 shadow-2xl">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-2xl font-bold text-black drop-shadow-sm">How VERCLIBASE Works</CardTitle>
-            <CardDescription className="text-lg text-gray-800 drop-shadow-sm">
-              The complete AI coding platform with pay-per-use pricing and automatic optimization
-            </CardDescription>
-          </div>
-          <Badge variant="secondary" className="text-sm text-gray-800 bg-gray-200 border border-gray-300">
-            Step {currentStep + 1} of {onboardingSteps.length}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Current Step */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center">
-            <div className="p-4 bg-blue-100 rounded-full">{currentStepData.icon}</div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold text-black drop-shadow-sm">{currentStepData.title}</h3>
-            <p className="text-gray-800 mt-2 drop-shadow-sm">{currentStepData.description}</p>
-          </div>
-        </div>
-
-        {/* Benefits */}
-        <div className="grid md:grid-cols-2 gap-3">
-          {currentStepData.benefits.map((benefit, index) => (
-            <div key={index} className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-              <span className="text-sm text-gray-900 drop-shadow-sm">{benefit}</span>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-2xl font-bold text-black drop-shadow-sm">How VERCLIBASE Works</CardTitle>
+              <CardDescription className="text-lg text-gray-800 drop-shadow-sm">
+                The complete AI coding platform with pay-per-use pricing and automatic optimization
+              </CardDescription>
             </div>
-          ))}
-        </div>
-
-        {/* Real Example for Pay Per Use */}
-        {currentStepData.id === 'pay-per-use' && (
-          <div className="bg-gray-100 p-4 rounded-lg border">
-            <h4 className="font-semibold mb-2 text-gray-900">Real Example:</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-gray-700">
-                <span>Original prompt cost:</span>
-                <span className="font-mono text-gray-900">$0.000012</span>
-              </div>
-              <div className="flex justify-between text-gray-700">
-                <span>Optimized prompt cost:</span>
-                <span className="font-mono text-green-700">$0.000010</span>
-              </div>
-              <div className="flex justify-between font-semibold border-t border-gray-300 pt-2 text-gray-900">
-                <span>You save:</span>
-                <span className="font-mono text-green-700">20% ($0.000002)</span>
-              </div>
+            <Badge variant="secondary" className="text-sm text-gray-800 bg-gray-200 border border-gray-300">
+              Step {currentStep + 1} of {onboardingSteps.length}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Current Step */}
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center">
+              <div className="p-4 bg-blue-100 rounded-full">{currentStepData.icon}</div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-black drop-shadow-sm">{currentStepData.title}</h3>
+              <p className="text-gray-800 mt-2 drop-shadow-sm">{currentStepData.description}</p>
             </div>
           </div>
-        )}
 
-        {/* Progress Bar */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm text-gray-700">
-            <span className="text-gray-900">Progress</span>
-            <span className="text-gray-900">{Math.round(((currentStep + 1) / onboardingSteps.length) * 100)}%</span>
+          {/* Benefits */}
+          <div className="grid md:grid-cols-2 gap-3">
+            {currentStepData.benefits.map((benefit, index) => (
+              <div key={index} className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                <span className="text-sm text-gray-900 drop-shadow-sm">{benefit}</span>
+              </div>
+            ))}
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${((currentStep + 1) / onboardingSteps.length) * 100}%` }}
-            />
-          </div>
-        </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between">
-          <Button onClick={prevStep} variant="outline" disabled={currentStep === 0} className="text-gray-800 border-gray-300 bg-white hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-200">
-            Previous
-          </Button>
-          <Button onClick={nextStep} className="flex items-center gap-2">
-            {currentStep === onboardingSteps.length - 1 ? 'Get Started' : 'Next'}
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardContent>
+          {/* Real Example for Pay Per Use */}
+          {currentStepData.id === 'pay-per-use' && (
+            <div className="bg-gray-100 p-4 rounded-lg border">
+              <h4 className="font-semibold mb-2 text-gray-900">Real Example:</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between text-gray-700">
+                  <span>Original prompt cost:</span>
+                  <span className="font-mono text-gray-900">$0.000012</span>
+                </div>
+                <div className="flex justify-between text-gray-700">
+                  <span>Optimized prompt cost:</span>
+                  <span className="font-mono text-green-700">$0.000010</span>
+                </div>
+                <div className="flex justify-between font-semibold border-t border-gray-300 pt-2 text-gray-900">
+                  <span>You save:</span>
+                  <span className="font-mono text-green-700">20% ($0.000002)</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm text-gray-700">
+              <span className="text-gray-900">Progress</span>
+              <span className="text-gray-900">{Math.round(((currentStep + 1) / onboardingSteps.length) * 100)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${((currentStep + 1) / onboardingSteps.length) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div className="flex justify-between">
+            <Button
+              onClick={prevStep}
+              variant="outline"
+              disabled={currentStep === 0}
+              className="text-gray-800 border-gray-300 bg-white hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-200"
+            >
+              Previous
+            </Button>
+            <Button onClick={nextStep} className="flex items-center gap-2">
+              {currentStep === onboardingSteps.length - 1 ? 'Get Started' : 'Next'}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardContent>
       </Card>
     </div>
   )

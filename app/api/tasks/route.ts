@@ -17,11 +17,11 @@ import { DevAuth } from '@/lib/auth/dev-auth'
 export async function GET(request: NextRequest) {
   try {
     console.log('[Tasks API] GET request received')
-    
+
     // Check if development mode is enabled (when no API keys configured)
     const isDevMode = DevAuth.isDevMode()
     console.log('[Tasks API] Dev mode check:', isDevMode)
-    
+
     if (isDevMode) {
       console.log('[Tasks API] Development mode detected, returning mock tasks')
       const { getMockTasks } = await import('@/lib/config/dev-config')

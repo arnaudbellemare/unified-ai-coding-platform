@@ -120,7 +120,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
   // Fetch tasks on component mount
   useEffect(() => {
     fetchTasks()
-    
+
     // Circuit breaker: force loading to false after 10 seconds
     const circuitBreaker = setTimeout(() => {
       if (isLoading) {
@@ -129,7 +129,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
         setTasks([])
       }
     }, 10000)
-    
+
     return () => clearTimeout(circuitBreaker)
   }, [])
 
@@ -185,7 +185,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
 
     try {
       setIsLoading(true)
-      
+
       // Always use relative path and guard against transient network errors
       const controller = new AbortController()
       const timeoutMs = 3000 // Even faster timeout for quicker fallback
@@ -193,16 +193,16 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
         console.warn(`Tasks request timed out after ${timeoutMs}ms; aborting`)
         controller.abort()
       }, timeoutMs)
-      
+
       let response: Response
       try {
-        response = await fetch('/api/tasks', { 
-          signal: controller.signal, 
+        response = await fetch('/api/tasks', {
+          signal: controller.signal,
           cache: 'no-store',
           headers: {
-            'Accept': 'application/json',
-            'Cache-Control': 'no-cache'
-          }
+            Accept: 'application/json',
+            'Cache-Control': 'no-cache',
+          },
         })
       } catch (err: any) {
         if (err && err.name === 'AbortError') {
@@ -229,7 +229,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
 
       const contentType = response.headers.get('content-type') || ''
       let data: any = {}
-      
+
       try {
         if (contentType.includes('application/json')) {
           data = await response.json()
