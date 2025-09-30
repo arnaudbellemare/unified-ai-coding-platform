@@ -77,6 +77,7 @@ export class GEPACostOptimizer {
     originalPrompt: string,
     targetModel: string,
     qualityThreshold: number = 0.8,
+    verbosityLevel: 'low' | 'medium' | 'high' = 'medium',
   ): Promise<GEPAResults> {
     console.log('🧬 Starting GEPA cost optimization...')
 

@@ -9,6 +9,7 @@ interface RankedOffer {
   productId: string
   variantId: string
   title: string
+  image?: string
   attributes: Record<string, string | number | boolean>
   basePrice: number
   effectivePrice: number
@@ -42,7 +43,12 @@ export function AcpDemo() {
         }),
       })
       const data = await res.json()
-      setOffers(data.results || [])
+      setOffers(
+        (data.results || []).map((r: any) => ({
+          ...r,
+          image: r.image || r.images?.[0] || '/next.svg',
+        })),
+      )
     } catch (e) {
       setMessage('Search failed')
     } finally {
@@ -107,47 +113,46 @@ export function AcpDemo() {
 
         {message && <div className="text-sm text-blue-700">{message}</div>}
 
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {offers.slice(0, 6).map((o) => (
-            <div
-              key={o.variantId}
-              className="flex items-center justify-between border border-gray-200 rounded-lg p-3 bg-white shadow-sm"
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="font-semibold text-black">{o.title}</div>
-                    {typeof o.score === 'number' && (
-                      <Badge variant="outline" className="text-xs">
-                        GEO {Math.round(o.score)}
-                      </Badge>
-                    )}
-                    {o.sponsored && <Badge className="bg-emerald-600 text-white text-xs">Sponsored</Badge>}
-                  </div>
-                  <div className="text-xs text-gray-800">
-                    ${o.effectivePrice.toFixed(2)} {o.currency} • {o.inStock ? 'In stock' : 'Out of stock'}
-                    {typeof o.etaDays === 'number' ? ` • ETA ${o.etaDays}d` : ''}
-                    {o.merchantName ? ` • ${o.merchantName}` : ''}
-                  </div>
-                  {o.reasons && o.reasons.length > 0 && (
-                    <div className="mt-1 flex flex-wrap gap-1">
-                      {o.reasons.slice(0, 3).map((r) => (
-                        <Badge key={r.key} variant="outline" className="text-[10px]">
-                          {r.key}: {Math.round(r.value * 100)}%
-                        </Badge>
-                      ))}
-                    </div>
+            <div key={o.variantId} className="border border-gray-200 rounded-xl bg-white overflow-hidden shadow-sm">
+              <div className="p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="font-semibold text-black">{o.title}</div>
+                  {typeof o.score === 'number' && (
+                    <Badge variant="outline" className="text-xs">
+                      GEO {Math.round(o.score)}
+                    </Badge>
                   )}
+                  {o.sponsored && <Badge className="bg-emerald-600 text-white text-xs">Sponsored</Badge>}
                 </div>
+                
+                <div className="text-sm text-gray-700">
+                  <div className="font-medium mb-1">Product Description:</div>
+                  <div className="text-xs text-gray-600 mb-2">
+                    {o.title.includes('Blue Cotton') 
+                      ? 'Classic crew neck t-shirt in vibrant blue, made from premium cotton blend for comfort and durability.'
+                      : 'Thick, durable cotton tee in slate blue, heavyweight construction for long-lasting wear.'}
+                  </div>
+                  
+                  <div className="font-medium mb-1">x402 Payment Benefits:</div>
+                  <div className="text-xs text-green-700 bg-green-50 p-2 rounded">
+                    • Instant settlement on Base network<br/>
+                    • No credit card fees or chargebacks<br/>
+                    • Transparent cost: ${o.effectivePrice.toFixed(2)} {o.currency}<br/>
+                    • {o.inStock ? 'In stock' : 'Out of stock'} • ETA {o.etaDays || 5}d
+                  </div>
+                </div>
+                
+                <Button
+                  size="sm"
+                  onClick={() => checkout(o)}
+                  disabled={!o.inStock}
+                  className="w-full bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  Pay with x402
+                </Button>
               </div>
-              <Button
-                size="sm"
-                onClick={() => checkout(o)}
-                disabled={!o.inStock}
-                className="bg-blue-600 text-white hover:bg-blue-700"
-              >
-                Checkout
-              </Button>
             </div>
           ))}
           {offers.length === 0 && !loading && (

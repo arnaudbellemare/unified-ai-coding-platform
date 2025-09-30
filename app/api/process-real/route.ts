@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { ResearchBackedOptimizer } from '@/lib/research-backed-optimizer'
-import { GEPACostOptimizer } from '@/lib/gepa-optimizer'
-import { CAPOEnhancedOptimizer } from '@/lib/capo-enhanced-optimizer'
-import { CloudflareCodeModeOptimizer } from '@/lib/cloudflare-code-mode-optimizer'
-import { AdvancedCloudflareOptimizer } from '@/lib/advanced-cloudflare-optimizer'
+import { simpleEffectiveOptimizer } from '@/lib/simple-effective-optimizer'
 import { OpenRouterClient } from '@/lib/openrouter/openrouter-client'
 import { RealX402PaymentService } from '@/lib/x402/real-x402-payments'
 
@@ -105,19 +101,24 @@ I'll be happy to help you continue your text once I can see what you've already 
       content = `I can help with math calculations! Try asking: "What is 5+3?" or "Calculate 10*7" and I'll solve it for you.`
     }
   } else {
-    content = `Based on your prompt: "${prompt}"
+    content = `AI Response for: ${task}
 
-**Analysis:** Your request appears to be about: ${task}
+Input: ${prompt}
 
-**Response:** I'm here to help! This intelligent system can provide useful responses even when external APIs are unavailable.
+This is a simulated response. The AI model "${model}" would process this request and provide a detailed response based on your prompt and task requirements.
 
-For your specific question about "${prompt}", here are some suggestions:
-• If it's a factual question, I can provide relevant information
-• If it's a how-to request, I can guide you through the process  
-• If it's a creative task, I can offer structure and ideas
-• If it's a technical question, I can explain concepts clearly
+**To get real AI responses:**
+1. Set up your OPENROUTER_API_KEY in .env.local
+2. Visit /api/debug-api-status to check your API configuration
+3. The system will then use real AI models instead of this fallback
 
-What specific aspect would you like me to focus on or elaborate further?`
+**Current Request Analysis:**
+• Task: ${task}
+• Prompt: ${prompt}
+• Model: ${model}
+• Status: Using intelligent fallback (API key not configured)
+
+For production use, please configure your OpenRouter API key to access real AI models.`
   }
 
   return {
@@ -133,7 +134,7 @@ What specific aspect would you like me to focus on or elaborate further?`
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { prompt, task, model, provider, userId } = body
+    const { prompt, task, model, provider, verbosityLevel, userId } = body
 
     if (!prompt || !task || !model) {
       return NextResponse.json({ success: false, error: 'Prompt, task, and model are required' }, { status: 400 })
@@ -157,6 +158,12 @@ export async function POST(request: NextRequest) {
     // If we don't have the required environment variables, use intelligent fallback
     if (!hasOpenRouterKey) {
       console.log('⚠️ No valid OpenRouter API key found, using intelligent fallback')
+      console.log('🔧 To fix this: Set OPENROUTER_API_KEY in your .env.local file')
+      console.log('📋 Current key info:', {
+        exists: !!process.env.OPENROUTER_API_KEY,
+        length: process.env.OPENROUTER_API_KEY?.length || 0,
+        isPlaceholder: process.env.OPENROUTER_API_KEY === 'your-openrouter-api-key'
+      })
       const intelligentResponse = await generateIntelligentResponse(prompt, task, model)
 
       return NextResponse.json({
@@ -198,12 +205,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Initialize optimizers
-    const researchOptimizer = new ResearchBackedOptimizer()
-    const gepaOptimizer = new GEPACostOptimizer()
-    const capoOptimizer = new CAPOEnhancedOptimizer()
-    const cloudflareOptimizer = new CloudflareCodeModeOptimizer()
-    const advancedCloudflareOptimizer = new AdvancedCloudflareOptimizer()
+    // Simple effective optimizer is already imported
     console.log('🔑 OpenRouter API Key Debug:', {
       hasKey: !!process.env.OPENROUTER_API_KEY,
       keyLength: process.env.OPENROUTER_API_KEY?.length || 0,
@@ -224,60 +226,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: `Model ${model} not available` }, { status: 400 })
     }
 
-    // Step 1: Run all optimization engines in parallel
-    console.log('🧠 Running optimization engines...')
+    // Step 1: Use simple effective optimizer based on proven CAPO, GEPA, Cloudflare, and AI research
+    console.log('🧠 Running simple effective optimizer...')
+    
+    const optimizationResult = simpleEffectiveOptimizer.optimizePrompt(prompt, verbosityLevel || 'medium')
+    const optimizedPrompt = optimizationResult.optimizedPrompt
+    const costReduction = optimizationResult.costReduction
 
-    const optimizationPromises = [
-      researchOptimizer.optimizeWithResearch(prompt, task, model).catch((err) => ({ error: err.message })),
-      gepaOptimizer.optimizePrompt(prompt, model, 0.8).catch((err) => ({ error: err.message })),
-      capoOptimizer
-        .optimizeWithCAPO(prompt, {
-          domain: 'general',
-          complexity: 'medium',
-          requirements: [task],
-          constraints: [],
-        })
-        .catch((err) => ({ error: err.message })),
-      cloudflareOptimizer.optimizeWithCodeMode(prompt, task, model).catch((err) => ({ error: err.message })),
-      advancedCloudflareOptimizer.optimize(prompt, task).catch((err) => ({ error: err.message })),
-    ]
-
-    const optimizationResults = await Promise.all(optimizationPromises)
-
-    // Step 2: Select best optimization result
-    let bestOptimization = null
-    let bestOptimizer = 'none'
-
-    for (let i = 0; i < optimizationResults.length; i++) {
-      const result = optimizationResults[i]
-      if (result && !('error' in result)) {
-        const costReduction = 'costReduction' in result ? result.costReduction : 0
-        if (
-          !bestOptimization ||
-          costReduction > ('costReduction' in bestOptimization ? bestOptimization.costReduction : 0)
-        ) {
-          bestOptimization = result
-          bestOptimizer = ['research', 'gepa', 'capo', 'cloudflare', 'advanced_cloudflare'][i]
-        }
-      }
-    }
-
-    // Extract optimized prompt based on the optimization type
-    let optimizedPrompt = prompt
-    if (bestOptimization) {
-      if ('optimizedPrompt' in bestOptimization) {
-        optimizedPrompt = bestOptimization.optimizedPrompt
-      } else if ('optimizedCode' in bestOptimization) {
-        // For Cloudflare Code Mode, use the original prompt but note it's been optimized to code
-        optimizedPrompt = prompt
-      } else if ('optimized' in bestOptimization) {
-        optimizedPrompt = bestOptimization.optimized
-      }
-    }
-
-    const costReduction = bestOptimization && 'costReduction' in bestOptimization ? bestOptimization.costReduction : 0
-
-    console.log(`✅ Best optimization: ${bestOptimizer} (${costReduction}% reduction)`)
+    console.log(`✅ Simple Effective Optimizer Results:`)
+    console.log(`📝 Original: "${prompt}" (${optimizationResult.originalTokens} tokens)`)
+    console.log(`✨ Optimized: "${optimizedPrompt}" (${optimizationResult.optimizedTokens} tokens)`)
+    console.log(`💰 Token Reduction: ${optimizationResult.tokenReduction} tokens (${optimizationResult.costReduction.toFixed(1)}%)`)
+    console.log(`🔧 Strategies: ${optimizationResult.strategies.join(', ')}`)
 
     // Step 3: Make real AI generation call
     console.log(`🤖 Generating AI response with ${model}...`)
@@ -332,7 +292,23 @@ export async function POST(request: NextRequest) {
 
     console.log(`💰 Real cost: $${totalCost.toFixed(6)} (${promptTokens}p + ${completionTokens}c tokens)`)
 
-    // Step 5: Process x402 reimbursement
+    // Step 5: Calculate proper cost savings
+    const originalPromptTokens = Math.ceil(prompt.length / 4)
+    const originalPromptCost = (promptPrice * originalPromptTokens) / 1000000
+    const actualSavings = originalPromptCost - promptCost
+    const savingsPercentage = originalPromptCost > 0 ? (actualSavings / originalPromptCost) * 100 : 0
+    
+    console.log(`💰 Cost Analysis:`, {
+      originalPromptTokens,
+      optimizedPromptTokens: promptTokens,
+      tokenReduction: originalPromptTokens - promptTokens,
+      originalCost: originalPromptCost,
+      optimizedCost: promptCost,
+      actualSavings,
+      savingsPercentage: `${savingsPercentage.toFixed(2)}%`
+    })
+
+    // Step 6: Process x402 reimbursement
     let reimbursementResult = null
     if (process.env.X402_ENABLED === 'true' && process.env.X402_PRIVATE_KEY) {
       try {
@@ -349,7 +325,7 @@ export async function POST(request: NextRequest) {
           latency: endTime - startTime,
           timestamp: new Date().toISOString(),
           task,
-          optimizationApplied: bestOptimizer,
+          optimizationApplied: 'simple-effective',
           costReduction,
         }
 
@@ -395,15 +371,15 @@ export async function POST(request: NextRequest) {
           costPerCharacter: totalCost / optimizedPrompt.length,
         },
         costSavings: {
-          percentage: costReduction,
+          percentage: savingsPercentage,
           optimized: totalCost,
-          reduction: (promptPrice * Math.ceil(prompt.length / 4)) / 1000000 - totalCost,
+          reduction: actualSavings,
         },
         savings: {
-          estimatedOriginalCost: (promptPrice * Math.ceil(prompt.length / 4)) / 1000000,
+          estimatedOriginalCost: originalPromptCost,
           actualOptimizedCost: totalCost,
-          savingsAmount: (promptPrice * Math.ceil(prompt.length / 4)) / 1000000 - totalCost,
-          savingsPercentage: costReduction,
+          savingsAmount: actualSavings,
+          savingsPercentage: savingsPercentage,
         },
         tokenSavings: {
           reduction: Math.ceil(prompt.length / 4) - promptTokens,
@@ -411,19 +387,19 @@ export async function POST(request: NextRequest) {
         },
         optimizedPrompt: optimizedPrompt,
         performanceScore: 95,
-        optimizationEngines: ['research', 'gepa', 'capo', 'cloudflare', 'advanced_cloudflare'],
-        selectedEngine: bestOptimizer,
+        optimizationEngines: ['simple-effective'],
+        selectedEngine: 'simple-effective',
       },
       optimization: {
         originalPrompt: prompt,
         optimizedPrompt: optimizedPrompt,
-        bestOptimizer: bestOptimizer,
+        bestOptimizer: 'simple-effective',
         costReduction: costReduction,
+        tokenReduction: optimizationResult.tokenReduction,
+        strategies: optimizationResult.strategies,
+        verbosityLevel: optimizationResult.verbosityLevel,
         allResults: {
-          research: optimizationResults[0],
-          gepa: optimizationResults[1],
-          capo: optimizationResults[2],
-          cloudflare: optimizationResults[3],
+          simpleEffective: optimizationResult,
         },
       },
       costAnalysis: {
@@ -460,7 +436,7 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
     }
 
-    console.log(`✅ Real AI processing completed: ${model} - $${totalCost.toFixed(6)} - ${bestOptimizer} optimization`)
+    console.log(`✅ Real AI processing completed: ${model} - $${totalCost.toFixed(6)} - simple-effective optimization`)
 
     return NextResponse.json(result)
   } catch (error) {

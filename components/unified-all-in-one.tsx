@@ -77,6 +77,7 @@ export default function UnifiedAllInOne() {
   const [task, setTask] = useState('')
   const [selectedModel, setSelectedModel] = useState('')
   const [selectedProvider, setSelectedProvider] = useState('auto')
+  const [verbosityLevel, setVerbosityLevel] = useState<'low' | 'medium' | 'high'>('medium')
   const [availableModels, setAvailableModels] = useState<Model[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [result, setResult] = useState<UnifiedResult | null>(null)
@@ -403,7 +404,7 @@ export default function UnifiedAllInOne() {
 
       // Try real process endpoint first with timeout
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
 
       let response
       try {
@@ -415,6 +416,7 @@ export default function UnifiedAllInOne() {
             task,
             model: selectedModel,
             provider: selectedProvider,
+            verbosityLevel,
             userId: 'user-' + Date.now(), // Generate user ID for tracking
           }),
           signal: controller.signal,
@@ -796,11 +798,11 @@ What specific aspect would you like me to focus on or elaborate further?`
             <div className="space-y-2">
               <label className="text-sm font-medium text-white">Your Prompt</label>
               <Textarea
-                placeholder="Enter your prompt here..."
+                placeholder="E.g., 'Draft a TypeScript debounce utility with unit tests' or 'Summarize this PR diff and suggest fixes'."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={4}
-                className="bg-white text-black placeholder-black"
+                className="bg-white text-gray-400 placeholder-gray-400"
               />
             </div>
 
@@ -808,11 +810,57 @@ What specific aspect would you like me to focus on or elaborate further?`
             <div className="space-y-2">
               <label className="text-sm font-medium text-white">Task Description</label>
               <Input
-                placeholder="Describe what you want to achieve..."
+                placeholder="Task details (inputs, constraints, output format, acceptance criteria)"
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
-                className="bg-white text-black placeholder-black"
+                className="bg-white text-gray-400 placeholder-gray-400"
               />
+            </div>
+
+            {/* Verbosity Level Selector with Example Buttons */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-white">Optimization Level & Test Examples</label>
+              <div className="grid grid-cols-3 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`text-xs ${verbosityLevel === 'low' ? 'bg-blue-100 border-blue-300 text-blue-800' : 'bg-white text-gray-700 border-gray-300'}`}
+                  onClick={() => {
+                    setVerbosityLevel('low')
+                    setPrompt("Write a simple function to calculate the factorial of a number")
+                    setTask("Create a basic factorial function with error handling")
+                  }}
+                >
+                  🎯 Low
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`text-xs ${verbosityLevel === 'medium' ? 'bg-purple-100 border-purple-300 text-purple-800' : 'bg-white text-gray-700 border-gray-300'}`}
+                  onClick={() => {
+                    setVerbosityLevel('medium')
+                    setPrompt("Create a comprehensive React component library with TypeScript, including buttons, forms, modals, and navigation components")
+                    setTask("Build a reusable component library with proper TypeScript types, Storybook documentation, and unit tests")
+                  }}
+                >
+                  ⚖️ Medium
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`text-xs ${verbosityLevel === 'high' ? 'bg-green-100 border-green-300 text-green-800' : 'bg-white text-gray-700 border-gray-300'}`}
+                  onClick={() => {
+                    setVerbosityLevel('high')
+                    setPrompt("Please create a detailed, comprehensive, and thorough analysis of the current state of artificial intelligence in healthcare, including machine learning applications, deep learning models, natural language processing systems, computer vision technologies, robotic process automation, predictive analytics, clinical decision support systems, electronic health records integration, patient monitoring solutions, drug discovery platforms, medical imaging analysis, telemedicine platforms, and the future implications of AI in healthcare delivery, patient outcomes, cost reduction, and regulatory considerations.")
+                    setTask("Provide an in-depth research analysis covering all aspects of AI in healthcare with detailed examples, case studies, technical specifications, implementation strategies, and future outlook")
+                  }}
+                >
+                  🔬 High
+                </Button>
+              </div>
+              <div className="text-xs text-gray-400 text-center">
+                Click any button to test that optimization level with a sample prompt
+              </div>
             </div>
 
             {/* Process Button */}
@@ -847,13 +895,77 @@ What specific aspect would you like me to focus on or elaborate further?`
           </CardHeader>
           <CardContent>
             {isProcessing && (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-900">{currentStep}</span>
-                    <span className="text-gray-900">{progress}%</span>
+              <div className="space-y-6">
+                {/* Animated Processing Header */}
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-8 h-8 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 w-8 h-8 border-2 border-transparent border-r-blue-400 rounded-full animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
                   </div>
-                  <Progress value={progress} className="w-full" />
+                  <div className="flex-1">
+                    <div className="text-lg font-semibold text-gray-900 animate-pulse">
+                      {currentStep}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Optimizing your request with advanced AI engines...
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-blue-600 animate-pulse">
+                      {progress}%
+                    </div>
+                  </div>
+                </div>
+
+                {/* Enhanced Progress Bar */}
+                <div className="space-y-3">
+                  <div className="relative">
+                    <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full transition-all duration-1000 ease-out relative"
+                        style={{ width: `${progress}%` }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+                        <div className="absolute right-0 top-0 w-1 h-full bg-white rounded-full shadow-lg animate-pulse"></div>
+                      </div>
+                    </div>
+                    {/* Progress indicators */}
+                    <div className="flex justify-between mt-2 text-xs text-gray-500">
+                      <span>Initializing</span>
+                      <span>Optimizing</span>
+                      <span>Generating</span>
+                      <span>Complete</span>
+                    </div>
+                  </div>
+                  
+                  {/* Processing steps animation */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
+                      progress > 10 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      <div className="font-medium">Research</div>
+                      <div className="text-xs">Stanford & MIT</div>
+                    </div>
+                    <div className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
+                      progress > 40 ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      <div className="font-medium">GEPA</div>
+                      <div className="text-xs">Evolution</div>
+                    </div>
+                    <div className={`p-2 rounded-lg text-center text-xs transition-all duration-500 ${
+                      progress > 70 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      <div className="font-medium">Cloudflare</div>
+                      <div className="text-xs">Advanced</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Loading dots animation */}
+                <div className="flex justify-center space-x-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
               </div>
             )}
@@ -865,14 +977,14 @@ What specific aspect would you like me to focus on or elaborate further?`
                   <div className="text-center p-3 bg-green-50 rounded-lg">
                     <DollarSign className="h-6 w-6 mx-auto text-green-600 mb-1" />
                     <div className="text-lg font-bold text-green-600">
-                      {result.summary?.costSavings?.percentage || result.optimization?.costReduction || 0}%
+                      {Number(result.summary?.costSavings?.percentage || result.optimization?.costReduction || 0).toFixed(2)}%
                     </div>
                     <div className="text-xs text-gray-600">Cost Saved</div>
                   </div>
                   <div className="text-center p-3 bg-blue-600 rounded-lg">
                     <TrendingUp className="h-6 w-6 mx-auto text-white mb-1" />
                     <div className="text-lg font-bold text-white">
-                      {result.summary?.tokenSavings?.percentage || result.optimization?.tokenReduction || 0}%
+                      {Number(result.summary?.tokenSavings?.percentage || result.optimization?.tokenReduction || 0).toFixed(1)}%
                     </div>
                     <div className="text-xs text-white">Tokens Saved</div>
                   </div>
@@ -886,8 +998,8 @@ What specific aspect would you like me to focus on or elaborate further?`
                 {/* Optimized Prompt */}
                 {(result.summary?.optimizedPrompt || result.optimization?.optimizedPrompt) && (
                   <div className="space-y-2">
-                    <h4 className="font-medium">Optimized Prompt</h4>
-                    <div className="p-3 bg-gray-50 rounded-lg text-sm">
+                    <h4 className="font-medium text-gray-900">Optimized Prompt</h4>
+                    <div className="p-3 bg-gray-50 rounded-lg text-sm text-black">
                       {result.summary?.optimizedPrompt || result.optimization?.optimizedPrompt}
                     </div>
                   </div>
@@ -906,7 +1018,7 @@ What specific aspect would you like me to focus on or elaborate further?`
                 {/* Advanced Optimizer Results */}
                 {result.summary?.optimizationEngines && (
                   <div className="space-y-3">
-                    <h4 className="font-medium text-gray-900">Advanced Optimization Engines</h4>
+                    <h4 className="font-medium text-white">Advanced Optimization Engines</h4>
                     <div className="grid grid-cols-2 gap-2">
                       {result.summary.optimizationEngines.map((engine: string) => (
                         <Badge
@@ -919,8 +1031,8 @@ What specific aspect would you like me to focus on or elaborate further?`
                         </Badge>
                       ))}
                     </div>
-                    <div className="text-sm text-gray-800">
-                      Selected: <span className="font-medium text-gray-900">{result.summary.selectedEngine}</span>{' '}
+                    <div className="text-sm text-gray-400">
+                      Selected: <span className="font-medium text-gray-400">{result.summary.selectedEngine}</span>{' '}
                       engine
                     </div>
                   </div>

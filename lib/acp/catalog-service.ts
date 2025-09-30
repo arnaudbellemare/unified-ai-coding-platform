@@ -52,6 +52,7 @@ export interface RankedOffer {
   productId: string
   variantId: string
   title: string
+  image?: string
   attributes: Record<string, string | number | boolean>
   basePrice: number
   effectivePrice: number
@@ -84,11 +85,11 @@ class CatalogService {
     const defaults: Product[] = [
       {
         id: 'tee-blue',
-        title: 'Classic Tee – Blue',
-        description: 'Soft cotton tee in blue',
+        title: 'Blue Cotton T-Shirt',
+        description: 'Classic crew neck t-shirt in vibrant blue',
         brand: 'Verclibase Apparel',
         category: 'tops',
-        tags: ['shirt', 'tee', 'blue'],
+        tags: ['shirt', 'tee', 'blue', 'cotton'],
         variants: [
           {
             id: 'tee-blue-l',
@@ -106,23 +107,26 @@ class CatalogService {
         sponsoredBudgetUSD: 25,
       },
       {
-        id: 'tee-heavy-natural',
-        title: 'Heavyweight Tee – Natural',
-        description: 'Thick, durable tee in natural',
+        id: 'tee-heavy-blue',
+        title: 'Heavyweight Blue T-Shirt',
+        description: 'Thick, durable cotton tee in slate blue',
         brand: 'Verclibase Apparel',
         category: 'tops',
-        tags: ['shirt', 'tee', 'natural'],
+        tags: ['shirt', 'tee', 'blue', 'heavyweight', 'cotton'],
         variants: [
           {
-            id: 'tee-heavy-natural-l',
-            attributes: { color: 'natural', size: 'L' },
-            price: 26,
+            id: 'tee-heavy-blue-l',
+            attributes: { color: 'blue', size: 'L' },
+            price: 32,
             currency: 'USD',
             inStock: true,
             etaDays: 4,
           },
         ],
+        images: [],
         merchant,
+        shipping: { fixedCost: 5, regions: ['US', 'CA'] },
+        returns: { policy: '30-day returns', windowDays: 30 },
         sponsoredBudgetUSD: 0,
       },
     ]

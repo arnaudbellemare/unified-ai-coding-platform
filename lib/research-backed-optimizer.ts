@@ -44,6 +44,7 @@ export interface ResearchParameters {
   targetModel: string
   modelSize: 'small' | 'medium' | 'large'
   taskComplexity: 'simple' | 'complex'
+  verbosityLevel: 'low' | 'medium' | 'high'
   enableMetaPrompting: boolean
   enableCaching: boolean
   enableChunking: boolean
@@ -59,7 +60,7 @@ export class ResearchBackedOptimizer {
       targetModel: 'gpt-4o-mini',
       modelSize: 'medium',
       taskComplexity: 'simple',
-      enableMetaPrompting: true,
+      enableMetaPrompting: false,
       enableCaching: true,
       enableChunking: true,
       maxTokens: 100,
@@ -74,11 +75,16 @@ export class ResearchBackedOptimizer {
     prompt: string,
     taskDescription: string,
     targetModel: string = 'gpt-4o-mini',
+    verbosityLevel: 'low' | 'medium' | 'high' = 'medium',
   ): Promise<ResearchOptimizationResult> {
-    console.log('🔬 Starting research-backed optimization...')
+    console.log(`🔬 Starting research-backed optimization (${verbosityLevel} verbosity)...`)
 
-    // Step 1: Apply Stanford research - minimize prompt length
-    const lengthOptimized = this.minimizePromptLength(prompt, targetModel)
+    // Apply verbosity-based optimization intensity
+    const intensity = verbosityLevel === 'low' ? 0.3 : verbosityLevel === 'medium' ? 0.6 : 1.0
+    const maxOptimizations = verbosityLevel === 'low' ? 3 : verbosityLevel === 'medium' ? 6 : 10
+
+    // Step 1: Apply Stanford research - minimize prompt length (verbosity-adjusted)
+    const lengthOptimized = this.minimizePromptLength(prompt, targetModel, intensity)
 
     // Step 2: Apply MIT research - favor zero-shot prompts
     const zeroShotOptimized = this.convertToZeroShot(lengthOptimized, taskDescription)
@@ -170,7 +176,7 @@ export class ResearchBackedOptimizer {
   /**
    * Stanford Research: Minimize prompt length (15-25 tokens for simple, 40-60 for complex)
    */
-  private minimizePromptLength(prompt: string, targetModel: string): string {
+  private minimizePromptLength(prompt: string, targetModel: string, intensity: number = 1.0): string {
     const targetTokens = this.parameters.taskComplexity === 'simple' ? 15 : 40
     const currentTokens = Math.ceil(prompt.length / 4) // Rough token estimation
 

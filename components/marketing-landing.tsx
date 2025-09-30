@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useMemo, useEffect, useState } from 'react'
+import { LogoVerclibase } from '@/components/logo-verclibase'
+import { AcpDemo } from '@/components/acp-demo'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Search, CreditCard, Brain, Sliders, Database, BarChart } from 'lucide-react'
+import { Search, CreditCard, Brain, Sliders, Database, BarChart, TrendingUp } from 'lucide-react'
 
 type LandingTheme = 'home' | 'finance' | 'travel' | 'academic' | 'sports' | 'library'
 
@@ -16,11 +18,12 @@ export function MarketingLanding({
   disableAnimatedBg?: boolean
   theme?: LandingTheme
 }) {
-  const [styleVariant, setStyleVariant] = useState<'classic' | 'ayocin'>('classic')
+  const [styleVariant, setStyleVariant] = useState<'classic' | 'ayocin' | 'mcpay'>('classic')
   useEffect(() => {
     try {
       const v = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('style') : null
       if (v === 'ayocin') setStyleVariant('ayocin')
+      if (v === 'mcpay') setStyleVariant('mcpay')
     } catch (_) {}
   }, [])
   const [c1, c2, c3] = useMemo(() => {
@@ -36,7 +39,20 @@ export function MarketingLanding({
   }, [theme])
 
   return (
-    <div className="bg-white">
+    <div className={styleVariant === 'mcpay' ? 'bg-[#0b0e14]' : 'bg-white'}>
+      {styleVariant === 'mcpay' && (
+        <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b0e14]/80 backdrop-blur supports-[backdrop-filter]:bg-[#0b0e14]/60">
+          <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+            <LogoVerclibase />
+            <nav className="hidden md:flex items-center gap-6 text-sm">
+              <a className="text-white/80 hover:text-white" href="#build">Build</a>
+              <a className="text-white/80 hover:text-white" href="#browse">Browse</a>
+              <a className="text-white/80 hover:text-white" href="#monetize">Monetize</a>
+              <Button className="bg-white text-black hover:bg-white/90">Connect</Button>
+            </nav>
+          </div>
+        </header>
+      )}
       {/* Hero with subtle radial/conic background */}
       <section
         className="relative overflow-hidden"
@@ -86,46 +102,53 @@ export function MarketingLanding({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             {/* Left: Animated headline + CTAs */}
             <div>
+              {styleVariant !== 'mcpay' && (
+                <div aria-label="Verclibase" className="inline-flex items-center animate-fade-in">
+                  <LogoVerclibase />
+                </div>
+              )}
               <div
-                aria-label="verclibase on base"
-                className="inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 text-xs font-semibold leading-none tracking-tight text-white backdrop-blur-sm ring-1 ring-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),_0_8px_20px_rgba(0,0,0,0.12)] animate-fade-in transition-[background,box-shadow,transform] duration-300 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.35),_0_12px_28px_rgba(0,0,0,0.16)] hover:-translate-y-0.5"
-                style={{
-                  background:
-                    'linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0) 60%), linear-gradient(90deg, var(--c1), var(--c2))',
-                }}
+                className={`${styleVariant === 'ayocin' ? 'gradient-ring rounded-[22px] p-[1px] mt-3 inline-block' : ''}`}
               >
-                verclibase <span className="opacity-90">on base</span>
-              </div>
-              <div className={`${styleVariant === 'ayocin' ? 'gradient-ring rounded-[22px] p-[1px] mt-3 inline-block' : ''}`}>
                 <div
                   className={`${
                     styleVariant === 'ayocin'
                       ? 'rounded-[20px] glass-card shadow-[0_8px_28px_rgba(0,0,0,0.08)] px-5 py-4 md:px-6 md:py-6'
-                      : 'mt-3 inline-block rounded-2xl bg-white/85 backdrop-blur-md shadow-[0_6px_30px_rgba(0,0,0,0.06)] px-5 py-4 md:px-6 md:py-5'
+                      : 'mt-3 inline-block rounded-2xl ' + (styleVariant === 'mcpay' ? 'bg-black/50' : 'bg-white/85') + ' backdrop-blur-md shadow-[0_6px_30px_rgba(0,0,0,0.06)] px-5 py-4 md:px-6 md:py-5'
                   } animate-fade-in`}
                 >
-                <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[0.95] animate-slide-up-1 text-black">
-                  Build
-                  <span
-                    className="mx-2 inline-block bg-gradient-to-r from-[var(--c1)] via-[var(--c2)] to-[var(--c3)] bg-clip-text text-transparent animate-gradient-text"
-                    style={{ textShadow: '0 1px 1px rgba(0,0,0,0.18)' }}
-                  >
-                    agentic commerce
-                  </span>
-                  that pays you back
-                </h1>
-                <p className="mt-4 text-gray-900 max-w-xl animate-slide-up-2">
-                  Real-time prompt optimization, ACP search/checkout, and x402 reimbursements. Production-ready flows on
-                  Base with observability and ROI.
-                </p>
-                <div className="mt-6 flex gap-3 animate-slide-up-3">
-                  <Button size="lg" onClick={onPrimary} className="bg-black text-white hover:bg-black/90">
-                    Start free
-                  </Button>
-                  <Button size="lg" variant="outline" className="bg-white border-gray-300 text-black hover:bg-gray-200">
-                    View demo
-                  </Button>
-                </div>
+                  <h1 className={`text-5xl md:text-7xl font-black tracking-tight leading-[0.95] animate-slide-up-1 ${styleVariant === 'mcpay' ? 'text-white' : 'text-black'}`}>
+                    Rank higher in
+                    <span
+                      className="mx-2 inline-block bg-gradient-to-r from-[var(--c1)] via-[var(--c2)] to-[var(--c3)] bg-clip-text text-transparent animate-gradient-text"
+                      style={{ textShadow: '0 1px 1px rgba(0,0,0,0.18)' }}
+                    >
+                      AI search results
+                    </span>
+                  </h1>
+                  <p className={`mt-4 max-w-xl animate-slide-up-2 ${styleVariant === 'mcpay' ? 'text-gray-200' : 'text-gray-900'}`}>
+                    Optimize your product listings to rank higher when AI agents search. Structured feeds, trust signals, 
+                    and x402 sponsorship for maximum visibility.
+                  </p>
+                  <div className="mt-6 flex gap-3 animate-slide-up-3">
+                    <Button size="lg" onClick={onPrimary} className={styleVariant === 'mcpay' ? 'bg-[#1134ff] text-white hover:bg-[#1134ff]/90' : 'bg-black text-white hover:bg-black/90'}>
+                      Start free
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className={styleVariant === 'mcpay' ? 'bg-white text-black hover:bg-gray-100' : 'bg-white border-gray-300 text-black hover:bg-gray-200'}
+                      onClick={() => {
+                        // Scroll to the AI Search section
+                        const aiSearchSection = document.querySelector('[data-geo-section]')
+                        if (aiSearchSection) {
+                          aiSearchSection.scrollIntoView({ behavior: 'smooth' })
+                        }
+                      }}
+                    >
+                      See AI search optimization
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -134,31 +157,38 @@ export function MarketingLanding({
             <div className="hidden md:block">
               <div className="relative h-[420px]">
                 <div className="absolute inset-0 bg-beams opacity-30" />
-                <div className={`grid grid-cols-2 gap-4 absolute inset-0 place-content-center ${styleVariant === 'ayocin' ? 'p-2' : ''}`}>
+                <div
+                  className={`grid grid-cols-2 gap-4 absolute inset-0 place-content-center ${styleVariant === 'ayocin' ? 'p-2' : ''}`}
+                >
                   <FeatureTile
                     icon={<Search className="h-5 w-5 text-blue-600" />}
-                    title="Agentic e-Commerce"
-                    desc="Query & rank priority"
+                    title="AI Search Optimization"
+                    desc="Rank higher in AI results"
                   />
                   <FeatureTile
                     icon={<Sliders className="h-5 w-5 text-indigo-600" />}
-                    title="Optimizers"
-                    desc="Reduce tokens cost for agents"
+                    title="Structured Feeds"
+                    desc="AI-friendly product data"
                   />
                   <FeatureTile
                     icon={<CreditCard className="h-5 w-5 text-emerald-600" />}
-                    title="x402"
-                    desc="Checkout"
+                    title="x402 Sponsorship"
+                    desc="Boost visibility"
                   />
-                  <FeatureTile icon={<Brain className="h-5 w-5 text-purple-600" />} title="AI" desc="OpenRouter" />
+                  <FeatureTile icon={<Brain className="h-5 w-5 text-purple-600" />} title="Trust Signals" desc="Ratings & reliability" />
                 </div>
               </div>
             </div>
           </div>
         </div>
         <style jsx>{`
-          .gradient-ring { background: linear-gradient(90deg, var(--c1), var(--c2)); }
-          .glass-card { background: rgba(255,255,255,0.88); backdrop-filter: saturate(120%) blur(8px); }
+          .gradient-ring {
+            background: linear-gradient(90deg, var(--c1), var(--c2));
+          }
+          .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: saturate(120%) blur(8px);
+          }
           .bg-flow {
             background: linear-gradient(
               120deg,
@@ -392,113 +422,29 @@ export function MarketingLanding({
         `}</style>
       </section>
 
-      {/* GEO Playbook (what matters + how to win) */}
-      <section className="max-w-6xl mx-auto px-6 py-8">
-        <div className="rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-md p-6 md:p-8 shadow-[0_10px_28px_rgba(0,0,0,0.06)]">
-          <h3 className="text-2xl md:text-3xl font-black tracking-tight text-black">
-            GEO playbook for agentic commerce
-          </h3>
-          <p className="mt-2 text-gray-900 max-w-4xl">
-            GEO is the AI equivalent of SEO. Agents recommend what is structured, reliable, and cost‑efficient. Below is
-            how brands become the first choice in agent results.
-          </p>
-
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">1) Ranking signals</div>
-                <ul className="mt-2 text-sm text-gray-900 space-y-1">
-                  <li>• Placement bias: top/middle rows win</li>
-                  <li>• Trust: +0.1 rating ≈ −67% price effect</li>
-                  <li>• Reviews: 2× count ≈ −37% price effect</li>
-                  <li>• Reliability: stock/ETA accuracy</li>
-                  <li>• Cost: price + optimization score</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">2) Technical framework</div>
-                <ul className="mt-2 text-sm text-gray-900 space-y-1">
-                  <li>• Product feed API with real‑time updates</li>
-                  <li>• Structured specs (schema‑like fields)</li>
-                  <li>• `/api/acp/search` for agent queries</li>
-                  <li>• `/api/acp/rank-explain` to debug signals</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">3) Sponsored placement (x402)</div>
-                <ul className="mt-2 text-sm text-gray-900 space-y-1">
-                  <li>• Budgets per search/click/checkout</li>
-                  <li>• Labelled “Sponsored”, auditable</li>
-                  <li>• Optimize with ROAS + placement multipliers</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">4) Content & data</div>
-                <ul className="mt-2 text-sm text-gray-900 space-y-1">
-                  <li>• Concise, factual descriptions</li>
-                  <li>• Full specs & attributes (machine‑readable)</li>
-                  <li>• Verified reviews & policy transparency</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">5) Metrics that matter</div>
-                <ul className="mt-2 text-sm text-gray-900 space-y-1">
-                  <li>• AIGVR, AECR visibility/citation</li>
-                  <li>• CER/SRS extraction & relevance</li>
-                  <li>• GEO score, impressions → checkout, ROAS</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">6) Future‑proofing</div>
-                <ul className="mt-2 text-sm text-gray-900 space-y-1">
-                  <li>• Clean data architecture</li>
-                  <li>• Real‑time inventory/pricing</li>
-                  <li>• Adapters for new agent platforms</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+      {/* GEO Playbook section removed per request */}
 
       {/* Agentic e‑Commerce Advantage (GEO) */}
-      <section className="max-w-6xl mx-auto px-6 py-8">
-        <div className="rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-md p-6 md:p-8 shadow-[0_10px_28px_rgba(0,0,0,0.06)]">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h3 className="text-2xl md:text-3xl font-black tracking-tight text-black">
-                Agentic e‑Commerce Advantage
-                <span className="ml-2 align-middle inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-black text-white">
-                  GEO
+      <section className="max-w-6xl mx-auto px-6 py-12" data-geo-section>
+        <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-8 md:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex-1">
+              <h3 className="text-3xl md:text-4xl font-black tracking-tight text-black">
+                AI Search Advantage
+                <span className="ml-3 align-middle inline-block text-sm font-bold px-3 py-1 rounded-full bg-black text-white">
+                  SEO for AI
                 </span>
               </h3>
-              <p className="mt-2 text-gray-900 max-w-3xl">
+              <p className="mt-4 text-lg text-gray-700 max-w-4xl leading-relaxed">
                 Get chosen first by AI agents. We expose catalog/search endpoints and rank offers using relevance,
-                trust, price efficiency, fulfillment reliability, and x402 sponsorship budgets — Generative Engine
-                Optimization (GEO) for agentic commerce.
+                trust, price efficiency, fulfillment reliability, and x402 sponsorship budgets — 
+                <span className="font-semibold text-black">Generative Engine Optimization (GEO)</span> for agentic commerce.
               </p>
             </div>
             <div className="shrink-0">
               <Button
-                variant="outline"
-                className="bg-white border-gray-300 text-black hover:bg-gray-200"
+                size="lg"
+                className="bg-black text-white hover:bg-gray-800 shadow-lg px-8 py-3 text-lg font-semibold"
                 onClick={async () => {
                   try {
                     const example = {
@@ -530,37 +476,77 @@ export function MarketingLanding({
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">Ranking signals</div>
-                <ul className="mt-2 text-sm text-gray-900 space-y-1">
-                  <li>• Relevance to query</li>
-                  <li>• Price & optimization score</li>
-                  <li>• Reliability & delivery speed</li>
-                  <li>• Trust signals (ratings, audits)</li>
+          {/* Top row of cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+            <Card className="border-gray-200 bg-white hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                    <Search className="h-5 w-5 text-black" />
+                  </div>
+                  <div className="font-bold text-lg text-black">Ranking Signals</div>
+                </div>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-black rounded-full mt-2 flex-shrink-0" />
+                    Relevance to query
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-black rounded-full mt-2 flex-shrink-0" />
+                    Price & optimization score
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-black rounded-full mt-2 flex-shrink-0" />
+                    Reliability & delivery speed
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-black rounded-full mt-2 flex-shrink-0" />
+                    Trust signals (ratings, audits)
+                  </li>
                 </ul>
               </CardContent>
             </Card>
 
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">Boost placement with x402</div>
-                <p className="mt-2 text-sm text-gray-900">
-                  Allocate sponsorship budgets (per search, per click, per checkout) using x402. Fully transparent,
-                  pay-per-use, and auditable.
+            <Card className="border-gray-200 bg-white hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                    <CreditCard className="h-5 w-5 text-black" />
+                  </div>
+                  <div className="font-bold text-lg text-black">Boost Placement with x402</div>
+                </div>
+                <p className="text-gray-700 leading-relaxed">
+                  Allocate sponsorship budgets (per search, per click, per checkout) using x402. 
+                  <span className="font-semibold text-black">Fully transparent, pay-per-use, and auditable.</span>
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-gray-200 bg-white">
-              <CardContent className="p-5">
-                <div className="font-semibold text-black">Merchant advantage</div>
-                <ul className="mt-2 text-sm text-gray-900 space-y-1">
-                  <li>• Be first choice in agent results</li>
-                  <li>• Real-time GEO analytics & ROAS</li>
-                  <li>• One feed: catalog → search → checkout</li>
-                  <li>• Instant reimbursements on Base</li>
+            <Card className="border-gray-200 bg-white hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                    <TrendingUp className="h-5 w-5 text-black" />
+                  </div>
+                  <div className="font-bold text-lg text-black">Merchant Advantage</div>
+                </div>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-black rounded-full mt-2 flex-shrink-0" />
+                    Be first choice in agent results
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-black rounded-full mt-2 flex-shrink-0" />
+                    Real-time AI search analytics & ROAS
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-black rounded-full mt-2 flex-shrink-0" />
+                    One feed: catalog → search → checkout
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-black rounded-full mt-2 flex-shrink-0" />
+                    Instant reimbursements on Base
+                  </li>
                 </ul>
               </CardContent>
             </Card>
@@ -568,65 +554,95 @@ export function MarketingLanding({
         </div>
       </section>
 
-      {/* Features */}
+      {/* Core Features */}
       <section className="max-w-6xl mx-auto px-6 py-6">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-black mb-2">How AI Search Optimization Works</h2>
+          <p className="text-gray-600">The complete system for ranking higher in AI results</p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="border-gray-200 bg-white">
+          <Card className="border-gray-200 bg-white hover:shadow-md transition-shadow">
             <CardContent className="p-5">
-              <div className="font-semibold text-black">Cost-optimized AI</div>
+              <div className="font-semibold text-black">AI-Optimized Product Feeds</div>
               <p className="text-sm text-gray-900 mt-1">
-                Research-backed optimizers and Cloudflare-inspired techniques reduce tokens and improve throughput.
+                Structured data that all AI agents and LLMs understand. Clear pricing, availability, and trust signals.
               </p>
             </CardContent>
           </Card>
-          <Card className="border-gray-200 bg-white">
+          <Card className="border-gray-200 bg-white hover:shadow-md transition-shadow">
             <CardContent className="p-5">
-              <div className="font-semibold text-black">Agentic commerce (ACP)</div>
+              <div className="font-semibold text-black">AI Ranking Signals</div>
               <p className="text-sm text-gray-900 mt-1">
-                Expose catalog/search/checkout that any compatible agent can rank and transact against.
+                Optimize for relevance, trust, pricing, delivery speed, and merchant reputation to rank higher.
               </p>
             </CardContent>
           </Card>
-          <Card className="border-gray-200 bg-white">
+          <Card className="border-gray-200 bg-white hover:shadow-md transition-shadow">
             <CardContent className="p-5">
-              <div className="font-semibold text-black">x402 on Base</div>
+              <div className="font-semibold text-black">x402 Sponsored Placement</div>
               <p className="text-sm text-gray-900 mt-1">
-                Instant, internet-native payments and reimbursements with clear labeling and audit trails.
+                Boost visibility with transparent sponsorship budgets. Instant settlement on Base network.
               </p>
             </CardContent>
           </Card>
         </div>
       </section>
 
+      {/* Developer Tools - Hidden by default */}
+      <details className="max-w-6xl mx-auto px-6 py-6">
+        <summary className="cursor-pointer text-center text-sm text-gray-500 hover:text-gray-700 mb-4">
+          Developer Tools & Advanced Features
+        </summary>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-75">
+          <Card className="border-gray-200 bg-gray-50">
+            <CardContent className="p-5">
+              <div className="font-semibold text-gray-600">Sandbox Deployment</div>
+              <p className="text-sm text-gray-500 mt-1">
+                Test your GEO optimization in isolated environments before going live.
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="border-gray-200 bg-gray-50">
+            <CardContent className="p-5">
+              <div className="font-semibold text-gray-600">GitHub Integration</div>
+              <p className="text-sm text-gray-500 mt-1">
+                Connect your repositories for automated deployment and version control.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </details>
+
       {/* Steps */}
       <section className="max-w-6xl mx-auto px-6 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
           <Card className="border-gray-200 bg-white">
             <CardContent className="p-5">
-              <div className="font-semibold text-black">1. Configure</div>
-              <p className="text-gray-900 mt-1">Set env vars, provider keys, and Base network.</p>
+              <div className="font-semibold text-black">1. Upload Products</div>
+              <p className="text-gray-900 mt-1">Add your catalog with structured data, pricing, and availability.</p>
             </CardContent>
           </Card>
           <Card className="border-gray-200 bg-white">
             <CardContent className="p-5">
-              <div className="font-semibold text-black">2. Optimize</div>
-              <p className="text-gray-900 mt-1">Run prompts through unified optimizers.</p>
+              <div className="font-semibold text-black">2. Optimize for AI</div>
+              <p className="text-gray-900 mt-1">We optimize your listings for AI search ranking signals.</p>
             </CardContent>
           </Card>
           <Card className="border-gray-200 bg-white">
             <CardContent className="p-5">
-              <div className="font-semibold text-black">3. Rank & Search</div>
-              <p className="text-gray-900 mt-1">Publish ACP catalog and search endpoints.</p>
+              <div className="font-semibold text-black">3. Boost Visibility</div>
+              <p className="text-gray-900 mt-1">Set x402 sponsorship budgets to appear higher in results.</p>
             </CardContent>
           </Card>
           <Card className="border-gray-200 bg-white">
             <CardContent className="p-5">
-              <div className="font-semibold text-black">4. Transact</div>
-              <p className="text-gray-900 mt-1">Checkout via x402; label Sponsored placements.</p>
+              <div className="font-semibold text-black">4. Get Discovered</div>
+              <p className="text-gray-900 mt-1">When AI agents search, your products rank higher and get more sales.</p>
             </CardContent>
           </Card>
         </div>
       </section>
+
     </div>
   )
 }

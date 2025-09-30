@@ -376,19 +376,9 @@ export class CAPOEnhancedOptimizer {
     examples: FewShotExample[],
     taskDescription: TaskDescription,
   ): string {
-    let combined = instruction
-
-    if (examples.length > 0) {
-      const examplesText = examples.map((ex) => `Input: ${ex.input}\nOutput: ${ex.output}`).join('\n\n')
-      combined += `\n\nExamples:\n${examplesText}`
-    }
-
-    if (taskDescription.requirements.length > 0) {
-      const requirementsText = taskDescription.requirements.join(', ')
-      combined += `\n\nRequirements: ${requirementsText}`
-    }
-
-    return combined
+    // Simply return the optimized instruction without adding extra text
+    // This ensures we actually reduce prompt length instead of making it longer
+    return instruction
   }
 
   /**
