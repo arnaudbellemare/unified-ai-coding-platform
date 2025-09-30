@@ -692,7 +692,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             <Button
               onClick={() => setShowProductionGuide(!showProductionGuide)}
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-black transition-colors"
+              className="border-gray-300 text-black hover:bg-gray-100 hover:text-black transition-colors"
             >
               {showProductionGuide ? 'Hide' : 'Show'} Production Setup
             </Button>
@@ -708,7 +708,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             <Button
               onClick={() => setShowOnboarding(false)}
               variant="outline"
-              className="mr-2 border-white text-white hover:bg-white hover:text-black transition-colors"
+              className="mr-2 border-gray-300 text-black hover:bg-gray-100 hover:text-black transition-colors"
             >
               Skip Tutorial
             </Button>
