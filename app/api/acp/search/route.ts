@@ -34,6 +34,13 @@ export async function POST(request: NextRequest) {
   try {
     const { query, filters } = await request.json()
     const q = typeof query === 'string' ? query : ''
+    
+    // Ensure catalog service is available
+    if (!catalogService) {
+      console.error('Catalog service not available')
+      return NextResponse.json({ error: 'Catalog service unavailable' }, { status: 500 })
+    }
+
     const ranked = catalogService.searchAndRank(q, filters || {})
     const products = catalogService.listProducts()
     const idToImage: Record<string, string | undefined> = {}
@@ -48,8 +55,24 @@ export async function POST(request: NextRequest) {
       label: r.sponsored ? 'Sponsored' : undefined,
     }))
 
+    console.log(`ACP Search: "${q}" returned ${results.length} results`)
     return NextResponse.json({ success: true, results })
   } catch (e) {
-    return NextResponse.json({ error: 'invalid JSON' }, { status: 400 })
+    console.error('ACP Search Error:', e)
+    const errorMessage = e instanceof Error ? e.message : 'Search failed'
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
+}
+
+// Handle other HTTP methods
+export async function PUT() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
+}
+
+export async function DELETE() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
+}
+
+export async function PATCH() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
 }
