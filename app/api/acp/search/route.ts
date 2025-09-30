@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   try {
     const { query, filters } = await request.json()
     const q = typeof query === 'string' ? query : ''
-    
+
     // Ensure catalog service is available
     if (!catalogService) {
       console.error('Catalog service not available')
