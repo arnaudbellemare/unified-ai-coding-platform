@@ -266,14 +266,10 @@ export async function POST(request: NextRequest) {
 
     let aiResponse
     try {
-      aiResponse = await openRouterClient.generateText(
-        model,
-        optimizedMessages,
-        {
-          max_tokens: 1000,
-          temperature: 0.7,
-        },
-      )
+      aiResponse = await openRouterClient.generateText(model, optimizedMessages, {
+        max_tokens: 1000,
+        temperature: 0.7,
+      })
 
       // If response is empty or just whitespace, use intelligent fallback
       if (!aiResponse.content || aiResponse.content.trim().length < 10) {
@@ -395,7 +391,10 @@ export async function POST(request: NextRequest) {
         },
         tokenSavings: {
           reduction: Math.ceil(prompt.length / 4) - actualPromptTokens,
-          percentage: Math.max(0, ((Math.ceil(prompt.length / 4) - actualPromptTokens) / Math.ceil(prompt.length / 4)) * 100),
+          percentage: Math.max(
+            0,
+            ((Math.ceil(prompt.length / 4) - actualPromptTokens) / Math.ceil(prompt.length / 4)) * 100,
+          ),
         },
         optimizedPrompt: optimizedPrompt,
         performanceScore: 95,

@@ -6,11 +6,11 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url)
   const query = url.searchParams.get('query') || ''
   const maxPrice = url.searchParams.get('maxPrice') || '200'
-  
+
   try {
-    const ranked = catalogService.searchAndRank(query, { 
-      currency: 'USD', 
-      maxPrice: parseInt(maxPrice) 
+    const ranked = catalogService.searchAndRank(query, {
+      currency: 'USD',
+      maxPrice: parseInt(maxPrice),
     })
     const products = catalogService.listProducts()
     const idToImage: Record<string, string | undefined> = {}

@@ -99,12 +99,12 @@ export function MarketingLanding({
               `,
               backgroundSize: '40px 40px, 35px 35px, 45px 45px, 38px 38px, 42px 42px',
               animation: 'halftoneMove 40s linear infinite, slowRotate 120s linear infinite',
-              transform: mousePosition.x && mousePosition.y ? 
-                `translateX(${Math.max(-15, Math.min(15, (mousePosition.x - window.innerWidth * 0.5) * 0.05))}px) translateY(${Math.max(-15, Math.min(15, (mousePosition.y - window.innerHeight * 0.5) * 0.05))}px) rotate(${Math.max(-3, Math.min(3, (mousePosition.x - window.innerWidth * 0.5) * 0.01))}deg)` : 
-                'none',
+              transform:
+                mousePosition.x && mousePosition.y
+                  ? `translateX(${Math.max(-15, Math.min(15, (mousePosition.x - window.innerWidth * 0.5) * 0.05))}px) translateY(${Math.max(-15, Math.min(15, (mousePosition.y - window.innerHeight * 0.5) * 0.05))}px) rotate(${Math.max(-3, Math.min(3, (mousePosition.x - window.innerWidth * 0.5) * 0.01))}deg)`
+                  : 'none',
             }}
           />
-
         </div>
       )}
 

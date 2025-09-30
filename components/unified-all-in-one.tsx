@@ -629,7 +629,9 @@ What specific aspect would you like me to focus on or elaborate further?`
       try {
         const responseText = await response.text()
         if (!responseText) {
-          throw new Error('Server is updating. Please wait a moment and try again. The deployment is still in progress.')
+          throw new Error(
+            'Server is updating. Please wait a moment and try again. The deployment is still in progress.',
+          )
         }
         data = JSON.parse(responseText)
       } catch (jsonError) {
@@ -637,11 +639,11 @@ What specific aspect would you like me to focus on or elaborate further?`
         // Note: responseText is already captured above, no need to read response.text() again
         const errorMessage = jsonError instanceof Error ? jsonError.message : 'Unknown error'
         if (errorMessage.includes('Empty response') || errorMessage.includes('Server is updating')) {
-          throw new Error('Server is updating. Please wait a moment and try again. The deployment is still in progress.')
+          throw new Error(
+            'Server is updating. Please wait a moment and try again. The deployment is still in progress.',
+          )
         }
-        throw new Error(
-          `Invalid response format from server: ${errorMessage}`,
-        )
+        throw new Error(`Invalid response format from server: ${errorMessage}`)
       }
 
       if (!data.success) {
