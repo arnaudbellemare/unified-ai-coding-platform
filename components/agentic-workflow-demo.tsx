@@ -29,7 +29,16 @@ export function AgenticWorkflowDemo() {
         body: JSON.stringify({ prompt, model }),
       })
       const text = await res.text()
-      const json = text ? JSON.parse(text) : {}
+      let json = {}
+      if (text) {
+        try {
+          json = JSON.parse(text)
+        } catch (parseError) {
+          console.error('JSON parsing error:', parseError)
+          console.error('Response text:', text.substring(0, 200))
+          json = { error: 'Invalid response format' }
+        }
+      }
       const best = json?.optimization?.optimizedPrompt || json?.summary?.optimizedPrompt || prompt
       setOptimized(best)
       add('Optimization complete.')
@@ -53,7 +62,16 @@ export function AgenticWorkflowDemo() {
         body: JSON.stringify({ prompt: optimized || prompt, model }),
       })
       const text = await res.text()
-      const json = text ? JSON.parse(text) : {}
+      let json = {}
+      if (text) {
+        try {
+          json = JSON.parse(text)
+        } catch (parseError) {
+          console.error('JSON parsing error:', parseError)
+          console.error('Response text:', text.substring(0, 200))
+          json = { error: 'Invalid response format' }
+        }
+      }
       const content = json?.choices?.[0]?.message?.content || json?.aiResponse?.content || 'No content.'
       setAi(content)
       add('AI response received.')
@@ -75,7 +93,16 @@ export function AgenticWorkflowDemo() {
         body: JSON.stringify({ items: [{ id: 'demo', qty: 1, price: 0.01 }] }),
       })
       const text = await res.text()
-      const json = text ? JSON.parse(text) : {}
+      let json = {}
+      if (text) {
+        try {
+          json = JSON.parse(text)
+        } catch (parseError) {
+          console.error('JSON parsing error:', parseError)
+          console.error('Response text:', text.substring(0, 200))
+          json = { error: 'Invalid response format' }
+        }
+      }
       if (res.ok && json?.success) {
         add('Checkout success (simulated if keys missing).')
         setStep('deploy')
