@@ -629,14 +629,18 @@ What specific aspect would you like me to focus on or elaborate further?`
       try {
         const responseText = await response.text()
         if (!responseText) {
-          throw new Error('Empty response from server')
+          throw new Error('Server is updating. Please wait a moment and try again. The deployment is still in progress.')
         }
         data = JSON.parse(responseText)
       } catch (jsonError) {
         console.error('JSON parsing error:', jsonError)
         // Note: responseText is already captured above, no need to read response.text() again
+        const errorMessage = jsonError instanceof Error ? jsonError.message : 'Unknown error'
+        if (errorMessage.includes('Empty response') || errorMessage.includes('Server is updating')) {
+          throw new Error('Server is updating. Please wait a moment and try again. The deployment is still in progress.')
+        }
         throw new Error(
-          `Invalid response format from server: ${jsonError instanceof Error ? jsonError.message : 'Unknown error'}`,
+          `Invalid response format from server: ${errorMessage}`,
         )
       }
 
@@ -1105,17 +1109,15 @@ What specific aspect would you like me to focus on or elaborate further?`
                   <Badge variant="outline">Provider: {result.summary?.provider || 'default'}</Badge>
                   <Badge variant="outline">
                     Cost: $
-                    {(
-                      parseFloat(
-                        result.summary?.costSavings?.optimized ||
-                          (typeof result.aiResponse?.cost === 'object'
-                            ? result.aiResponse?.cost?.total
-                            : result.aiResponse?.cost) ||
-                          0,
-                      ) || 0
-                    ) < 0.000001 ? 
-                      (parseFloat(result.aiResponse?.cost || 0)).toExponential(2) :
-                      parseFloat(result.aiResponse?.cost || 0).toFixed(6)}
+                    {(parseFloat(
+                      result.summary?.costSavings?.optimized ||
+                        (typeof result.aiResponse?.cost === 'object'
+                          ? result.aiResponse?.cost?.total
+                          : result.aiResponse?.cost) ||
+                        0,
+                    ) || 0) < 0.000001
+                      ? parseFloat(result.aiResponse?.cost || 0).toExponential(2)
+                      : parseFloat(result.aiResponse?.cost || 0).toFixed(6)}
                   </Badge>
                 </div>
 
@@ -1153,9 +1155,10 @@ What specific aspect would you like me to focus on or elaborate further?`
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  ${(result.summary?.costSavings?.reduction || 0) < 0.000001 ? 
-                    (result.summary?.costSavings?.reduction || 0).toExponential(2) :
-                    (result.summary?.costSavings?.reduction || 0).toFixed(6)}
+                  $
+                  {(result.summary?.costSavings?.reduction || 0) < 0.000001
+                    ? (result.summary?.costSavings?.reduction || 0).toExponential(2)
+                    : (result.summary?.costSavings?.reduction || 0).toFixed(6)}
                 </div>
                 <div className="text-sm text-gray-600">Cost Savings</div>
               </div>
