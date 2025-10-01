@@ -96,17 +96,14 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
     }
   }, [])
 
-  // Check if we're on the home page and hide sidebar accordingly
+  // ALWAYS hide sidebar - NO SIDEBAR ANYWHERE!
   useEffect(() => {
     const path = window.location.pathname
-    const homePage = path === '/' || path === ''
-    setIsHomePage(homePage)
+    setIsHomePage(true) // Always treat as home page to hide sidebar
 
-    // If we're on home page, always close sidebar
-    if (homePage) {
-      setIsSidebarOpen(false)
-      return
-    }
+    // ALWAYS close sidebar - NO SIDEBAR ANYWHERE!
+    setIsSidebarOpen(false)
+    return
 
     const newIsDesktop = window.innerWidth >= 1024
     setIsDesktop(newIsDesktop)
@@ -358,13 +355,13 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
         }
         suppressHydrationWarning
       >
-        {/* Backdrop - Mobile Only */}
-        {isSidebarOpen && !isHomePage && (
+        {/* Backdrop - COMPLETELY DISABLED - NO SIDEBAR ANYWHERE! */}
+        {false && (
           <div className="lg:hidden fixed inset-0 bg-black/50 z-30" onClick={closeSidebar} />
         )}
 
-        {/* Sidebar - Hidden on home page */}
-        {!isHomePage && (
+        {/* Sidebar - COMPLETELY DISABLED - NO SIDEBAR ANYWHERE! */}
+        {false && (
           <div
             className={`
               fixed inset-y-0 left-0 z-40
@@ -391,8 +388,8 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
           </div>
         )}
 
-        {/* Resize Handle - Desktop Only, when sidebar is open and not on home page */}
-        {!isHomePage && (
+        {/* Resize Handle - COMPLETELY DISABLED - NO SIDEBAR ANYWHERE! */}
+        {false && (
           <div
             className={`
               hidden lg:block fixed inset-y-0 cursor-col-resize group z-41 hover:bg-primary/20
@@ -410,11 +407,11 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
           </div>
         )}
 
-        {/* Main Content */}
+        {/* Main Content - NO SIDEBAR MARGIN! */}
         <div
-          className={`flex-1 overflow-auto flex flex-col lg:ml-0 ${isResizing ? '' : 'transition-all duration-300 ease-in-out'}`}
+          className="flex-1 overflow-auto flex flex-col"
           style={{
-            marginLeft: isSidebarOpen && !isHomePage ? `${sidebarWidth + 4}px` : '0px',
+            marginLeft: '0px', // NO SIDEBAR MARGIN!
           }}
         >
           {children}

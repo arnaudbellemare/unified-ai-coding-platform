@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Checkout, CheckoutButton, CheckoutStatus } from '@coinbase/onchainkit/checkout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -20,6 +21,12 @@ import {
   Filter,
   Grid3X3,
   List,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  Share2,
+  Sparkles,
+  Brain,
 } from 'lucide-react'
 
 interface Product {
@@ -118,7 +125,7 @@ const products: Product[] = [
 ]
 
 export function OnchainStoreTemplate() {
-  const [selectedProduct, setSelectedProduct] = useState(products[0])
+  const [selectedProduct, setSelectedProduct] = useState(products[1]) // Start with Base Hoodie to match Apple template
   const [quantity, setQuantity] = useState(1)
 
   const getTotalPrice = () => {
@@ -275,14 +282,11 @@ export function OnchainStoreTemplate() {
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold text-black">VERCLIBASE Store</h1>
           <div className="flex items-center gap-2">
-            <div className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">Template</div>
-            <Button variant="ghost" size="sm">
-              <div className="flex flex-col gap-1">
-                <div className="w-4 h-0.5 bg-black"></div>
-                <div className="w-4 h-0.5 bg-black"></div>
-                <div className="w-4 h-0.5 bg-black"></div>
+            <Link href="/store">
+              <div className="px-3 py-1 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 cursor-pointer transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-blue-500/20">
+                Try Live Demo →
               </div>
-            </Button>
+            </Link>
           </div>
         </div>
       </div>

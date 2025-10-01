@@ -1,7 +1,7 @@
-import { OnchainStoreTemplate } from '@/components/onchain-store-template'
+import { AppleStoreTemplate } from '@/components/apple-store-template'
 
 export default function StorePage() {
-  return <OnchainStoreTemplate />
+  return <AppleStoreTemplate />
 }
 
 export const metadata = {
