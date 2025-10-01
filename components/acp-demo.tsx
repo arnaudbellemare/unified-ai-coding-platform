@@ -236,7 +236,7 @@ export function AcpDemo() {
               product={{
                 id: selectedProduct.productId,
                 name: selectedProduct.title,
-                description: selectedProduct.description,
+                description: selectedProduct.title,
                 price: selectedProduct.effectivePrice,
                 currency: selectedProduct.currency.toLowerCase(),
               }}

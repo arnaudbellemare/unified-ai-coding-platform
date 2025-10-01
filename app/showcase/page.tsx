@@ -9,3 +9,4 @@ export const metadata = {
   description:
     'See what your company can build with VERCLIBASE - a real e-commerce store with AI optimization and cryptocurrency payments.',
 }
+

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { MarketingLanding } from './marketing-landing'
+import { LogoVerclibase } from './logo-verclibase'
 
 export function SimplifiedHome() {
   return (
@@ -30,7 +31,8 @@ export function SimplifiedHome() {
               animation: metallic-flow 3s ease-in-out infinite;
             }
             @keyframes metallic-flow {
-              0%, 100% {
+              0%,
+              100% {
                 background-position: 0% 50%;
               }
               50% {
@@ -86,10 +88,15 @@ export function SimplifiedHome() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="group text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                    <svg className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                    <svg
+                      className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -105,8 +112,13 @@ export function SimplifiedHome() {
                 </div>
 
                 <div className="group text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                    <svg className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                    <svg
+                      className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -122,8 +134,13 @@ export function SimplifiedHome() {
                 </div>
 
                 <div className="group text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                    <svg className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                    <svg
+                      className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -139,8 +156,13 @@ export function SimplifiedHome() {
                 </div>
 
                 <div className="group text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                    <svg className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                    <svg
+                      className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -156,8 +178,13 @@ export function SimplifiedHome() {
                 </div>
 
                 <div className="group text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                    <svg className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                    <svg
+                      className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -173,8 +200,13 @@ export function SimplifiedHome() {
                 </div>
 
                 <div className="group text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                    <svg className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-xl metallic-surface shadow-lg border border-gray-400/20 flex items-center justify-center group-hover:shadow-xl group-hover:shadow-gray-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                    <svg
+                      className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -189,6 +221,17 @@ export function SimplifiedHome() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Footer with Verclibase branding */}
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          <div className="flex justify-end items-center">
+            <div className="flex items-center gap-3 text-white/60">
+              <span className="text-sm">Powered by</span>
+              <LogoVerclibase />
+              <span className="text-sm font-medium">VERCLIBASE</span>
             </div>
           </div>
         </div>

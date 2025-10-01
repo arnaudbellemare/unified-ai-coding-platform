@@ -72,6 +72,7 @@ const products: Product[] = [
     currency: 'USD',
     category: 'Accessories',
     inStock: true,
+    image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop&crop=center',
     attributes: { color: 'White', size: '12oz', material: 'Ceramic' },
   },
   {
@@ -459,3 +460,4 @@ export function OnchainStore() {
 }
 
 export default OnchainStore
+

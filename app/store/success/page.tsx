@@ -9,7 +9,7 @@ import Link from 'next/link'
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams()
-  const chargeId = searchParams.get('charge_id')
+  const chargeId = searchParams?.get('charge_id')
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -57,3 +57,4 @@ export default function CheckoutSuccessPage() {
     </div>
   )
 }
+

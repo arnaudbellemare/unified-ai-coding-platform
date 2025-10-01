@@ -9,6 +9,54 @@ import { Search, CreditCard, Brain, Sliders, Database, BarChart, TrendingUp } fr
 
 type LandingTheme = 'home' | 'finance' | 'travel' | 'academic' | 'sports' | 'library'
 
+// Cycling Text Component
+function CyclingText() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  
+  const textVariations = [
+    "You Sell More",
+    "You Win More Customers", 
+    "You Grow Faster",
+    "You Dominate Search",
+    "You Outperform Competitors",
+    "You Scale Effortlessly"
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % textVariations.length)
+    }, 3000) // Change every 3 seconds
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const currentText = textVariations[currentIndex]
+  const isLongText = currentText === "You Outperform Competitors"
+
+  return (
+    <span className="relative inline-block">
+      <span 
+        key={currentIndex}
+        className={`inline-block transition-all duration-500 ease-in-out ${
+          isLongText ? 'text-4xl md:text-5xl' : ''
+        }`}
+        style={{
+          animation: 'fadeInUp 0.5s ease-out'
+        }}
+      >
+        {currentText}
+      </span>
+      <div
+        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"
+        style={{
+          backgroundSize: '200% 100%',
+          animation: 'fadeInFromLeft 4s ease-in-out infinite',
+        }}
+      ></div>
+    </span>
+  )
+}
+
 export function MarketingLanding({
   onPrimary,
   disableAnimatedBg = false,
@@ -227,14 +275,14 @@ export function MarketingLanding({
                       desc="AI-friendly product data"
                     />
                     <FeatureTile
-                      icon={<CreditCard className="h-5 w-5 text-emerald-600" />}
-                      title="x402 Sponsorship"
-                      desc="Boost visibility"
-                    />
-                    <FeatureTile
                       icon={<Brain className="h-5 w-5 text-purple-600" />}
                       title="Trust Signals"
                       desc="Ratings & reliability"
+                    />
+                    <FeatureTile
+                      icon={<CreditCard className="h-4 w-4 text-emerald-600" />}
+                      title="Smart AI Advertising"
+                      desc="Pay per result only"
                     />
                   </div>
                 </div>
@@ -492,16 +540,7 @@ export function MarketingLanding({
                 <h3 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 mb-6 leading-tight">
                   When AI Shops for Your Customers,
                   <br />
-                  <span className="relative inline-block">
-                    You Sell More
-                    <div
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"
-                      style={{
-                        backgroundSize: '200% 100%',
-                        animation: 'fadeInFromLeft 4s ease-in-out infinite',
-                      }}
-                    ></div>
-                  </span>
+                  <CyclingText />
                 </h3>
                 <div className="mb-8">
                   <p className="text-xl text-gray-600 leading-relaxed mb-4">
@@ -595,12 +634,13 @@ export function MarketingLanding({
                     <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
                       <CreditCard className="h-5 w-5 text-black" />
                     </div>
-                    <div className="font-bold text-lg text-black">Boost Placement with x402</div>
+                    <div className="font-bold text-lg text-black">Pay Only When AI Finds You</div>
                   </div>
                   <p className="text-gray-700 leading-relaxed">
-                    Allocate sponsorship budgets (per search, per click, per checkout) using x402.
+                    When customers ask AI "Find me a blue shirt under $50" and AI finds your product, 
+                    you pay a small fee to appear higher in future searches.
                     <span className="font-semibold text-black">
-                      FREE facilitator, FREE gas fees, fully transparent and auditable.
+                      No upfront costs - only pay when AI actually finds your products relevant.
                     </span>
                   </p>
                 </CardContent>
@@ -778,10 +818,10 @@ export function MarketingLanding({
                 <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                   <span className="text-green-600 text-2xl font-bold">2</span>
                 </div>
-                <h4 className="font-bold text-lg text-black mb-3">Pay to Boost Visibility</h4>
+                <h4 className="font-bold text-lg text-black mb-3">Pay Only When AI Finds You</h4>
                 <p className="text-gray-600 text-sm">
-                  Allocate advertising budgets to make your products appear higher in AI search results. When customers
-                  ask AI to find products, yours show up first when sponsored.
+                  When AI finds your product relevant to a customer's search, you pay a small fee to boost 
+                  your ranking in future searches. No upfront costs - only pay when AI actually finds you.
                 </p>
               </div>
 
@@ -812,16 +852,16 @@ export function MarketingLanding({
 }
 
 function FeatureTile({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
-  // Check if this is the Brain icon (Trust Signals)
-  const isBrainIcon = title === 'Trust Signals'
+  // Check if this is the Smart AI Advertising card
+  const isSmartAI = title === 'Smart AI Advertising'
 
   return (
     <div
-      className={`rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow tilt ${isBrainIcon ? 'animate-subtle-glow' : ''}`}
+      className={`rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow tilt ${isSmartAI ? 'animate-subtle-glow' : ''}`}
     >
       <div className="flex items-start gap-3">
-        <div className={`mt-0.5 ${isBrainIcon ? 'relative' : ''}`}>
-          {isBrainIcon && <div className="absolute -inset-2 rounded-lg bg-purple-500/20 animate-pulse"></div>}
+        <div className={`mt-0.5 ${isSmartAI ? 'relative' : ''}`}>
+          {isSmartAI && <div className="absolute -inset-2 rounded-lg bg-emerald-600/30 animate-pulse"></div>}
           {icon}
         </div>
         <div>

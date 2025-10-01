@@ -40,22 +40,6 @@ const paymentMethods: PaymentMethod[] = [
     recommended: true,
   },
   {
-    id: 'coinbase',
-    name: 'Coinbase Commerce',
-    description: 'Pay with cryptocurrency using Coinbase Commerce on Base network',
-    icon: <Coins className="h-6 w-6" />,
-    features: [
-      'Multiple cryptocurrencies',
-      'Free gas fees on Base',
-      'Instant settlement',
-      'No chargebacks',
-      'Global accessibility',
-      'OnchainKit integration',
-    ],
-    badge: 'Live Integration',
-    recommended: false,
-  },
-  {
     id: 'x402',
     name: 'x402 Protocol',
     description: 'Next-gen micro-payments with crypto wallet integration',
@@ -69,6 +53,21 @@ const paymentMethods: PaymentMethod[] = [
       'AI agent compatible',
     ],
     badge: 'Free Gas Fees',
+  },
+  {
+    id: 'coinbase',
+    name: 'Coinbase Commerce',
+    description: 'Crypto payments with major cryptocurrencies',
+    icon: <Coins className="h-6 w-6" />,
+    features: [
+      'Bitcoin & Ethereum',
+      '100+ cryptocurrencies',
+      'Instant settlement',
+      'Global accessibility',
+      'Low fees',
+      'Secure transactions',
+    ],
+    badge: 'Crypto Native',
   },
 ]
 

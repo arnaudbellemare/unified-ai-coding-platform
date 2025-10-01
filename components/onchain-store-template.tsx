@@ -85,7 +85,7 @@ const products: Product[] = [
     description: 'Ceramic mug featuring the Base logo. Perfect for your morning coffee or tea.',
     price: 18.0,
     currency: 'USD',
-    image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400&h=300&fit=crop&crop=center',
+    image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop&crop=center',
     category: 'Accessories',
     inStock: true,
     rating: 4.6,
@@ -123,6 +123,12 @@ export function OnchainStoreTemplate() {
 
   const getTotalPrice = () => {
     return selectedProduct.price * quantity
+  }
+
+  const addToCart = (product: Product) => {
+    // Simple cart functionality - you can enhance this later
+    console.log('Added to cart:', product.name)
+    // For now, just log the action
   }
 
   // Charge handler for OnchainKit Checkout
