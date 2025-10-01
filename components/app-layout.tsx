@@ -78,6 +78,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
   const [sidebarWidth, setSidebarWidthState] = useState(initialSidebarWidth || getSidebarWidth())
   const [isResizing, setIsResizing] = useState(false)
   const [isDesktop, setIsDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1024)
+  const [isHomePage, setIsHomePage] = useState(false)
   const router = useRouter()
 
   // Update sidebar width and save to cookie
@@ -95,8 +96,18 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
     }
   }, [])
 
-  // Ensure isDesktop is correct after hydration and set proper sidebar state
+  // Check if we're on the home page and hide sidebar accordingly
   useEffect(() => {
+    const path = window.location.pathname
+    const homePage = path === '/' || path === ''
+    setIsHomePage(homePage)
+    
+    // If we're on home page, always close sidebar
+    if (homePage) {
+      setIsSidebarOpen(false)
+      return
+    }
+    
     const newIsDesktop = window.innerWidth >= 1024
     setIsDesktop(newIsDesktop)
 
@@ -348,56 +359,60 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
         suppressHydrationWarning
       >
         {/* Backdrop - Mobile Only */}
-        {isSidebarOpen && <div className="lg:hidden fixed inset-0 bg-black/50 z-30" onClick={closeSidebar} />}
+        {isSidebarOpen && !isHomePage && <div className="lg:hidden fixed inset-0 bg-black/50 z-30" onClick={closeSidebar} />}
 
-        {/* Sidebar */}
-        <div
-          className={`
-            fixed inset-y-0 left-0 z-40
-            ${isResizing ? '' : 'transition-all duration-300 ease-in-out'}
-            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-            ${isSidebarOpen ? 'pointer-events-auto' : 'pointer-events-none'}
-          `}
-          style={{
-            width: `${sidebarWidth}px`,
-          }}
-        >
+        {/* Sidebar - Hidden on home page */}
+        {!isHomePage && (
           <div
-            className="h-full overflow-hidden rounded-none"
+            className={`
+              fixed inset-y-0 left-0 z-40
+              ${isResizing ? '' : 'transition-all duration-300 ease-in-out'}
+              ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+              ${isSidebarOpen ? 'pointer-events-auto' : 'pointer-events-none'}
+            `}
             style={{
               width: `${sidebarWidth}px`,
             }}
           >
-            {isLoading ? (
-              <SidebarLoader width={sidebarWidth} />
-            ) : (
-              <TaskSidebar tasks={tasks} onTaskSelect={handleTaskSelect} width={sidebarWidth} />
-            )}
+            <div
+              className="h-full overflow-hidden rounded-none"
+              style={{
+                width: `${sidebarWidth}px`,
+              }}
+            >
+              {isLoading ? (
+                <SidebarLoader width={sidebarWidth} />
+              ) : (
+                <TaskSidebar tasks={tasks} onTaskSelect={handleTaskSelect} width={sidebarWidth} />
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Resize Handle - Desktop Only, when sidebar is open */}
-        <div
-          className={`
-            hidden lg:block fixed inset-y-0 cursor-col-resize group z-41 hover:bg-primary/20
-            ${isResizing ? '' : 'transition-all duration-300 ease-in-out'}
-            ${isSidebarOpen ? 'w-1 opacity-100' : 'w-0 opacity-0'}
-          `}
-          onMouseDown={isSidebarOpen ? handleMouseDown : undefined}
-          style={{
-            // Position it right after the sidebar
-            left: isSidebarOpen ? `${sidebarWidth}px` : '0px',
-          }}
-        >
-          <div className="absolute inset-0 w-2 -ml-0.5" />
-          <div className="absolute inset-y-0 left-0 w-0.5 bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </div>
+        {/* Resize Handle - Desktop Only, when sidebar is open and not on home page */}
+        {!isHomePage && (
+          <div
+            className={`
+              hidden lg:block fixed inset-y-0 cursor-col-resize group z-41 hover:bg-primary/20
+              ${isResizing ? '' : 'transition-all duration-300 ease-in-out'}
+              ${isSidebarOpen ? 'w-1 opacity-100' : 'w-0 opacity-0'}
+            `}
+            onMouseDown={isSidebarOpen ? handleMouseDown : undefined}
+            style={{
+              // Position it right after the sidebar
+              left: isSidebarOpen ? `${sidebarWidth}px` : '0px',
+            }}
+          >
+            <div className="absolute inset-0 w-2 -ml-0.5" />
+            <div className="absolute inset-y-0 left-0 w-0.5 bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        )}
 
         {/* Main Content */}
         <div
           className={`flex-1 overflow-auto flex flex-col lg:ml-0 ${isResizing ? '' : 'transition-all duration-300 ease-in-out'}`}
           style={{
-            marginLeft: isSidebarOpen ? `${sidebarWidth + 4}px` : '0px',
+            marginLeft: (isSidebarOpen && !isHomePage) ? `${sidebarWidth + 4}px` : '0px',
           }}
         >
           {children}

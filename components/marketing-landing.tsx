@@ -2,7 +2,7 @@
 
 import React, { useMemo, useEffect, useState } from 'react'
 import { LogoVerclibase } from '@/components/logo-verclibase'
-import { AcpDemo } from '@/components/acp-demo'
+import { OnchainStoreTemplate } from '@/components/onchain-store-template'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Search, CreditCard, Brain, Sliders, Database, BarChart, TrendingUp } from 'lucide-react'
@@ -489,22 +489,38 @@ export function MarketingLanding({
           <div className="rounded-3xl bg-gray-50 p-8 md:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.03)]">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex-1">
-                <h3 className="text-3xl md:text-4xl font-black tracking-tight text-black">
-                  Sell More When AI Shops for Your Customers
-                  <span className="ml-3 align-middle inline-block text-sm font-bold px-3 py-1 rounded-full bg-green-600 text-white">
-                    More Sales
+                <h3 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 mb-6 leading-tight">
+                  When AI Shops for Your Customers,
+                  <br />
+                  <span className="relative inline-block">
+                    You Sell More
+                    <div 
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"
+                      style={{
+                        backgroundSize: '200% 100%',
+                        animation: 'fadeInFromLeft 4s ease-in-out infinite'
+                      }}
+                    ></div>
                   </span>
                 </h3>
-                <p className="mt-4 text-lg text-gray-700 max-w-4xl leading-relaxed">
-                  When customers ask AI "Find me a blue shirt under $50" -{' '}
-                  <span className="font-semibold text-black">your products appear first</span>. More visibility = more
-                  sales. Simple as that.
-                </p>
+                <div className="mb-8">
+                  <p className="text-xl text-gray-600 leading-relaxed mb-4">
+                    When customers ask AI assistants <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800">"Find me a blue shirt under $50"</span>
+                  </p>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    <span className="font-bold text-gray-900">Your products appear first</span> in the AI's recommendations. More visibility = more sales. Simple as that.
+                  </p>
+                  <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <p className="text-sm text-blue-800">
+                      <strong>💡 Think of it like SEO, but for AI shopping:</strong> Just like Google ranks websites, AI assistants rank products when helping customers shop.
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className="shrink-0">
                 <Button
                   size="lg"
-                  className="bg-black text-white hover:bg-gray-800 shadow-lg px-8 py-3 text-lg font-semibold"
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-xl px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105"
                   onClick={async () => {
                     try {
                       const example = {
@@ -531,7 +547,8 @@ export function MarketingLanding({
                     }
                   }}
                 >
-                  Get featured
+                  <Search className="h-5 w-5 mr-2" />
+                  Get Featured Now
                 </Button>
               </div>
             </div>
@@ -581,7 +598,6 @@ export function MarketingLanding({
                       FREE facilitator, FREE gas fees, fully transparent and auditable.
                     </span>
                   </p>
-
                 </CardContent>
               </Card>
 
@@ -628,9 +644,20 @@ export function MarketingLanding({
               <CardContent className="p-5">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
-                      <path d="m21 21-4.34-4.34"/>
-                      <circle cx="11" cy="11" r="8"/>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-blue-600"
+                    >
+                      <path d="m21 21-4.34-4.34" />
+                      <circle cx="11" cy="11" r="8" />
                     </svg>
                   </div>
                   <div className="font-semibold text-black">Your Products Show Up First</div>
@@ -644,9 +671,20 @@ export function MarketingLanding({
               <CardContent className="p-5">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
-                      <path d="M16 7h6v6"/>
-                      <path d="m22 7-8.5 8.5-5-5L2 17"/>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-green-600"
+                    >
+                      <path d="M16 7h6v6" />
+                      <path d="m22 7-8.5 8.5-5-5L2 17" />
                     </svg>
                   </div>
                   <div className="font-semibold text-black">More Sales = More Money</div>
@@ -660,9 +698,20 @@ export function MarketingLanding({
               <CardContent className="p-5">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-600">
-                      <rect width="20" height="14" x="2" y="5" rx="2"/>
-                      <line x1="2" x2="22" y1="10" y2="10"/>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-purple-600"
+                    >
+                      <rect width="20" height="14" x="2" y="5" rx="2" />
+                      <line x1="2" x2="22" y1="10" y2="10" />
                     </svg>
                   </div>
                   <div className="font-semibold text-black">Pay Only When It Works</div>
@@ -673,34 +722,44 @@ export function MarketingLanding({
               </CardContent>
             </Card>
           </div>
-          
         </section>
 
         {/* AI Commerce SEO - How We Help You Rank First */}
         <section className="max-w-6xl mx-auto px-6 py-16 bg-gradient-to-b from-gray-50 to-white">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black text-black mb-4">
-              SEO for AI Commerce
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-black text-black mb-4">SEO for AI Commerce</h2>
             <p className="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
-              When customers ask AI "Find me the best blue shirt under $50" - <span className="font-semibold text-black">your products appear first</span>. 
-              We optimize your listings for AI agents using x402 payments, cost optimization, and structured data that AI understands.
+              As AI shopping grows, <span className="font-semibold text-black">position your products to be discovered first</span> by AI agents. 
+              We optimize your listings with structured data, cost-efficient processing, and x402 payments for the future of commerce.
             </p>
           </div>
 
           {/* How AI Commerce Ranking Works */}
           <div className="bg-white rounded-2xl p-8 border border-gray-200 mb-12">
-            <h3 className="text-2xl font-bold text-black mb-6 text-center">How We Get You to Rank #1 in AI Shopping</h3>
+            <h3 className="text-2xl font-bold text-black mb-6 text-center">How We Get Your Products Found by AI Shoppers</h3>
             
+            <div className="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="text-center">
+                <p className="text-lg text-gray-700 mb-4">
+                  <strong>What is AI Shopping?</strong> When customers ask AI assistants like ChatGPT or Claude 
+                  <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 mx-1">"Find me a blue shirt under $50"</span>
+                  AI searches the internet for products and recommends the best matches.
+                </p>
+                <p className="text-gray-600">
+                  <strong>Our system makes sure your products get found and recommended by AI shoppers.</strong>
+                </p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
                   <span className="text-blue-600 text-2xl font-bold">1</span>
                 </div>
-                <h4 className="font-bold text-lg text-black mb-3">Optimize for AI Understanding</h4>
+                <h4 className="font-bold text-lg text-black mb-3">Make Products AI-Friendly</h4>
                 <p className="text-gray-600 text-sm">
-                  Structure your product data in formats AI agents can easily parse and rank. 
-                  Use OpenAI Product Feed Spec, clear descriptions, and semantic tags.
+                  Structure your products so AI shoppers can easily find and understand them. 
+                  Clear descriptions, pricing, and availability help AI recommend your products to customers.
                 </p>
               </div>
 
@@ -708,10 +767,10 @@ export function MarketingLanding({
                 <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                   <span className="text-green-600 text-2xl font-bold">2</span>
                 </div>
-                <h4 className="font-bold text-lg text-black mb-3">Boost with x402 Payments</h4>
+                <h4 className="font-bold text-lg text-black mb-3">Pay to Boost Visibility</h4>
                 <p className="text-gray-600 text-sm">
-                  Pay per click, per search, or per sale using x402 protocol. 
-                  AI agents understand and execute these payments automatically - no manual intervention needed.
+                  Allocate advertising budgets to make your products appear higher in AI search results. 
+                  When customers ask AI to find products, yours show up first when sponsored.
                 </p>
               </div>
 
@@ -719,10 +778,10 @@ export function MarketingLanding({
                 <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
                   <span className="text-purple-600 text-2xl font-bold">3</span>
                 </div>
-                <h4 className="font-bold text-lg text-black mb-3">Track & Optimize Performance</h4>
+                <h4 className="font-bold text-lg text-black mb-3">Track Performance & ROI</h4>
                 <p className="text-gray-600 text-sm">
-                  Real-time analytics show which AI agents are finding your products, 
-                  what queries drive sales, and ROI on your x402 spending.
+                  Monitor how often AI shoppers find your products, which searches drive sales, and ROI on your advertising spend. 
+                  See exactly why your products rank where they do.
                 </p>
               </div>
             </div>
@@ -730,244 +789,32 @@ export function MarketingLanding({
 
           {/* Technical Implementation */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div className="text-center p-6 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                  <path d="m2 17 10 5 10-5"/>
-                  <path d="m2 12 10 5 10-5"/>
-                </svg>
-              </div>
-              <h3 className="font-bold text-lg text-black mb-2">x402 Payment Integration</h3>
-              <p className="text-sm text-gray-600">
-                Real Base network integration with USDC payments. AI agents can automatically pay for boosted placement.
-              </p>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
-                  <path d="M16 7h6v6"/>
-                  <path d="m22 7-8.5 8.5-5-5L2 17"/>
-                </svg>
-              </div>
-              <h3 className="font-bold text-lg text-black mb-2">Cost Optimization Engine</h3>
-              <p className="text-sm text-gray-600">
-                Advanced prompt optimization reduces AI processing costs by 20%+ while maintaining quality and relevance.
-              </p>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-600">
-                  <path d="M9 12l2 2 4-4"/>
-                  <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9Z"/>
-                </svg>
-              </div>
-              <h3 className="font-bold text-lg text-black mb-2">AI Agent Compatibility</h3>
-              <p className="text-sm text-gray-600">
-                OpenAI Product Feed Spec compliance ensures ChatGPT, Claude, and other LLMs can find and rank your products.
-              </p>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-600">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                  <circle cx="9" cy="7" r="4"/>
-                  <path d="m22 21-3-3m0 0a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"/>
-                </svg>
-              </div>
-              <h3 className="font-bold text-lg text-black mb-2">Real-Time Analytics</h3>
-              <p className="text-sm text-gray-600">
-                Track which AI queries find your products, conversion rates, and ROI on x402 spending with detailed insights.
-              </p>
-            </div>
           </div>
 
-          {/* The AI Commerce Advantage */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-3xl p-10 border border-blue-800/20">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `
-                  radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.3) 1px, transparent 1px),
-                  radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.3) 1px, transparent 1px)
-                `,
-                backgroundSize: '60px 60px'
-              }}></div>
-            </div>
-            
-            <div className="relative z-10">
-              <div className="text-center mb-12">
-                <div className="inline-flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                      <path d="M16 7h6v6"/>
-                      <path d="m22 7-8.5 8.5-5-5L2 17"/>
-                    </svg>
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-3xl font-black text-white mb-2">Why AI Commerce SEO Matters</h3>
-                    <div className="w-20 h-1 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full"></div>
-                  </div>
-                </div>
-                
-                <div className="max-w-3xl mx-auto">
-                  <p className="text-xl text-blue-100 leading-relaxed mb-4">
-                    Traditional SEO optimizes for human search. 
-                    <span className="font-semibold text-white">AI Commerce SEO optimizes for AI agent shopping.</span>
-                  </p>
-                  <p className="text-blue-200">
-                    The future of commerce is AI-powered. Position your business at the forefront.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                        <path d="m2 17 10 5 10-5"/>
-                        <path d="m2 12 10 5 10-5"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg text-white mb-2">AI Agents Shop Differently</h4>
-                      <p className="text-blue-100 text-sm leading-relaxed">
-                        They understand structured data, pricing, availability, and can execute payments automatically
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                        <rect width="20" height="14" x="2" y="5" rx="2"/>
-                        <line x1="2" x2="22" y1="10" y2="10"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg text-white mb-2">Pay-Per-Result Model</h4>
-                      <p className="text-blue-100 text-sm leading-relaxed">
-                        Only pay when AI agents actually find and engage with your products
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="m22 21-3-3m0 0a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg text-white mb-2">Early Adopter Advantage</h4>
-                      <p className="text-blue-100 text-sm leading-relaxed">
-                        Get ahead of competitors who are still optimizing for traditional search
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                        <path d="M9 12l2 2 4-4"/>
-                        <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9Z"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg text-white mb-2">Transparent Blockchain Records</h4>
-                      <p className="text-blue-100 text-sm leading-relaxed">
-                        Every x402 payment and ranking boost is recorded on Base blockchain
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg text-white mb-2">Real-Time Optimization</h4>
-                      <p className="text-blue-100 text-sm leading-relaxed">
-                        Adjust your AI commerce strategy based on live performance data
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                        <path d="m2 17 10 5 10-5"/>
-                        <path d="m2 12 10 5 10-5"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg text-white mb-2">Future-Proof Investment</h4>
-                      <p className="text-blue-100 text-sm leading-relaxed">
-                        As AI shopping grows, your optimized listings will capture more market share
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Base Store Section */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm">
+            <OnchainStoreTemplate />
           </div>
         </section>
 
-        {/* Developer Tools - Hidden by default */}
-        <details className="max-w-6xl mx-auto px-6 py-6">
-          <summary className="cursor-pointer text-center text-sm text-gray-500 hover:text-gray-700 mb-4">
-            Developer Tools & Advanced Features
-          </summary>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-75">
-            <Card className="border-gray-200 bg-gray-50">
-              <CardContent className="p-5">
-                <div className="font-semibold text-gray-600">Sandbox Deployment</div>
-                <p className="text-sm text-gray-500 mt-1">
-                  Test your GEO optimization in isolated environments before going live.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="border-gray-200 bg-gray-50">
-              <CardContent className="p-5">
-                <div className="font-semibold text-gray-600">GitHub Integration</div>
-                <p className="text-sm text-gray-500 mt-1">
-                  Connect your repositories for automated deployment and version control.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </details>
       </div>
     </div>
   )
 }
 
 function FeatureTile({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  // Check if this is the Brain icon (Trust Signals)
+  const isBrainIcon = title === "Trust Signals"
+  
   return (
-    <div className="rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow tilt">
+    <div className={`rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow tilt ${isBrainIcon ? 'animate-subtle-glow' : ''}`}>
       <div className="flex items-start gap-3">
-        <div className="mt-0.5">{icon}</div>
+        <div className={`mt-0.5 ${isBrainIcon ? 'relative' : ''}`}>
+          {isBrainIcon && (
+            <div className="absolute -inset-2 rounded-lg bg-purple-500/20 animate-pulse"></div>
+          )}
+          {icon}
+        </div>
         <div>
           <div className="font-semibold text-black leading-tight">{title}</div>
           <div className="text-sm text-gray-800 leading-snug">{desc}</div>

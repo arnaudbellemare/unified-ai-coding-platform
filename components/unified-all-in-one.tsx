@@ -11,7 +11,6 @@ import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Brain, Zap, DollarSign, CheckCircle, Clock, TrendingUp, Settings, Play, Download } from 'lucide-react'
 import { GitHubAuthButton } from './github-auth-button'
-import { PaymentProtocolTester } from './payment-protocol-tester'
 import { OnboardingExplainer, ValueProposition } from './onboarding-explainer'
 import { ProductionSetupGuide } from './production-setup-guide'
 
@@ -74,7 +73,6 @@ interface UnifiedResult {
 export default function UnifiedAllInOne() {
   // State management
   const [prompt, setPrompt] = useState('')
-  const [task, setTask] = useState('')
   const [selectedModel, setSelectedModel] = useState('')
   const [selectedProvider, setSelectedProvider] = useState('auto')
   const [verbosityLevel, setVerbosityLevel] = useState<'low' | 'medium' | 'high'>('medium')
@@ -388,8 +386,8 @@ export default function UnifiedAllInOne() {
   }
 
   const handleUnifiedProcess = async () => {
-    if (!prompt.trim() || !task.trim()) {
-      alert('Please enter both a prompt and task description')
+    if (!prompt.trim()) {
+      alert('Please enter a prompt')
       return
     }
 
@@ -413,7 +411,6 @@ export default function UnifiedAllInOne() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt,
-            task,
             model: selectedModel, // This is already a string ID
             provider: selectedProvider,
             verbosityLevel,
@@ -449,7 +446,6 @@ export default function UnifiedAllInOne() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               prompt,
-              task,
               model: selectedModel,
             }),
           })
@@ -464,7 +460,6 @@ export default function UnifiedAllInOne() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 prompt,
-                task,
                 model: selectedModel,
               }),
             })
@@ -557,14 +552,14 @@ Need help with a specific section or industry?`
           } else {
             smartResponse = `Based on your prompt: "${prompt}"
 
-**Analysis:** Your request appears to be about: ${task}
+**Analysis:** Your request appears to be about: ${prompt}
 
 **Response:** I'm here to help! This intelligent fallback system can provide useful responses even when external APIs are unavailable. 
 
 For your specific question about "${prompt}", here are some suggestions:
 • If it's a factual question, I can provide relevant information
 • If it's a how-to request, I can guide you through the process  
-• If it's a creative task, I can offer structure and ideas
+• If it's a creative request, I can offer structure and ideas
 • If it's a technical question, I can explain concepts clearly
 
 What specific aspect would you like me to focus on or elaborate further?`
@@ -812,16 +807,6 @@ What specific aspect would you like me to focus on or elaborate further?`
               />
             </div>
 
-            {/* Task Description */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white">Task Description</label>
-              <Input
-                placeholder="Task details (inputs, constraints, output format, acceptance criteria)"
-                value={task}
-                onChange={(e) => setTask(e.target.value)}
-                className="bg-white text-gray-400 placeholder-gray-400"
-              />
-            </div>
 
             {/* Verbosity Level Selector with Example Buttons */}
             <div className="space-y-3">
@@ -834,7 +819,6 @@ What specific aspect would you like me to focus on or elaborate further?`
                   onClick={() => {
                     setVerbosityLevel('low')
                     setPrompt('Write a simple function to calculate the factorial of a number')
-                    setTask('Create a basic factorial function with error handling')
                   }}
                 >
                   🎯 Low
@@ -847,9 +831,6 @@ What specific aspect would you like me to focus on or elaborate further?`
                     setVerbosityLevel('medium')
                     setPrompt(
                       'Create a comprehensive React component library with TypeScript, including buttons, forms, modals, and navigation components',
-                    )
-                    setTask(
-                      'Build a reusable component library with proper TypeScript types, Storybook documentation, and unit tests',
                     )
                   }}
                 >
@@ -864,9 +845,6 @@ What specific aspect would you like me to focus on or elaborate further?`
                     setPrompt(
                       'Please create a detailed, comprehensive, and thorough analysis of the current state of artificial intelligence in healthcare, including machine learning applications, deep learning models, natural language processing systems, computer vision technologies, robotic process automation, predictive analytics, clinical decision support systems, electronic health records integration, patient monitoring solutions, drug discovery platforms, medical imaging analysis, telemedicine platforms, and the future implications of AI in healthcare delivery, patient outcomes, cost reduction, and regulatory considerations.',
                     )
-                    setTask(
-                      'Provide an in-depth research analysis covering all aspects of AI in healthcare with detailed examples, case studies, technical specifications, implementation strategies, and future outlook',
-                    )
                   }}
                 >
                   🔬 High
@@ -880,7 +858,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             {/* Process Button */}
             <Button
               onClick={handleUnifiedProcess}
-              disabled={isProcessing || !prompt.trim() || !task.trim()}
+              disabled={isProcessing || !prompt.trim()}
               className="w-full"
               size="lg"
             >
@@ -1140,7 +1118,7 @@ What specific aspect would you like me to focus on or elaborate further?`
             {!isProcessing && !result && (
               <div className="text-center py-8 text-gray-500">
                 <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Enter a prompt and task, then click "Process with AI" to get started</p>
+                <p>Enter a prompt, then click "Process with AI" to get started</p>
               </div>
             )}
           </CardContent>
@@ -1187,8 +1165,6 @@ What specific aspect would you like me to focus on or elaborate further?`
         </Card>
       )}
 
-      {/* Payment Protocol Tester */}
-      <PaymentProtocolTester />
     </div>
   )
 }

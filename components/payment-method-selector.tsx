@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { CreditCard, Wallet, Zap, CheckCircle, ArrowRight } from 'lucide-react'
+import { CreditCard, Wallet, Zap, CheckCircle, ArrowRight, Coins } from 'lucide-react'
 
 interface PaymentMethod {
-  id: 'stripe' | 'x402'
+  id: 'stripe' | 'x402' | 'coinbase'
   name: string
   description: string
   icon: React.ReactNode
@@ -17,8 +17,8 @@ interface PaymentMethod {
 }
 
 interface PaymentMethodSelectorProps {
-  onSelect: (method: 'stripe' | 'x402') => void
-  selectedMethod?: 'stripe' | 'x402'
+  onSelect: (method: 'stripe' | 'x402' | 'coinbase') => void
+  selectedMethod?: 'stripe' | 'x402' | 'coinbase'
   disabled?: boolean
 }
 
@@ -40,6 +40,22 @@ const paymentMethods: PaymentMethod[] = [
     recommended: true,
   },
   {
+    id: 'coinbase',
+    name: 'Coinbase Commerce',
+    description: 'Pay with cryptocurrency using Coinbase Commerce on Base network',
+    icon: <Coins className="h-6 w-6" />,
+    features: [
+      'Multiple cryptocurrencies',
+      'Free gas fees on Base',
+      'Instant settlement',
+      'No chargebacks',
+      'Global accessibility',
+      'OnchainKit integration',
+    ],
+    badge: 'Live Integration',
+    recommended: false,
+  },
+  {
     id: 'x402',
     name: 'x402 Protocol',
     description: 'Next-gen micro-payments with crypto wallet integration',
@@ -57,9 +73,9 @@ const paymentMethods: PaymentMethod[] = [
 ]
 
 export function PaymentMethodSelector({ onSelect, selectedMethod, disabled }: PaymentMethodSelectorProps) {
-  const [selected, setSelected] = useState<'stripe' | 'x402' | undefined>(selectedMethod)
+  const [selected, setSelected] = useState<'stripe' | 'x402' | 'coinbase' | undefined>(selectedMethod)
 
-  const handleSelect = (method: 'stripe' | 'x402') => {
+  const handleSelect = (method: 'stripe' | 'x402' | 'coinbase') => {
     if (disabled) return
     setSelected(method)
     onSelect(method)

@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { PaymentMethodSelector } from '@/components/payment-method-selector'
+import { CoinbaseCommerceCheckout } from '@/components/coinbase-commerce-checkout'
 
 interface RankedOffer {
   productId: string
@@ -30,14 +31,16 @@ export function AcpDemo() {
   const [offers, setOffers] = useState<RankedOffer[]>([])
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'x402' | undefined>()
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'x402' | 'coinbase' | undefined>()
   const [showPaymentSelector, setShowPaymentSelector] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<RankedOffer | null>(null)
 
   const handleCheckout = async (offer: RankedOffer) => {
+    setSelectedProduct(offer)
     setShowPaymentSelector(true)
   }
 
-  const handlePaymentMethodSelect = async (method: 'stripe' | 'x402') => {
+  const handlePaymentMethodSelect = async (method: 'stripe' | 'x402' | 'coinbase') => {
     setSelectedPaymentMethod(method)
     setShowPaymentSelector(false)
 
@@ -48,7 +51,21 @@ export function AcpDemo() {
     } else if (method === 'x402') {
       // Handle x402 payment
       setMessage('Initiating x402 payment...')
+    } else if (method === 'coinbase') {
+      setMessage('Initializing Coinbase Commerce checkout...')
     }
+  }
+
+  const handleCoinbaseSuccess = (chargeId: string) => {
+    setMessage(`Payment successful! Charge ID: ${chargeId}`)
+    setSelectedPaymentMethod(undefined)
+    setSelectedProduct(null)
+  }
+
+  const handleCoinbaseError = (error: string) => {
+    setMessage(`Payment failed: ${error}`)
+    setSelectedPaymentMethod(undefined)
+    setSelectedProduct(null)
   }
 
   const search = async () => {
@@ -205,6 +222,27 @@ export function AcpDemo() {
         {showPaymentSelector && (
           <div className="mt-6 p-6 border-t bg-gray-50">
             <PaymentMethodSelector onSelect={handlePaymentMethodSelect} selectedMethod={selectedPaymentMethod} />
+          </div>
+        )}
+
+        {/* Coinbase Commerce Checkout */}
+        {selectedPaymentMethod === 'coinbase' && selectedProduct && (
+          <div className="mt-6 p-6 border-t bg-gray-50">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Complete Your Purchase</h3>
+              <p className="text-sm text-gray-600">Pay with cryptocurrency using Coinbase Commerce</p>
+            </div>
+            <CoinbaseCommerceCheckout
+              product={{
+                id: selectedProduct.productId,
+                name: selectedProduct.title,
+                description: selectedProduct.description,
+                price: selectedProduct.effectivePrice,
+                currency: selectedProduct.currency.toLowerCase()
+              }}
+              onSuccess={handleCoinbaseSuccess}
+              onError={handleCoinbaseError}
+            />
           </div>
         )}
       </CardContent>

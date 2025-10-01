@@ -28,6 +28,7 @@
     "@ai-sdk/perplexity": "^2.0.10",
     "@ai-sdk/react": "^2.0.52",
     "@coinbase/cdp-sdk": "^1.38.2",
+    "@coinbase/onchainkit": "^1.1.1",
     "@coinbase/x402": "^0.6.4",
     "@neondatabase/serverless": "^0.10.1",
     "@nomicfoundation/hardhat-ethers": "^4.0.1",
