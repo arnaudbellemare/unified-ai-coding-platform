@@ -224,7 +224,7 @@ export function SimplifiedHome() {
             </div>
           </div>
         </div>
-        
+
         {/* Footer with Verclibase branding */}
         <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="flex justify-end items-center">

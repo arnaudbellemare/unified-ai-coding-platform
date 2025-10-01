@@ -12,14 +12,14 @@ type LandingTheme = 'home' | 'finance' | 'travel' | 'academic' | 'sports' | 'lib
 // Cycling Text Component
 function CyclingText() {
   const [currentIndex, setCurrentIndex] = useState(0)
-  
+
   const textVariations = [
-    "You Sell More",
-    "You Win More Customers", 
-    "You Grow Faster",
-    "You Dominate Search",
-    "You Outperform Competitors",
-    "You Scale Effortlessly"
+    'You Sell More',
+    'You Win More Customers',
+    'You Grow Faster',
+    'You Dominate Search',
+    'You Outperform Competitors',
+    'You Scale Effortlessly',
   ]
 
   useEffect(() => {
@@ -31,17 +31,15 @@ function CyclingText() {
   }, [])
 
   const currentText = textVariations[currentIndex]
-  const isLongText = currentText === "You Outperform Competitors"
+  const isLongText = currentText === 'You Outperform Competitors'
 
   return (
     <span className="relative inline-block">
-      <span 
+      <span
         key={currentIndex}
-        className={`inline-block transition-all duration-500 ease-in-out ${
-          isLongText ? 'text-4xl md:text-5xl' : ''
-        }`}
+        className={`inline-block transition-all duration-500 ease-in-out ${isLongText ? 'text-4xl md:text-5xl' : ''}`}
         style={{
-          animation: 'fadeInUp 0.5s ease-out'
+          animation: 'fadeInUp 0.5s ease-out',
         }}
       >
         {currentText}
@@ -637,11 +635,11 @@ export function MarketingLanding({
                     <div className="font-bold text-lg text-black">Pay Only When AI Finds You</div>
                   </div>
                   <p className="text-gray-700 leading-relaxed">
-                    When customers ask AI "Find me a blue shirt under $50" and AI finds your product, 
-                    you pay a small fee to appear higher in future searches.
-                    <span className="font-semibold text-black">
-                      No upfront costs - only pay when AI actually finds your products relevant.
-                    </span>
+                    When customers ask AI "Find me a blue shirt under $50" and AI finds your product, you pay a small
+                    fee to appear higher in future searches.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed font-semibold text-black">
+                    No upfront costs - only pay when AI actually finds your products relevant.
                   </p>
                 </CardContent>
               </Card>
@@ -820,8 +818,8 @@ export function MarketingLanding({
                 </div>
                 <h4 className="font-bold text-lg text-black mb-3">Pay Only When AI Finds You</h4>
                 <p className="text-gray-600 text-sm">
-                  When AI finds your product relevant to a customer's search, you pay a small fee to boost 
-                  your ranking in future searches. No upfront costs - only pay when AI actually finds you.
+                  When AI finds your product relevant to a customer's search, you pay a small fee to boost your ranking
+                  in future searches. No upfront costs - only pay when AI actually finds you.
                 </p>
               </div>
 
@@ -861,7 +859,7 @@ function FeatureTile({ icon, title, desc }: { icon: React.ReactNode; title: stri
     >
       <div className="flex items-start gap-3">
         <div className={`mt-0.5 ${isSmartAI ? 'relative' : ''}`}>
-          {isSmartAI && <div className="absolute -inset-2 rounded-lg bg-emerald-600/30 animate-pulse"></div>}
+          {isSmartAI && <div className="absolute -inset-2 rounded-lg bg-emerald-600/18 animate-pulse"></div>}
           {icon}
         </div>
         <div>

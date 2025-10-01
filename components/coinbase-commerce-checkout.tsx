@@ -158,4 +158,3 @@ export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: Coinba
 }
 
 export default CoinbaseCommerceCheckout
-
