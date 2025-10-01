@@ -204,10 +204,7 @@ export function AcpDemo() {
         {/* Payment Method Selector */}
         {showPaymentSelector && (
           <div className="mt-6 p-6 border-t bg-gray-50">
-            <PaymentMethodSelector
-              onSelect={handlePaymentMethodSelect}
-              selectedMethod={selectedPaymentMethod}
-            />
+            <PaymentMethodSelector onSelect={handlePaymentMethodSelect} selectedMethod={selectedPaymentMethod} />
           </div>
         )}
       </CardContent>

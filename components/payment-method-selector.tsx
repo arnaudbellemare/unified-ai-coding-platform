@@ -34,10 +34,10 @@ const paymentMethods: PaymentMethod[] = [
       'Full checkout flow',
       'Tax calculation',
       'Shipping collection',
-      'Promo codes support'
+      'Promo codes support',
     ],
     badge: 'Vercel Marketplace',
-    recommended: true
+    recommended: true,
   },
   {
     id: 'x402',
@@ -50,10 +50,10 @@ const paymentMethods: PaymentMethod[] = [
       'Base network integration',
       'Gas-free transactions',
       'Real-time settlement',
-      'AI agent compatible'
+      'AI agent compatible',
     ],
-    badge: 'Free Gas Fees'
-  }
+    badge: 'Free Gas Fees',
+  },
 ]
 
 export function PaymentMethodSelector({ onSelect, selectedMethod, disabled }: PaymentMethodSelectorProps) {
@@ -69,18 +69,16 @@ export function PaymentMethodSelector({ onSelect, selectedMethod, disabled }: Pa
     <div className="space-y-4">
       <div className="text-center">
         <h3 className="text-lg font-semibold text-gray-900">Choose Payment Method</h3>
-        <p className="text-sm text-gray-600 mt-1">
-          Select your preferred payment option
-        </p>
+        <p className="text-sm text-gray-600 mt-1">Select your preferred payment option</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         {paymentMethods.map((method) => (
-          <Card 
+          <Card
             key={method.id}
             className={`cursor-pointer transition-all duration-200 ${
-              selected === method.id 
-                ? 'ring-2 ring-blue-500 border-blue-200 bg-blue-50' 
+              selected === method.id
+                ? 'ring-2 ring-blue-500 border-blue-200 bg-blue-50'
                 : 'hover:shadow-md border-gray-200'
             } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={() => handleSelect(method.id)}
@@ -88,9 +86,11 @@ export function PaymentMethodSelector({ onSelect, selectedMethod, disabled }: Pa
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${
-                    selected === method.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
-                  }`}>
+                  <div
+                    className={`p-2 rounded-lg ${
+                      selected === method.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
                     {method.icon}
                   </div>
                   <div>
@@ -103,23 +103,16 @@ export function PaymentMethodSelector({ onSelect, selectedMethod, disabled }: Pa
                     )}
                   </div>
                 </div>
-                {selected === method.id && (
-                  <CheckCircle className="h-5 w-5 text-blue-500" />
-                )}
+                {selected === method.id && <CheckCircle className="h-5 w-5 text-blue-500" />}
               </div>
-              
+
               {method.badge && (
-                <Badge 
-                  variant="outline" 
-                  className="w-fit text-xs"
-                >
+                <Badge variant="outline" className="w-fit text-xs">
                   {method.badge}
                 </Badge>
               )}
-              
-              <CardDescription className="text-sm">
-                {method.description}
-              </CardDescription>
+
+              <CardDescription className="text-sm">{method.description}</CardDescription>
             </CardHeader>
 
             <CardContent className="pt-0">
@@ -133,8 +126,8 @@ export function PaymentMethodSelector({ onSelect, selectedMethod, disabled }: Pa
               </ul>
 
               {selected === method.id && (
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   className="w-full mt-4"
                   onClick={(e) => {
                     e.stopPropagation()
@@ -152,8 +145,8 @@ export function PaymentMethodSelector({ onSelect, selectedMethod, disabled }: Pa
 
       <div className="text-center text-xs text-gray-500">
         <p>
-          💡 <strong>Tip:</strong> Stripe is great for traditional e-commerce, 
-          while x402 excels for AI agents and micro-payments
+          💡 <strong>Tip:</strong> Stripe is great for traditional e-commerce, while x402 excels for AI agents and
+          micro-payments
         </p>
       </div>
     </div>

@@ -2,7 +2,7 @@ import Stripe from 'stripe'
 
 // Initialize Stripe with environment variables
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-08-27.basil',
 })
 
 export interface StripeCheckoutRequest {
@@ -33,7 +33,7 @@ export class StripeService {
   async createCheckoutSession(request: StripeCheckoutRequest): Promise<StripeCheckoutResponse> {
     try {
       // Convert items to Stripe line items format
-      const lineItems = request.items.map(item => ({
+      const lineItems = request.items.map((item) => ({
         price_data: {
           currency: item.currency || 'usd',
           product_data: {
@@ -84,7 +84,7 @@ export class StripeService {
   async createPaymentIntent(
     amount: number,
     currency: string = 'usd',
-    metadata?: Record<string, string>
+    metadata?: Record<string, string>,
   ): Promise<{ success: boolean; clientSecret?: string; error?: string }> {
     try {
       const paymentIntent = await stripe.paymentIntents.create({
@@ -112,7 +112,9 @@ export class StripeService {
   /**
    * Retrieve a checkout session
    */
-  async getCheckoutSession(sessionId: string): Promise<{ success: boolean; session?: Stripe.Checkout.Session; error?: string }> {
+  async getCheckoutSession(
+    sessionId: string,
+  ): Promise<{ success: boolean; session?: Stripe.Checkout.Session; error?: string }> {
     try {
       const session = await stripe.checkout.sessions.retrieve(sessionId)
       return {

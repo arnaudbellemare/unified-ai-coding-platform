@@ -50,20 +50,15 @@ export function PaymentProtocolComparison({ onProtocolSelect }: ProtocolComparis
           'Shipping collection',
           'Promo codes support',
           'Chargeback protection',
-          'Fraud prevention'
+          'Fraud prevention',
         ],
         disadvantages: [
           'Higher fees for small amounts',
           'Requires traditional banking',
           'Limited micropayment support',
-          'Geographic restrictions'
+          'Geographic restrictions',
         ],
-        useCases: [
-          'E-commerce stores',
-          'SaaS subscriptions',
-          'Marketplace payments',
-          'Traditional businesses'
-        ]
+        useCases: ['E-commerce stores', 'SaaS subscriptions', 'Marketplace payments', 'Traditional businesses'],
       },
       {
         protocol: 'x402',
