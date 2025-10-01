@@ -52,12 +52,32 @@ const nextConfig: NextConfig = {
       },
     })
 
+    // Ignore React Native dependencies for MetaMask SDK
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@react-native-async-storage/async-storage': false,
+      'react-native': false,
+      'react-native-get-random-values': false,
+      'react-native-keychain': false,
+      'react-native-secure-key-store': false,
+    }
+
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
         path: false,
         crypto: false,
+        // Handle React Native dependencies for MetaMask SDK
+        '@react-native-async-storage/async-storage': false,
+        'react-native': false,
+        'react-native-get-random-values': false,
+        'react-native-keychain': false,
+        'react-native-secure-key-store': false,
+        // Additional fallbacks for MetaMask SDK
+        'react-native-web': false,
+        'react-native-svg': false,
+        'react-native-vector-icons': false,
       }
     }
 
@@ -68,6 +88,10 @@ const nextConfig: NextConfig = {
         '@coinbase/cdp-sdk': 'commonjs @coinbase/cdp-sdk',
         '@coinbase/x402': 'commonjs @coinbase/x402',
         '@coinbase/wallet-sdk': 'commonjs @coinbase/wallet-sdk',
+        // Exclude MetaMask SDK from server-side rendering
+        '@metamask/sdk': 'commonjs @metamask/sdk',
+        '@metamask/sdk-communication-layer': 'commonjs @metamask/sdk-communication-layer',
+        '@metamask/sdk-extension': 'commonjs @metamask/sdk-extension',
       })
     }
 
