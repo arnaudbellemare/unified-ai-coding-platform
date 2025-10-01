@@ -490,16 +490,14 @@ export function MarketingLanding({
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex-1">
                 <h3 className="text-3xl md:text-4xl font-black tracking-tight text-black">
-                  AI Search Advantage
-                  <span className="ml-3 align-middle inline-block text-sm font-bold px-3 py-1 rounded-full bg-black text-white">
-                    SEO for AI
+                  Sell More When AI Shops for Your Customers
+                  <span className="ml-3 align-middle inline-block text-sm font-bold px-3 py-1 rounded-full bg-green-600 text-white">
+                    More Sales
                   </span>
                 </h3>
                 <p className="mt-4 text-lg text-gray-700 max-w-4xl leading-relaxed">
-                  Get chosen first by AI agents. We expose catalog/search endpoints and rank offers using relevance,
-                  trust, price efficiency, fulfillment reliability, and x402 sponsorship budgets —
-                  <span className="font-semibold text-black">Generative Engine Optimization (GEO)</span> for agentic
-                  commerce.
+                  When customers ask AI "Find me a blue shirt under $50" - <span className="font-semibold text-black">your products appear first</span>. 
+                  More visibility = more sales. Simple as that.
                 </p>
               </div>
               <div className="shrink-0">
@@ -582,7 +580,7 @@ export function MarketingLanding({
                       FREE facilitator, FREE gas fees, fully transparent and auditable.
                     </span>
                   </p>
-                  
+
                   {/* How x402 Boost Placement Works */}
                   <div className="mt-6 p-4 bg-white rounded-lg border border-gray-200">
                     <h4 className="font-semibold text-black mb-3">How We Enable x402 Boost Placement:</h4>
@@ -593,41 +591,51 @@ export function MarketingLanding({
                         </div>
                         <div>
                           <div className="font-medium text-black">Coinbase CDP Integration</div>
-                          <div className="text-gray-600">Direct integration with Coinbase's x402 facilitator service - no gas fees, no facilitator fees</div>
+                          <div className="text-gray-600">
+                            Direct integration with Coinbase's x402 facilitator service - no gas fees, no facilitator
+                            fees
+                          </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start gap-3">
                         <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-green-600 text-xs font-bold">2</span>
                         </div>
                         <div>
                           <div className="font-medium text-black">Smart Budget Allocation</div>
-                          <div className="text-gray-600">Set budgets per search query, per click, or per completed checkout with real-time tracking</div>
+                          <div className="text-gray-600">
+                            Set budgets per search query, per click, or per completed checkout with real-time tracking
+                          </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start gap-3">
                         <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-green-600 text-xs font-bold">3</span>
                         </div>
                         <div>
                           <div className="font-medium text-black">Transparent Settlement</div>
-                          <div className="text-gray-600">Every transaction is recorded on Base blockchain - fully auditable and transparent</div>
+                          <div className="text-gray-600">
+                            Every transaction is recorded on Base blockchain - fully auditable and transparent
+                          </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start gap-3">
                         <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-green-600 text-xs font-bold">4</span>
                         </div>
                         <div>
                           <div className="font-medium text-black">AI Agent Compatibility</div>
-                          <div className="text-gray-600">Built for AI agents to understand and execute - works seamlessly with ChatGPT, Claude, and other LLMs</div>
+                          <div className="text-gray-600">
+                            Built for AI agents to understand and execute - works seamlessly with ChatGPT, Claude, and
+                            other LLMs
+                          </div>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
@@ -681,32 +689,31 @@ export function MarketingLanding({
         {/* Core Features */}
         <section className="max-w-6xl mx-auto px-6 py-6 bg-gray-50">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-black mb-2">How AI Search Optimization Works</h2>
-            <p className="text-gray-600">The complete system for ranking higher in AI results</p>
+            <h2 className="text-2xl font-bold text-black mb-2">How It Helps You Sell More</h2>
+            <p className="text-gray-600">Simple steps to get more customers from AI searches</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-gray-50 hover:shadow-md transition-shadow">
               <CardContent className="p-5">
-                <div className="font-semibold text-black">AI-Optimized Product Feeds</div>
+                <div className="font-semibold text-black">✅ Your Products Show Up First</div>
                 <p className="text-sm text-gray-900 mt-1">
-                  Structured data that all AI agents and LLMs understand. Clear pricing, availability, and trust
-                  signals.
+                  When customers ask AI to find products, yours appear at the top. No complex setup needed.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-gray-50 hover:shadow-md transition-shadow">
               <CardContent className="p-5">
-                <div className="font-semibold text-black">AI Ranking Signals</div>
+                <div className="font-semibold text-black">💰 More Sales = More Money</div>
                 <p className="text-sm text-gray-900 mt-1">
-                  Optimize for relevance, trust, pricing, delivery speed, and merchant reputation to rank higher.
+                  Higher rankings mean more customers see your products first. More visibility = more sales.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-gray-50 hover:shadow-md transition-shadow">
               <CardContent className="p-5">
-                <div className="font-semibold text-black">x402 Sponsored Placement</div>
+                <div className="font-semibold text-black">🚀 Pay Only When It Works</div>
                 <p className="text-sm text-gray-900 mt-1">
-                  Boost visibility with transparent sponsorship budgets. Instant settlement on Base network.
+                  Only pay when customers actually click or buy. No upfront costs, no wasted money.
                 </p>
               </CardContent>
             </Card>
