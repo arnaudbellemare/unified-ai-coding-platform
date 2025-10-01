@@ -238,7 +238,7 @@ export function AcpDemo() {
                 name: selectedProduct.title,
                 description: selectedProduct.description,
                 price: selectedProduct.effectivePrice,
-                currency: selectedProduct.currency.toLowerCase()
+                currency: selectedProduct.currency.toLowerCase(),
               }}
               onSuccess={handleCoinbaseSuccess}
               onError={handleCoinbaseError}

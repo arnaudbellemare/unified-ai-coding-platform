@@ -807,7 +807,6 @@ What specific aspect would you like me to focus on or elaborate further?`
               />
             </div>
 
-
             {/* Verbosity Level Selector with Example Buttons */}
             <div className="space-y-3">
               <label className="text-sm font-medium text-white">Optimization Level & Test Examples</label>
@@ -1164,7 +1163,6 @@ What specific aspect would you like me to focus on or elaborate further?`
           </CardContent>
         </Card>
       )}
-
     </div>
   )
 }

@@ -5,11 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { 
-  ShoppingCart, 
-  CreditCard, 
-  Coins, 
-  Zap, 
+import {
+  ShoppingCart,
+  CreditCard,
+  Coins,
+  Zap,
   Search,
   Star,
   Truck,
@@ -17,7 +17,7 @@ import {
   CheckCircle,
   ArrowRight,
   Plus,
-  Minus
+  Minus,
 } from 'lucide-react'
 import { PaymentMethodSelector } from '@/components/payment-method-selector'
 import { CoinbaseCommerceCheckout } from '@/components/coinbase-commerce-checkout'
@@ -60,7 +60,7 @@ const sampleProducts: Product[] = [
     inStock: true,
     attributes: { color: 'Blue', size: 'M', material: 'Organic Cotton' },
     aiOptimized: true,
-    geoScore: 92
+    geoScore: 92,
   },
   {
     id: 'wireless-headphones-pro',
@@ -74,7 +74,7 @@ const sampleProducts: Product[] = [
     inStock: true,
     attributes: { color: 'Black', size: 'One Size', material: 'Premium Materials' },
     aiOptimized: true,
-    geoScore: 95
+    geoScore: 95,
   },
   {
     id: 'smart-watch-fitness',
@@ -88,7 +88,7 @@ const sampleProducts: Product[] = [
     inStock: true,
     attributes: { color: 'Silver', size: '42mm', material: 'Aluminum' },
     aiOptimized: true,
-    geoScore: 88
+    geoScore: 88,
   },
   {
     id: 'eco-water-bottle',
@@ -102,8 +102,8 @@ const sampleProducts: Product[] = [
     inStock: true,
     attributes: { color: 'Stainless Steel', size: '32oz', material: 'Stainless Steel' },
     aiOptimized: true,
-    geoScore: 85
-  }
+    geoScore: 85,
+  },
 ]
 
 export function AgenticCommerceStore() {
@@ -121,31 +121,28 @@ export function AgenticCommerceStore() {
       return
     }
 
-    const filtered = sampleProducts.filter(product =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.attributes.color?.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = sampleProducts.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.attributes.color?.toLowerCase().includes(searchQuery.toLowerCase()),
     )
     setFilteredProducts(filtered)
   }, [searchQuery])
 
   const addToCart = (product: Product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.product.id === product.id)
+    setCart((prev) => {
+      const existing = prev.find((item) => item.product.id === product.id)
       if (existing) {
-        return prev.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+        return prev.map((item) => (item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item))
       }
       return [...prev, { product, quantity: 1 }]
     })
   }
 
   const removeFromCart = (productId: string) => {
-    setCart(prev => prev.filter(item => item.product.id !== productId))
+    setCart((prev) => prev.filter((item) => item.product.id !== productId))
   }
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -153,17 +150,11 @@ export function AgenticCommerceStore() {
       removeFromCart(productId)
       return
     }
-    setCart(prev =>
-      prev.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity }
-          : item
-      )
-    )
+    setCart((prev) => prev.map((item) => (item.product.id === productId ? { ...item, quantity } : item)))
   }
 
   const getCartTotal = () => {
-    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0)
+    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0)
   }
 
   const handleCheckout = () => {
@@ -204,12 +195,10 @@ export function AgenticCommerceStore() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          Agentic Commerce Store
-        </h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">Agentic Commerce Store</h2>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          AI-optimized product discovery with multi-payment integration. 
-          Experience the future of commerce with Stripe, Coinbase Commerce, and x402 payments.
+          AI-optimized product discovery with multi-payment integration. Experience the future of commerce with Stripe,
+          Coinbase Commerce, and x402 payments.
         </p>
       </div>
 
@@ -240,7 +229,7 @@ export function AgenticCommerceStore() {
                     {product.category === 'Accessories' && '🍶'}
                   </div>
                 </div>
-                
+
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     {/* Product Header */}
@@ -282,13 +271,11 @@ export function AgenticCommerceStore() {
                     <div className="flex items-center gap-2">
                       <div className="flex items-center">
                         {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
+                          <Star
+                            key={i}
                             className={`h-4 w-4 ${
-                              i < Math.floor(product.rating) 
-                                ? 'text-yellow-400 fill-current' 
-                                : 'text-gray-300'
-                            }`} 
+                              i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                            }`}
                           />
                         ))}
                       </div>
@@ -300,9 +287,7 @@ export function AgenticCommerceStore() {
                     {/* Price and Add to Cart */}
                     <div className="flex items-center justify-between pt-4 border-t">
                       <div>
-                        <div className="text-2xl font-bold text-gray-900">
-                          ${product.price.toFixed(2)}
-                        </div>
+                        <div className="text-2xl font-bold text-gray-900">${product.price.toFixed(2)}</div>
                         <div className="text-sm text-gray-600">
                           {product.inStock ? (
                             <span className="text-green-600 flex items-center">
@@ -314,8 +299,8 @@ export function AgenticCommerceStore() {
                           )}
                         </div>
                       </div>
-                      
-                      <Button 
+
+                      <Button
                         onClick={() => addToCart(product)}
                         disabled={!product.inStock}
                         className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
@@ -359,9 +344,7 @@ export function AgenticCommerceStore() {
                         </span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm text-gray-900 truncate">
-                          {item.product.name}
-                        </h4>
+                        <h4 className="font-medium text-sm text-gray-900 truncate">{item.product.name}</h4>
                         <p className="text-xs text-gray-500">${item.product.price.toFixed(2)} each</p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -389,12 +372,10 @@ export function AgenticCommerceStore() {
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center mb-4">
                       <span className="font-semibold text-lg">Total:</span>
-                      <span className="font-bold text-xl text-gray-900">
-                        ${getCartTotal().toFixed(2)}
-                      </span>
+                      <span className="font-bold text-xl text-gray-900">${getCartTotal().toFixed(2)}</span>
                     </div>
 
-                    <Button 
+                    <Button
                       onClick={handleCheckout}
                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                     >
@@ -416,19 +397,12 @@ export function AgenticCommerceStore() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900">Choose Payment Method</h3>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setShowPaymentSelector(false)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setShowPaymentSelector(false)}>
                   ×
                 </Button>
               </div>
-              
-              <PaymentMethodSelector
-                onSelect={handlePaymentMethodSelect}
-                selectedMethod={selectedPaymentMethod}
-              />
+
+              <PaymentMethodSelector onSelect={handlePaymentMethodSelect} selectedMethod={selectedPaymentMethod} />
             </div>
           </div>
         </div>
@@ -441,22 +415,18 @@ export function AgenticCommerceStore() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900">Complete Your Purchase</h3>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setSelectedPaymentMethod(undefined)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setSelectedPaymentMethod(undefined)}>
                   ×
                 </Button>
               </div>
-              
+
               <CoinbaseCommerceCheckout
                 product={{
                   id: 'cart-total',
                   name: `${cart.length} Item${cart.length > 1 ? 's' : ''}`,
-                  description: cart.map(item => `${item.quantity}x ${item.product.name}`).join(', '),
+                  description: cart.map((item) => `${item.quantity}x ${item.product.name}`).join(', '),
                   price: getCartTotal(),
-                  currency: 'usd'
+                  currency: 'usd',
                 }}
                 onSuccess={handleCoinbaseSuccess}
                 onError={handleCoinbaseError}
@@ -478,10 +448,8 @@ export function AgenticCommerceStore() {
 
       {/* Features Showcase */}
       <div className="mt-16 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8">
-        <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">
-          Why Choose Our Agentic Commerce Platform?
-        </h3>
-        
+        <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">Why Choose Our Agentic Commerce Platform?</h3>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center p-6 bg-white rounded-xl shadow-sm">
             <Zap className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
@@ -490,7 +458,7 @@ export function AgenticCommerceStore() {
               Products are optimized for AI agents to find and recommend to customers
             </p>
           </div>
-          
+
           <div className="text-center p-6 bg-white rounded-xl shadow-sm">
             <CreditCard className="h-12 w-12 text-blue-500 mx-auto mb-4" />
             <h4 className="font-semibold text-gray-900 mb-2">Multiple Payment Options</h4>
@@ -498,7 +466,7 @@ export function AgenticCommerceStore() {
               Stripe, Coinbase Commerce, and x402 - choose what works best for your customers
             </p>
           </div>
-          
+
           <div className="text-center p-6 bg-white rounded-xl shadow-sm">
             <Shield className="h-12 w-12 text-green-500 mx-auto mb-4" />
             <h4 className="font-semibold text-gray-900 mb-2">Secure & Fast</h4>

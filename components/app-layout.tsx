@@ -101,13 +101,13 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
     const path = window.location.pathname
     const homePage = path === '/' || path === ''
     setIsHomePage(homePage)
-    
+
     // If we're on home page, always close sidebar
     if (homePage) {
       setIsSidebarOpen(false)
       return
     }
-    
+
     const newIsDesktop = window.innerWidth >= 1024
     setIsDesktop(newIsDesktop)
 
@@ -359,7 +359,9 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
         suppressHydrationWarning
       >
         {/* Backdrop - Mobile Only */}
-        {isSidebarOpen && !isHomePage && <div className="lg:hidden fixed inset-0 bg-black/50 z-30" onClick={closeSidebar} />}
+        {isSidebarOpen && !isHomePage && (
+          <div className="lg:hidden fixed inset-0 bg-black/50 z-30" onClick={closeSidebar} />
+        )}
 
         {/* Sidebar - Hidden on home page */}
         {!isHomePage && (
@@ -412,7 +414,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
         <div
           className={`flex-1 overflow-auto flex flex-col lg:ml-0 ${isResizing ? '' : 'transition-all duration-300 ease-in-out'}`}
           style={{
-            marginLeft: (isSidebarOpen && !isHomePage) ? `${sidebarWidth + 4}px` : '0px',
+            marginLeft: isSidebarOpen && !isHomePage ? `${sidebarWidth + 4}px` : '0px',
           }}
         >
           {children}

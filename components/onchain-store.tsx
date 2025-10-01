@@ -5,11 +5,11 @@ import { Checkout, CheckoutButton, CheckoutStatus } from '@coinbase/onchainkit/c
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  ShoppingCart, 
-  CreditCard, 
-  Coins, 
-  Zap, 
+import {
+  ShoppingCart,
+  CreditCard,
+  Coins,
+  Zap,
   Search,
   Star,
   Truck,
@@ -18,7 +18,7 @@ import {
   ArrowRight,
   Plus,
   Minus,
-  X
+  X,
 } from 'lucide-react'
 
 interface Product {
@@ -48,42 +48,42 @@ const products: Product[] = [
     id: 'base-cap',
     name: 'Base Cap',
     description: 'A sleek and comfortable cap featuring the Base logo.',
-    price: 25.00,
+    price: 25.0,
     currency: 'USD',
     category: 'Apparel',
     inStock: true,
-    attributes: { color: 'Black', size: 'One Size', material: 'Cotton' }
+    attributes: { color: 'Black', size: 'One Size', material: 'Cotton' },
   },
   {
     id: 'base-hoodie',
     name: 'Base Hoodie',
     description: 'Stay warm and stylish with this premium Base hoodie.',
-    price: 65.00,
+    price: 65.0,
     currency: 'USD',
     category: 'Apparel',
     inStock: true,
-    attributes: { color: 'Gray', size: 'M', material: 'Cotton Blend' }
+    attributes: { color: 'Gray', size: 'M', material: 'Cotton Blend' },
   },
   {
     id: 'base-mug',
     name: 'Base Mug',
     description: 'Start your day right with this Base-branded coffee mug.',
-    price: 15.00,
+    price: 15.0,
     currency: 'USD',
     category: 'Accessories',
     inStock: true,
-    attributes: { color: 'White', size: '12oz', material: 'Ceramic' }
+    attributes: { color: 'White', size: '12oz', material: 'Ceramic' },
   },
   {
     id: 'base-sticker-pack',
     name: 'Base Sticker Pack',
     description: 'Show your Base love with this collection of stickers.',
-    price: 8.00,
+    price: 8.0,
     currency: 'USD',
     category: 'Accessories',
     inStock: true,
-    attributes: { color: 'Multi', size: 'Various', material: 'Vinyl' }
-  }
+    attributes: { color: 'Multi', size: 'Various', material: 'Vinyl' },
+  },
 ]
 
 export function OnchainStore() {
@@ -93,21 +93,17 @@ export function OnchainStore() {
   const [message, setMessage] = useState<string | null>(null)
 
   const addToCart = (product: Product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.product.id === product.id)
+    setCart((prev) => {
+      const existing = prev.find((item) => item.product.id === product.id)
       if (existing) {
-        return prev.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+        return prev.map((item) => (item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item))
       }
       return [...prev, { product, quantity: 1 }]
     })
   }
 
   const removeFromCart = (productId: string) => {
-    setCart(prev => prev.filter(item => item.product.id !== productId))
+    setCart((prev) => prev.filter((item) => item.product.id !== productId))
   }
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -115,17 +111,11 @@ export function OnchainStore() {
       removeFromCart(productId)
       return
     }
-    setCart(prev =>
-      prev.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity }
-          : item
-      )
-    )
+    setCart((prev) => prev.map((item) => (item.product.id === productId ? { ...item, quantity } : item)))
   }
 
   const getCartTotal = () => {
-    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0)
+    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0)
   }
 
   const getCartItemCount = () => {
@@ -145,19 +135,19 @@ export function OnchainStore() {
           description: `${cart.length} item(s) from Base Store`,
           local_price: {
             amount: getCartTotal().toFixed(2),
-            currency: 'USD'
+            currency: 'USD',
           },
           pricing_type: 'fixed_price',
           metadata: {
-            items: cart.map(item => ({
+            items: cart.map((item) => ({
               id: item.product.id,
               name: item.product.name,
               quantity: item.quantity,
-              price: item.product.price
+              price: item.product.price,
             })),
-            total: getCartTotal()
-          }
-        })
+            total: getCartTotal(),
+          },
+        }),
       })
 
       if (!response.ok) {
@@ -175,7 +165,7 @@ export function OnchainStore() {
   // Handle checkout status
   const handleStatus = async (status: any) => {
     const { statusName, statusData } = status
-    
+
     switch (statusName) {
       case 'success':
         setMessage(`Payment successful! Charge ID: ${statusData.chargeId}`)
@@ -197,7 +187,7 @@ export function OnchainStore() {
 
   const handlePaymentMethodSelect = (method: 'coinbase' | 'stripe' | 'x402') => {
     setSelectedPaymentMethod(method)
-    
+
     if (method === 'stripe') {
       setMessage('Stripe integration coming soon...')
       setSelectedPaymentMethod(null)
@@ -223,17 +213,11 @@ export function OnchainStore() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button
-                variant="outline"
-                onClick={() => setIsCartOpen(true)}
-                className="relative"
-              >
+              <Button variant="outline" onClick={() => setIsCartOpen(true)} className="relative">
                 <ShoppingCart className="h-5 w-5 mr-2" />
                 Cart
                 {getCartItemCount() > 0 && (
-                  <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs">
-                    {getCartItemCount()}
-                  </Badge>
+                  <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs">{getCartItemCount()}</Badge>
                 )}
               </Button>
             </div>
@@ -244,12 +228,10 @@ export function OnchainStore() {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Welcome to Base Store
-          </h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Welcome to Base Store</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Shop the latest Base merchandise with multiple payment options. 
-            Pay with cryptocurrency, traditional cards, or x402 protocol.
+            Shop the latest Base merchandise with multiple payment options. Pay with cryptocurrency, traditional cards,
+            or x402 protocol.
           </p>
         </div>
 
@@ -263,7 +245,7 @@ export function OnchainStore() {
                   {product.category === 'Accessories' && '☕'}
                 </div>
               </div>
-              
+
               <CardContent className="p-6">
                 <div className="space-y-4">
                   <div>
@@ -290,9 +272,7 @@ export function OnchainStore() {
                   {/* Price and Add to Cart */}
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div>
-                      <div className="text-2xl font-bold text-gray-900">
-                        ${product.price.toFixed(2)}
-                      </div>
+                      <div className="text-2xl font-bold text-gray-900">${product.price.toFixed(2)}</div>
                       <div className="text-sm text-gray-600">
                         {product.inStock ? (
                           <span className="text-green-600 flex items-center">
@@ -304,8 +284,8 @@ export function OnchainStore() {
                         )}
                       </div>
                     </div>
-                    
-                    <Button 
+
+                    <Button
                       onClick={() => addToCart(product)}
                       disabled={!product.inStock}
                       className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -322,36 +302,34 @@ export function OnchainStore() {
 
         {/* Features Section */}
         <div className="mt-16 bg-white rounded-2xl p-8 shadow-sm">
-          <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">
-            Multiple Payment Options
-          </h3>
-          
+          <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">Multiple Payment Options</h3>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center p-6 border rounded-xl">
               <Coins className="h-12 w-12 text-orange-600 mx-auto mb-4" />
               <h4 className="font-semibold text-gray-900 mb-2">Coinbase Commerce</h4>
-              <p className="text-sm text-gray-600 mb-4">
-                Pay with cryptocurrency using Coinbase Commerce
-              </p>
-              <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">Live</Badge>
+              <p className="text-sm text-gray-600 mb-4">Pay with cryptocurrency using Coinbase Commerce</p>
+              <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">
+                Live
+              </Badge>
             </div>
-            
+
             <div className="text-center p-6 border rounded-xl">
               <CreditCard className="h-12 w-12 text-blue-600 mx-auto mb-4" />
               <h4 className="font-semibold text-gray-900 mb-2">Stripe Payments</h4>
-              <p className="text-sm text-gray-600 mb-4">
-                Traditional card payments with Apple Pay, Google Pay
-              </p>
-              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">Coming Soon</Badge>
+              <p className="text-sm text-gray-600 mb-4">Traditional card payments with Apple Pay, Google Pay</p>
+              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
+                Coming Soon
+              </Badge>
             </div>
-            
+
             <div className="text-center p-6 border rounded-xl">
               <Zap className="h-12 w-12 text-purple-600 mx-auto mb-4" />
               <h4 className="font-semibold text-gray-900 mb-2">x402 Protocol</h4>
-              <p className="text-sm text-gray-600 mb-4">
-                AI agent payments and micro-transactions
-              </p>
-              <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700">Coming Soon</Badge>
+              <p className="text-sm text-gray-600 mb-4">AI agent payments and micro-transactions</p>
+              <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700">
+                Coming Soon
+              </Badge>
             </div>
           </div>
         </div>
@@ -365,11 +343,7 @@ export function OnchainStore() {
               {/* Cart Header */}
               <div className="flex items-center justify-between p-6 border-b">
                 <h2 className="text-xl font-bold text-gray-900">Shopping Cart</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsCartOpen(false)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setIsCartOpen(false)}>
                   <X className="h-5 w-5" />
                 </Button>
               </div>
@@ -392,9 +366,7 @@ export function OnchainStore() {
                           </span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-gray-900 truncate">
-                            {item.product.name}
-                          </h4>
+                          <h4 className="font-medium text-gray-900 truncate">{item.product.name}</h4>
                           <p className="text-sm text-gray-500">${item.product.price.toFixed(2)} each</p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -427,59 +399,44 @@ export function OnchainStore() {
                 <div className="border-t p-6 space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-lg">Total:</span>
-                    <span className="font-bold text-xl text-gray-900">
-                      ${getCartTotal().toFixed(2)}
-                    </span>
+                    <span className="font-bold text-xl text-gray-900">${getCartTotal().toFixed(2)}</span>
                   </div>
 
                   {/* Payment Method Selection */}
                   {!selectedPaymentMethod ? (
                     <div className="space-y-2">
-                      <Button 
+                      <Button
                         onClick={() => handlePaymentMethodSelect('coinbase')}
                         className="w-full bg-orange-600 hover:bg-orange-700 text-white"
                       >
                         <Coins className="h-4 w-4 mr-2" />
                         Pay with Coinbase Commerce
                       </Button>
-                      <Button 
-                        onClick={() => handlePaymentMethodSelect('stripe')}
-                        variant="outline"
-                        className="w-full"
-                      >
+                      <Button onClick={() => handlePaymentMethodSelect('stripe')} variant="outline" className="w-full">
                         <CreditCard className="h-4 w-4 mr-2" />
                         Pay with Stripe (Coming Soon)
                       </Button>
-                      <Button 
-                        onClick={() => handlePaymentMethodSelect('x402')}
-                        variant="outline"
-                        className="w-full"
-                      >
+                      <Button onClick={() => handlePaymentMethodSelect('x402')} variant="outline" className="w-full">
                         <Zap className="h-4 w-4 mr-2" />
                         Pay with x402 (Coming Soon)
                       </Button>
                     </div>
-                  ) : selectedPaymentMethod === 'coinbase' && (
-                    <div className="space-y-4">
-                      <Checkout 
-                        chargeHandler={chargeHandler}
-                        onStatus={handleStatus}
-                      >
-                        <CheckoutButton 
-                          coinbaseBranded
-                          text={`Pay $${getCartTotal().toFixed(2)} USD`}
-                          className="w-full"
-                        />
-                        <CheckoutStatus />
-                      </Checkout>
-                      <Button 
-                        onClick={() => setSelectedPaymentMethod(null)}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        Back to Payment Options
-                      </Button>
-                    </div>
+                  ) : (
+                    selectedPaymentMethod === 'coinbase' && (
+                      <div className="space-y-4">
+                        <Checkout chargeHandler={chargeHandler} onStatus={handleStatus}>
+                          <CheckoutButton
+                            coinbaseBranded
+                            text={`Pay $${getCartTotal().toFixed(2)} USD`}
+                            className="w-full"
+                          />
+                          <CheckoutStatus />
+                        </Checkout>
+                        <Button onClick={() => setSelectedPaymentMethod(null)} variant="outline" className="w-full">
+                          Back to Payment Options
+                        </Button>
+                      </div>
+                    )
                   )}
                 </div>
               )}

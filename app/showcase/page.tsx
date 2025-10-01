@@ -6,5 +6,6 @@ export default function ShowcasePage() {
 
 export const metadata = {
   title: 'Company Showcase - VERCLIBASE',
-  description: 'See what your company can build with VERCLIBASE - a real e-commerce store with AI optimization and cryptocurrency payments.',
+  description:
+    'See what your company can build with VERCLIBASE - a real e-commerce store with AI optimization and cryptocurrency payments.',
 }

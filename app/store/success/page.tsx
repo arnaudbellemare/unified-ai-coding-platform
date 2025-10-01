@@ -21,10 +21,8 @@ export default function CheckoutSuccessPage() {
           <CardTitle className="text-2xl text-green-600">Payment Successful!</CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
-          <p className="text-gray-600">
-            Thank you for your purchase! Your payment has been processed successfully.
-          </p>
-          
+          <p className="text-gray-600">Thank you for your purchase! Your payment has been processed successfully.</p>
+
           {chargeId && (
             <div className="bg-gray-100 rounded-lg p-3">
               <p className="text-sm text-gray-600">
@@ -37,9 +35,7 @@ export default function CheckoutSuccessPage() {
             <p className="text-sm text-gray-600">
               You will receive a confirmation email shortly with your order details.
             </p>
-            <p className="text-sm text-gray-600">
-              Your items will be shipped within 1-2 business days.
-            </p>
+            <p className="text-sm text-gray-600">Your items will be shipped within 1-2 business days.</p>
           </div>
 
           <div className="flex gap-3 pt-4">

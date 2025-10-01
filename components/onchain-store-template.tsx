@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { 
-  ShoppingCart, 
+import {
+  ShoppingCart,
   Search,
   Star,
   Truck,
@@ -19,7 +19,7 @@ import {
   X,
   Filter,
   Grid3X3,
-  List
+  List,
 } from 'lucide-react'
 
 interface Product {
@@ -45,75 +45,76 @@ const products: Product[] = [
   {
     id: 'base-cap',
     name: 'Base Cap',
-    description: 'A sleek and comfortable cap featuring the Base logo. Perfect for showing your support for the Base ecosystem.',
-    price: 25.00,
+    description:
+      'A sleek and comfortable cap featuring the Base logo. Perfect for showing your support for the Base ecosystem.',
+    price: 25.0,
     currency: 'USD',
     image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=300&fit=crop&crop=center',
     category: 'Accessories',
     inStock: true,
     rating: 4.8,
-    reviewCount: 124
+    reviewCount: 124,
   },
   {
     id: 'base-hoodie',
     name: 'Base Hoodie',
     description: 'Premium quality hoodie with the Base logo. Made from 100% organic cotton for ultimate comfort.',
-    price: 65.00,
+    price: 65.0,
     currency: 'USD',
     image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&h=300&fit=crop&crop=center',
     category: 'Clothing',
     inStock: true,
     rating: 4.9,
-    reviewCount: 89
+    reviewCount: 89,
   },
   {
     id: 'base-sticker-pack',
     name: 'Base Sticker Pack',
     description: 'Collection of Base-themed stickers perfect for laptops, phones, and other surfaces.',
-    price: 12.00,
+    price: 12.0,
     currency: 'USD',
     image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center',
     category: 'Accessories',
     inStock: true,
     rating: 4.7,
-    reviewCount: 203
+    reviewCount: 203,
   },
   {
     id: 'base-mug',
     name: 'Base Mug',
     description: 'Ceramic mug featuring the Base logo. Perfect for your morning coffee or tea.',
-    price: 18.00,
+    price: 18.0,
     currency: 'USD',
     image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400&h=300&fit=crop&crop=center',
     category: 'Accessories',
     inStock: true,
     rating: 4.6,
-    reviewCount: 156
+    reviewCount: 156,
   },
   {
     id: 'base-t-shirt',
     name: 'Base T-Shirt',
     description: 'Comfortable cotton t-shirt with the Base logo. Available in multiple sizes.',
-    price: 28.00,
+    price: 28.0,
     currency: 'USD',
     image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop&crop=center',
     category: 'Clothing',
     inStock: true,
     rating: 4.8,
-    reviewCount: 167
+    reviewCount: 167,
   },
   {
     id: 'base-notebook',
     name: 'Base Notebook',
     description: 'Premium notebook with the Base logo. Perfect for developers and crypto enthusiasts.',
-    price: 22.00,
+    price: 22.0,
     currency: 'USD',
     image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop&crop=center',
     category: 'Accessories',
     inStock: true,
     rating: 4.9,
-    reviewCount: 78
-  }
+    reviewCount: 78,
+  },
 ]
 
 export function OnchainStoreTemplate() {
@@ -137,16 +138,16 @@ export function OnchainStoreTemplate() {
           description: `${quantity}x ${selectedProduct.name} from VERCLIBASE Store`,
           local_price: {
             amount: getTotalPrice().toFixed(2),
-            currency: 'USD'
+            currency: 'USD',
           },
           pricing_type: 'fixed_price',
           metadata: {
             product_id: selectedProduct.id,
             quantity: quantity,
             price: selectedProduct.price,
-            timestamp: new Date().toISOString()
-          }
-        })
+            timestamp: new Date().toISOString(),
+          },
+        }),
       })
 
       if (!response.ok) {
@@ -186,15 +187,10 @@ export function OnchainStoreTemplate() {
     return Array.from({ length: 5 }, (_, i) => {
       const starValue = i + 1
       const hasHalfStar = rating % 1 !== 0 && Math.floor(rating) === i
-      
+
       if (starValue <= Math.floor(rating)) {
         // Full star
-        return (
-          <Star
-            key={i}
-            className="h-4 w-4 fill-yellow-400 text-yellow-400"
-          />
-        )
+        return <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
       } else if (hasHalfStar) {
         // Half star
         return (
@@ -207,18 +203,16 @@ export function OnchainStoreTemplate() {
         )
       } else {
         // Empty star
-        return (
-          <Star
-            key={i}
-            className="h-4 w-4 text-gray-300"
-          />
-        )
+        return <Star key={i} className="h-4 w-4 text-gray-300" />
       }
     })
   }
 
   const renderProduct = (product: Product) => (
-    <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 bg-white border border-gray-200">
+    <Card
+      key={product.id}
+      className="group hover:shadow-lg transition-all duration-300 bg-white border border-gray-200"
+    >
       <CardHeader className="p-0">
         <div className="relative overflow-hidden rounded-t-lg">
           {product.image ? (
@@ -232,12 +226,8 @@ export function OnchainStoreTemplate() {
               <div className="text-6xl text-blue-400">🛍️</div>
             </div>
           )}
-          {!product.inStock && (
-            <Badge className="absolute top-2 right-2 bg-red-500 text-white">Out of Stock</Badge>
-          )}
-          <Badge className="absolute top-2 left-2 bg-gray-800 text-white text-xs">
-            {product.category}
-          </Badge>
+          {!product.inStock && <Badge className="absolute top-2 right-2 bg-red-500 text-white">Out of Stock</Badge>}
+          <Badge className="absolute top-2 left-2 bg-gray-800 text-white text-xs">{product.category}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-4 space-y-3">
@@ -245,18 +235,14 @@ export function OnchainStoreTemplate() {
           <h3 className="font-semibold text-lg text-gray-900 mb-1">{product.name}</h3>
           <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">{product.description}</p>
         </div>
-        
+
         <div className="flex items-center space-x-1">
-          <div className="flex items-center">
-            {renderStars(product.rating)}
-          </div>
+          <div className="flex items-center">{renderStars(product.rating)}</div>
           <span className="text-sm text-gray-500 ml-1">({product.reviewCount})</span>
         </div>
-        
+
         <div className="flex flex-col gap-3 pt-2">
-          <div className="text-2xl font-bold text-green-600">
-            ${product.price.toFixed(2)}
-          </div>
+          <div className="text-2xl font-bold text-green-600">${product.price.toFixed(2)}</div>
           <Button
             onClick={() => addToCart(product)}
             disabled={!product.inStock}
@@ -283,9 +269,7 @@ export function OnchainStoreTemplate() {
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold text-black">VERCLIBASE Store</h1>
           <div className="flex items-center gap-2">
-            <div className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">
-              Template
-            </div>
+            <div className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">Template</div>
             <Button variant="ghost" size="sm">
               <div className="flex flex-col gap-1">
                 <div className="w-4 h-0.5 bg-black"></div>
@@ -301,27 +285,23 @@ export function OnchainStoreTemplate() {
       <div className="px-4 py-8">
         {/* Hero Text */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-black mb-4">
-            The future of commerce is less fee. More creativity.
-          </h2>
+          <h2 className="text-3xl font-bold text-black mb-4">The future of commerce is less fee. More creativity.</h2>
           <div className="space-y-3 text-gray-700">
             <p>
-              People and businesses lose tens of billions of dollars in transaction fees and countless hours in delays to the current system that they wouldn't with onchain payments.
+              People and businesses lose tens of billions of dollars in transaction fees and countless hours in delays
+              to the current system that they wouldn't with onchain payments.
             </p>
-            <p>
-              We're updating the system so it's cheaper and faster.
-            </p>
+            <p>We're updating the system so it's cheaper and faster.</p>
           </div>
         </div>
 
         {/* GEO Advantage */}
         <div className="mb-12">
-          <h3 className="text-lg font-bold uppercase text-black mb-4">
-            AI SEARCH OPTIMIZATION
-          </h3>
+          <h3 className="text-lg font-bold uppercase text-black mb-4">AI SEARCH OPTIMIZATION</h3>
           <div className="space-y-3 text-gray-700">
             <p>
-              Your products are optimized for AI agent discovery and ranking. When customers ask AI assistants like ChatGPT to find products, yours appear first with GEO (Generative Engine Optimization) technology.
+              Your products are optimized for AI agent discovery and ranking. When customers ask AI assistants like
+              ChatGPT to find products, yours appear first with GEO (Generative Engine Optimization) technology.
             </p>
             <div className="flex items-center gap-2 text-blue-600">
               <span className="text-sm font-medium">Powered by Base Network</span>
@@ -359,10 +339,23 @@ export function OnchainStoreTemplate() {
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 <span className="text-sm font-medium text-green-700">AI Shopping Ready</span>
               </div>
-              <div className="text-sm text-gray-600">AI Search Rank: #{selectedProduct.id === 'base-cap' ? '1' : selectedProduct.id === 'base-hoodie' ? '2' : '3'}</div>
+              <div className="text-sm text-gray-600">
+                AI Search Rank: #
+                {selectedProduct.id === 'base-cap' ? '1' : selectedProduct.id === 'base-hoodie' ? '2' : '3'}
+              </div>
             </div>
             <div className="flex items-center justify-between text-xs text-gray-600">
-              <span>AI Discovery Score: {selectedProduct.id === 'base-cap' ? '94' : selectedProduct.id === 'base-hoodie' ? '91' : selectedProduct.id === 'base-mug' ? '88' : '85'}/100</span>
+              <span>
+                AI Discovery Score:{' '}
+                {selectedProduct.id === 'base-cap'
+                  ? '94'
+                  : selectedProduct.id === 'base-hoodie'
+                    ? '91'
+                    : selectedProduct.id === 'base-mug'
+                      ? '88'
+                      : '85'}
+                /100
+              </span>
               <span>Sponsored Listing Active</span>
             </div>
           </div>
@@ -372,7 +365,7 @@ export function OnchainStoreTemplate() {
             {/* Left Arrow */}
             <button
               onClick={() => {
-                const currentIndex = products.findIndex(p => p.id === selectedProduct.id)
+                const currentIndex = products.findIndex((p) => p.id === selectedProduct.id)
                 const prevIndex = currentIndex > 0 ? currentIndex - 1 : products.length - 1
                 setSelectedProduct(products[prevIndex])
               }}
@@ -384,7 +377,7 @@ export function OnchainStoreTemplate() {
             {/* Right Arrow */}
             <button
               onClick={() => {
-                const currentIndex = products.findIndex(p => p.id === selectedProduct.id)
+                const currentIndex = products.findIndex((p) => p.id === selectedProduct.id)
                 const nextIndex = currentIndex < products.length - 1 ? currentIndex + 1 : 0
                 setSelectedProduct(products[nextIndex])
               }}
@@ -451,9 +444,7 @@ export function OnchainStoreTemplate() {
             <div className="border-t border-gray-200 pt-2">
               <div className="flex justify-between items-center">
                 <span className="text-lg font-bold text-black">TOTAL</span>
-                <span className="text-lg font-bold text-black">
-                  {getTotalPrice().toFixed(2)} USDC
-                </span>
+                <span className="text-lg font-bold text-black">{getTotalPrice().toFixed(2)} USDC</span>
               </div>
             </div>
           </div>
@@ -476,10 +467,7 @@ export function OnchainStoreTemplate() {
 
           {/* Payment Button */}
           <div className="w-full">
-            <Checkout
-              chargeHandler={chargeHandler}
-              onStatus={handleCheckoutStatus}
-            >
+            <Checkout chargeHandler={chargeHandler} onStatus={handleCheckoutStatus}>
               <CheckoutButton
                 text={`Pay ${getTotalPrice().toFixed(2)} USDC`}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-medium rounded-lg flex items-center justify-center gap-3 transition-all duration-200"
@@ -497,7 +485,6 @@ export function OnchainStoreTemplate() {
           </div>
         </div>
       </div>
-
     </div>
   )
 }

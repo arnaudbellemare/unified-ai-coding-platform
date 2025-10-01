@@ -22,18 +22,14 @@ interface CoinbaseCommerceCheckoutProps {
   onError?: (error: string) => void
 }
 
-export function CoinbaseCommerceCheckout({ 
-  product, 
-  onSuccess, 
-  onError 
-}: CoinbaseCommerceCheckoutProps) {
+export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: CoinbaseCommerceCheckoutProps) {
   const [isCreatingCharge, setIsCreatingCharge] = useState(false)
   const [chargeId, setChargeId] = useState<string | null>(null)
 
   // Create a charge dynamically using our backend
   const chargeHandler = async (): Promise<string> => {
     setIsCreatingCharge(true)
-    
+
     try {
       const response = await fetch('/api/coinbase-commerce/create-charge', {
         method: 'POST',
@@ -45,14 +41,14 @@ export function CoinbaseCommerceCheckout({
           description: product.description,
           local_price: {
             amount: product.price.toString(),
-            currency: product.currency.toUpperCase()
+            currency: product.currency.toUpperCase(),
           },
           pricing_type: 'fixed_price',
           metadata: {
             product_id: product.id,
-            timestamp: new Date().toISOString()
-          }
-        })
+            timestamp: new Date().toISOString(),
+          },
+        }),
       })
 
       if (!response.ok) {
@@ -63,7 +59,7 @@ export function CoinbaseCommerceCheckout({
       const chargeId = data.id
       setChargeId(chargeId)
       setIsCreatingCharge(false)
-      
+
       return chargeId
     } catch (error) {
       setIsCreatingCharge(false)
@@ -76,7 +72,7 @@ export function CoinbaseCommerceCheckout({
   // Handle successful checkout
   const handleStatus = async (status: any) => {
     const { statusName, statusData } = status
-    
+
     switch (statusName) {
       case 'success':
         console.log('Checkout successful:', statusData)
@@ -102,16 +98,12 @@ export function CoinbaseCommerceCheckout({
         <CardTitle className="text-xl font-bold">{product.name}</CardTitle>
         <p className="text-gray-600 text-sm">{product.description}</p>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {/* Product Price */}
         <div className="text-center">
-          <div className="text-3xl font-bold text-green-600">
-            ${product.price.toFixed(2)}
-          </div>
-          <div className="text-sm text-gray-500">
-            {product.currency.toUpperCase()}
-          </div>
+          <div className="text-3xl font-bold text-green-600">${product.price.toFixed(2)}</div>
+          <div className="text-sm text-gray-500">{product.currency.toUpperCase()}</div>
         </div>
 
         {/* Benefits */}
@@ -132,11 +124,8 @@ export function CoinbaseCommerceCheckout({
 
         {/* Coinbase Commerce Checkout */}
         <div className="border-t pt-4">
-          <Checkout 
-            chargeHandler={chargeHandler}
-            onStatus={handleStatus}
-          >
-            <CheckoutButton 
+          <Checkout chargeHandler={chargeHandler} onStatus={handleStatus}>
+            <CheckoutButton
               coinbaseBranded
               text={`Pay ${product.currency.toUpperCase()} ${product.price.toFixed(2)}`}
               disabled={isCreatingCharge}
@@ -160,9 +149,7 @@ export function CoinbaseCommerceCheckout({
               <CheckCircle className="h-3 w-3 mr-1" />
               Payment Ready
             </Badge>
-            <p className="text-xs text-gray-500 mt-1">
-              Charge ID: {chargeId.slice(0, 8)}...
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Charge ID: {chargeId.slice(0, 8)}...</p>
           </div>
         )}
       </CardContent>

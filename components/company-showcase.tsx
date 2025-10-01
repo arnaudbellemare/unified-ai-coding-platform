@@ -5,19 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { 
-  ShoppingCart, 
-  CreditCard, 
-  Coins, 
-  Zap, 
-  CheckCircle, 
+import {
+  ShoppingCart,
+  CreditCard,
+  Coins,
+  Zap,
+  CheckCircle,
   ArrowRight,
   Star,
   TrendingUp,
   Globe,
   Shield,
   Clock,
-  Users
+  Users,
 } from 'lucide-react'
 import { CoinbaseCommerceCheckout } from '@/components/coinbase-commerce-checkout'
 
@@ -46,7 +46,7 @@ const sampleProducts: Product[] = [
     rating: 4.8,
     reviews: 1247,
     inStock: true,
-    features: ['100% Organic Cotton', 'Machine Washable', 'Sustainably Made', '30-Day Returns']
+    features: ['100% Organic Cotton', 'Machine Washable', 'Sustainably Made', '30-Day Returns'],
   },
   {
     id: 'wireless-headphones',
@@ -58,7 +58,7 @@ const sampleProducts: Product[] = [
     rating: 4.9,
     reviews: 892,
     inStock: true,
-    features: ['Active Noise Cancellation', '30h Battery Life', 'Quick Charge', 'Premium Sound']
+    features: ['Active Noise Cancellation', '30h Battery Life', 'Quick Charge', 'Premium Sound'],
   },
   {
     id: 'smart-watch',
@@ -70,8 +70,8 @@ const sampleProducts: Product[] = [
     rating: 4.7,
     reviews: 2156,
     inStock: true,
-    features: ['Heart Rate Monitor', 'GPS Tracking', 'Water Resistant', '7-Day Battery']
-  }
+    features: ['Heart Rate Monitor', 'GPS Tracking', 'Water Resistant', '7-Day Battery'],
+  },
 ]
 
 export function CompanyShowcase() {
@@ -128,11 +128,9 @@ export function CompanyShowcase() {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            VERCLIBASE-Powered Commerce
-          </h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">VERCLIBASE-Powered Commerce</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            This isn't just another OnchainKit template - this is a <strong>complete AI commerce platform</strong> with 
+            This isn't just another OnchainKit template - this is a <strong>complete AI commerce platform</strong> with
             cost optimization, x402 integration, and merchant-focused features that go beyond basic crypto payments.
           </p>
           <div className="mt-6 flex justify-center gap-4">
@@ -195,7 +193,7 @@ export function CompanyShowcase() {
                   {product.category === 'Wearables' && '⌚'}
                 </div>
               </div>
-              
+
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
@@ -206,17 +204,15 @@ export function CompanyShowcase() {
                     {product.category}
                   </Badge>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
+                      <Star
+                        key={i}
                         className={`h-4 w-4 ${
-                          i < Math.floor(product.rating) 
-                            ? 'text-yellow-400 fill-current' 
-                            : 'text-gray-300'
-                        }`} 
+                          i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                        }`}
                       />
                     ))}
                   </div>
@@ -241,9 +237,7 @@ export function CompanyShowcase() {
                   {/* Price and Buy Button */}
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div>
-                      <div className="text-2xl font-bold text-gray-900">
-                        ${product.price.toFixed(2)}
-                      </div>
+                      <div className="text-2xl font-bold text-gray-900">${product.price.toFixed(2)}</div>
                       <div className="text-sm text-gray-600">
                         {product.inStock ? (
                           <span className="text-green-600 flex items-center">
@@ -255,8 +249,8 @@ export function CompanyShowcase() {
                         )}
                       </div>
                     </div>
-                    
-                    <Button 
+
+                    <Button
                       onClick={() => handleBuyNow(product)}
                       disabled={!product.inStock}
                       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
@@ -273,62 +267,60 @@ export function CompanyShowcase() {
 
         {/* VERCLIBASE-Exclusive Features */}
         <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
-          <h3 className="text-2xl font-bold text-center mb-8">
-            VERCLIBASE-Exclusive Features (Not in Basic Template)
-          </h3>
-          
+          <h3 className="text-2xl font-bold text-center mb-8">VERCLIBASE-Exclusive Features (Not in Basic Template)</h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
               <Zap className="h-8 w-8 text-yellow-300 mb-3" />
               <h4 className="font-semibold mb-2">AI Cost Optimization Engine</h4>
               <p className="text-sm text-blue-100">
-                Advanced prompt optimization reduces AI processing costs by 20%+ while maintaining quality.
-                Includes CAPO, GEPA, and Cloudflare-inspired techniques.
+                Advanced prompt optimization reduces AI processing costs by 20%+ while maintaining quality. Includes
+                CAPO, GEPA, and Cloudflare-inspired techniques.
               </p>
             </div>
-            
+
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
               <TrendingUp className="h-8 w-8 text-green-300 mb-3" />
               <h4 className="font-semibold mb-2">AI Commerce SEO</h4>
               <p className="text-sm text-blue-100">
-                Optimize product listings for AI agents to find and recommend your products.
-                Structured data, semantic optimization, and ranking signals.
+                Optimize product listings for AI agents to find and recommend your products. Structured data, semantic
+                optimization, and ranking signals.
               </p>
             </div>
-            
+
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
               <Shield className="h-8 w-8 text-blue-300 mb-3" />
               <h4 className="font-semibold mb-2">x402 Protocol Integration</h4>
               <p className="text-sm text-blue-100">
-                Full x402 implementation for AI agent payments, micro-transactions,
-                and automated commerce beyond basic Coinbase Commerce.
+                Full x402 implementation for AI agent payments, micro-transactions, and automated commerce beyond basic
+                Coinbase Commerce.
               </p>
             </div>
-            
+
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
               <Users className="h-8 w-8 text-purple-300 mb-3" />
               <h4 className="font-semibold mb-2">Real Analytics Dashboard</h4>
               <p className="text-sm text-blue-100">
-                Live performance metrics, cost tracking, and AI optimization results.
-                Not just mock data - real insights for merchants.
+                Live performance metrics, cost tracking, and AI optimization results. Not just mock data - real insights
+                for merchants.
               </p>
             </div>
-            
+
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
               <Globe className="h-8 w-8 text-orange-300 mb-3" />
               <h4 className="font-semibold mb-2">Multi-Payment Gateway</h4>
               <p className="text-sm text-blue-100">
-                Stripe, Coinbase Commerce, and x402 all integrated in one platform.
-                Fallback systems and payment method selection.
+                Stripe, Coinbase Commerce, and x402 all integrated in one platform. Fallback systems and payment method
+                selection.
               </p>
             </div>
-            
+
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
               <Clock className="h-8 w-8 text-red-300 mb-3" />
               <h4 className="font-semibold mb-2">Production-Ready APIs</h4>
               <p className="text-sm text-blue-100">
-                Robust error handling, rate limiting, and production deployment
-                features that basic templates don't include.
+                Robust error handling, rate limiting, and production deployment features that basic templates don't
+                include.
               </p>
             </div>
           </div>
@@ -336,10 +328,8 @@ export function CompanyShowcase() {
 
         {/* Payment Methods Showcase */}
         <div className="mt-16 bg-white rounded-2xl p-8 shadow-sm border">
-          <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">
-            Multiple Payment Options
-          </h3>
-          
+          <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">Multiple Payment Options</h3>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center p-6 border rounded-xl hover:shadow-md transition-shadow">
               <CreditCard className="h-12 w-12 text-blue-600 mx-auto mb-4" />
@@ -347,25 +337,29 @@ export function CompanyShowcase() {
               <p className="text-sm text-gray-600 mb-4">
                 Traditional card payments with Apple Pay, Google Pay, and more
               </p>
-              <Badge variant="outline" className="text-xs">Vercel Marketplace</Badge>
+              <Badge variant="outline" className="text-xs">
+                Vercel Marketplace
+              </Badge>
             </div>
-            
+
             <div className="text-center p-6 border rounded-xl hover:shadow-md transition-shadow">
               <Coins className="h-12 w-12 text-orange-600 mx-auto mb-4" />
               <h4 className="font-semibold text-gray-900 mb-2">Coinbase Commerce</h4>
               <p className="text-sm text-gray-600 mb-4">
                 Cryptocurrency payments with instant settlement on Base network
               </p>
-              <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">Live Integration</Badge>
+              <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">
+                Live Integration
+              </Badge>
             </div>
-            
+
             <div className="text-center p-6 border rounded-xl hover:shadow-md transition-shadow">
               <Zap className="h-12 w-12 text-purple-600 mx-auto mb-4" />
               <h4 className="font-semibold text-gray-900 mb-2">x402 Protocol</h4>
-              <p className="text-sm text-gray-600 mb-4">
-                AI agent payments and micro-transactions with zero gas fees
-              </p>
-              <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700">Future Ready</Badge>
+              <p className="text-sm text-gray-600 mb-4">AI agent payments and micro-transactions with zero gas fees</p>
+              <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700">
+                Future Ready
+              </Badge>
             </div>
           </div>
         </div>
@@ -375,7 +369,7 @@ export function CompanyShowcase() {
           <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">
             VERCLIBASE vs Standard OnchainKit Template
           </h3>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -461,7 +455,7 @@ export function CompanyShowcase() {
               </tbody>
             </table>
           </div>
-          
+
           <div className="mt-8 text-center">
             <p className="text-gray-600 mb-4">
               VERCLIBASE is a complete AI commerce platform, not just a basic template
@@ -484,15 +478,11 @@ export function CompanyShowcase() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900">Complete Your Purchase</h3>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setShowCheckout(false)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setShowCheckout(false)}>
                   ×
                 </Button>
               </div>
-              
+
               <CoinbaseCommerceCheckout
                 product={selectedProduct}
                 onSuccess={handlePaymentSuccess}

@@ -17,17 +17,13 @@ export default function CheckoutCancelPage() {
           <CardTitle className="text-2xl text-red-600">Payment Cancelled</CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
-          <p className="text-gray-600">
-            Your payment was cancelled. No charges have been made to your account.
-          </p>
-          
+          <p className="text-gray-600">Your payment was cancelled. No charges have been made to your account.</p>
+
           <div className="space-y-2">
             <p className="text-sm text-gray-600">
               If you changed your mind, you can easily restart the checkout process.
             </p>
-            <p className="text-sm text-gray-600">
-              Your items are still in your cart and ready for checkout.
-            </p>
+            <p className="text-sm text-gray-600">Your items are still in your cart and ready for checkout.</p>
           </div>
 
           <div className="flex gap-3 pt-4">

@@ -494,25 +494,30 @@ export function MarketingLanding({
                   <br />
                   <span className="relative inline-block">
                     You Sell More
-                    <div 
+                    <div
                       className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"
                       style={{
                         backgroundSize: '200% 100%',
-                        animation: 'fadeInFromLeft 4s ease-in-out infinite'
+                        animation: 'fadeInFromLeft 4s ease-in-out infinite',
                       }}
                     ></div>
                   </span>
                 </h3>
                 <div className="mb-8">
                   <p className="text-xl text-gray-600 leading-relaxed mb-4">
-                    When customers ask AI assistants <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800">"Find me a blue shirt under $50"</span>
+                    When customers ask AI assistants{' '}
+                    <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800">
+                      "Find me a blue shirt under $50"
+                    </span>
                   </p>
                   <p className="text-xl text-gray-600 leading-relaxed">
-                    <span className="font-bold text-gray-900">Your products appear first</span> in the AI's recommendations. More visibility = more sales. Simple as that.
+                    <span className="font-bold text-gray-900">Your products appear first</span> in the AI's
+                    recommendations. More visibility = more sales. Simple as that.
                   </p>
                   <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <p className="text-sm text-blue-800">
-                      <strong>💡 Think of it like SEO, but for AI shopping:</strong> Just like Google ranks websites, AI assistants rank products when helping customers shop.
+                      <strong>💡 Think of it like SEO, but for AI shopping:</strong> Just like Google ranks websites, AI
+                      assistants rank products when helping customers shop.
                     </p>
                   </div>
                 </div>
@@ -554,7 +559,7 @@ export function MarketingLanding({
             </div>
 
             {/* Top row of cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
               <Card className="bg-gray-50 hover:shadow-lg transition-shadow duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
@@ -729,23 +734,29 @@ export function MarketingLanding({
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black text-black mb-4">SEO for AI Commerce</h2>
             <p className="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
-              As AI shopping grows, <span className="font-semibold text-black">position your products to be discovered first</span> by AI agents. 
-              We optimize your listings with structured data, cost-efficient processing, and x402 payments for the future of commerce.
+              As AI shopping grows,{' '}
+              <span className="font-semibold text-black">position your products to be discovered first</span> by AI
+              agents. We optimize your listings with structured data, cost-efficient processing, and x402 payments for
+              the future of commerce.
             </p>
           </div>
 
           {/* How AI Commerce Ranking Works */}
           <div className="bg-white rounded-2xl p-8 border border-gray-200 mb-12">
-            <h3 className="text-2xl font-bold text-black mb-6 text-center">How We Get Your Products Found by AI Shoppers</h3>
-            
-            <div className="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
+            <h3 className="text-2xl font-bold text-black mb-6 text-center">
+              How We Get Your Products Found by AI Shoppers
+            </h3>
+
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="text-center">
-                <p className="text-lg text-gray-700 mb-4">
-                  <strong>What is AI Shopping?</strong> When customers ask AI assistants like ChatGPT or Claude 
-                  <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 mx-1">"Find me a blue shirt under $50"</span>
+                <p className="text-base text-gray-700 mb-3">
+                  <strong>What is AI Shopping?</strong> When customers ask AI assistants like ChatGPT or Claude
+                  <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 mx-1">
+                    "Find me a blue shirt under $50"
+                  </span>
                   AI searches the internet for products and recommends the best matches.
                 </p>
-                <p className="text-gray-600">
+                <p className="text-sm text-gray-600">
                   <strong>Our system makes sure your products get found and recommended by AI shoppers.</strong>
                 </p>
               </div>
@@ -758,8 +769,8 @@ export function MarketingLanding({
                 </div>
                 <h4 className="font-bold text-lg text-black mb-3">Make Products AI-Friendly</h4>
                 <p className="text-gray-600 text-sm">
-                  Structure your products so AI shoppers can easily find and understand them. 
-                  Clear descriptions, pricing, and availability help AI recommend your products to customers.
+                  Structure your products so AI shoppers can easily find and understand them. Clear descriptions,
+                  pricing, and availability help AI recommend your products to customers.
                 </p>
               </div>
 
@@ -769,8 +780,8 @@ export function MarketingLanding({
                 </div>
                 <h4 className="font-bold text-lg text-black mb-3">Pay to Boost Visibility</h4>
                 <p className="text-gray-600 text-sm">
-                  Allocate advertising budgets to make your products appear higher in AI search results. 
-                  When customers ask AI to find products, yours show up first when sponsored.
+                  Allocate advertising budgets to make your products appear higher in AI search results. When customers
+                  ask AI to find products, yours show up first when sponsored.
                 </p>
               </div>
 
@@ -780,23 +791,21 @@ export function MarketingLanding({
                 </div>
                 <h4 className="font-bold text-lg text-black mb-3">Track Performance & ROI</h4>
                 <p className="text-gray-600 text-sm">
-                  Monitor how often AI shoppers find your products, which searches drive sales, and ROI on your advertising spend. 
-                  See exactly why your products rank where they do.
+                  Monitor how often AI shoppers find your products, which searches drive sales, and ROI on your
+                  advertising spend. See exactly why your products rank where they do.
                 </p>
               </div>
             </div>
           </div>
 
           {/* Technical Implementation */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"></div>
 
           {/* Base Store Section */}
           <div className="bg-white rounded-2xl p-8 shadow-sm">
             <OnchainStoreTemplate />
           </div>
         </section>
-
       </div>
     </div>
   )
@@ -804,15 +813,15 @@ export function MarketingLanding({
 
 function FeatureTile({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   // Check if this is the Brain icon (Trust Signals)
-  const isBrainIcon = title === "Trust Signals"
-  
+  const isBrainIcon = title === 'Trust Signals'
+
   return (
-    <div className={`rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow tilt ${isBrainIcon ? 'animate-subtle-glow' : ''}`}>
+    <div
+      className={`rounded-xl border border-gray-200 bg-white/95 backdrop-blur-md p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.10)] transition-shadow tilt ${isBrainIcon ? 'animate-subtle-glow' : ''}`}
+    >
       <div className="flex items-start gap-3">
         <div className={`mt-0.5 ${isBrainIcon ? 'relative' : ''}`}>
-          {isBrainIcon && (
-            <div className="absolute -inset-2 rounded-lg bg-purple-500/20 animate-pulse"></div>
-          )}
+          {isBrainIcon && <div className="absolute -inset-2 rounded-lg bg-purple-500/20 animate-pulse"></div>}
           {icon}
         </div>
         <div>
