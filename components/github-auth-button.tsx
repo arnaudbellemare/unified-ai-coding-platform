@@ -14,10 +14,10 @@ export function GitHubAuthButton() {
   return (
     <Button
       onClick={handleGitHubAuth}
-      className="group flex items-center gap-2 border-gray-300 text-black hover:bg-gray-100 hover:text-black transition-colors"
+      className="group flex items-center gap-2 border-white text-white hover:bg-white hover:text-black transition-colors"
       variant="outline"
     >
-      <Github className="h-4 w-4 text-black group-hover:text-black transition-colors" />
+      <Github className="h-4 w-4 text-white group-hover:text-black transition-colors" />
       Connect GitHub
     </Button>
   )
