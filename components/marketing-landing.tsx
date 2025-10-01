@@ -582,6 +582,67 @@ export function MarketingLanding({
                       FREE facilitator, FREE gas fees, fully transparent and auditable.
                     </span>
                   </p>
+                  
+                  {/* How x402 Boost Placement Works */}
+                  <div className="mt-6 p-4 bg-white rounded-lg border border-gray-200">
+                    <h4 className="font-semibold text-black mb-3">How We Enable x402 Boost Placement:</h4>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-green-600 text-xs font-bold">1</span>
+                        </div>
+                        <div>
+                          <div className="font-medium text-black">Coinbase CDP Integration</div>
+                          <div className="text-gray-600">Direct integration with Coinbase's x402 facilitator service - no gas fees, no facilitator fees</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-green-600 text-xs font-bold">2</span>
+                        </div>
+                        <div>
+                          <div className="font-medium text-black">Smart Budget Allocation</div>
+                          <div className="text-gray-600">Set budgets per search query, per click, or per completed checkout with real-time tracking</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-green-600 text-xs font-bold">3</span>
+                        </div>
+                        <div>
+                          <div className="font-medium text-black">Transparent Settlement</div>
+                          <div className="text-gray-600">Every transaction is recorded on Base blockchain - fully auditable and transparent</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-green-600 text-xs font-bold">4</span>
+                        </div>
+                        <div>
+                          <div className="font-medium text-black">AI Agent Compatibility</div>
+                          <div className="text-gray-600">Built for AI agents to understand and execute - works seamlessly with ChatGPT, Claude, and other LLMs</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
+                          <span className="text-white text-xs">✓</span>
+                        </div>
+                        <span className="font-semibold text-green-800">FREE Benefits</span>
+                      </div>
+                      <div className="text-sm text-green-700 space-y-1">
+                        <div>• 5000 free operations per month</div>
+                        <div>• Zero gas fees on Base network</div>
+                        <div>• Free facilitator service from Coinbase</div>
+                        <div>• Free receiving and processing</div>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
