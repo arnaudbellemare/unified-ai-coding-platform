@@ -48,6 +48,8 @@ export function AP2Demo() {
     setIsProcessing(true)
 
     try {
+      console.log('🤖 AP2 Payment: Sending request with data:', formData)
+      
       const response = await fetch('/api/ap2/payment', {
         method: 'POST',
         headers: {
@@ -56,7 +58,14 @@ export function AP2Demo() {
         body: JSON.stringify(formData),
       })
 
+      console.log('🤖 AP2 Payment: Response status:', response.status)
+      
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`)
+      }
+
       const result = await response.json()
+      console.log('🤖 AP2 Payment: Response data:', result)
 
       if (result.success) {
         const newPayment: AP2Payment = {
@@ -69,7 +78,10 @@ export function AP2Demo() {
           timestamp: new Date(result.payment.timestamp),
         }
 
+        console.log('🤖 AP2 Payment: Adding new payment:', newPayment)
         setPayments((prev) => [newPayment, ...prev])
+        
+        // Reset form data for next payment
         setFormData({
           fromAgent: 'ShoppingBot_001',
           toAgent: 'PaymentBot_002',
@@ -77,9 +89,15 @@ export function AP2Demo() {
           currency: 'USD',
           description: 'Product recommendation fee',
         })
+        
+        console.log('✅ AP2 Payment: Successfully added to payments list')
+      } else {
+        console.error('❌ AP2 Payment failed:', result.error)
+        alert(`AP2 Payment failed: ${result.error || 'Unknown error'}`)
       }
     } catch (error) {
-      console.error('AP2 Payment failed:', error)
+      console.error('❌ AP2 Payment failed:', error)
+      alert(`AP2 Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsProcessing(false)
     }

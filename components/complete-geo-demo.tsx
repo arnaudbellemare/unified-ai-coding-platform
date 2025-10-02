@@ -289,43 +289,61 @@ export function CompleteGEODemo() {
 
   const testAP2Payment = async () => {
     try {
+      console.log('🤖 AP2 Payment: Starting payment test...')
+      
+      const paymentData = {
+        fromAgent: 'ShoppingBot_001',
+        toAgent: 'PaymentBot_002',
+        amount: 25.0,
+        currency: 'USDC',
+        description: 'Agent recommendation fee',
+        mandateId: 'mandate_12345',
+        network: 'Base',
+        metadata: {
+          service: 'recommendation',
+          priority: 'high',
+          autoSettle: true,
+        },
+      }
+      
+      console.log('🤖 AP2 Payment: Sending request with data:', paymentData)
+      
       const response = await fetch('/api/ap2/payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fromAgent: 'ShoppingBot_001',
-          toAgent: 'PaymentBot_002',
-          amount: 25.0,
-          currency: 'USDC',
-          description: 'Agent recommendation fee',
-          mandateId: 'mandate_12345',
-          network: 'Base',
-          metadata: {
-            service: 'recommendation',
-            priority: 'high',
-            autoSettle: true,
-          },
-        }),
+        body: JSON.stringify(paymentData),
       })
 
+      console.log('🤖 AP2 Payment: Response status:', response.status)
+      
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`)
+      }
+
       const data = await response.json()
+      console.log('🤖 AP2 Payment: Response data:', data)
+      
       if (data.success) {
         // Add new transaction to the list
         const newTransaction = {
           id: `tx_${Date.now()}`,
-          from: data.payment.fromAgent,
-          to: data.payment.toAgent,
-          description: 'Agent recommendation fee',
-          amount: data.payment.amount,
+          from: data.payment.fromAgent || paymentData.fromAgent,
+          to: data.payment.toAgent || paymentData.toAgent,
+          description: paymentData.description,
+          amount: data.payment.amount || paymentData.amount,
           status: 'Completed',
         }
 
+        console.log('🤖 AP2 Payment: Adding new transaction:', newTransaction)
         setAgentTransactions((prev) => [newTransaction, ...prev])
+        console.log('✅ AP2 Payment: Successfully added to transactions list')
       } else {
-        console.error('AP2 Payment Failed:', data.error)
+        console.error('❌ AP2 Payment Failed:', data.error)
+        alert(`AP2 Payment failed: ${data.error || 'Unknown error'}`)
       }
     } catch (error) {
-      console.error('Failed to process AP2 payment:', error)
+      console.error('❌ AP2 Payment failed:', error)
+      alert(`AP2 Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
