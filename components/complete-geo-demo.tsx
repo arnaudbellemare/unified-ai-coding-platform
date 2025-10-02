@@ -103,11 +103,11 @@ export function CompleteGEODemo() {
         x: Math.random() * 100,
         y: Math.random() * 100,
         delay: Math.random() * 3,
-        size: Math.random() * 3 + 1,
+        size: Math.random() * 1.5 + 0.5,
       }))
       setStars(newStars)
     }
-    
+
     generateStars()
   }, [])
 
@@ -397,14 +397,30 @@ export function CompleteGEODemo() {
       {/* Star Field CSS Animations */}
       <style jsx>{`
         @keyframes twinkle {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.2); }
+          0%,
+          100% {
+            opacity: 0.3;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.2);
+          }
         }
         @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          25% { transform: translateY(-2px) rotate(1deg); }
-          50% { transform: translateY(-1px) rotate(0deg); }
-          75% { transform: translateY(-3px) rotate(-1deg); }
+          0%,
+          100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          25% {
+            transform: translateY(-2px) rotate(1deg);
+          }
+          50% {
+            transform: translateY(-1px) rotate(0deg);
+          }
+          75% {
+            transform: translateY(-3px) rotate(-1deg);
+          }
         }
         .star-twinkle {
           animation: twinkle 2s ease-in-out infinite;
@@ -418,13 +434,11 @@ export function CompleteGEODemo() {
       <div className="fixed inset-0 pointer-events-none z-10">
         {stars.map((star) => {
           // Calculate distance from mouse to star
-          const distance = Math.sqrt(
-            Math.pow(mousePosition.x - star.x, 2) + Math.pow(mousePosition.y - star.y, 2)
-          )
+          const distance = Math.sqrt(Math.pow(mousePosition.x - star.x, 2) + Math.pow(mousePosition.y - star.y, 2))
           const intensity = Math.max(0, 1 - distance / 30) // 30px radius of effect
           const scale = 1 + intensity * 2 // Scale up stars near mouse
           const opacity = 0.3 + intensity * 0.7 // Increase opacity near mouse
-          
+
           return (
             <div
               key={star.id}
@@ -437,12 +451,14 @@ export function CompleteGEODemo() {
                 transform: `scale(${scale})`,
                 opacity: opacity,
                 animationDelay: `${star.delay}s`,
-                boxShadow: intensity > 0.5 
-                  ? `0 0 ${star.size * 4}px rgba(255, 255, 255, ${intensity}), 0 0 ${star.size * 8}px rgba(255, 255, 255, ${intensity * 0.5})` 
-                  : 'none',
-                filter: intensity > 0.3 
-                  ? `brightness(${1 + intensity * 2}) drop-shadow(0 0 ${star.size * 3}px rgba(255, 255, 255, ${intensity * 0.8}))` 
-                  : 'none',
+                boxShadow:
+                  intensity > 0.5
+                    ? `0 0 ${star.size * 4}px rgba(255, 255, 255, ${intensity}), 0 0 ${star.size * 8}px rgba(255, 255, 255, ${intensity * 0.5})`
+                    : 'none',
+                filter:
+                  intensity > 0.3
+                    ? `brightness(${1 + intensity * 2}) drop-shadow(0 0 ${star.size * 3}px rgba(255, 255, 255, ${intensity * 0.8}))`
+                    : 'none',
               }}
             />
           )
