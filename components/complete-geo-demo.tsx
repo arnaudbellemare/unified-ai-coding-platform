@@ -289,58 +289,62 @@ export function CompleteGEODemo() {
 
   const testAP2Payment = async () => {
     try {
-      console.log('🤖 AP2 Payment: Starting payment test...')
+      console.log('🤖 AP2 Payment: Starting mock payment simulation...')
       
-      const paymentData = {
-        fromAgent: 'ShoppingBot_001',
-        toAgent: 'PaymentBot_002',
-        amount: 25.0,
-        currency: 'USDC',
-        description: 'Agent recommendation fee',
-        mandateId: 'mandate_12345',
-        network: 'Base',
-        metadata: {
-          service: 'recommendation',
-          priority: 'high',
-          autoSettle: true,
+      // Mock AP2 payment scenarios
+      const mockScenarios = [
+        {
+          fromAgent: 'ShoppingBot_001',
+          toAgent: 'PaymentBot_002',
+          description: 'Agent recommendation fee',
+          amount: 25.0,
         },
-      }
-      
-      console.log('🤖 AP2 Payment: Sending request with data:', paymentData)
-      
-      const response = await fetch('/api/ap2/payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentData),
-      })
+        {
+          fromAgent: 'AnalyticsBot_003',
+          toAgent: 'DataBot_004',
+          description: 'Market analysis service',
+          amount: 42.50,
+        },
+        {
+          fromAgent: 'SearchBot_005',
+          toAgent: 'IndexBot_006',
+          description: 'Search optimization',
+          amount: 18.75,
+        },
+        {
+          fromAgent: 'CustomerBot_007',
+          toAgent: 'SupportBot_008',
+          description: 'Customer service coordination',
+          amount: 33.00,
+        },
+        {
+          fromAgent: 'MarketingBot_009',
+          toAgent: 'CampaignBot_010',
+          description: 'Campaign optimization',
+          amount: 55.25,
+        },
+      ]
 
-      console.log('🤖 AP2 Payment: Response status:', response.status)
+      // Simulate processing delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      // Pick a random scenario
+      const scenario = mockScenarios[Math.floor(Math.random() * mockScenarios.length)]
       
-      if (!response.ok) {
-        throw new Error(`API request failed with status: ${response.status}`)
+      // Generate mock transaction
+      const newTransaction = {
+        id: `ap2_tx_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+        from: scenario.fromAgent,
+        to: scenario.toAgent,
+        description: scenario.description,
+        amount: scenario.amount,
+        status: 'Completed',
       }
 
-      const data = await response.json()
-      console.log('🤖 AP2 Payment: Response data:', data)
+      console.log('🤖 AP2 Payment: Generated mock transaction:', newTransaction)
+      setAgentTransactions((prev) => [newTransaction, ...prev])
+      console.log('✅ AP2 Payment: Successfully added mock transaction to list')
       
-      if (data.success) {
-        // Add new transaction to the list
-        const newTransaction = {
-          id: `tx_${Date.now()}`,
-          from: data.payment.fromAgent || paymentData.fromAgent,
-          to: data.payment.toAgent || paymentData.toAgent,
-          description: paymentData.description,
-          amount: data.payment.amount || paymentData.amount,
-          status: 'Completed',
-        }
-
-        console.log('🤖 AP2 Payment: Adding new transaction:', newTransaction)
-        setAgentTransactions((prev) => [newTransaction, ...prev])
-        console.log('✅ AP2 Payment: Successfully added to transactions list')
-      } else {
-        console.error('❌ AP2 Payment Failed:', data.error)
-        alert(`AP2 Payment failed: ${data.error || 'Unknown error'}`)
-      }
     } catch (error) {
       console.error('❌ AP2 Payment failed:', error)
       alert(`AP2 Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)

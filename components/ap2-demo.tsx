@@ -48,53 +48,79 @@ export function AP2Demo() {
     setIsProcessing(true)
 
     try {
-      console.log('🤖 AP2 Payment: Sending request with data:', formData)
+      console.log('🤖 AP2 Payment: Starting mock payment simulation...')
       
-      const response = await fetch('/api/ap2/payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      console.log('🤖 AP2 Payment: Response status:', response.status)
-      
-      if (!response.ok) {
-        throw new Error(`API request failed with status: ${response.status}`)
-      }
-
-      const result = await response.json()
-      console.log('🤖 AP2 Payment: Response data:', result)
-
-      if (result.success) {
-        const newPayment: AP2Payment = {
-          paymentId: result.payment.paymentId,
-          status: result.payment.status,
-          fromAgent: formData.fromAgent,
-          toAgent: formData.toAgent,
-          amount: parseFloat(formData.amount),
-          currency: formData.currency,
-          timestamp: new Date(result.payment.timestamp),
-        }
-
-        console.log('🤖 AP2 Payment: Adding new payment:', newPayment)
-        setPayments((prev) => [newPayment, ...prev])
-        
-        // Reset form data for next payment
-        setFormData({
+      // Mock AP2 payment scenarios with realistic agent interactions
+      const mockScenarios = [
+        {
           fromAgent: 'ShoppingBot_001',
           toAgent: 'PaymentBot_002',
-          amount: '10.50',
-          currency: 'USD',
+          amount: 12.50,
           description: 'Product recommendation fee',
-        })
-        
-        console.log('✅ AP2 Payment: Successfully added to payments list')
-      } else {
-        console.error('❌ AP2 Payment failed:', result.error)
-        alert(`AP2 Payment failed: ${result.error || 'Unknown error'}`)
+        },
+        {
+          fromAgent: 'AnalyticsBot_003',
+          toAgent: 'DataBot_004',
+          amount: 28.75,
+          description: 'Market analysis service',
+        },
+        {
+          fromAgent: 'SearchBot_005',
+          toAgent: 'IndexBot_006',
+          amount: 15.25,
+          description: 'Search optimization',
+        },
+        {
+          fromAgent: 'CustomerBot_007',
+          toAgent: 'SupportBot_008',
+          amount: 22.00,
+          description: 'Customer service coordination',
+        },
+        {
+          fromAgent: 'MarketingBot_009',
+          toAgent: 'CampaignBot_010',
+          amount: 35.50,
+          description: 'Campaign optimization',
+        },
+        {
+          fromAgent: 'InventoryBot_011',
+          toAgent: 'WarehouseBot_012',
+          amount: 18.90,
+          description: 'Inventory management',
+        },
+      ]
+
+      // Simulate processing delay
+      await new Promise(resolve => setTimeout(resolve, 1500))
+
+      // Pick a random scenario
+      const scenario = mockScenarios[Math.floor(Math.random() * mockScenarios.length)]
+      
+      // Generate mock payment
+      const newPayment: AP2Payment = {
+        paymentId: `ap2_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        status: 'completed',
+        fromAgent: scenario.fromAgent,
+        toAgent: scenario.toAgent,
+        amount: scenario.amount,
+        currency: 'USD',
+        timestamp: new Date(),
       }
+
+      console.log('🤖 AP2 Payment: Generated mock payment:', newPayment)
+      setPayments((prev) => [newPayment, ...prev])
+      
+      // Reset form data for next payment
+      setFormData({
+        fromAgent: 'ShoppingBot_001',
+        toAgent: 'PaymentBot_002',
+        amount: '10.50',
+        currency: 'USD',
+        description: 'Product recommendation fee',
+      })
+      
+      console.log('✅ AP2 Payment: Successfully added mock payment to list')
+      
     } catch (error) {
       console.error('❌ AP2 Payment failed:', error)
       alert(`AP2 Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
