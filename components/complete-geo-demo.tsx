@@ -451,24 +451,30 @@ export function CompleteGEODemo() {
                 transform: `scale(${scale})`,
                 opacity: opacity,
                 animationDelay: `${star.delay}s`,
-                filter: intensity > 0.3 
-                  ? `brightness(${1 + intensity * 2}) drop-shadow(0 0 ${star.size * 2}px rgba(255, 255, 255, ${intensity * 0.8}))` 
-                  : 'none',
+                filter:
+                  intensity > 0.3
+                    ? `brightness(${1 + intensity * 2}) drop-shadow(0 0 ${star.size * 2}px rgba(255, 255, 255, ${intensity * 0.8}))`
+                    : 'none',
               }}
             >
               <svg
                 width="100%"
                 height="100%"
                 viewBox="0 0 24 24"
-                fill="white"
+                fill="none"
                 className="transition-all duration-300"
                 style={{
-                  filter: intensity > 0.5 
-                    ? `drop-shadow(0 0 ${star.size}px rgba(255, 255, 255, ${intensity})) drop-shadow(0 0 ${star.size * 2}px rgba(255, 255, 255, ${intensity * 0.5}))` 
-                    : 'none',
+                  filter: intensity > 0.3 
+                    ? `drop-shadow(0 0 ${star.size * 2}px rgba(59, 130, 246, ${intensity})) drop-shadow(0 0 ${star.size * 4}px rgba(147, 51, 234, ${intensity * 0.7})) drop-shadow(0 0 ${star.size * 6}px rgba(255, 255, 255, ${intensity * 0.3}))` 
+                    : `drop-shadow(0 0 ${star.size}px rgba(59, 130, 246, 0.5))`,
                 }}
               >
-                <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                {/* Outer glow layer */}
+                <path d="M12 5v14M5 12h14" stroke="rgba(59, 130, 246, 0.8)" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
+                {/* Inner bright layer */}
+                <path d="M12 6v12M6 12h12" stroke="rgba(147, 51, 234, 0.9)" strokeWidth="2" strokeLinecap="round" opacity="0.8"/>
+                {/* Center intense white core */}
+                <path d="M12 7v10M7 12h10" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="1"/>
               </svg>
             </div>
           )
