@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Coins, CheckCircle, ExternalLink, ArrowLeft, Sparkles, Wallet, Shield, Zap } from 'lucide-react'
 import { usePrivy } from '@privy-io/react-auth'
 import { LogoVerclibase } from '@/components/logo-verclibase'
+import { GEOOptimizedCheckout } from '@/components/geo-optimized-checkout'
 
 export default function DemoCheckoutPage() {
   const searchParams = useSearchParams()
@@ -16,6 +17,84 @@ export default function DemoCheckoutPage() {
   const [selectedWallet, setSelectedWallet] = useState<string>('')
   const [isConnecting, setIsConnecting] = useState(false)
   const [connectedWallet, setConnectedWallet] = useState<any>(null)
+  const [aiSessionId, setAiSessionId] = useState<string>('')
+  const [isAIAgent, setIsAIAgent] = useState(false)
+  const [showGeoCheckout, setShowGeoCheckout] = useState(false)
+  const [paymentCompleted, setPaymentCompleted] = useState(false)
+
+  // AI Agent Detection and Tracking
+  useEffect(() => {
+    // Detect if traffic is from AI agents
+    const detectAIAgent = () => {
+      const userAgent = navigator.userAgent.toLowerCase()
+      const referrer = document.referrer.toLowerCase()
+      const urlParams = new URLSearchParams(window.location.search)
+      
+      const aiIndicators = [
+        userAgent.includes('ai'),
+        userAgent.includes('bot'),
+        userAgent.includes('crawler'),
+        referrer.includes('chatgpt'),
+        referrer.includes('perplexity'),
+        referrer.includes('claude'),
+        referrer.includes('gemini'),
+        urlParams.has('ai_agent'),
+        urlParams.has('geo_optimized')
+      ]
+      
+      return aiIndicators.some(indicator => indicator)
+    }
+
+    const isAgent = detectAIAgent()
+    setIsAIAgent(isAgent)
+    
+    if (isAgent) {
+      const sessionId = `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      setAiSessionId(sessionId)
+      
+      // Track AI agent interaction
+      trackAIAgentInteraction('page_load', {
+        product,
+        amount,
+        sessionId,
+        timestamp: new Date().toISOString()
+      })
+    }
+  }, [product, amount])
+
+  // AI Agent Interaction Tracking
+  const trackAIAgentInteraction = async (eventType: string, data: any) => {
+    if (!isAIAgent) return
+    
+    try {
+      await fetch('/api/track-ai-interaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: eventType,
+          timestamp: new Date().toISOString(),
+          sessionId: aiSessionId,
+          agentSource: detectAgentSource(),
+          checkoutData: data,
+          geoOptimized: true,
+          url: window.location.href
+        })
+      })
+    } catch (error) {
+      console.error('AI tracking error:', error)
+    }
+  }
+
+  // Detect AI agent source
+  const detectAgentSource = () => {
+    const referrer = document.referrer.toLowerCase()
+    if (referrer.includes('chatgpt')) return 'chatgpt'
+    if (referrer.includes('perplexity')) return 'perplexity'
+    if (referrer.includes('claude')) return 'claude'
+    if (referrer.includes('gemini')) return 'gemini'
+    if (navigator.userAgent.toLowerCase().includes('ai')) return 'ai_agent'
+    return 'unknown'
+  }
 
   // Handle Privy authentication state
   useEffect(() => {
@@ -30,13 +109,77 @@ export default function DemoCheckoutPage() {
       }
       setConnectedWallet(walletData)
       setIsConnecting(false)
+      
+      // Track wallet connection for AI agents
+      if (isAIAgent) {
+        trackAIAgentInteraction('wallet_connected', {
+          walletType: 'privy',
+          address: user.wallet.address,
+          sessionId: aiSessionId
+        })
+      }
     } else if (!authenticated && connectedWallet) {
       setConnectedWallet(null)
     }
-  }, [authenticated, user, connectedWallet])
+  }, [authenticated, user, connectedWallet, isAIAgent, aiSessionId])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <>
+      {/* GEO-Optimized Structured Data for AI Agents */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CheckoutPage",
+            "name": `VERCLIBASE Crypto Checkout - ${product}`,
+            "description": "Secure cryptocurrency payment processing with instant settlement on Base network",
+            "url": typeof window !== 'undefined' ? window.location.href : 'http://localhost:3001/store/demo-checkout',
+            "offers": {
+              "@type": "Offer",
+              "price": amount,
+              "priceCurrency": "USDC",
+              "availability": "https://schema.org/InStock",
+              "validFrom": new Date().toISOString(),
+              "seller": {
+                "@type": "Organization",
+                "name": "VERCLIBASE",
+                "url": "https://verclibase.com",
+                "logo": "https://verclibase.com/logo.png"
+              }
+            },
+            "paymentAccepted": ["USDC", "ETH", "BTC"],
+            "paymentMethod": ["Cryptocurrency", "Digital Wallet", "Base Network"],
+            "merchant": {
+              "@type": "Organization",
+              "name": "VERCLIBASE",
+              "url": "https://verclibase.com",
+              "description": "AI-powered commerce optimization and agentic commerce platform",
+              "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "US"
+              }
+            },
+          "potentialAction": {
+            "@type": "BuyAction",
+            "target": typeof window !== 'undefined' ? window.location.href : 'http://localhost:3001/store/demo-checkout',
+              "price": amount,
+              "priceCurrency": "USDC"
+            },
+            "geoOptimized": true,
+            "aiAgentCompatible": true,
+            "supportedNetworks": ["Base", "Ethereum"],
+            "features": [
+              "Instant settlement",
+              "Low fees (1% vs 3-5% traditional)",
+              "Auto USDC conversion",
+              "100+ cryptocurrency support"
+            ]
+          })
+        }}
+      />
+
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-2xl mx-auto px-6 py-4">
@@ -381,48 +524,152 @@ export default function DemoCheckoutPage() {
               </div>
             </div>
 
-            {/* Action Buttons - Privy Style */}
-            <div className="space-y-3">
-              {connectedWallet ? (
-                <div className="space-y-3">
+            {/* GEO-Optimized Checkout Toggle */}
+            {!showGeoCheckout && !paymentCompleted && (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                    <Sparkles className="h-5 w-5" />
+                    Enhanced AI-Optimized Checkout
+                  </h3>
+                  <p className="text-blue-700 text-sm mb-4">
+                    Experience our GEO-optimized checkout with Coinbase branding, dynamic pricing, and AI agent compatibility.
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 text-xs text-blue-600 mb-4">
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3" />
+                      <span>Coinbase Branding</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3" />
+                      <span>Dynamic Charges</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3" />
+                      <span>AI Agent Tracking</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3" />
+                      <span>Structured Data</span>
+                    </div>
+                  </div>
                   <Button
-                    className="w-full bg-[#676FFF] hover:bg-[#5a5ce6] text-white h-12 rounded-lg font-semibold"
-                    onClick={() => {
-                      alert(
-                        `Payment processed!\nWallet: ${connectedWallet.type}\nAmount: $${amount} USDC\nAddress: ${connectedWallet.address}`,
-                      )
-                    }}
+                    onClick={() => setShowGeoCheckout(true)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10 rounded-lg font-medium"
                   >
-                    <Zap className="h-5 w-5 mr-2" />
-                    Pay ${amount} USDC
+                    <Zap className="h-4 w-4 mr-2" />
+                    Use GEO-Optimized Checkout
                   </Button>
+                </div>
+
+                {/* Traditional Payment Options */}
+                <div className="space-y-3">
+                  {connectedWallet ? (
+                    <div className="space-y-3">
+                      <Button
+                        className="w-full bg-[#676FFF] hover:bg-[#5a5ce6] text-white h-12 rounded-lg font-semibold"
+                        onClick={async () => {
+                          // Track payment attempt for AI agents
+                          if (isAIAgent) {
+                            await trackAIAgentInteraction('payment_attempt', {
+                              product,
+                              amount,
+                              walletType: connectedWallet.type,
+                              address: connectedWallet.address,
+                              sessionId: aiSessionId
+                            })
+                          }
+                          
+                          alert(
+                            `Payment processed!\nWallet: ${connectedWallet.type}\nAmount: $${amount} USDC\nAddress: ${connectedWallet.address}`,
+                          )
+                          
+                          // Track successful payment for AI agents
+                          if (isAIAgent) {
+                            await trackAIAgentInteraction('payment_success', {
+                              product,
+                              amount,
+                              walletType: connectedWallet.type,
+                              address: connectedWallet.address,
+                              sessionId: aiSessionId,
+                              timestamp: new Date().toISOString()
+                            })
+                          }
+                        }}
+                      >
+                        <Zap className="h-5 w-5 mr-2" />
+                        Pay ${amount} USDC
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        className="w-full text-gray-600 hover:text-gray-800 hover:bg-gray-50 h-10 rounded-lg font-medium"
+                        onClick={() => {
+                          logout()
+                          setConnectedWallet(null)
+                        }}
+                      >
+                        Use different wallet
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button className="w-full bg-gray-400 text-white h-12 rounded-lg font-semibold" disabled>
+                      <Wallet className="h-5 w-5 mr-2" />
+                      Connect Wallet to Pay ${amount}
+                    </Button>
+                  )}
 
                   <Button
                     variant="ghost"
-                    className="w-full text-gray-600 hover:text-gray-800 hover:bg-gray-50 h-10 rounded-lg font-medium"
-                    onClick={() => {
-                      logout()
-                      setConnectedWallet(null)
-                    }}
+                    className="w-full text-gray-500 hover:text-gray-700 h-10 rounded-lg font-medium"
+                    onClick={() => window.close()}
                   >
-                    Use different wallet
+                    Cancel
                   </Button>
                 </div>
-              ) : (
-                <Button className="w-full bg-gray-400 text-white h-12 rounded-lg font-semibold" disabled>
-                  <Wallet className="h-5 w-5 mr-2" />
-                  Connect Wallet to Pay ${amount}
-                </Button>
-              )}
+              </div>
+            )}
 
-              <Button
-                variant="ghost"
-                className="w-full text-gray-500 hover:text-gray-700 h-10 rounded-lg font-medium"
-                onClick={() => window.close()}
-              >
-                Cancel
-              </Button>
-            </div>
+            {/* GEO-Optimized Checkout Component */}
+            {showGeoCheckout && !paymentCompleted && (
+              <div className="space-y-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowGeoCheckout(false)}
+                  className="text-gray-500 hover:text-gray-700 text-sm"
+                >
+                  ← Back to traditional checkout
+                </Button>
+                
+                <GEOOptimizedCheckout
+                  product={product}
+                  amount={amount}
+                  aiSessionId={aiSessionId}
+                  isAIAgent={isAIAgent}
+                  onPaymentSuccess={(transactionId) => {
+                    setPaymentCompleted(true)
+                    console.log('Payment completed with transaction:', transactionId)
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Payment Completed State */}
+            {paymentCompleted && (
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
+                  <CheckCircle className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900">Payment Successful!</h3>
+                <p className="text-gray-600">Your {product} purchase has been completed.</p>
+                <Button
+                  onClick={() => window.close()}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  Close
+                </Button>
+              </div>
+            )}
 
             {/* Back to Demo */}
             <div className="text-center pt-6 border-t border-gray-200">
@@ -438,6 +685,14 @@ export default function DemoCheckoutPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      
+      {/* AI Agent Indicator (only visible to AI agents) */}
+      {isAIAgent && (
+        <div className="fixed bottom-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium z-50">
+          AI Agent Detected: {detectAgentSource()}
+        </div>
+      )}
+    </>
   )
 }

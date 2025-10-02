@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { CheckCircle, XCircle, Loader2, ArrowRight, Clock, ShoppingCart } from 'lucide-react'
+import { CheckCircle, XCircle, Loader2, ArrowRight, Clock, ShoppingCart, CreditCard, TrendingUp, Package, Users, Activity } from 'lucide-react'
 
 interface AP2Payment {
   paymentId: string
@@ -44,18 +44,19 @@ export function AP2Demo() {
     setStats({ totalPayments, totalVolume, successRate })
   }, [payments])
 
+
   const handleAP2Payment = async () => {
     setIsProcessing(true)
 
     try {
-      console.log('🤖 AP2 Payment: Starting mock payment simulation...')
-      
+      console.log('AP2 Payment: Starting mock payment simulation...')
+
       // Mock AP2 payment scenarios with realistic agent interactions
       const mockScenarios = [
         {
           fromAgent: 'ShoppingBot_001',
           toAgent: 'PaymentBot_002',
-          amount: 12.50,
+          amount: 12.5,
           description: 'Product recommendation fee',
         },
         {
@@ -73,29 +74,29 @@ export function AP2Demo() {
         {
           fromAgent: 'CustomerBot_007',
           toAgent: 'SupportBot_008',
-          amount: 22.00,
+          amount: 22.0,
           description: 'Customer service coordination',
         },
         {
           fromAgent: 'MarketingBot_009',
           toAgent: 'CampaignBot_010',
-          amount: 35.50,
+          amount: 35.5,
           description: 'Campaign optimization',
         },
         {
           fromAgent: 'InventoryBot_011',
           toAgent: 'WarehouseBot_012',
-          amount: 18.90,
+          amount: 18.9,
           description: 'Inventory management',
         },
       ]
 
       // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500))
 
       // Pick a random scenario
       const scenario = mockScenarios[Math.floor(Math.random() * mockScenarios.length)]
-      
+
       // Generate mock payment
       const newPayment: AP2Payment = {
         paymentId: `ap2_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -107,9 +108,9 @@ export function AP2Demo() {
         timestamp: new Date(),
       }
 
-      console.log('🤖 AP2 Payment: Generated mock payment:', newPayment)
+      console.log('AP2 Payment: Generated mock payment:', newPayment)
       setPayments((prev) => [newPayment, ...prev])
-      
+
       // Reset form data for next payment
       setFormData({
         fromAgent: 'ShoppingBot_001',
@@ -118,11 +119,10 @@ export function AP2Demo() {
         currency: 'USD',
         description: 'Product recommendation fee',
       })
-      
-      console.log('✅ AP2 Payment: Successfully added mock payment to list')
-      
+
+      console.log('AP2 Payment: Successfully added mock payment to list')
     } catch (error) {
-      console.error('❌ AP2 Payment failed:', error)
+      console.error('AP2 Payment failed:', error)
       alert(`AP2 Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsProcessing(false)
@@ -188,6 +188,7 @@ export function AP2Demo() {
           </div>
         </div>
       </div>
+
 
       {/* Complete Shopping Experience */}
       <div className="bg-white py-20">
@@ -356,8 +357,8 @@ export function AP2Demo() {
             {/* AI Payments */}
             <div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-8 border border-green-500/20 hover:border-green-400/40 transition-all duration-300">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-white font-bold text-xl">💳</span>
+                <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <CreditCard className="h-8 w-8 text-green-600" />
                 </div>
                 <h3 className="text-2xl font-thin mb-2">AI Payments</h3>
                 <p className="text-gray-400">AI agents can pay for services and recommendations</p>
@@ -381,8 +382,8 @@ export function AP2Demo() {
             {/* AI Ranking */}
             <div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-8 border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-white font-bold text-xl">📈</span>
+                <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="h-8 w-8 text-purple-600" />
                 </div>
                 <h3 className="text-2xl font-thin mb-2">AI Ranking</h3>
                 <p className="text-gray-400">Proprietary technology to rank higher in AI results</p>
@@ -447,22 +448,22 @@ export function AP2Demo() {
               <h4 className="text-xl font-medium mb-4 text-center">The Complete AI Commerce Stack</h4>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <span className="text-white font-bold">📈</span>
+                  <div className="w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                    <TrendingUp className="h-6 w-6 text-blue-600" />
                   </div>
                   <h5 className="font-medium mb-2">AI Ranking</h5>
                   <p className="text-sm text-gray-400">Make your products appear when AI searches for solutions</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <span className="text-white font-bold">🛒</span>
+                  <div className="w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                    <ShoppingCart className="h-6 w-6 text-green-600" />
                   </div>
                   <h5 className="font-medium mb-2">AI Shopping</h5>
                   <p className="text-sm text-gray-400">Enable AI agents to complete purchases for customers</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <span className="text-white font-bold">💳</span>
+                  <div className="w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                    <CreditCard className="h-6 w-6 text-purple-600" />
                   </div>
                   <h5 className="font-medium mb-2">AI Payments</h5>
                   <p className="text-sm text-gray-400">Process secure payments between AI agents</p>
@@ -502,8 +503,8 @@ export function AP2Demo() {
             {/* AI Shopping Section */}
             <div className="bg-gray-900 rounded-3xl p-8">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">🛒</span>
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <ShoppingCart className="h-8 w-8 text-blue-600" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-thin mb-2">AI Shopping</h3>
@@ -529,8 +530,8 @@ export function AP2Demo() {
             {/* AI Payments Section */}
             <div className="bg-gray-900 rounded-3xl p-8">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">💳</span>
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <CreditCard className="h-8 w-8 text-green-600" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-thin mb-2">AI Payments</h3>
@@ -557,8 +558,8 @@ export function AP2Demo() {
           {/* AI Ranking Section */}
           <div className="bg-gray-900 rounded-3xl p-8">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center">
-                <span className="text-white font-bold text-xl">📈</span>
+              <div className="w-16 h-16 flex items-center justify-center">
+                <TrendingUp className="h-8 w-8 text-purple-600" />
               </div>
               <div>
                 <h3 className="text-2xl font-thin mb-2">AI Ranking</h3>
