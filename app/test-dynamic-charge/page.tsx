@@ -39,18 +39,18 @@ export default function TestDynamicChargePage() {
       name: 'Basic USDC Payment',
       amount: 25.99,
       product: 'Basic AI Tool',
-      metadata: { ai_agent_optimized: true }
+      metadata: { ai_agent_optimized: true },
     },
     {
       name: 'Enterprise Subscription',
       amount: 299.99,
       product: 'Enterprise AI Platform',
-      metadata: { 
+      metadata: {
         ai_agent_optimized: true,
         geo_tracked: true,
         subscription_type: 'annual',
-        seats: 50
-      }
+        seats: 50,
+      },
     },
     {
       name: 'Dynamic Pricing with Discount',
@@ -61,8 +61,8 @@ export default function TestDynamicChargePage() {
         geo_tracked: true,
         original_price: 99.99,
         discount_percentage: 20,
-        discount_code: 'SAVE20'
-      }
+        discount_code: 'SAVE20',
+      },
     },
     {
       name: 'AI Agent Optimized Purchase',
@@ -73,16 +73,16 @@ export default function TestDynamicChargePage() {
         geo_tracked: true,
         agent_source: 'chatgpt',
         session_id: 'ai_session_123',
-        user_intent: 'ecommerce_optimization'
-      }
-    }
+        user_intent: 'ecommerce_optimization',
+      },
+    },
   ]
 
   const testDynamicCharge = async (scenario: any) => {
     setIsLoading(true)
     setChargeResponse(null)
     setTrackingResponse(null)
-    
+
     try {
       const response = await fetch('/api/create-dynamic-charge', {
         method: 'POST',
@@ -92,21 +92,21 @@ export default function TestDynamicChargePage() {
           currency: 'USDC',
           metadata: {
             product: scenario.product,
-            ...scenario.metadata
-          }
-        })
+            ...scenario.metadata,
+          },
+        }),
       })
 
       const result = await response.json()
-      
+
       if (response.ok) {
         setChargeResponse(result)
-        setTestResults(prev => [...prev, `✅ ${scenario.name}: Charge created successfully`])
+        setTestResults((prev) => [...prev, `✅ ${scenario.name}: Charge created successfully`])
       } else {
-        setTestResults(prev => [...prev, `❌ ${scenario.name}: ${result.error}`])
+        setTestResults((prev) => [...prev, `❌ ${scenario.name}: ${result.error}`])
       }
     } catch (error) {
-      setTestResults(prev => [...prev, `❌ ${scenario.name}: Network error`])
+      setTestResults((prev) => [...prev, `❌ ${scenario.name}: Network error`])
     } finally {
       setIsLoading(false)
     }
@@ -114,7 +114,7 @@ export default function TestDynamicChargePage() {
 
   const testAITracking = async () => {
     setIsLoading(true)
-    
+
     try {
       const response = await fetch('/api/track-ai-interaction', {
         method: 'POST',
@@ -126,23 +126,23 @@ export default function TestDynamicChargePage() {
           agentSource: 'chatgpt',
           checkoutData: {
             product: 'Test Product',
-            amount: '99.99'
+            amount: '99.99',
           },
           geoOptimized: true,
-          url: window.location.href
-        })
+          url: window.location.href,
+        }),
       })
 
       const result = await response.json()
-      
+
       if (response.ok) {
         setTrackingResponse(result)
-        setTestResults(prev => [...prev, '✅ AI Agent Tracking: Successfully tracked interaction'])
+        setTestResults((prev) => [...prev, '✅ AI Agent Tracking: Successfully tracked interaction'])
       } else {
-        setTestResults(prev => [...prev, `❌ AI Agent Tracking: ${result.error}`])
+        setTestResults((prev) => [...prev, `❌ AI Agent Tracking: ${result.error}`])
       }
     } catch (error) {
-      setTestResults(prev => [...prev, '❌ AI Agent Tracking: Network error'])
+      setTestResults((prev) => [...prev, '❌ AI Agent Tracking: Network error'])
     } finally {
       setIsLoading(false)
     }
@@ -150,12 +150,12 @@ export default function TestDynamicChargePage() {
 
   const runAllTests = async () => {
     setTestResults([])
-    
+
     for (const scenario of testScenarios) {
       await testDynamicCharge(scenario)
-      await new Promise(resolve => setTimeout(resolve, 500)) // Small delay between tests
+      await new Promise((resolve) => setTimeout(resolve, 500)) // Small delay between tests
     }
-    
+
     await testAITracking()
   }
 
@@ -163,12 +163,8 @@ export default function TestDynamicChargePage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            🧪 Dynamic Charge Testing Interface
-          </h1>
-          <p className="text-gray-600">
-            Test the dynamic charge API and AI agent tracking functionality
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">🧪 Dynamic Charge Testing Interface</h1>
+          <p className="text-gray-600">Test the dynamic charge API and AI agent tracking functionality</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -181,12 +177,7 @@ export default function TestDynamicChargePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button 
-                onClick={runAllTests} 
-                disabled={isLoading}
-                className="w-full"
-                size="lg"
-              >
+              <Button onClick={runAllTests} disabled={isLoading} className="w-full" size="lg">
                 {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -219,12 +210,7 @@ export default function TestDynamicChargePage() {
                 </div>
               </div>
 
-              <Button 
-                onClick={testAITracking}
-                disabled={isLoading}
-                variant="outline"
-                className="w-full"
-              >
+              <Button onClick={testAITracking} disabled={isLoading} variant="outline" className="w-full">
                 <Bot className="h-4 w-4 mr-2" />
                 Test AI Agent Tracking
               </Button>
@@ -245,13 +231,24 @@ export default function TestDynamicChargePage() {
                   <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                     <h3 className="font-semibold text-green-800 mb-2">Charge Created</h3>
                     <div className="space-y-1 text-sm">
-                      <div><strong>ID:</strong> {chargeResponse.id}</div>
-                      <div><strong>Amount:</strong> {chargeResponse.local_price.amount} {chargeResponse.local_price.currency}</div>
-                      <div><strong>Status:</strong> <Badge variant="secondary">{chargeResponse.status}</Badge></div>
-                      <div><strong>AI Optimized:</strong> {chargeResponse.metadata.ai_agent_optimized ? '✅' : '❌'}</div>
-                      <div><strong>GEO Tracked:</strong> {chargeResponse.metadata.geo_tracked ? '✅' : '❌'}</div>
+                      <div>
+                        <strong>ID:</strong> {chargeResponse.id}
+                      </div>
+                      <div>
+                        <strong>Amount:</strong> {chargeResponse.local_price.amount}{' '}
+                        {chargeResponse.local_price.currency}
+                      </div>
+                      <div>
+                        <strong>Status:</strong> <Badge variant="secondary">{chargeResponse.status}</Badge>
+                      </div>
+                      <div>
+                        <strong>AI Optimized:</strong> {chargeResponse.metadata.ai_agent_optimized ? '✅' : '❌'}
+                      </div>
+                      <div>
+                        <strong>GEO Tracked:</strong> {chargeResponse.metadata.geo_tracked ? '✅' : '❌'}
+                      </div>
                       <div className="mt-2">
-                        <a 
+                        <a
                           href={chargeResponse.hosted_url}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -268,9 +265,15 @@ export default function TestDynamicChargePage() {
                   <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <h3 className="font-semibold text-blue-800 mb-2">AI Tracking Success</h3>
                     <div className="space-y-1 text-sm">
-                      <div><strong>Session ID:</strong> {trackingResponse.sessionId}</div>
-                      <div><strong>Message:</strong> {trackingResponse.message}</div>
-                      <div><strong>Timestamp:</strong> {new Date(trackingResponse.timestamp).toLocaleString()}</div>
+                      <div>
+                        <strong>Session ID:</strong> {trackingResponse.sessionId}
+                      </div>
+                      <div>
+                        <strong>Message:</strong> {trackingResponse.message}
+                      </div>
+                      <div>
+                        <strong>Timestamp:</strong> {new Date(trackingResponse.timestamp).toLocaleString()}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -280,12 +283,10 @@ export default function TestDynamicChargePage() {
                     <h3 className="font-semibold">Test Log</h3>
                     <div className="max-h-60 overflow-y-auto space-y-1">
                       {testResults.map((result, index) => (
-                        <div 
-                          key={index} 
+                        <div
+                          key={index}
                           className={`p-2 rounded text-sm ${
-                            result.startsWith('✅') 
-                              ? 'bg-green-50 text-green-800' 
-                              : 'bg-red-50 text-red-800'
+                            result.startsWith('✅') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
                           }`}
                         >
                           {result}
@@ -322,7 +323,7 @@ export default function TestDynamicChargePage() {
                   </div>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold mb-2">Track AI Interaction</h3>
                 <div className="bg-gray-100 p-3 rounded text-sm font-mono">

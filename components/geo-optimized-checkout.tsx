@@ -15,12 +15,12 @@ interface GEOOptimizedCheckoutProps {
   isAIAgent?: boolean
 }
 
-export function GEOOptimizedCheckout({ 
-  product, 
-  amount, 
+export function GEOOptimizedCheckout({
+  product,
+  amount,
   onPaymentSuccess,
   aiSessionId,
-  isAIAgent = false
+  isAIAgent = false,
 }: GEOOptimizedCheckoutProps) {
   const [chargeId, setChargeId] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
@@ -42,9 +42,9 @@ export function GEOOptimizedCheckout({
               ai_agent_optimized: isAIAgent,
               geo_tracked: true,
               session_id: aiSessionId,
-              checkout_type: 'geo_optimized'
-            }
-          })
+              checkout_type: 'geo_optimized',
+            },
+          }),
         })
 
         if (!response.ok) {
@@ -53,14 +53,14 @@ export function GEOOptimizedCheckout({
 
         const charge = await response.json()
         setChargeId(charge.id)
-        
+
         // Track charge creation for AI agents
         if (isAIAgent && aiSessionId) {
           await trackAIAgentInteraction('dynamic_charge_created', {
             chargeId: charge.id,
             product,
             amount,
-            sessionId: aiSessionId
+            sessionId: aiSessionId,
           })
         }
       } catch (error) {
@@ -77,7 +77,7 @@ export function GEOOptimizedCheckout({
   // AI Agent Interaction Tracking
   const trackAIAgentInteraction = async (eventType: string, data: any) => {
     if (!isAIAgent) return
-    
+
     try {
       await fetch('/api/track-ai-interaction', {
         method: 'POST',
@@ -89,8 +89,8 @@ export function GEOOptimizedCheckout({
           agentSource: detectAgentSource(),
           checkoutData: data,
           geoOptimized: true,
-          url: window.location.href
-        })
+          url: window.location.href,
+        }),
       })
     } catch (error) {
       console.error('AI tracking error:', error)
@@ -111,10 +111,10 @@ export function GEOOptimizedCheckout({
   // Handle checkout status changes
   const handleCheckoutStatus = async (status: any) => {
     console.log('Checkout status changed:', status)
-    
+
     if (status.statusName === 'success') {
       setPaymentStatus('success')
-      
+
       // Track successful payment for AI agents
       if (isAIAgent && aiSessionId) {
         await trackAIAgentInteraction('payment_success', {
@@ -122,15 +122,15 @@ export function GEOOptimizedCheckout({
           amount,
           product,
           sessionId: aiSessionId,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
       }
-      
+
       // Call success callback
       onPaymentSuccess?.(status.statusData?.chargeId || chargeId)
     } else if (status.statusName === 'error') {
       setPaymentStatus('error')
-      
+
       // Track payment error for AI agents
       if (isAIAgent && aiSessionId) {
         await trackAIAgentInteraction('payment_error', {
@@ -139,7 +139,7 @@ export function GEOOptimizedCheckout({
           product,
           sessionId: aiSessionId,
           error: status.statusData?.error || 'Unknown error',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
       }
     }
@@ -180,10 +180,7 @@ export function GEOOptimizedCheckout({
           </div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">Payment Failed</h3>
           <p className="text-gray-600 mb-4">Please try again or contact support.</p>
-          <Button 
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
+          <Button onClick={() => window.location.reload()} className="bg-blue-600 hover:bg-blue-700">
             Try Again
           </Button>
         </CardContent>
@@ -213,11 +210,9 @@ export function GEOOptimizedCheckout({
             </Badge>
           )}
         </CardTitle>
-        <p className="text-gray-600 text-sm">
-          Secure crypto payment with AI optimization
-        </p>
+        <p className="text-gray-600 text-sm">Secure crypto payment with AI optimization</p>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         {/* Order Summary */}
         <div className="bg-gray-50 rounded-lg p-4">
@@ -233,10 +228,9 @@ export function GEOOptimizedCheckout({
             <CheckoutButton 
               coinbaseBranded 
               text={`Pay $${amount} USDC`}
-              onStatus={handleCheckoutStatus}
             />
           </Checkout>
-          
+
           {/* GEO Features */}
           <div className="bg-blue-50 rounded-lg p-4 space-y-2">
             <div className="flex items-center gap-2 text-blue-800 font-medium text-sm">

@@ -25,10 +25,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
     return (
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={config}>
-          <OnchainKitProvider
-            apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY || ''}
-            chain={base}
-          >
+          <OnchainKitProvider apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY || ''} chain={base}>
             {children}
           </OnchainKitProvider>
         </WagmiProvider>
@@ -59,10 +56,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
             },
           }}
         >
-          <OnchainKitProvider
-            apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY || ''}
-            chain={base}
-          >
+          <OnchainKitProvider apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY || ''} chain={base}>
             {children}
           </OnchainKitProvider>
         </PrivyProvider>

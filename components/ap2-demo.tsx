@@ -6,7 +6,19 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { CheckCircle, XCircle, Loader2, ArrowRight, Clock, ShoppingCart, CreditCard, TrendingUp, Package, Users, Activity } from 'lucide-react'
+import {
+  CheckCircle,
+  XCircle,
+  Loader2,
+  ArrowRight,
+  Clock,
+  ShoppingCart,
+  CreditCard,
+  TrendingUp,
+  Package,
+  Users,
+  Activity,
+} from 'lucide-react'
 
 interface AP2Payment {
   paymentId: string
@@ -43,7 +55,6 @@ export function AP2Demo() {
 
     setStats({ totalPayments, totalVolume, successRate })
   }, [payments])
-
 
   const handleAP2Payment = async () => {
     setIsProcessing(true)
@@ -188,7 +199,6 @@ export function AP2Demo() {
           </div>
         </div>
       </div>
-
 
       {/* Complete Shopping Experience */}
       <div className="bg-white py-20">

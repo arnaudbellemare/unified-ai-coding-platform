@@ -561,40 +561,39 @@ export function CompleteGEODemo() {
               <div className="absolute top-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl transform translate-x-48 -translate-y-48"></div>
               <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-20 rounded-full blur-2xl transform translate-x-32 -translate-y-32"></div>
               <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-30 rounded-full blur-xl transform translate-x-16 -translate-y-16"></div>
-              
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Panel - Agentic Commerce Protocol */}
                 <div className="text-center">
                   <div className="mb-4">
                     <svg className="w-32 h-32 mx-auto" viewBox="0 0 200 200">
                       {/* Server Stack */}
-                      <rect x="40" y="40" width="120" height="20" fill="#f97316" rx="2"/>
-                      <rect x="40" y="70" width="120" height="20" fill="#f97316" rx="2"/>
-                      <rect x="40" y="100" width="120" height="20" fill="#f97316" rx="2"/>
-                      <rect x="40" y="130" width="120" height="20" fill="#f97316" rx="2"/>
-                      <rect x="40" y="160" width="120" height="20" fill="#f97316" rx="2"/>
-                      
+                      <rect x="40" y="40" width="120" height="20" fill="#f97316" rx="2" />
+                      <rect x="40" y="70" width="120" height="20" fill="#f97316" rx="2" />
+                      <rect x="40" y="100" width="120" height="20" fill="#f97316" rx="2" />
+                      <rect x="40" y="130" width="120" height="20" fill="#f97316" rx="2" />
+                      <rect x="40" y="160" width="120" height="20" fill="#f97316" rx="2" />
+
                       {/* Server Indicators */}
-                      <rect x="45" y="45" width="3" height="3" fill="#fff"/>
-                      <rect x="50" y="45" width="3" height="3" fill="#fff"/>
-                      <rect x="55" y="45" width="3" height="3" fill="#fff"/>
-                      
-                      <rect x="45" y="75" width="3" height="3" fill="#fff"/>
-                      <rect x="50" y="75" width="3" height="3" fill="#fff"/>
-                      <rect x="55" y="75" width="3" height="3" fill="#fff"/>
-                      
-                      <rect x="45" y="105" width="3" height="3" fill="#fff"/>
-                      <rect x="50" y="105" width="3" height="3" fill="#fff"/>
-                      <rect x="55" y="105" width="3" height="3" fill="#fff"/>
-                      
-                      <rect x="45" y="135" width="3" height="3" fill="#fff"/>
-                      <rect x="50" y="135" width="3" height="3" fill="#fff"/>
-                      <rect x="55" y="135" width="3" height="3" fill="#fff"/>
-                      
-                      <rect x="45" y="165" width="3" height="3" fill="#fff"/>
-                      <rect x="50" y="165" width="3" height="3" fill="#fff"/>
-                      <rect x="55" y="165" width="3" height="3" fill="#fff"/>
+                      <rect x="45" y="45" width="3" height="3" fill="#fff" />
+                      <rect x="50" y="45" width="3" height="3" fill="#fff" />
+                      <rect x="55" y="45" width="3" height="3" fill="#fff" />
+
+                      <rect x="45" y="75" width="3" height="3" fill="#fff" />
+                      <rect x="50" y="75" width="3" height="3" fill="#fff" />
+                      <rect x="55" y="75" width="3" height="3" fill="#fff" />
+
+                      <rect x="45" y="105" width="3" height="3" fill="#fff" />
+                      <rect x="50" y="105" width="3" height="3" fill="#fff" />
+                      <rect x="55" y="105" width="3" height="3" fill="#fff" />
+
+                      <rect x="45" y="135" width="3" height="3" fill="#fff" />
+                      <rect x="50" y="135" width="3" height="3" fill="#fff" />
+                      <rect x="55" y="135" width="3" height="3" fill="#fff" />
+
+                      <rect x="45" y="165" width="3" height="3" fill="#fff" />
+                      <rect x="50" y="165" width="3" height="3" fill="#fff" />
+                      <rect x="55" y="165" width="3" height="3" fill="#fff" />
                     </svg>
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">AGENTIC COMMERCE PROTOCOL</h3>
@@ -607,38 +606,46 @@ export function CompleteGEODemo() {
                     <svg className="w-32 h-32 mx-auto" viewBox="0 0 200 200">
                       {/* Central Gear */}
                       <g transform="translate(100,100)">
-                        <circle cx="0" cy="0" r="40" fill="#f97316" stroke="#fff" strokeWidth="2"/>
-                        <text x="0" y="5" textAnchor="middle" fill="#fff" fontSize="16" fontWeight="bold">GEO</text>
-                        
+                        <circle cx="0" cy="0" r="40" fill="#f97316" stroke="#fff" strokeWidth="2" />
+                        <text x="0" y="5" textAnchor="middle" fill="#fff" fontSize="16" fontWeight="bold">
+                          GEO
+                        </text>
+
                         {/* Gear teeth */}
-                        <rect x="-3" y="-45" width="6" height="10" fill="#f97316"/>
-                        <rect x="-3" y="35" width="6" height="10" fill="#f97316"/>
-                        <rect x="-45" y="-3" width="10" height="6" fill="#f97316"/>
-                        <rect x="35" y="-3" width="10" height="6" fill="#f97316"/>
+                        <rect x="-3" y="-45" width="6" height="10" fill="#f97316" />
+                        <rect x="-3" y="35" width="6" height="10" fill="#f97316" />
+                        <rect x="-45" y="-3" width="10" height="6" fill="#f97316" />
+                        <rect x="35" y="-3" width="10" height="6" fill="#f97316" />
                       </g>
-                      
+
                       {/* Left side - AI Ranking */}
                       <g transform="translate(30,50)">
-                        <circle cx="0" cy="0" r="15" fill="#f97316"/>
-                        <circle cx="0" cy="0" r="8" fill="#fff"/>
-                        <line x1="8" y1="8" x2="25" y2="25" stroke="#f97316" strokeWidth="2"/>
-                        <text x="0" y="35" textAnchor="middle" fontSize="10" fill="#fff">AI Ranking</text>
+                        <circle cx="0" cy="0" r="15" fill="#f97316" />
+                        <circle cx="0" cy="0" r="8" fill="#fff" />
+                        <line x1="8" y1="8" x2="25" y2="25" stroke="#f97316" strokeWidth="2" />
+                        <text x="0" y="35" textAnchor="middle" fontSize="10" fill="#fff">
+                          AI Ranking
+                        </text>
                       </g>
-                      
+
                       {/* Right side - Discovery */}
                       <g transform="translate(170,50)">
-                        <circle cx="0" cy="0" r="15" fill="#f97316"/>
-                        <circle cx="0" cy="0" r="8" fill="#fff"/>
-                        <line x1="-8" y1="8" x2="-25" y2="25" stroke="#f97316" strokeWidth="2"/>
-                        <text x="0" y="35" textAnchor="middle" fontSize="10" fill="#fff">Discovery</text>
+                        <circle cx="0" cy="0" r="15" fill="#f97316" />
+                        <circle cx="0" cy="0" r="8" fill="#fff" />
+                        <line x1="-8" y1="8" x2="-25" y2="25" stroke="#f97316" strokeWidth="2" />
+                        <text x="0" y="35" textAnchor="middle" fontSize="10" fill="#fff">
+                          Discovery
+                        </text>
                       </g>
-                      
+
                       {/* Bottom - Growth */}
                       <g transform="translate(100,170)">
-                        <polygon points="0,-15 10,10 -10,10" fill="#f97316"/>
-                        <polygon points="0,-10 7,7 -7,7" fill="#fff"/>
-                        <line x1="0" y1="10" x2="0" y2="25" stroke="#f97316" strokeWidth="2"/>
-                        <text x="0" y="40" textAnchor="middle" fontSize="10" fill="#fff">AI finds your products first!</text>
+                        <polygon points="0,-15 10,10 -10,10" fill="#f97316" />
+                        <polygon points="0,-10 7,7 -7,7" fill="#fff" />
+                        <line x1="0" y1="10" x2="0" y2="25" stroke="#f97316" strokeWidth="2" />
+                        <text x="0" y="40" textAnchor="middle" fontSize="10" fill="#fff">
+                          AI finds your products first!
+                        </text>
                       </g>
                     </svg>
                   </div>
@@ -651,36 +658,58 @@ export function CompleteGEODemo() {
                   <div className="mb-4">
                     <svg className="w-32 h-32 mx-auto" viewBox="0 0 200 200">
                       {/* AI Commerce Stack - Top Layer */}
-                      <rect x="20" y="20" width="160" height="30" fill="#f97316" rx="4"/>
-                      <circle cx="40" cy="35" r="8" fill="#fff"/>
-                      <rect x="50" y="30" width="4" height="10" fill="#fff"/>
-                      <text x="100" y="38" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="bold">AI COMMERCE STACK</text>
-                      
+                      <rect x="20" y="20" width="160" height="30" fill="#f97316" rx="4" />
+                      <circle cx="40" cy="35" r="8" fill="#fff" />
+                      <rect x="50" y="30" width="4" height="10" fill="#fff" />
+                      <text x="100" y="38" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="bold">
+                        AI COMMERCE STACK
+                      </text>
+
                       {/* Middle Layer - Payment Methods */}
-                      <rect x="20" y="60" width="70" height="40" fill="#f97316" rx="4"/>
-                      <text x="55" y="80" textAnchor="middle" fill="#fff" fontSize="10">BASE/x402</text>
-                      <text x="55" y="90" textAnchor="middle" fill="#fff" fontSize="8">PAYMENTS</text>
-                      <text x="55" y="110" textAnchor="middle" fill="#fff" fontSize="8">More visibility = More sales</text>
-                      
-                      <rect x="110" y="60" width="70" height="40" fill="#f97316" rx="4"/>
-                      <circle cx="125" cy="75" r="6" fill="#fff"/>
-                      <circle cx="125" cy="75" r="3" fill="#f97316"/>
-                      <text x="145" y="80" textAnchor="middle" fill="#fff" fontSize="10">Coinbase</text>
-                      <text x="145" y="90" textAnchor="middle" fill="#fff" fontSize="8">Commerce</text>
-                      <text x="145" y="110" textAnchor="middle" fill="#fff" fontSize="8">More visibility = sales</text>
-                      
+                      <rect x="20" y="60" width="70" height="40" fill="#f97316" rx="4" />
+                      <text x="55" y="80" textAnchor="middle" fill="#fff" fontSize="10">
+                        BASE/x402
+                      </text>
+                      <text x="55" y="90" textAnchor="middle" fill="#fff" fontSize="8">
+                        PAYMENTS
+                      </text>
+                      <text x="55" y="110" textAnchor="middle" fill="#fff" fontSize="8">
+                        More visibility = More sales
+                      </text>
+
+                      <rect x="110" y="60" width="70" height="40" fill="#f97316" rx="4" />
+                      <circle cx="125" cy="75" r="6" fill="#fff" />
+                      <circle cx="125" cy="75" r="3" fill="#f97316" />
+                      <text x="145" y="80" textAnchor="middle" fill="#fff" fontSize="10">
+                        Coinbase
+                      </text>
+                      <text x="145" y="90" textAnchor="middle" fill="#fff" fontSize="8">
+                        Commerce
+                      </text>
+                      <text x="145" y="110" textAnchor="middle" fill="#fff" fontSize="8">
+                        More visibility = sales
+                      </text>
+
                       {/* Bottom Layer */}
-                      <rect x="20" y="120" width="70" height="40" fill="#f97316" rx="4"/>
-                      <circle cx="125" cy="135" r="6" fill="#fff"/>
-                      <circle cx="125" cy="135" r="3" fill="#f97316"/>
-                      <text x="55" y="140" textAnchor="middle" fill="#fff" fontSize="10">Stripe</text>
-                      <text x="55" y="150" textAnchor="middle" fill="#fff" fontSize="8">Commerce</text>
-                      
-                      <rect x="110" y="120" width="70" height="40" fill="#f97316" rx="4"/>
-                      <circle cx="125" cy="135" r="6" fill="#fff"/>
-                      <circle cx="125" cy="135" r="3" fill="#f97316"/>
-                      <text x="145" y="140" textAnchor="middle" fill="#fff" fontSize="10">YOUR</text>
-                      <text x="145" y="150" textAnchor="middle" fill="#fff" fontSize="8">product.first</text>
+                      <rect x="20" y="120" width="70" height="40" fill="#f97316" rx="4" />
+                      <circle cx="125" cy="135" r="6" fill="#fff" />
+                      <circle cx="125" cy="135" r="3" fill="#f97316" />
+                      <text x="55" y="140" textAnchor="middle" fill="#fff" fontSize="10">
+                        Stripe
+                      </text>
+                      <text x="55" y="150" textAnchor="middle" fill="#fff" fontSize="8">
+                        Commerce
+                      </text>
+
+                      <rect x="110" y="120" width="70" height="40" fill="#f97316" rx="4" />
+                      <circle cx="125" cy="135" r="6" fill="#fff" />
+                      <circle cx="125" cy="135" r="3" fill="#f97316" />
+                      <text x="145" y="140" textAnchor="middle" fill="#fff" fontSize="10">
+                        YOUR
+                      </text>
+                      <text x="145" y="150" textAnchor="middle" fill="#fff" fontSize="8">
+                        product.first
+                      </text>
                     </svg>
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">AI COMMERCE STACK</h3>
