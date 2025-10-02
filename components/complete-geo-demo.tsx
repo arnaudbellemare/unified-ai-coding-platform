@@ -802,7 +802,7 @@ export function CompleteGEODemo() {
                           <Play className="h-4 w-4 mr-2" />
                           Try ACP Demo
                         </Button>
-                        <Button variant="outline" className="px-6 h-12 border-gray-600 text-white hover:bg-gray-800">
+                        <Button variant="outline" className="px-6 h-12 border-gray-600 text-black hover:bg-gray-800 hover:text-white">
                           Learn More
                         </Button>
                       </div>
@@ -849,7 +849,7 @@ export function CompleteGEODemo() {
                           <Play className="h-4 w-4 mr-2" />
                           Try AP2 Demo
                         </Button>
-                        <Button variant="outline" className="px-6 h-12 border-gray-600 text-white hover:bg-gray-800">
+                        <Button variant="outline" className="px-6 h-12 border-gray-600 text-black hover:bg-gray-800 hover:text-white">
                           Learn More
                         </Button>
                       </div>
@@ -1022,19 +1022,27 @@ export function CompleteGEODemo() {
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-white">Google AI Overviews</span>
-                          <Badge variant="outline" className="text-white border-gray-600">45%</Badge>
+                          <Badge variant="outline" className="text-white border-gray-600">
+                            45%
+                          </Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-white">ChatGPT</span>
-                          <Badge variant="outline" className="text-white border-gray-600">30%</Badge>
+                          <Badge variant="outline" className="text-white border-gray-600">
+                            30%
+                          </Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-white">Perplexity</span>
-                          <Badge variant="outline" className="text-white border-gray-600">15%</Badge>
+                          <Badge variant="outline" className="text-white border-gray-600">
+                            15%
+                          </Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-white">Copilot</span>
-                          <Badge variant="outline" className="text-white border-gray-600">10%</Badge>
+                          <Badge variant="outline" className="text-white border-gray-600">
+                            10%
+                          </Badge>
                         </div>
                       </div>
                     </CardContent>
@@ -1510,7 +1518,11 @@ export function CompleteGEODemo() {
               <Code className="h-5 w-5 mr-2" />
               View Source Code
             </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-800 hover:text-white">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-gray-600 text-black hover:bg-gray-800 hover:text-white"
+            >
               <ExternalLink className="h-5 w-5 mr-2" />
               Live Demo
             </Button>
