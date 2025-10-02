@@ -34,10 +34,10 @@ export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: Coinba
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
     const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
     const isSmallScreen = window.innerWidth <= 768
-    
+
     // Consider it mobile if any of these conditions are true
     const mobileCheck = isMobileUA || (isTouchDevice && isSmallScreen)
-    
+
     setIsMobile(mobileCheck)
     console.log('Mobile detection:', {
       mobileCheck,
@@ -45,7 +45,7 @@ export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: Coinba
       isTouchDevice,
       isSmallScreen,
       userAgent,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
     })
   }, [])
 
@@ -147,10 +147,10 @@ export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: Coinba
       const chargeId = data.id
       setChargeId(chargeId)
 
-      // For mobile, redirect directly to Coinbase Commerce checkout page
-      const checkoutUrl = data.hosted_url
-      console.log('Redirecting to:', checkoutUrl)
-      window.location.href = checkoutUrl
+      // For mobile, redirect to our local checkout page instead of Coinbase Commerce hosted URL
+      const localCheckoutUrl = `/store/demo-checkout?product=${encodeURIComponent(product.name)}&amount=${product.price}`
+      console.log('Redirecting to local checkout:', localCheckoutUrl)
+      window.location.href = localCheckoutUrl
     } catch (error) {
       setIsCreatingCharge(false)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
