@@ -70,7 +70,7 @@ export class AP2MandateManager {
       constraints,
       expires_at: expiresAt,
       signature: await this.signMandate({ agentId, intent, constraints }),
-      created_at: new Date()
+      created_at: new Date(),
     }
 
     this.intentMandates.set(mandateId, mandate)
@@ -101,7 +101,7 @@ export class AP2MandateManager {
       intent_mandate_id: intentMandateId,
       cart_data: cartData,
       merchant_signature,
-      created_at: new Date()
+      created_at: new Date(),
     }
 
     this.cartMandates.set(mandateId, mandate)
@@ -126,7 +126,7 @@ export class AP2MandateManager {
       cart_mandate_id: cartMandateId,
       payment_data: paymentData,
       user_signature,
-      created_at: new Date()
+      created_at: new Date(),
     }
 
     this.paymentMandates.set(mandateId, mandate)
@@ -141,12 +141,22 @@ export class AP2MandateManager {
   async verifyIntentMandate(mandateId: string): Promise<MandateVerification> {
     const mandate = this.intentMandates.get(mandateId)
     if (!mandate) {
-      return { valid: false, signature_valid: false, constraints_met: false, not_expired: false, error: 'Mandate not found' }
+      return {
+        valid: false,
+        signature_valid: false,
+        constraints_met: false,
+        not_expired: false,
+        error: 'Mandate not found',
+      }
     }
 
     const now = new Date()
     const notExpired = mandate.expires_at > now
-    const signatureValid = await this.verifySignature(mandate.signature, { agentId: mandate.agent_id, intent: mandate.intent, constraints: mandate.constraints })
+    const signatureValid = await this.verifySignature(mandate.signature, {
+      agentId: mandate.agent_id,
+      intent: mandate.intent,
+      constraints: mandate.constraints,
+    })
     const constraintsMet = this.checkConstraints(mandate.constraints)
 
     return {
@@ -154,7 +164,13 @@ export class AP2MandateManager {
       signature_valid: signatureValid,
       constraints_met: constraintsMet,
       not_expired: notExpired,
-      error: !notExpired ? 'Mandate expired' : !signatureValid ? 'Invalid signature' : !constraintsMet ? 'Constraints not met' : undefined
+      error: !notExpired
+        ? 'Mandate expired'
+        : !signatureValid
+          ? 'Invalid signature'
+          : !constraintsMet
+            ? 'Constraints not met'
+            : undefined,
     }
   }
 
@@ -164,13 +180,25 @@ export class AP2MandateManager {
   async verifyCartMandate(mandateId: string): Promise<MandateVerification> {
     const mandate = this.cartMandates.get(mandateId)
     if (!mandate) {
-      return { valid: false, signature_valid: false, constraints_met: false, not_expired: false, error: 'Mandate not found' }
+      return {
+        valid: false,
+        signature_valid: false,
+        constraints_met: false,
+        not_expired: false,
+        error: 'Mandate not found',
+      }
     }
 
     // Verify the intent mandate is still valid
     const intentVerification = await this.verifyIntentMandate(mandate.intent_mandate_id)
     if (!intentVerification.valid) {
-      return { valid: false, signature_valid: false, constraints_met: false, not_expired: false, error: 'Intent mandate invalid' }
+      return {
+        valid: false,
+        signature_valid: false,
+        constraints_met: false,
+        not_expired: false,
+        error: 'Intent mandate invalid',
+      }
     }
 
     const signatureValid = await this.verifyMerchantSignature(mandate.merchant_signature, mandate.cart_data)
@@ -180,7 +208,7 @@ export class AP2MandateManager {
       signature_valid: signatureValid,
       constraints_met: intentVerification.constraints_met,
       not_expired: intentVerification.not_expired,
-      error: !signatureValid ? 'Invalid merchant signature' : intentVerification.error
+      error: !signatureValid ? 'Invalid merchant signature' : intentVerification.error,
     }
   }
 
@@ -190,13 +218,25 @@ export class AP2MandateManager {
   async verifyPaymentMandate(mandateId: string): Promise<MandateVerification> {
     const mandate = this.paymentMandates.get(mandateId)
     if (!mandate) {
-      return { valid: false, signature_valid: false, constraints_met: false, not_expired: false, error: 'Mandate not found' }
+      return {
+        valid: false,
+        signature_valid: false,
+        constraints_met: false,
+        not_expired: false,
+        error: 'Mandate not found',
+      }
     }
 
     // Verify the cart mandate is still valid
     const cartVerification = await this.verifyCartMandate(mandate.cart_mandate_id)
     if (!cartVerification.valid) {
-      return { valid: false, signature_valid: false, constraints_met: false, not_expired: false, error: 'Cart mandate invalid' }
+      return {
+        valid: false,
+        signature_valid: false,
+        constraints_met: false,
+        not_expired: false,
+        error: 'Cart mandate invalid',
+      }
     }
 
     const signatureValid = await this.verifyUserSignature(mandate.user_signature, mandate.payment_data)
@@ -206,7 +246,7 @@ export class AP2MandateManager {
       signature_valid: signatureValid,
       constraints_met: cartVerification.constraints_met,
       not_expired: cartVerification.not_expired,
-      error: !signatureValid ? 'Invalid user signature' : cartVerification.error
+      error: !signatureValid ? 'Invalid user signature' : cartVerification.error,
     }
   }
 
@@ -284,14 +324,13 @@ export class AP2MandateManager {
     active_mandates: number
   } {
     const now = new Date()
-    const activeIntentMandates = Array.from(this.intentMandates.values())
-      .filter(m => m.expires_at > now).length
+    const activeIntentMandates = Array.from(this.intentMandates.values()).filter((m) => m.expires_at > now).length
 
     return {
       intent_mandates: this.intentMandates.size,
       cart_mandates: this.cartMandates.size,
       payment_mandates: this.paymentMandates.size,
-      active_mandates: activeIntentMandates
+      active_mandates: activeIntentMandates,
     }
   }
 }

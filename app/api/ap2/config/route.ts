@@ -9,30 +9,33 @@ export async function GET() {
       cloudLocation: process.env.GOOGLE_CLOUD_LOCATION || 'global',
       apiKey: process.env.GOOGLE_API_KEY ? '***configured***' : '',
       vertexAIKey: process.env.VERTEX_AI_API_KEY ? '***configured***' : '',
-      hasCredentials: !!(process.env.GOOGLE_APPLICATION_CREDENTIALS || process.env.GOOGLE_API_KEY || process.env.VERTEX_AI_API_KEY)
+      hasCredentials: !!(
+        process.env.GOOGLE_APPLICATION_CREDENTIALS ||
+        process.env.GOOGLE_API_KEY ||
+        process.env.VERTEX_AI_API_KEY
+      ),
     }
 
     // Check status
     const status = {
       vertexAI: config.useVertexAI && config.cloudProject ? 'connected' : 'error',
       apiKey: config.apiKey ? 'valid' : 'invalid',
-      overall: (config.useVertexAI && config.cloudProject) || config.apiKey ? 'ready' : 'error'
+      overall: (config.useVertexAI && config.cloudProject) || config.apiKey ? 'ready' : 'error',
     }
 
     return NextResponse.json({
       success: true,
       config,
-      status
+      status,
     })
-
   } catch (error) {
     console.error('AP2 Config API Error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -40,7 +43,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // This would typically update environment variables
     // In production, you'd want to use a secure configuration service
     console.log('AP2 Config Update Request:', body)
@@ -50,17 +53,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Configuration updated (demo mode)',
-      config: body
+      config: body,
     })
-
   } catch (error) {
     console.error('AP2 Config Update Error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

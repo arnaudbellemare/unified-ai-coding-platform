@@ -4,70 +4,70 @@
  */
 
 export interface ProductSchema {
-  "@context": "https://schema.org"
-  "@type": "Product"
+  '@context': 'https://schema.org'
+  '@type': 'Product'
   name: string
   description: string
   image: string[]
   brand: {
-    "@type": "Brand"
+    '@type': 'Brand'
     name: string
   }
   offers: {
-    "@type": "Offer"
+    '@type': 'Offer'
     price: number
     priceCurrency: string
     availability: string
     url: string
     seller: {
-      "@type": "Organization"
+      '@type': 'Organization'
       name: string
     }
   }
   aggregateRating?: {
-    "@type": "AggregateRating"
+    '@type': 'AggregateRating'
     ratingValue: number
     reviewCount: number
   }
   review?: Array<{
-    "@type": "Review"
+    '@type': 'Review'
     author: {
-      "@type": "Person"
+      '@type': 'Person'
       name: string
     }
     reviewRating: {
-      "@type": "Rating"
+      '@type': 'Rating'
       ratingValue: number
     }
     reviewBody: string
   }>
   additionalProperty?: Array<{
-    "@type": "PropertyValue"
+    '@type': 'PropertyValue'
     name: string
     value: string
   }>
 }
 
 export interface FAQSchema {
-  "@context": "https://schema.org"
-  "@type": "FAQPage"
+  '@context': 'https://schema.org'
+  '@type': 'FAQPage'
   mainEntity: Array<{
-    "@type": "Question"
+    '@type': 'Question'
     name: string
     acceptedAnswer: {
-      "@type": "Answer"
+      '@type': 'Answer'
       text: string
     }
   }>
 }
 
 export interface HowToSchema {
-  "@context": "https://schema.org"
-  "@type": "HowTo"
+  '@context': 'https://schema.org'
+  '@type': 'HowTo'
   name: string
   description: string
   step: Array<{
-    "@type": "HowToStep"
+    '@type': 'HowToStep'
     name: string
     text: string
     image?: string
@@ -92,43 +92,43 @@ export class GEOSchemaGenerator {
     specifications?: Record<string, string>
   }): ProductSchema {
     const schema: ProductSchema = {
-      "@context": "https://schema.org",
-      "@type": "Product",
+      '@context': 'https://schema.org',
+      '@type': 'Product',
       name: product.name,
       description: product.description,
       image: [product.image],
       brand: {
-        "@type": "Brand",
-        name: product.brand
+        '@type': 'Brand',
+        name: product.brand,
       },
       offers: {
-        "@type": "Offer",
+        '@type': 'Offer',
         price: product.price,
         priceCurrency: product.currency,
-        availability: product.availability || "https://schema.org/InStock",
+        availability: product.availability || 'https://schema.org/InStock',
         url: `https://verclibase.com/products/${product.id}`,
         seller: {
-          "@type": "Organization",
-          name: "VERCLIBASE"
-        }
-      }
+          '@type': 'Organization',
+          name: 'VERCLIBASE',
+        },
+      },
     }
 
     // Add rating if available
     if (product.rating && product.reviewCount) {
       schema.aggregateRating = {
-        "@type": "AggregateRating",
+        '@type': 'AggregateRating',
         ratingValue: product.rating,
-        reviewCount: product.reviewCount
+        reviewCount: product.reviewCount,
       }
     }
 
     // Add specifications as additional properties
     if (product.specifications) {
       schema.additionalProperty = Object.entries(product.specifications).map(([name, value]) => ({
-        "@type": "PropertyValue",
+        '@type': 'PropertyValue',
         name,
-        value
+        value,
       }))
     }
 
@@ -140,16 +140,16 @@ export class GEOSchemaGenerator {
    */
   generateFAQSchema(faqs: Array<{ question: string; answer: string }>): FAQSchema {
     return {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqs.map(faq => ({
-        "@type": "Question",
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
         name: faq.question,
         acceptedAnswer: {
-          "@type": "Answer",
-          text: faq.answer
-        }
-      }))
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
     }
   }
 
@@ -162,16 +162,16 @@ export class GEOSchemaGenerator {
     steps: Array<{ name: string; text: string; image?: string }>
   }): HowToSchema {
     return {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
       name: howTo.name,
       description: howTo.description,
-      step: howTo.steps.map(step => ({
-        "@type": "HowToStep",
+      step: howTo.steps.map((step) => ({
+        '@type': 'HowToStep',
         name: step.name,
         text: step.text,
-        ...(step.image && { image: step.image })
-      }))
+        ...(step.image && { image: step.image }),
+      })),
     }
   }
 
@@ -193,13 +193,15 @@ export class GEOSchemaGenerator {
 ${product.name} is a ${product.category} priced at $${product.price}. ${product.keyFeatures.join(', ')}.
 
 ## Key Features
-${product.keyFeatures.map(feature => `- ${feature}`).join('\n')}
+${product.keyFeatures.map((feature) => `- ${feature}`).join('\n')}
 
 ## Best For
-${product.useCases.map(useCase => `- ${useCase}`).join('\n')}
+${product.useCases.map((useCase) => `- ${useCase}`).join('\n')}
 
 ## Specifications
-${Object.entries(product.specifications).map(([key, value]) => `- **${key}**: ${value}`).join('\n')}
+${Object.entries(product.specifications)
+  .map(([key, value]) => `- **${key}**: ${value}`)
+  .join('\n')}
 
 ## Price & Availability
 - **Price**: $${product.price}

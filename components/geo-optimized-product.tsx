@@ -59,10 +59,7 @@ export function GEOOptimizedProduct({ product, showAIOptimization = false }: GEO
   return (
     <div className="max-w-4xl mx-auto p-6">
       {/* Schema.org Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
 
       {/* AI-Optimized Content */}
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -89,7 +86,9 @@ export function GEOOptimizedProduct({ product, showAIOptimization = false }: GEO
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Quick Answer</h2>
             <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
               <p className="text-gray-800">
-                {product.name} is a {product.category} priced at ${product.price}. {product.features.slice(0, 2).join(' and ')} make it ideal for {product.useCases[0] || 'various applications'}.
+                {product.name} is a {product.category} priced at ${product.price}.{' '}
+                {product.features.slice(0, 2).join(' and ')} make it ideal for{' '}
+                {product.useCases[0] || 'various applications'}.
               </p>
             </div>
           </div>
@@ -196,7 +195,9 @@ export function GEOOptimizedProduct({ product, showAIOptimization = false }: GEO
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Why Choose This Product</h2>
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-gray-700">
-                {product.name} offers excellent value with {product.features[0]} and {product.features[1] || 'quality construction'}, making it ideal for {product.useCases[0] || 'professional use'}.
+                {product.name} offers excellent value with {product.features[0]} and{' '}
+                {product.features[1] || 'quality construction'}, making it ideal for{' '}
+                {product.useCases[0] || 'professional use'}.
               </p>
             </div>
           </div>
@@ -220,7 +221,9 @@ export function GEOOptimizedProduct({ product, showAIOptimization = false }: GEO
                 <div className="text-sm text-gray-600">AI Visibility</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">{(aiMetrics.conversion_rate * 100).toFixed(1)}%</div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {(aiMetrics.conversion_rate * 100).toFixed(1)}%
+                </div>
                 <div className="text-sm text-gray-600">Conversion Rate</div>
               </div>
             </div>

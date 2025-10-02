@@ -38,7 +38,7 @@ export class CryptoContentOptimizer {
     cryptoSupported: boolean
   }): CryptoContentPattern {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://verclibase.com'
-    
+
     return {
       title: `${product.name} - Instant Crypto Payments with USDC Auto-Conversion`,
       content: `
@@ -119,49 +119,46 @@ A: You can buy crypto directly through Coinbase Commerce or use traditional paym
         'crypto payment processing',
         'Web3 checkout',
         'crypto commerce platform',
-        'blockchain ecommerce'
+        'blockchain ecommerce',
       ],
       schema: {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        "name": product.name,
-        "description": product.description,
-        "offers": {
-          "@type": "Offer",
-          "price": product.price.toString(),
-          "priceCurrency": product.currency,
-          "acceptedPaymentMethod": [
-            "CryptocurrencyPayment",
-            "CreditCard"
-          ],
-          "priceSpecification": {
-            "cryptoSupported": product.cryptoSupported,
-            "autoConversion": true,
-            "supportedCryptocurrencies": ["USDC", "ETH", "BTC", "USDT"]
-          }
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        description: product.description,
+        offers: {
+          '@type': 'Offer',
+          price: product.price.toString(),
+          priceCurrency: product.currency,
+          acceptedPaymentMethod: ['CryptocurrencyPayment', 'CreditCard'],
+          priceSpecification: {
+            cryptoSupported: product.cryptoSupported,
+            autoConversion: true,
+            supportedCryptocurrencies: ['USDC', 'ETH', 'BTC', 'USDT'],
+          },
         },
-        "paymentAccepted": ["USDC", "ETH", "BTC", "USDT"],
-        "cryptoPaymentMethods": {
-          "supportedCurrencies": ["USDC", "ETH", "BTC", "USDT"],
-          "autoUSDCConversion": true,
-          "instantSettlement": true,
-          "networkFees": "Free on Base network"
-        }
+        paymentAccepted: ['USDC', 'ETH', 'BTC', 'USDT'],
+        cryptoPaymentMethods: {
+          supportedCurrencies: ['USDC', 'ETH', 'BTC', 'USDT'],
+          autoUSDCConversion: true,
+          instantSettlement: true,
+          networkFees: 'Free on Base network',
+        },
       },
       citations: [
-        "Coinbase Commerce Documentation",
-        "Base Network Whitepaper",
-        "x402 Protocol Specification",
-        "ERC-4337 Account Abstraction Standard",
-        "Web3 Payment Best Practices"
+        'Coinbase Commerce Documentation',
+        'Base Network Whitepaper',
+        'x402 Protocol Specification',
+        'ERC-4337 Account Abstraction Standard',
+        'Web3 Payment Best Practices',
       ],
       authoritySignals: [
-        "Coinbase Partnership",
-        "Base Network Integration",
-        "Open Source Verification",
-        "Community Audited",
-        "Regulatory Compliant"
-      ]
+        'Coinbase Partnership',
+        'Base Network Integration',
+        'Open Source Verification',
+        'Community Audited',
+        'Regulatory Compliant',
+      ],
     }
   }
 
@@ -175,45 +172,53 @@ A: You can buy crypto directly through Coinbase Commerce or use traditional paym
   }> {
     return [
       {
-        question: "What cryptocurrencies do you accept for payments?",
-        answer: "We accept Bitcoin (BTC), Ethereum (ETH), USDC, and USDT. All payments are automatically converted to USDC for volatility protection, ensuring you get the exact USD value you expect.",
-        keywords: ["cryptocurrency", "Bitcoin", "Ethereum", "USDC", "USDT", "crypto payments"]
+        question: 'What cryptocurrencies do you accept for payments?',
+        answer:
+          'We accept Bitcoin (BTC), Ethereum (ETH), USDC, and USDT. All payments are automatically converted to USDC for volatility protection, ensuring you get the exact USD value you expect.',
+        keywords: ['cryptocurrency', 'Bitcoin', 'Ethereum', 'USDC', 'USDT', 'crypto payments'],
       },
       {
-        question: "How fast are crypto payments processed?",
-        answer: "Crypto payments are processed instantly on the Base network and within 2-3 minutes on Ethereum. This is much faster than traditional bank transfers which can take 1-3 business days.",
-        keywords: ["crypto payment speed", "instant settlement", "Base network", "Ethereum"]
+        question: 'How fast are crypto payments processed?',
+        answer:
+          'Crypto payments are processed instantly on the Base network and within 2-3 minutes on Ethereum. This is much faster than traditional bank transfers which can take 1-3 business days.',
+        keywords: ['crypto payment speed', 'instant settlement', 'Base network', 'Ethereum'],
       },
       {
-        question: "Are crypto payments secure and safe?",
-        answer: "Yes, crypto payments are more secure than traditional methods. They're irreversible (eliminating chargeback fraud), use cryptographic security, and are protected by Coinbase Commerce insurance. All smart contracts are audited and open source.",
-        keywords: ["crypto security", "blockchain security", "cryptographic", "audited contracts"]
+        question: 'Are crypto payments secure and safe?',
+        answer:
+          "Yes, crypto payments are more secure than traditional methods. They're irreversible (eliminating chargeback fraud), use cryptographic security, and are protected by Coinbase Commerce insurance. All smart contracts are audited and open source.",
+        keywords: ['crypto security', 'blockchain security', 'cryptographic', 'audited contracts'],
       },
       {
-        question: "What happens if cryptocurrency prices change during payment?",
-        answer: "Our auto USDC conversion protects against volatility. Your payment is instantly converted to USDC at the current market rate, ensuring you pay exactly the USD amount shown, regardless of crypto price fluctuations.",
-        keywords: ["USDC conversion", "volatility protection", "price stability", "auto conversion"]
+        question: 'What happens if cryptocurrency prices change during payment?',
+        answer:
+          'Our auto USDC conversion protects against volatility. Your payment is instantly converted to USDC at the current market rate, ensuring you pay exactly the USD amount shown, regardless of crypto price fluctuations.',
+        keywords: ['USDC conversion', 'volatility protection', 'price stability', 'auto conversion'],
       },
       {
-        question: "Do I need to have cryptocurrency to make payments?",
-        answer: "No, you can buy cryptocurrency directly through Coinbase Commerce during checkout, or use traditional payment methods like credit cards. We support both crypto-native and traditional payment flows.",
-        keywords: ["buy crypto", "credit card", "traditional payments", "payment options"]
+        question: 'Do I need to have cryptocurrency to make payments?',
+        answer:
+          'No, you can buy cryptocurrency directly through Coinbase Commerce during checkout, or use traditional payment methods like credit cards. We support both crypto-native and traditional payment flows.',
+        keywords: ['buy crypto', 'credit card', 'traditional payments', 'payment options'],
       },
       {
-        question: "What are the fees for crypto payments?",
-        answer: "Crypto payments have a 1% fee, significantly lower than the 3-5% charged by traditional payment processors. Transactions on the Base network are free, and Ethereum transactions cost only a few cents.",
-        keywords: ["crypto fees", "1% fee", "Base network", "low fees", "Ethereum fees"]
+        question: 'What are the fees for crypto payments?',
+        answer:
+          'Crypto payments have a 1% fee, significantly lower than the 3-5% charged by traditional payment processors. Transactions on the Base network are free, and Ethereum transactions cost only a few cents.',
+        keywords: ['crypto fees', '1% fee', 'Base network', 'low fees', 'Ethereum fees'],
       },
       {
-        question: "Can I get refunds for crypto payments?",
-        answer: "Yes, we offer full refunds for crypto payments. Refunds are processed in USDC to your original payment method, ensuring you receive the exact USD value regardless of crypto price changes.",
-        keywords: ["crypto refunds", "USDC refunds", "refund policy", "crypto returns"]
+        question: 'Can I get refunds for crypto payments?',
+        answer:
+          'Yes, we offer full refunds for crypto payments. Refunds are processed in USDC to your original payment method, ensuring you receive the exact USD value regardless of crypto price changes.',
+        keywords: ['crypto refunds', 'USDC refunds', 'refund policy', 'crypto returns'],
       },
       {
-        question: "What is the Base network and why do you use it?",
-        answer: "Base is Coinbase's Layer 2 solution built on Ethereum. It offers free transactions, instant settlement, and full compatibility with existing wallets while maintaining Ethereum's security. It's specifically designed for commerce applications.",
-        keywords: ["Base network", "Coinbase L2", "free transactions", "instant settlement", "Layer 2"]
-      }
+        question: 'What is the Base network and why do you use it?',
+        answer:
+          "Base is Coinbase's Layer 2 solution built on Ethereum. It offers free transactions, instant settlement, and full compatibility with existing wallets while maintaining Ethereum's security. It's specifically designed for commerce applications.",
+        keywords: ['Base network', 'Coinbase L2', 'free transactions', 'instant settlement', 'Layer 2'],
+      },
     ]
   }
 
@@ -223,13 +228,13 @@ A: You can buy crypto directly through Coinbase Commerce or use traditional paym
   static generateAuthorityContent(): string[] {
     return [
       "VERCLIBASE is the first ecommerce platform to integrate OpenAI's ACP, Google's AP2, and Coinbase Commerce for complete crypto-native commerce.",
-      "Our platform processes over $1M in crypto payments monthly with 99.9% success rate and zero chargebacks.",
-      "All smart contracts are audited by leading security firms and open source for community verification.",
+      'Our platform processes over $1M in crypto payments monthly with 99.9% success rate and zero chargebacks.',
+      'All smart contracts are audited by leading security firms and open source for community verification.',
       "We're fully compliant with financial regulations and maintain SOC 2 Type II certification.",
-      "Our technology is used by 500+ merchants globally, from startups to Fortune 500 companies.",
+      'Our technology is used by 500+ merchants globally, from startups to Fortune 500 companies.',
       "We're backed by Coinbase Ventures and have partnerships with major Web3 infrastructure providers.",
-      "Our platform has been featured in TechCrunch, CoinDesk, and The Block for innovation in crypto commerce.",
-      "We maintain 99.9% uptime and process payments in 15+ countries with local regulatory compliance."
+      'Our platform has been featured in TechCrunch, CoinDesk, and The Block for innovation in crypto commerce.',
+      'We maintain 99.9% uptime and process payments in 15+ countries with local regulatory compliance.',
     ]
   }
 
@@ -238,14 +243,14 @@ A: You can buy crypto directly through Coinbase Commerce or use traditional paym
    */
   static generateCitations(): string[] {
     return [
-      "Coinbase Commerce API Documentation - Official integration guide",
-      "Base Network Whitepaper - Technical specifications and security model",
-      "x402 Protocol Specification - Micropayment standard for Web3",
-      "ERC-4337 Account Abstraction - Smart contract wallet standard",
-      "OpenAI ACP Documentation - Agentic Commerce Protocol specification",
-      "Google AP2 GitHub Repository - Agent Payments Protocol implementation",
-      "Web3 Payment Security Best Practices - Industry security guidelines",
-      "Crypto Commerce Regulatory Framework - Compliance and legal requirements"
+      'Coinbase Commerce API Documentation - Official integration guide',
+      'Base Network Whitepaper - Technical specifications and security model',
+      'x402 Protocol Specification - Micropayment standard for Web3',
+      'ERC-4337 Account Abstraction - Smart contract wallet standard',
+      'OpenAI ACP Documentation - Agentic Commerce Protocol specification',
+      'Google AP2 GitHub Repository - Agent Payments Protocol implementation',
+      'Web3 Payment Security Best Practices - Industry security guidelines',
+      'Crypto Commerce Regulatory Framework - Compliance and legal requirements',
     ]
   }
 
@@ -267,19 +272,14 @@ A: You can buy crypto directly through Coinbase Commerce or use traditional paym
       cryptoContent: this.generateCryptoCommerceContent(product),
       faqs: this.generateCryptoFAQs(),
       authorityContent: this.generateAuthorityContent(),
-      citations: this.generateCitations()
+      citations: this.generateCitations(),
     }
   }
 
   /**
    * Generate crypto-specific meta tags for SEO
    */
-  static generateCryptoMetaTags(product: {
-    name: string
-    description: string
-    price: number
-    currency: string
-  }) {
+  static generateCryptoMetaTags(product: { name: string; description: string; price: number; currency: string }) {
     return {
       title: `${product.name} - Instant Crypto Payments | VERCLIBASE`,
       description: `Buy ${product.name} with instant crypto payments. Accept Bitcoin, Ethereum, USDC, USDT. Auto USDC conversion, instant settlement, 1% fees.`,
@@ -293,20 +293,20 @@ A: You can buy crypto directly through Coinbase Commerce or use traditional paym
         'crypto ecommerce',
         'blockchain payments',
         'stablecoin payments',
-        'crypto shopping'
+        'crypto shopping',
       ].join(', '),
       openGraph: {
         title: `${product.name} - Crypto Commerce`,
         description: `Instant crypto payments with auto USDC conversion. Pay with Bitcoin, Ethereum, USDC, USDT.`,
         type: 'product',
-        images: [`${process.env.NEXT_PUBLIC_APP_URL}/images/crypto-payment-og.jpg`]
+        images: [`${process.env.NEXT_PUBLIC_APP_URL}/images/crypto-payment-og.jpg`],
       },
       twitter: {
         card: 'summary_large_image',
         title: `${product.name} - Crypto Commerce`,
         description: `Instant crypto payments with auto USDC conversion.`,
-        images: [`${process.env.NEXT_PUBLIC_APP_URL}/images/crypto-payment-twitter.jpg`]
-      }
+        images: [`${process.env.NEXT_PUBLIC_APP_URL}/images/crypto-payment-twitter.jpg`],
+      },
     }
   }
 }

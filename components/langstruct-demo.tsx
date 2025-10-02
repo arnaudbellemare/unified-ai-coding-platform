@@ -7,24 +7,19 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Brain, 
-  CreditCard, 
-  Bot, 
-  FileText, 
-  Loader2,
-  CheckCircle,
-  AlertCircle
-} from 'lucide-react'
+import { Brain, CreditCard, Bot, FileText, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface ExtractionResult {
   entities: Record<string, any>
   confidence: number
-  sources: Record<string, Array<{
-    text: string
-    start: number
-    end: number
-  }>>
+  sources: Record<
+    string,
+    Array<{
+      text: string
+      start: number
+      end: number
+    }>
+  >
   success: boolean
   error?: string
 }
@@ -33,12 +28,14 @@ export function LangStructDemo() {
   const [activeTab, setActiveTab] = useState('geo')
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<Record<string, ExtractionResult>>({})
-  
+
   // Input states
   const [geoQuery, setGeoQuery] = useState('Find me Apple products under $100 in San Francisco')
   const [acpText, setAcpText] = useState('Customer bought 2 Base T-Shirts for $45 total, paid with USDC crypto')
   const [ap2Text, setAp2Text] = useState('ShoppingBot_001 paid PaymentBot_002 $25.50 for recommendation service')
-  const [documentText, setDocumentText] = useState('Apple Inc. reported Q3 2024 revenue of $125.3B with positive growth')
+  const [documentText, setDocumentText] = useState(
+    'Apple Inc. reported Q3 2024 revenue of $125.3B with positive growth',
+  )
 
   const extractData = async (type: string, text: string) => {
     setLoading(true)
@@ -46,36 +43,36 @@ export function LangStructDemo() {
       const response = await fetch('/api/langstruct/extract', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ extractorType: type, text })
+        body: JSON.stringify({ extractorType: type, text }),
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
-        setResults(prev => ({ ...prev, [type]: data.data }))
+        setResults((prev) => ({ ...prev, [type]: data.data }))
       } else {
-        setResults(prev => ({ 
-          ...prev, 
-          [type]: { 
-            entities: {}, 
-            confidence: 0, 
-            sources: {}, 
-            success: false, 
-            error: data.error 
-          } 
+        setResults((prev) => ({
+          ...prev,
+          [type]: {
+            entities: {},
+            confidence: 0,
+            sources: {},
+            success: false,
+            error: data.error,
+          },
         }))
       }
     } catch (error) {
       console.error('Extraction error:', error)
-      setResults(prev => ({ 
-        ...prev, 
-        [type]: { 
-          entities: {}, 
-          confidence: 0, 
-          sources: {}, 
-          success: false, 
-          error: 'Network error' 
-        } 
+      setResults((prev) => ({
+        ...prev,
+        [type]: {
+          entities: {},
+          confidence: 0,
+          sources: {},
+          success: false,
+          error: 'Network error',
+        },
       }))
     } finally {
       setLoading(false)
@@ -97,9 +94,7 @@ export function LangStructDemo() {
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          LangStruct Integration Demo
-        </h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">LangStruct Integration Demo</h1>
         <p className="text-lg text-gray-600">
           Extract structured data from AI interactions using LangStruct + DSPy optimization
         </p>
@@ -136,9 +131,7 @@ export function LangStructDemo() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  User Query
-                </label>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">User Query</label>
                 <Input
                   value={geoQuery}
                   onChange={(e) => setGeoQuery(e.target.value)}
@@ -146,15 +139,9 @@ export function LangStructDemo() {
                   className="w-full"
                 />
               </div>
-              
-              <Button 
-                onClick={() => extractData('geo_query', geoQuery)}
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : null}
+
+              <Button onClick={() => extractData('geo_query', geoQuery)} disabled={loading} className="w-full">
+                {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
                 Extract GEO Data
               </Button>
 
@@ -167,9 +154,7 @@ export function LangStructDemo() {
                         {results.geo_query.success ? 'Extraction Successful' : 'Extraction Failed'}
                       </span>
                       {results.geo_query.success && (
-                        <Badge variant="secondary">
-                          {formatConfidence(results.geo_query.confidence)}
-                        </Badge>
+                        <Badge variant="secondary">{formatConfidence(results.geo_query.confidence)}</Badge>
                       )}
                     </div>
 
@@ -181,7 +166,7 @@ export function LangStructDemo() {
                             {JSON.stringify(results.geo_query.entities, null, 2)}
                           </pre>
                         </div>
-                        
+
                         {Object.keys(results.geo_query.sources).length > 0 && (
                           <div>
                             <h4 className="font-medium text-gray-900 mb-2">Source Mapping:</h4>
@@ -201,9 +186,7 @@ export function LangStructDemo() {
                         )}
                       </div>
                     ) : (
-                      <div className="text-red-600">
-                        Error: {results.geo_query.error}
-                      </div>
+                      <div className="text-red-600">Error: {results.geo_query.error}</div>
                     )}
                   </CardContent>
                 </Card>
@@ -223,9 +206,7 @@ export function LangStructDemo() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  Payment Text
-                </label>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">Payment Text</label>
                 <Textarea
                   value={acpText}
                   onChange={(e) => setAcpText(e.target.value)}
@@ -234,15 +215,9 @@ export function LangStructDemo() {
                   rows={3}
                 />
               </div>
-              
-              <Button 
-                onClick={() => extractData('acp_payment', acpText)}
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : null}
+
+              <Button onClick={() => extractData('acp_payment', acpText)} disabled={loading} className="w-full">
+                {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
                 Extract ACP Data
               </Button>
 
@@ -255,9 +230,7 @@ export function LangStructDemo() {
                         {results.acp_payment.success ? 'Extraction Successful' : 'Extraction Failed'}
                       </span>
                       {results.acp_payment.success && (
-                        <Badge variant="secondary">
-                          {formatConfidence(results.acp_payment.confidence)}
-                        </Badge>
+                        <Badge variant="secondary">{formatConfidence(results.acp_payment.confidence)}</Badge>
                       )}
                     </div>
 
@@ -284,9 +257,7 @@ export function LangStructDemo() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  Agent Communication
-                </label>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">Agent Communication</label>
                 <Textarea
                   value={ap2Text}
                   onChange={(e) => setAp2Text(e.target.value)}
@@ -295,15 +266,9 @@ export function LangStructDemo() {
                   rows={3}
                 />
               </div>
-              
-              <Button 
-                onClick={() => extractData('ap2_agent', ap2Text)}
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : null}
+
+              <Button onClick={() => extractData('ap2_agent', ap2Text)} disabled={loading} className="w-full">
+                {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
                 Extract AP2 Data
               </Button>
 
@@ -316,9 +281,7 @@ export function LangStructDemo() {
                         {results.ap2_agent.success ? 'Extraction Successful' : 'Extraction Failed'}
                       </span>
                       {results.ap2_agent.success && (
-                        <Badge variant="secondary">
-                          {formatConfidence(results.ap2_agent.confidence)}
-                        </Badge>
+                        <Badge variant="secondary">{formatConfidence(results.ap2_agent.confidence)}</Badge>
                       )}
                     </div>
 
@@ -345,9 +308,7 @@ export function LangStructDemo() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  Document Text
-                </label>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">Document Text</label>
                 <Textarea
                   value={documentText}
                   onChange={(e) => setDocumentText(e.target.value)}
@@ -356,15 +317,13 @@ export function LangStructDemo() {
                   rows={4}
                 />
               </div>
-              
-              <Button 
+
+              <Button
                 onClick={() => extractData('document_metadata', documentText)}
                 disabled={loading}
                 className="w-full"
               >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : null}
+                {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
                 Extract Metadata
               </Button>
 
@@ -377,9 +336,7 @@ export function LangStructDemo() {
                         {results.document_metadata.success ? 'Extraction Successful' : 'Extraction Failed'}
                       </span>
                       {results.document_metadata.success && (
-                        <Badge variant="secondary">
-                          {formatConfidence(results.document_metadata.confidence)}
-                        </Badge>
+                        <Badge variant="secondary">{formatConfidence(results.document_metadata.confidence)}</Badge>
                       )}
                     </div>
 

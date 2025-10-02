@@ -70,12 +70,12 @@ export class GEOAnalyticsTracker {
     const newCitation: GEOCitation = {
       ...citation,
       id,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     this.citations.push(newCitation)
     console.log(`📊 GEO Citation tracked: ${citation.platform} - "${citation.query}"`)
-    
+
     return id
   }
 
@@ -88,49 +88,58 @@ export class GEOAnalyticsTracker {
     }
 
     const totalCitations = this.citations.length
-    const platformDistribution = this.citations.reduce((acc, citation) => {
-      acc[citation.platform] = (acc[citation.platform] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const platformDistribution = this.citations.reduce(
+      (acc, citation) => {
+        acc[citation.platform] = (acc[citation.platform] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
     // Group by query for performance analysis
-    const queryGroups = this.citations.reduce((acc, citation) => {
-      if (!acc[citation.query]) {
-        acc[citation.query] = []
-      }
-      acc[citation.query].push(citation)
-      return acc
-    }, {} as Record<string, GEOCitation[]>)
+    const queryGroups = this.citations.reduce(
+      (acc, citation) => {
+        if (!acc[citation.query]) {
+          acc[citation.query] = []
+        }
+        acc[citation.query].push(citation)
+        return acc
+      },
+      {} as Record<string, GEOCitation[]>,
+    )
 
     const queryPerformance = Object.entries(queryGroups).map(([query, citations]) => {
       const impressions = citations.length
-      const clickThrough = citations.filter(c => c.clickThrough).length
-      const conversions = citations.filter(c => c.conversion).length
-      
+      const clickThrough = citations.filter((c) => c.clickThrough).length
+      const conversions = citations.filter((c) => c.conversion).length
+
       return {
         query,
         citations: impressions,
         impressions,
         clickThroughRate: clickThrough / impressions,
-        conversionRate: conversions / impressions
+        conversionRate: conversions / impressions,
       }
     })
 
     // Content performance analysis
-    const contentGroups = this.citations.reduce((acc, citation) => {
-      const contentId = citation.content
-      if (!acc[contentId]) {
-        acc[contentId] = {
-          contentId,
-          title: citation.content,
-          citations: 0,
-          authoritySignals: 0,
-          backlinks: 0
+    const contentGroups = this.citations.reduce(
+      (acc, citation) => {
+        const contentId = citation.content
+        if (!acc[contentId]) {
+          acc[contentId] = {
+            contentId,
+            title: citation.content,
+            citations: 0,
+            authoritySignals: 0,
+            backlinks: 0,
+          }
         }
-      }
-      acc[contentId].citations++
-      return acc
-    }, {} as Record<string, any>)
+        acc[contentId].citations++
+        return acc
+      },
+      {} as Record<string, any>,
+    )
 
     const contentPerformance = Object.values(contentGroups)
 
@@ -138,23 +147,23 @@ export class GEOAnalyticsTracker {
     const competitorAnalysis = {
       marketShare: 0.15, // 15% market share
       competitorCitations: {
-        'competitor1': 45,
-        'competitor2': 32,
-        'competitor3': 28
+        competitor1: 45,
+        competitor2: 32,
+        competitor3: 28,
       },
       gapAnalysis: [
         'Missing citations in "crypto payment processing" queries',
         'Low visibility in "Web3 commerce" searches',
-        'Need more authority signals for "blockchain payments"'
-      ]
+        'Need more authority signals for "blockchain payments"',
+      ],
     }
 
     // Revenue impact analysis
     const revenueImpact = {
-      assistedConversions: this.citations.filter(c => c.conversion).length,
-      revenueAttribution: this.citations.filter(c => c.conversion).length * 150, // $150 average order
+      assistedConversions: this.citations.filter((c) => c.conversion).length,
+      revenueAttribution: this.citations.filter((c) => c.conversion).length * 150, // $150 average order
       averageOrderValue: 150,
-      conversionRate: this.citations.filter(c => c.conversion).length / totalCitations
+      conversionRate: this.citations.filter((c) => c.conversion).length / totalCitations,
     }
 
     this.analytics = {
@@ -163,7 +172,7 @@ export class GEOAnalyticsTracker {
       queryPerformance,
       contentPerformance,
       competitorAnalysis,
-      revenueImpact
+      revenueImpact,
     }
 
     return this.analytics
@@ -174,17 +183,18 @@ export class GEOAnalyticsTracker {
    */
   getGEOMetrics(): GEOMetrics {
     const analytics = this.getCitationAnalytics()
-    
+
     return {
       citations: analytics.totalCitations,
       impressions: analytics.totalCitations,
-      clickThroughRate: analytics.queryPerformance.reduce((sum, q) => sum + q.clickThroughRate, 0) / analytics.queryPerformance.length,
+      clickThroughRate:
+        analytics.queryPerformance.reduce((sum, q) => sum + q.clickThroughRate, 0) / analytics.queryPerformance.length,
       conversionRate: analytics.revenueImpact.conversionRate,
       revenueAttribution: analytics.revenueImpact.revenueAttribution,
       authorityScore: this.calculateAuthorityScore(),
       trustSignals: this.calculateTrustSignals(),
       backlinks: this.calculateBacklinks(),
-      socialSignals: this.calculateSocialSignals()
+      socialSignals: this.calculateSocialSignals(),
     }
   }
 
@@ -196,7 +206,7 @@ export class GEOAnalyticsTracker {
     const baseScore = analytics.totalCitations * 0.1
     const platformBonus = Object.keys(analytics.platformDistribution).length * 5
     const contentBonus = analytics.contentPerformance.length * 2
-    
+
     return Math.min(100, baseScore + platformBonus + contentBonus)
   }
 
@@ -208,7 +218,7 @@ export class GEOAnalyticsTracker {
     const analytics = this.getCitationAnalytics()
     const highQualityCitations = analytics.totalCitations * 0.7 // 70% high quality
     const authorityContent = analytics.contentPerformance.length * 0.8 // 80% authority content
-    
+
     return Math.round(highQualityCitations + authorityContent)
   }
 
@@ -240,28 +250,32 @@ export class GEOAnalyticsTracker {
   }> {
     const endDate = new Date()
     const startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000)
-    
-    const filteredCitations = this.citations.filter(c => 
-      c.timestamp >= startDate && c.timestamp <= endDate
-    )
+
+    const filteredCitations = this.citations.filter((c) => c.timestamp >= startDate && c.timestamp <= endDate)
 
     // Group by day
-    const dailyGroups = filteredCitations.reduce((acc, citation) => {
-      const date = citation.timestamp.toISOString().split('T')[0]
-      if (!acc[date]) {
-        acc[date] = []
-      }
-      acc[date].push(citation)
-      return acc
-    }, {} as Record<string, GEOCitation[]>)
+    const dailyGroups = filteredCitations.reduce(
+      (acc, citation) => {
+        const date = citation.timestamp.toISOString().split('T')[0]
+        if (!acc[date]) {
+          acc[date] = []
+        }
+        acc[date].push(citation)
+        return acc
+      },
+      {} as Record<string, GEOCitation[]>,
+    )
 
     return Object.entries(dailyGroups).map(([date, citations]) => ({
       date,
       citations: citations.length,
-      platforms: citations.reduce((acc, citation) => {
-        acc[citation.platform] = (acc[citation.platform] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      platforms: citations.reduce(
+        (acc, citation) => {
+          acc[citation.platform] = (acc[citation.platform] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>,
+      ),
     }))
   }
 
@@ -275,15 +289,15 @@ export class GEOAnalyticsTracker {
     conversionRate: number
   }> {
     const analytics = this.getCitationAnalytics()
-    
+
     return analytics.queryPerformance
       .sort((a, b) => b.citations - a.citations)
       .slice(0, limit)
-      .map(q => ({
+      .map((q) => ({
         query: q.query,
         citations: q.citations,
         clickThroughRate: q.clickThroughRate,
-        conversionRate: q.conversionRate
+        conversionRate: q.conversionRate,
       }))
   }
 
@@ -298,12 +312,12 @@ export class GEOAnalyticsTracker {
   }> {
     const analytics = this.getCitationAnalytics()
     const total = analytics.totalCitations
-    
+
     return Object.entries(analytics.platformDistribution).map(([platform, citations]) => ({
       platform,
       citations,
       percentage: (citations / total) * 100,
-      growth: Math.random() * 20 - 10 // Simulated growth rate
+      growth: Math.random() * 20 - 10, // Simulated growth rate
     }))
   }
 
@@ -318,13 +332,13 @@ export class GEOAnalyticsTracker {
     assistedConversions: number
   } {
     const analytics = this.getCitationAnalytics()
-    
+
     return {
       totalRevenue: 50000, // Simulated total revenue
       geoRevenue: analytics.revenueImpact.revenueAttribution,
       geoPercentage: (analytics.revenueImpact.revenueAttribution / 50000) * 100,
       averageOrderValue: analytics.revenueImpact.averageOrderValue,
-      assistedConversions: analytics.revenueImpact.assistedConversions
+      assistedConversions: analytics.revenueImpact.assistedConversions,
     }
   }
 
@@ -338,7 +352,13 @@ export class GEOAnalyticsTracker {
     trends: Array<{ date: string; citations: number; platforms: Record<string, number> }>
     topQueries: Array<{ query: string; citations: number; clickThroughRate: number; conversionRate: number }>
     platformPerformance: Array<{ platform: string; citations: number; percentage: number; growth: number }>
-    revenueAttribution: { totalRevenue: number; geoRevenue: number; geoPercentage: number; averageOrderValue: number; assistedConversions: number }
+    revenueAttribution: {
+      totalRevenue: number
+      geoRevenue: number
+      geoPercentage: number
+      averageOrderValue: number
+      assistedConversions: number
+    }
   } {
     return {
       citations: this.citations,
@@ -347,7 +367,7 @@ export class GEOAnalyticsTracker {
       trends: this.getCitationTrends(),
       topQueries: this.getTopQueries(),
       platformPerformance: this.getPlatformPerformance(),
-      revenueAttribution: this.getRevenueAttribution()
+      revenueAttribution: this.getRevenueAttribution(),
     }
   }
 }

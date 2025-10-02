@@ -57,22 +57,24 @@ export class CryptoProductFeedManager {
   /**
    * Generate crypto-optimized product feed
    */
-  generateCryptoProductFeed(products: Array<{
-    id: string
-    name: string
-    description: string
-    price: number
-    currency: string
-    image: string
-    category: string
-    brand: string
-    availability: boolean
-    rating?: number
-    reviewCount?: number
-  }>): CryptoProductFeed[] {
-    return products.map(product => {
+  generateCryptoProductFeed(
+    products: Array<{
+      id: string
+      name: string
+      description: string
+      price: number
+      currency: string
+      image: string
+      category: string
+      brand: string
+      availability: boolean
+      rating?: number
+      reviewCount?: number
+    }>,
+  ): CryptoProductFeed[] {
+    return products.map((product) => {
       const geoOptimized = this.generateGEOOptimizedProduct(product)
-      
+
       return {
         id: product.id,
         name: product.name,
@@ -87,20 +89,20 @@ export class CryptoProductFeedManager {
         geoOptimized: {
           schema: CryptoProductSchemaGenerator.generateProductSchema({
             ...product,
-            cryptoSupported: true
+            cryptoSupported: true,
           }),
           content: geoOptimized.cryptoContent.content,
           faqs: geoOptimized.faqs,
           authoritySignals: geoOptimized.authorityContent,
-          citations: geoOptimized.citations
+          citations: geoOptimized.citations,
         },
         paymentMethods: {
           crypto: ['USDC', 'ETH', 'BTC', 'USDT'],
           traditional: ['Credit Card', 'PayPal', 'Bank Transfer'],
           autoUSDCConversion: this.config.autoUSDCConversion,
-          instantSettlement: true
+          instantSettlement: true,
         },
-        seo: CryptoContentOptimizer.generateCryptoMetaTags(product)
+        seo: CryptoContentOptimizer.generateCryptoMetaTags(product),
       }
     })
   }
@@ -111,7 +113,7 @@ export class CryptoProductFeedManager {
   private generateGEOOptimizedProduct(product: any) {
     return CryptoContentOptimizer.generateGEOOptimizedProduct({
       ...product,
-      cryptoSupported: true
+      cryptoSupported: true,
     })
   }
 
@@ -126,7 +128,9 @@ export class CryptoProductFeedManager {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:product="http://www.google.com/schemas/sitemap-product/1.0">
-${products.map(product => `
+${products
+  .map(
+    (product) => `
   <url>
     <loc>${baseUrl}/products/${product.id}</loc>
     <lastmod>${currentDate}</lastmod>
@@ -151,7 +155,9 @@ ${products.map(product => `
       <product:auto_usdc_conversion>${this.config.autoUSDCConversion}</product:auto_usdc_conversion>
       <product:instant_settlement>true</product:instant_settlement>
     </product:product>
-  </url>`).join('')}
+  </url>`,
+  )
+  .join('')}
 </urlset>`
 
     return sitemap
@@ -162,48 +168,45 @@ ${products.map(product => `
    */
   generateStructuredData(products: CryptoProductFeed[]): any {
     return {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "VERCLIBASE",
-      "url": this.config.baseUrl,
-      "description": "AI-powered crypto commerce platform with instant USDC conversion",
-      "paymentAccepted": ["USDC", "ETH", "BTC", "USDT", "Credit Card", "PayPal"],
-      "cryptoCapabilities": {
-        "supportedCurrencies": this.config.supportedCurrencies,
-        "autoUSDCConversion": this.config.autoUSDCConversion,
-        "instantSettlement": true,
-        "networkSupport": this.config.networkSupport,
-        "feeStructure": "1% fee, free on Base network"
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'VERCLIBASE',
+      url: this.config.baseUrl,
+      description: 'AI-powered crypto commerce platform with instant USDC conversion',
+      paymentAccepted: ['USDC', 'ETH', 'BTC', 'USDT', 'Credit Card', 'PayPal'],
+      cryptoCapabilities: {
+        supportedCurrencies: this.config.supportedCurrencies,
+        autoUSDCConversion: this.config.autoUSDCConversion,
+        instantSettlement: true,
+        networkSupport: this.config.networkSupport,
+        feeStructure: '1% fee, free on Base network',
       },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Crypto Commerce Products",
-        "description": "Products with instant crypto payment support",
-        "itemListElement": products.map((product, index) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "item": {
-            "@type": "Product",
-            "name": product.name,
-            "description": product.description,
-            "image": product.image,
-            "offers": {
-              "@type": "Offer",
-              "price": product.price,
-              "priceCurrency": product.currency,
-              "acceptedPaymentMethod": [
-                "CryptocurrencyPayment",
-                "CreditCard"
-              ],
-              "priceSpecification": {
-                "cryptoSupported": product.cryptoSupported,
-                "autoConversion": this.config.autoUSDCConversion,
-                "supportedCryptocurrencies": product.paymentMethods.crypto
-              }
-            }
-          }
-        }))
-      }
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Crypto Commerce Products',
+        description: 'Products with instant crypto payment support',
+        itemListElement: products.map((product, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          item: {
+            '@type': 'Product',
+            name: product.name,
+            description: product.description,
+            image: product.image,
+            offers: {
+              '@type': 'Offer',
+              price: product.price,
+              priceCurrency: product.currency,
+              acceptedPaymentMethod: ['CryptocurrencyPayment', 'CreditCard'],
+              priceSpecification: {
+                cryptoSupported: product.cryptoSupported,
+                autoConversion: this.config.autoUSDCConversion,
+                supportedCryptocurrencies: product.paymentMethods.crypto,
+              },
+            },
+          },
+        })),
+      },
     }
   }
 
@@ -226,7 +229,9 @@ ${products.map(product => `
     <category>E-commerce</category>
     <category>Crypto Payments</category>
     <category>Web3 Commerce</category>
-${products.map(product => `
+${products
+  .map(
+    (product) => `
     <item>
       <title>${product.name} - Crypto Payment Supported</title>
       <description>${product.description} - Instant crypto payments with auto USDC conversion</description>
@@ -241,7 +246,9 @@ ${products.map(product => `
       <product:payment_accepted>USDC,ETH,BTC,USDT,Credit Card</product:payment_accepted>
       <product:crypto_supported>true</product:crypto_supported>
       <product:auto_usdc_conversion>${this.config.autoUSDCConversion}</product:auto_usdc_conversion>
-    </item>`).join('')}
+    </item>`,
+  )
+  .join('')}
   </channel>
 </rss>`
 
@@ -269,10 +276,10 @@ ${products.map(product => `
       'auto_usdc_conversion',
       'instant_settlement',
       'supported_cryptocurrencies',
-      'network_support'
+      'network_support',
     ]
 
-    const rows = products.map(product => [
+    const rows = products.map((product) => [
       product.id,
       `${product.name} - Crypto Payment Supported`,
       `${product.description} - Instant crypto payments with auto USDC conversion`,
@@ -289,10 +296,10 @@ ${products.map(product => `
       this.config.autoUSDCConversion.toString(),
       'true',
       product.paymentMethods.crypto.join(','),
-      this.config.networkSupport.join(',')
+      this.config.networkSupport.join(','),
     ])
 
-    return [headers, ...rows].map(row => row.join('\t')).join('\n')
+    return [headers, ...rows].map((row) => row.join('\t')).join('\n')
   }
 
   /**
@@ -300,40 +307,40 @@ ${products.map(product => `
    */
   generateMetaCatalog(products: CryptoProductFeed[]): any {
     return {
-      "catalog": {
-        "name": "VERCLIBASE Crypto Commerce",
-        "description": "Products with instant crypto payment support",
-        "currency": "USD",
-        "availability": "in stock",
-        "condition": "new",
-        "custom_data": {
-          "crypto_supported": true,
-          "auto_usdc_conversion": this.config.autoUSDCConversion,
-          "instant_settlement": true,
-          "supported_currencies": this.config.supportedCurrencies,
-          "network_support": this.config.networkSupport
+      catalog: {
+        name: 'VERCLIBASE Crypto Commerce',
+        description: 'Products with instant crypto payment support',
+        currency: 'USD',
+        availability: 'in stock',
+        condition: 'new',
+        custom_data: {
+          crypto_supported: true,
+          auto_usdc_conversion: this.config.autoUSDCConversion,
+          instant_settlement: true,
+          supported_currencies: this.config.supportedCurrencies,
+          network_support: this.config.networkSupport,
         },
-        "items": products.map(product => ({
-          "id": product.id,
-          "title": `${product.name} - Crypto Payment Supported`,
-          "description": `${product.description} - Instant crypto payments with auto USDC conversion`,
-          "link": `${this.config.baseUrl}/products/${product.id}`,
-          "image_url": product.image,
-          "availability": product.availability ? "in stock" : "out of stock",
-          "price": product.price,
-          "currency": product.currency,
-          "brand": product.brand,
-          "category": product.category,
-          "condition": "new",
-          "custom_data": {
-            "crypto_supported": product.cryptoSupported,
-            "auto_usdc_conversion": product.paymentMethods.autoUSDCConversion,
-            "instant_settlement": product.paymentMethods.instantSettlement,
-            "supported_cryptocurrencies": product.paymentMethods.crypto,
-            "payment_methods": [...product.paymentMethods.crypto, ...product.paymentMethods.traditional]
-          }
-        }))
-      }
+        items: products.map((product) => ({
+          id: product.id,
+          title: `${product.name} - Crypto Payment Supported`,
+          description: `${product.description} - Instant crypto payments with auto USDC conversion`,
+          link: `${this.config.baseUrl}/products/${product.id}`,
+          image_url: product.image,
+          availability: product.availability ? 'in stock' : 'out of stock',
+          price: product.price,
+          currency: product.currency,
+          brand: product.brand,
+          category: product.category,
+          condition: 'new',
+          custom_data: {
+            crypto_supported: product.cryptoSupported,
+            auto_usdc_conversion: product.paymentMethods.autoUSDCConversion,
+            instant_settlement: product.paymentMethods.instantSettlement,
+            supported_cryptocurrencies: product.paymentMethods.crypto,
+            payment_methods: [...product.paymentMethods.crypto, ...product.paymentMethods.traditional],
+          },
+        })),
+      },
     }
   }
 
@@ -342,30 +349,30 @@ ${products.map(product => `
    */
   generateTikTokCatalog(products: CryptoProductFeed[]): any {
     return {
-      "catalog": {
-        "name": "VERCLIBASE Crypto Commerce",
-        "description": "Products with instant crypto payment support",
-        "currency": "USD",
-        "items": products.map(product => ({
-          "id": product.id,
-          "title": `${product.name} - Crypto Payment Supported`,
-          "description": `${product.description} - Instant crypto payments with auto USDC conversion`,
-          "link": `${this.config.baseUrl}/products/${product.id}`,
-          "image_url": product.image,
-          "availability": product.availability ? "in stock" : "out of stock",
-          "price": product.price,
-          "currency": product.currency,
-          "brand": product.brand,
-          "category": product.category,
-          "condition": "new",
-          "custom_data": {
-            "crypto_supported": product.cryptoSupported,
-            "auto_usdc_conversion": product.paymentMethods.autoUSDCConversion,
-            "instant_settlement": product.paymentMethods.instantSettlement,
-            "supported_cryptocurrencies": product.paymentMethods.crypto
-          }
-        }))
-      }
+      catalog: {
+        name: 'VERCLIBASE Crypto Commerce',
+        description: 'Products with instant crypto payment support',
+        currency: 'USD',
+        items: products.map((product) => ({
+          id: product.id,
+          title: `${product.name} - Crypto Payment Supported`,
+          description: `${product.description} - Instant crypto payments with auto USDC conversion`,
+          link: `${this.config.baseUrl}/products/${product.id}`,
+          image_url: product.image,
+          availability: product.availability ? 'in stock' : 'out of stock',
+          price: product.price,
+          currency: product.currency,
+          brand: product.brand,
+          category: product.category,
+          condition: 'new',
+          custom_data: {
+            crypto_supported: product.cryptoSupported,
+            auto_usdc_conversion: product.paymentMethods.autoUSDCConversion,
+            instant_settlement: product.paymentMethods.instantSettlement,
+            supported_cryptocurrencies: product.paymentMethods.crypto,
+          },
+        })),
+      },
     }
   }
 
@@ -382,20 +389,26 @@ ${products.map(product => `
     authoritySignals: number
     citations: number
   } {
-    const cryptoSupported = products.filter(p => p.cryptoSupported).length
+    const cryptoSupported = products.filter((p) => p.cryptoSupported).length
     const averagePrice = products.reduce((sum, p) => sum + p.price, 0) / products.length
-    
-    const currencyDistribution = products.reduce((acc, p) => {
-      acc[p.currency] = (acc[p.currency] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
 
-    const categoryDistribution = products.reduce((acc, p) => {
-      acc[p.category] = (acc[p.category] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const currencyDistribution = products.reduce(
+      (acc, p) => {
+        acc[p.currency] = (acc[p.currency] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
-    const geoOptimized = products.filter(p => p.geoOptimized).length
+    const categoryDistribution = products.reduce(
+      (acc, p) => {
+        acc[p.category] = (acc[p.category] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>,
+    )
+
+    const geoOptimized = products.filter((p) => p.geoOptimized).length
     const authoritySignals = products.reduce((sum, p) => sum + p.geoOptimized.authoritySignals.length, 0)
     const citations = products.reduce((sum, p) => sum + p.geoOptimized.citations.length, 0)
 
@@ -407,7 +420,7 @@ ${products.map(product => `
       categoryDistribution,
       geoOptimized,
       authoritySignals,
-      citations
+      citations,
     }
   }
 }

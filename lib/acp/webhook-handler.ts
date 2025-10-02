@@ -5,7 +5,14 @@
 
 export interface WebhookEvent {
   id: string
-  type: 'order.created' | 'order.updated' | 'order.cancelled' | 'payment.processed' | 'payment.failed' | 'shipping.updated' | 'refund.processed'
+  type:
+    | 'order.created'
+    | 'order.updated'
+    | 'order.cancelled'
+    | 'payment.processed'
+    | 'payment.failed'
+    | 'shipping.updated'
+    | 'refund.processed'
   order_id: string
   timestamp: Date
   data: Record<string, any>
@@ -53,7 +60,7 @@ export class ACPWebhookHandler {
     const webhookEvent: WebhookEvent = {
       ...event,
       id: `webhook_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     console.log(`📡 ACP Webhook event: ${event.type} for order ${event.order_id}`)
@@ -103,14 +110,14 @@ export class ACPWebhookHandler {
    */
   private async deliverToWebhook(webhookId: string, config: WebhookConfig, event: WebhookEvent): Promise<void> {
     const deliveryId = `delivery_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     const delivery: WebhookDelivery = {
       id: deliveryId,
       webhook_id: webhookId,
       event_id: event.id,
       status: 'pending',
       attempts: 0,
-      last_attempt: new Date()
+      last_attempt: new Date(),
     }
 
     this.deliveries.set(deliveryId, delivery)
@@ -136,7 +143,7 @@ export class ACPWebhookHandler {
         type: event.type,
         order_id: event.order_id,
         timestamp: event.timestamp.toISOString(),
-        data: event.data
+        data: event.data,
       }
 
       const signature = this.generateSignature(payload, config.secret)
@@ -147,10 +154,10 @@ export class ACPWebhookHandler {
           'Content-Type': 'application/json',
           'X-ACP-Signature': signature,
           'X-ACP-Event': event.type,
-          'User-Agent': 'ACP-Webhook/1.0'
+          'User-Agent': 'ACP-Webhook/1.0',
         },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(config.timeout * 1000)
+        signal: AbortSignal.timeout(config.timeout * 1000),
       })
 
       delivery.response_code = response.status
@@ -162,7 +169,6 @@ export class ACPWebhookHandler {
       } else {
         throw new Error(`HTTP ${response.status}: ${delivery.response_body}`)
       }
-
     } catch (error) {
       delivery.status = 'failed'
       delivery.error = error instanceof Error ? error.message : 'Unknown error'
@@ -172,9 +178,11 @@ export class ACPWebhookHandler {
         const retryDelay = Math.pow(2, delivery.attempts) * 1000 // Exponential backoff
         delivery.next_retry = new Date(Date.now() + retryDelay)
         delivery.status = 'retrying'
-        
-        console.log(`🔄 ACP Webhook retry scheduled: ${config.endpoint} (attempt ${delivery.attempts}/${config.retry_count})`)
-        
+
+        console.log(
+          `🔄 ACP Webhook retry scheduled: ${config.endpoint} (attempt ${delivery.attempts}/${config.retry_count})`,
+        )
+
         // In a real implementation, you'd use a job queue here
         setTimeout(() => {
           this.attemptDelivery(delivery, config, event)
@@ -222,16 +230,16 @@ export class ACPWebhookHandler {
   } {
     const deliveries = Array.from(this.deliveries.values())
     const totalDeliveries = deliveries.length
-    const successfulDeliveries = deliveries.filter(d => d.status === 'delivered').length
-    const failedDeliveries = deliveries.filter(d => d.status === 'failed').length
-    const pendingDeliveries = deliveries.filter(d => d.status === 'retrying').length
+    const successfulDeliveries = deliveries.filter((d) => d.status === 'delivered').length
+    const failedDeliveries = deliveries.filter((d) => d.status === 'failed').length
+    const pendingDeliveries = deliveries.filter((d) => d.status === 'retrying').length
 
     return {
       total_webhooks: this.webhookConfigs.size,
       total_deliveries: totalDeliveries,
       successful_deliveries: successfulDeliveries,
       failed_deliveries: failedDeliveries,
-      pending_deliveries: pendingDeliveries
+      pending_deliveries: pendingDeliveries,
     }
   }
 
@@ -239,8 +247,7 @@ export class ACPWebhookHandler {
    * Retry failed deliveries
    */
   async retryFailedDeliveries(): Promise<void> {
-    const failedDeliveries = Array.from(this.deliveries.values())
-      .filter(d => d.status === 'failed' && d.attempts < 3)
+    const failedDeliveries = Array.from(this.deliveries.values()).filter((d) => d.status === 'failed' && d.attempts < 3)
 
     for (const delivery of failedDeliveries) {
       const config = this.webhookConfigs.get(delivery.webhook_id)

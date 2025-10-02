@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       case 'overview':
         const analytics = geoAnalytics.getCitationAnalytics()
         const metrics = geoAnalytics.getGEOMetrics()
-        
+
         return NextResponse.json({
           success: true,
           analytics,
@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
             platformDistribution: analytics.platformDistribution,
             revenueImpact: analytics.revenueImpact,
             authorityScore: metrics.authorityScore,
-            trustSignals: metrics.trustSignals
-          }
+            trustSignals: metrics.trustSignals,
+          },
         })
 
       case 'trends':
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           trends,
-          period: `${days} days`
+          period: `${days} days`,
         })
 
       case 'top-queries':
@@ -41,21 +41,21 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           topQueries,
-          limit
+          limit,
         })
 
       case 'platform-performance':
         const platformPerformance = geoAnalytics.getPlatformPerformance()
         return NextResponse.json({
           success: true,
-          platformPerformance
+          platformPerformance,
         })
 
       case 'revenue-attribution':
         const revenueAttribution = geoAnalytics.getRevenueAttribution()
         return NextResponse.json({
           success: true,
-          revenueAttribution
+          revenueAttribution,
         })
 
       case 'export':
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: exportData,
-          exportedAt: new Date().toISOString()
+          exportedAt: new Date().toISOString(),
         })
 
       default:
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'track_citation':
         const { source, query, content, platform, position, context } = data
-        
+
         if (!source || !query || !platform) {
           return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
         }
@@ -96,18 +96,18 @@ export async function POST(request: NextRequest) {
           position: position || 0,
           context: context || '',
           clickThrough: false,
-          conversion: false
+          conversion: false,
         })
 
         return NextResponse.json({
           success: true,
           citationId,
-          message: 'Citation tracked successfully'
+          message: 'Citation tracked successfully',
         })
 
       case 'update_citation':
         const { citationId: updateId, clickThrough, conversion } = data
-        
+
         if (!updateId) {
           return NextResponse.json({ error: 'Missing citation ID' }, { status: 400 })
         }
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
           success: true,
-          message: 'Citation updated successfully'
+          message: 'Citation updated successfully',
         })
 
       case 'simulate_citations':
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
             position: 1,
             context: 'AI Overview about crypto payment solutions',
             clickThrough: true,
-            conversion: true
+            conversion: true,
           },
           {
             source: 'ChatGPT',
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
             position: 2,
             context: 'ChatGPT response about Web3 commerce',
             clickThrough: true,
-            conversion: false
+            conversion: false,
           },
           {
             source: 'Perplexity',
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
             position: 1,
             context: 'Perplexity answer about crypto checkout solutions',
             clickThrough: true,
-            conversion: true
+            conversion: true,
           },
           {
             source: 'Google AI Overviews',
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
             position: 3,
             context: 'AI Overview about USDC conversion features',
             clickThrough: false,
-            conversion: false
+            conversion: false,
           },
           {
             source: 'Copilot',
@@ -173,19 +173,17 @@ export async function POST(request: NextRequest) {
             position: 1,
             context: 'Copilot response about Base network integration',
             clickThrough: true,
-            conversion: true
-          }
+            conversion: true,
+          },
         ]
 
         // Track simulated citations
-        const citationIds = simulatedCitations.map(citation => 
-          geoAnalytics.trackCitation(citation)
-        )
+        const citationIds = simulatedCitations.map((citation) => geoAnalytics.trackCitation(citation))
 
         return NextResponse.json({
           success: true,
           citationIds,
-          message: `${simulatedCitations.length} citations simulated and tracked`
+          message: `${simulatedCitations.length} citations simulated and tracked`,
         })
 
       default:

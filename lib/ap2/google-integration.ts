@@ -48,11 +48,11 @@ export class GoogleAP2Integration {
    */
   async registerAgent(agent: Omit<AP2Agent, 'id' | 'created_at'>): Promise<AP2Agent> {
     const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     const newAgent: AP2Agent = {
       ...agent,
       id: agentId,
-      created_at: new Date()
+      created_at: new Date(),
     }
 
     this.agents.set(agentId, newAgent)
@@ -66,12 +66,12 @@ export class GoogleAP2Integration {
    */
   async createTransaction(transaction: Omit<AP2Transaction, 'id' | 'created_at' | 'status'>): Promise<AP2Transaction> {
     const transactionId = `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     const newTransaction: AP2Transaction = {
       ...transaction,
       id: transactionId,
       status: 'pending',
-      created_at: new Date()
+      created_at: new Date(),
     }
 
     this.transactions.set(transactionId, newTransaction)
@@ -114,7 +114,6 @@ export class GoogleAP2Integration {
       transaction.completed_at = new Date()
 
       console.log(`✅ AP2 Transaction completed: ${transactionId}`)
-
     } catch (error) {
       transaction.status = 'failed'
       console.error(`❌ AP2 Transaction failed: ${transactionId}`, error)
@@ -126,7 +125,7 @@ export class GoogleAP2Integration {
    */
   private async processWithVertexAI(transaction: AP2Transaction): Promise<void> {
     console.log(`🔧 Processing with Vertex AI: Project ${this.config.projectId}, Location ${this.config.location}`)
-    
+
     if (this.config.vertexAIKey) {
       console.log(`🔑 Using Vertex AI API Key authentication`)
     } else {
@@ -134,7 +133,7 @@ export class GoogleAP2Integration {
     }
 
     // Simulate Vertex AI processing
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
   }
 
   /**
@@ -142,13 +141,13 @@ export class GoogleAP2Integration {
    */
   private async processWithGoogleAPI(transaction: AP2Transaction): Promise<void> {
     console.log(`🔧 Processing with Google API Key authentication`)
-    
+
     if (!this.config.apiKey) {
       throw new Error('Google API Key required for non-Vertex AI processing')
     }
 
     // Simulate Google API processing
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
   }
 
   /**
@@ -169,8 +168,7 @@ export class GoogleAP2Integration {
    * Get transactions by agent
    */
   getTransactionsByAgent(agentId: string): AP2Transaction[] {
-    return Array.from(this.transactions.values())
-      .filter(t => t.from_agent === agentId || t.to_agent === agentId)
+    return Array.from(this.transactions.values()).filter((t) => t.from_agent === agentId || t.to_agent === agentId)
   }
 
   /**
@@ -186,12 +184,10 @@ export class GoogleAP2Integration {
   } {
     const transactions = Array.from(this.transactions.values())
     const totalTransactions = transactions.length
-    const completedTransactions = transactions.filter(t => t.status === 'completed').length
-    const failedTransactions = transactions.filter(t => t.status === 'failed').length
-    const pendingTransactions = transactions.filter(t => t.status === 'pending' || t.status === 'processing').length
-    const totalVolume = transactions
-      .filter(t => t.status === 'completed')
-      .reduce((sum, t) => sum + t.amount, 0)
+    const completedTransactions = transactions.filter((t) => t.status === 'completed').length
+    const failedTransactions = transactions.filter((t) => t.status === 'failed').length
+    const pendingTransactions = transactions.filter((t) => t.status === 'pending' || t.status === 'processing').length
+    const totalVolume = transactions.filter((t) => t.status === 'completed').reduce((sum, t) => sum + t.amount, 0)
 
     return {
       total_agents: this.agents.size,
@@ -199,7 +195,7 @@ export class GoogleAP2Integration {
       completed_transactions: completedTransactions,
       failed_transactions: failedTransactions,
       pending_transactions: pendingTransactions,
-      total_volume: totalVolume
+      total_volume: totalVolume,
     }
   }
 
@@ -210,9 +206,7 @@ export class GoogleAP2Integration {
     const agent = this.agents.get(agentId)
     if (!agent) return false
 
-    return requiredCapabilities.every(capability => 
-      agent.capabilities.includes(capability)
-    )
+    return requiredCapabilities.every((capability) => agent.capabilities.includes(capability))
   }
 
   /**
@@ -224,9 +218,9 @@ export class GoogleAP2Integration {
   } {
     const agents = Array.from(this.agents.values())
     const transactions = Array.from(this.transactions.values())
-    
+
     const connections = new Map<string, number>()
-    transactions.forEach(t => {
+    transactions.forEach((t) => {
       const key = `${t.from_agent}→${t.to_agent}`
       connections.set(key, (connections.get(key) || 0) + 1)
     })
@@ -238,7 +232,7 @@ export class GoogleAP2Integration {
 
     return {
       agents,
-      connections: connectionList
+      connections: connectionList,
     }
   }
 }

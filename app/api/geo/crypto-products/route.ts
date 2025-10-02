@@ -9,7 +9,7 @@ const feedManager = new CryptoProductFeedManager({
   supportedCurrencies: ['USDC', 'ETH', 'BTC', 'USDT'],
   networkSupport: ['Base', 'Ethereum'],
   geoOptimization: true,
-  authorityBuilding: true
+  authorityBuilding: true,
 })
 
 // Sample products for demonstration
@@ -25,7 +25,7 @@ const sampleProducts = [
     brand: 'VERCLIBASE',
     availability: true,
     rating: 4.8,
-    reviewCount: 156
+    reviewCount: 156,
   },
   {
     id: 'base-hoodie',
@@ -38,7 +38,7 @@ const sampleProducts = [
     brand: 'VERCLIBASE',
     availability: true,
     rating: 4.9,
-    reviewCount: 89
+    reviewCount: 89,
   },
   {
     id: 'base-mug',
@@ -51,8 +51,8 @@ const sampleProducts = [
     brand: 'VERCLIBASE',
     availability: true,
     rating: 4.6,
-    reviewCount: 203
-  }
+    reviewCount: 203,
+  },
 ]
 
 export async function GET(request: NextRequest) {
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
           geoOptimized: true,
           cryptoSupported: true,
           autoUSDCConversion: true,
-          instantSettlement: true
+          instantSettlement: true,
         })
 
       case 'xml':
@@ -81,8 +81,8 @@ export async function GET(request: NextRequest) {
         return new NextResponse(sitemap, {
           headers: {
             'Content-Type': 'application/xml',
-            'Cache-Control': 'public, max-age=3600'
-          }
+            'Cache-Control': 'public, max-age=3600',
+          },
         })
 
       case 'rss':
@@ -90,8 +90,8 @@ export async function GET(request: NextRequest) {
         return new NextResponse(rss, {
           headers: {
             'Content-Type': 'application/rss+xml',
-            'Cache-Control': 'public, max-age=3600'
-          }
+            'Cache-Control': 'public, max-age=3600',
+          },
         })
 
       case 'google-shopping':
@@ -99,8 +99,8 @@ export async function GET(request: NextRequest) {
         return new NextResponse(googleFeed, {
           headers: {
             'Content-Type': 'text/plain',
-            'Cache-Control': 'public, max-age=3600'
-          }
+            'Cache-Control': 'public, max-age=3600',
+          },
         })
 
       case 'meta':
@@ -134,45 +134,45 @@ export async function POST(request: NextRequest) {
         // Track GEO citation
         const citationId = `geo_citation_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         console.log(`📊 GEO Citation tracked: ${platform} - "${query}" for product ${productId}`)
-        
+
         return NextResponse.json({
           success: true,
           citationId,
-          message: 'Citation tracked successfully'
+          message: 'Citation tracked successfully',
         })
 
       case 'get_product_schema':
-        const product = sampleProducts.find(p => p.id === productId)
+        const product = sampleProducts.find((p) => p.id === productId)
         if (!product) {
           return NextResponse.json({ error: 'Product not found' }, { status: 404 })
         }
 
         const schema = CryptoProductSchemaGenerator.generateProductSchema({
           ...product,
-          cryptoSupported: true
+          cryptoSupported: true,
         })
 
         return NextResponse.json({
           success: true,
           schema,
-          geoOptimized: true
+          geoOptimized: true,
         })
 
       case 'get_geo_content':
-        const geoProduct = sampleProducts.find(p => p.id === productId)
+        const geoProduct = sampleProducts.find((p) => p.id === productId)
         if (!geoProduct) {
           return NextResponse.json({ error: 'Product not found' }, { status: 404 })
         }
 
         const geoContent = CryptoContentOptimizer.generateGEOOptimizedProduct({
           ...geoProduct,
-          cryptoSupported: true
+          cryptoSupported: true,
         })
 
         return NextResponse.json({
           success: true,
           content: geoContent,
-          geoOptimized: true
+          geoOptimized: true,
         })
 
       default:

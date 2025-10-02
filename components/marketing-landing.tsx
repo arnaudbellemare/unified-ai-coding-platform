@@ -121,11 +121,9 @@ export function MarketingLanding({
       {/* Demo Link Banner */}
       <div className="bg-black text-white py-4 relative z-30">
         <div className="max-w-6xl mx-auto px-6 text-center">
-          <p className="text-xl font-bold mb-2 font-mono">
-            Experience the Future of AI Commerce
-          </p>
+          <p className="text-xl font-bold mb-2 font-mono">Experience the Future of AI Commerce</p>
           <div className="flex justify-center">
-            <a 
+            <a
               href="http://localhost:3001/complete-demo"
               target="_blank"
               rel="noopener noreferrer"
@@ -865,12 +863,10 @@ export function MarketingLanding({
           {/* Protocol Demos Section */}
           <div className="mt-12">
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-black mb-4">
-                Complete Agentic Commerce Protocol Stack
-              </h3>
+              <h3 className="text-2xl font-bold text-black mb-4">Complete Agentic Commerce Protocol Stack</h3>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                The only platform implementing both OpenAI's ACP and Google's AP2 protocols, 
-                plus Base blockchain payments for complete agentic commerce coverage.
+                The only platform implementing both OpenAI's ACP and Google's AP2 protocols, plus Base blockchain
+                payments for complete agentic commerce coverage.
               </p>
             </div>
 
@@ -887,18 +883,18 @@ export function MarketingLanding({
                   </div>
                 </div>
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
-                  When customers ask AI "Find me a blue shirt under $50" and AI finds your product, 
-                  you pay a small fee to appear higher in future searches.
+                  When customers ask AI "Find me a blue shirt under $50" and AI finds your product, you pay a small fee
+                  to appear higher in future searches.
                 </p>
                 <div className="flex gap-3">
-                  <Button 
+                  <Button
                     onClick={() => window.open('/store', '_blank')}
                     className="flex-1 bg-gray-900 hover:bg-gray-800 text-white h-12 font-medium"
                   >
                     Try ACP Demo →
                   </Button>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => window.open('https://www.agenticcommerce.dev/', '_blank')}
                     className="px-6 h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
                   >
@@ -919,18 +915,18 @@ export function MarketingLanding({
                   </div>
                 </div>
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
-                  AI agents can pay each other directly using Google's Agent Payments Protocol. 
-                  Enable autonomous agent commerce with secure, instant payments.
+                  AI agents can pay each other directly using Google's Agent Payments Protocol. Enable autonomous agent
+                  commerce with secure, instant payments.
                 </p>
                 <div className="flex gap-3">
-                  <Button 
+                  <Button
                     onClick={() => window.open('/ap2-demo', '_blank')}
                     className="flex-1 bg-gray-900 hover:bg-gray-800 text-white h-12 font-medium"
                   >
                     Try AP2 Demo →
                   </Button>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => window.open('https://github.com/google-agentic-commerce/AP2', '_blank')}
                     className="px-6 h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
                   >
@@ -963,7 +959,9 @@ export function MarketingLanding({
                     <span className="text-purple-600 font-bold">x402</span>
                   </div>
                   <h5 className="font-semibold text-black mb-2">Base x402</h5>
-                  <p className="text-sm text-gray-600">Blockchain payments on Base network for transparent transactions</p>
+                  <p className="text-sm text-gray-600">
+                    Blockchain payments on Base network for transparent transactions
+                  </p>
                 </div>
               </div>
             </div>

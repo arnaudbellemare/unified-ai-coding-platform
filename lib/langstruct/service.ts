@@ -4,14 +4,14 @@
  */
 
 import { spawn } from 'child_process'
-import { 
-  ExtractionResult, 
-  GEOQueryEntities, 
-  ACPPaymentEntities, 
-  AP2AgentEntities, 
+import {
+  ExtractionResult,
+  GEOQueryEntities,
+  ACPPaymentEntities,
+  AP2AgentEntities,
   DocumentMetadataEntities,
   ExtractorType,
-  LangStructConfig 
+  LangStructConfig,
 } from './types'
 
 export class LangStructService {
@@ -23,7 +23,7 @@ export class LangStructService {
       refine: false,
       maxWorkers: 4,
       rateLimit: 60,
-      ...config
+      ...config,
     }
     this.pythonPath = 'python3' // or 'python' depending on system
   }
@@ -31,16 +31,9 @@ export class LangStructService {
   /**
    * Extract structured data using LangStruct
    */
-  async extract(
-    extractorType: ExtractorType, 
-    text: string
-  ): Promise<ExtractionResult> {
+  async extract(extractorType: ExtractorType, text: string): Promise<ExtractionResult> {
     return new Promise((resolve, reject) => {
-      const python = spawn(this.pythonPath, [
-        'lib/langstruct-service.py',
-        extractorType,
-        text
-      ])
+      const python = spawn(this.pythonPath, ['lib/langstruct-service.py', extractorType, text])
 
       let output = ''
       let error = ''
@@ -100,11 +93,8 @@ export class LangStructService {
   /**
    * Batch extract multiple texts
    */
-  async batchExtract(
-    extractorType: ExtractorType,
-    texts: string[]
-  ): Promise<ExtractionResult[]> {
-    const promises = texts.map(text => this.extract(extractorType, text))
+  async batchExtract(extractorType: ExtractorType, texts: string[]): Promise<ExtractionResult[]> {
+    const promises = texts.map((text) => this.extract(extractorType, text))
     return Promise.all(promises)
   }
 
@@ -116,25 +106,23 @@ export class LangStructService {
     structuredFilters: Record<string, any>
   }> {
     const result = await this.extractGEOQuery(query)
-    
+
     if (!result.success) {
       throw new Error(`Failed to parse query: ${result.error}`)
     }
 
     const entities = result.entities as GEOQueryEntities
-    
+
     return {
-      semanticTerms: [
-        entities.product_category,
-        entities.brand_preference,
-        entities.location
-      ].filter(Boolean) as string[],
-      
+      semanticTerms: [entities.product_category, entities.brand_preference, entities.location].filter(
+        Boolean,
+      ) as string[],
+
       structuredFilters: {
         price_range: entities.price_range,
         urgency: entities.urgency,
-        query_type: entities.query_type
-      }
+        query_type: entities.query_type,
+      },
     }
   }
 }
@@ -143,5 +131,5 @@ export class LangStructService {
 export const langStructService = new LangStructService({
   refine: true, // Use refinement for better accuracy
   maxWorkers: 8,
-  rateLimit: 120
+  rateLimit: 120,
 })

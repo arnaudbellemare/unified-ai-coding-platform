@@ -95,7 +95,7 @@ export class ACPOrderManager {
       metadata: orderData.metadata || {},
       created_at: new Date(),
       updated_at: new Date(),
-      timeline: []
+      timeline: [],
     }
 
     // Add creation event
@@ -110,7 +110,11 @@ export class ACPOrderManager {
   /**
    * Update order status
    */
-  async updateOrderStatus(orderId: string, status: OrderState['status'], description?: string): Promise<OrderState | null> {
+  async updateOrderStatus(
+    orderId: string,
+    status: OrderState['status'],
+    description?: string,
+  ): Promise<OrderState | null> {
     const order = this.orders.get(orderId)
     if (!order) {
       throw new Error(`Order ${orderId} not found`)
@@ -141,14 +145,14 @@ export class ACPOrderManager {
    * Get orders by customer
    */
   getOrdersByCustomer(customerId: string): OrderState[] {
-    return Array.from(this.orders.values()).filter(order => order.customer.id === customerId)
+    return Array.from(this.orders.values()).filter((order) => order.customer.id === customerId)
   }
 
   /**
    * Get orders by status
    */
   getOrdersByStatus(status: OrderState['status']): OrderState[] {
-    return Array.from(this.orders.values()).filter(order => order.status === status)
+    return Array.from(this.orders.values()).filter((order) => order.status === status)
   }
 
   /**
@@ -235,13 +239,18 @@ export class ACPOrderManager {
   /**
    * Add order event
    */
-  private addOrderEvent(order: OrderState, type: OrderEvent['type'], description: string, metadata?: Record<string, any>): void {
+  private addOrderEvent(
+    order: OrderState,
+    type: OrderEvent['type'],
+    description: string,
+    metadata?: Record<string, any>,
+  ): void {
     const event: OrderEvent = {
       id: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       type,
       timestamp: new Date(),
       description,
-      metadata
+      metadata,
     }
 
     order.timeline.push(event)
@@ -252,13 +261,13 @@ export class ACPOrderManager {
    */
   private getEventTypeFromStatus(status: OrderState['status']): OrderEvent['type'] {
     const statusToEvent: Record<OrderState['status'], OrderEvent['type']> = {
-      'pending': 'created',
-      'processing': 'payment_processed',
-      'confirmed': 'payment_processed',
-      'shipped': 'shipped',
-      'delivered': 'delivered',
-      'cancelled': 'cancelled',
-      'refunded': 'refunded'
+      pending: 'created',
+      processing: 'payment_processed',
+      confirmed: 'payment_processed',
+      shipped: 'shipped',
+      delivered: 'delivered',
+      cancelled: 'cancelled',
+      refunded: 'refunded',
     }
 
     return statusToEvent[status] || 'created'
@@ -292,22 +301,25 @@ export class ACPOrderManager {
   } {
     const orders = Array.from(this.orders.values())
     const totalOrders = orders.length
-    const ordersByStatus = orders.reduce((acc, order) => {
-      acc[order.status] = (acc[order.status] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-    
+    const ordersByStatus = orders.reduce(
+      (acc, order) => {
+        acc[order.status] = (acc[order.status] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>,
+    )
+
     const totalRevenue = orders
-      .filter(order => order.status === 'delivered' || order.status === 'shipped')
+      .filter((order) => order.status === 'delivered' || order.status === 'shipped')
       .reduce((sum, order) => sum + order.total, 0)
-    
+
     const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
 
     return {
       total_orders: totalOrders,
       orders_by_status: ordersByStatus,
       total_revenue: totalRevenue,
-      average_order_value: averageOrderValue
+      average_order_value: averageOrderValue,
     }
   }
 }

@@ -45,12 +45,12 @@ export class GEOAuthorityTracker {
     const newCitation: AICitation = {
       ...citation,
       id: `citation_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
-    
+
     this.citations.push(newCitation)
     console.log(`📊 GEO Citation tracked: ${citation.product} on ${citation.platform}`)
-    
+
     return newCitation
   }
 
@@ -61,12 +61,12 @@ export class GEOAuthorityTracker {
     const newSignal: AuthoritySignal = {
       ...signal,
       id: `signal_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
-    
+
     this.authoritySignals.push(newSignal)
     console.log(`🔗 Authority signal tracked: ${signal.type} from ${signal.source}`)
-    
+
     return newSignal
   }
 
@@ -74,14 +74,17 @@ export class GEOAuthorityTracker {
    * Get GEO metrics
    */
   getGEOMetrics(): GEOMetrics {
-    const platformBreakdown = this.citations.reduce((acc, citation) => {
-      acc[citation.platform] = (acc[citation.platform] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const platformBreakdown = this.citations.reduce(
+      (acc, citation) => {
+        acc[citation.platform] = (acc[citation.platform] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
     const authorityScore = this.calculateAuthorityScore()
     const aiVisibilityScore = this.calculateAIVisibilityScore()
-    
+
     const trendingQueries = this.getTrendingQueries()
     const conversionRate = this.calculateConversionRate()
 
@@ -91,7 +94,7 @@ export class GEOAuthorityTracker {
       authority_score: authorityScore,
       trending_queries: trendingQueries,
       conversion_rate: conversionRate,
-      ai_visibility_score: aiVisibilityScore
+      ai_visibility_score: aiVisibilityScore,
     }
   }
 
@@ -105,11 +108,11 @@ export class GEOAuthorityTracker {
       const typeWeight = this.getTypeWeight(signal.type)
       const domainWeight = signal.domain_authority / 100
       const relevanceWeight = signal.relevance_score / 100
-      
-      return total + (typeWeight * domainWeight * relevanceWeight)
+
+      return total + typeWeight * domainWeight * relevanceWeight
     }, 0)
 
-    return Math.min(100, Math.round(weightedScore / this.authoritySignals.length * 100))
+    return Math.min(100, Math.round((weightedScore / this.authoritySignals.length) * 100))
   }
 
   /**
@@ -123,31 +126,34 @@ export class GEOAuthorityTracker {
       gemini: 0.9,
       perplexity: 0.8,
       claude: 0.7,
-      copilot: 0.6
+      copilot: 0.6,
     }
 
     const weightedCitations = this.citations.reduce((total, citation) => {
       const platformWeight = platformWeights[citation.platform] || 0.5
       const positionWeight = Math.max(0, 1 - (citation.position - 1) * 0.1)
       const confidenceWeight = citation.confidence / 100
-      
-      return total + (platformWeight * positionWeight * confidenceWeight)
+
+      return total + platformWeight * positionWeight * confidenceWeight
     }, 0)
 
-    return Math.min(100, Math.round(weightedCitations / this.citations.length * 100))
+    return Math.min(100, Math.round((weightedCitations / this.citations.length) * 100))
   }
 
   /**
    * Get trending queries
    */
   private getTrendingQueries(): string[] {
-    const queryCounts = this.citations.reduce((acc, citation) => {
-      acc[citation.query] = (acc[citation.query] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const queryCounts = this.citations.reduce(
+      (acc, citation) => {
+        acc[citation.query] = (acc[citation.query] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
     return Object.entries(queryCounts)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([query]) => query)
   }
@@ -160,7 +166,7 @@ export class GEOAuthorityTracker {
     const baseRate = 0.15 // 15% base conversion rate
     const citationBoost = Math.min(0.1, this.citations.length * 0.001) // Up to 10% boost
     const authorityBoost = Math.min(0.05, this.authoritySignals.length * 0.002) // Up to 5% boost
-    
+
     return Math.min(1.0, baseRate + citationBoost + authorityBoost)
   }
 
@@ -173,9 +179,9 @@ export class GEOAuthorityTracker {
       expert_opinion: 0.9,
       media_coverage: 0.8,
       review: 0.7,
-      mention: 0.5
+      mention: 0.5,
     }
-    
+
     return weights[type] || 0.3
   }
 
@@ -183,15 +189,13 @@ export class GEOAuthorityTracker {
    * Get recent citations
    */
   getRecentCitations(limit: number = 10): AICitation[] {
-    return this.citations
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      .slice(0, limit)
+    return this.citations.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, limit)
   }
 
   /**
    * Get authority signals by type
    */
   getAuthoritySignalsByType(type: AuthoritySignal['type']): AuthoritySignal[] {
-    return this.authoritySignals.filter(signal => signal.type === type)
+    return this.authoritySignals.filter((signal) => signal.type === type)
   }
 }

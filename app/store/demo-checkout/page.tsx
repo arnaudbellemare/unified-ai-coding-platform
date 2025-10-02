@@ -11,7 +11,7 @@ export default function DemoCheckoutPage() {
   const searchParams = useSearchParams()
   const product = searchParams.get('product') || 'Demo Product'
   const amount = searchParams.get('amount') || '29.99'
-  
+
   const { user, authenticated, ready, login, logout } = usePrivy()
   const [selectedWallet, setSelectedWallet] = useState<string>('')
   const [isConnecting, setIsConnecting] = useState(false)
@@ -26,7 +26,7 @@ export default function DemoCheckoutPage() {
         balance: '0', // Will be fetched separately
         network: 'base',
         privyUserId: user.id,
-        isConnected: true
+        isConnected: true,
       }
       setConnectedWallet(walletData)
       setIsConnecting(false)
@@ -41,8 +41,8 @@ export default function DemoCheckoutPage() {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-2xl mx-auto px-6 py-4">
           <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               className="p-2 hover:bg-gray-100 rounded-full"
               onClick={() => window.history.back()}
@@ -70,7 +70,7 @@ export default function DemoCheckoutPage() {
             <div className="flex items-center justify-center mb-6">
               <LogoVerclibase color="#0000FF" />
             </div>
-            
+
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Crypto Payment</h2>
             <p className="text-gray-600">Pay securely with cryptocurrency</p>
           </div>
@@ -95,13 +95,13 @@ export default function DemoCheckoutPage() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Connect your wallet</h3>
                 <p className="text-gray-500 text-sm">Choose how you'd like to connect</p>
               </div>
-              
+
               <div className="space-y-3">
                 {/* MetaMask - Privy Style */}
                 <button
                   className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 transition-all duration-200 ${
-                    selectedWallet === 'metamask' 
-                      ? 'border-orange-400 bg-orange-50' 
+                    selectedWallet === 'metamask'
+                      ? 'border-orange-400 bg-orange-50'
                       : 'border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                   onClick={() => setSelectedWallet('metamask')}
@@ -123,8 +123,8 @@ export default function DemoCheckoutPage() {
                 {/* Phantom - Privy Style */}
                 <button
                   className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 transition-all duration-200 ${
-                    selectedWallet === 'phantom' 
-                      ? 'border-purple-400 bg-purple-50' 
+                    selectedWallet === 'phantom'
+                      ? 'border-purple-400 bg-purple-50'
                       : 'border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                   onClick={() => setSelectedWallet('phantom')}
@@ -146,8 +146,8 @@ export default function DemoCheckoutPage() {
                 {/* Coinbase Wallet - Privy Style */}
                 <button
                   className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 transition-all duration-200 ${
-                    selectedWallet === 'coinbase' 
-                      ? 'border-blue-400 bg-blue-50' 
+                    selectedWallet === 'coinbase'
+                      ? 'border-blue-400 bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                   onClick={() => setSelectedWallet('coinbase')}
@@ -169,8 +169,8 @@ export default function DemoCheckoutPage() {
                 {/* Email - Privy Style */}
                 <button
                   className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 transition-all duration-200 ${
-                    selectedWallet === 'email' 
-                      ? 'border-green-400 bg-green-50' 
+                    selectedWallet === 'email'
+                      ? 'border-green-400 bg-green-50'
                       : 'border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                   onClick={() => setSelectedWallet('email')}
@@ -192,8 +192,8 @@ export default function DemoCheckoutPage() {
                 {/* Phone - Privy Style */}
                 <button
                   className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 transition-all duration-200 ${
-                    selectedWallet === 'phone' 
-                      ? 'border-indigo-400 bg-indigo-50' 
+                    selectedWallet === 'phone'
+                      ? 'border-indigo-400 bg-indigo-50'
                       : 'border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                   onClick={() => setSelectedWallet('phone')}
@@ -216,7 +216,7 @@ export default function DemoCheckoutPage() {
               {/* Privy-style Connect Button */}
               {selectedWallet && (
                 <div className="space-y-3">
-                  <Button 
+                  <Button
                     className="w-full bg-[#676FFF] hover:bg-[#5a5ce6] text-white h-12 rounded-lg font-semibold"
                     onClick={async () => {
                       setIsConnecting(true)
@@ -237,12 +237,10 @@ export default function DemoCheckoutPage() {
                         Connecting...
                       </>
                     ) : (
-                      <>
-                        Continue
-                      </>
+                      <>Continue</>
                     )}
                   </Button>
-                  
+
                   <p className="text-xs text-gray-500 text-center">
                     By connecting, you agree to our Terms of Service and Privacy Policy
                   </p>
@@ -267,7 +265,7 @@ export default function DemoCheckoutPage() {
                 </div>
 
                 <h3 className="text-lg font-semibold text-gray-900">Choose Payment Method</h3>
-                
+
                 <div className="space-y-3">
                   {/* USDC Option - Privy Style */}
                   <button className="w-full flex items-center justify-between p-4 bg-white rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all">
@@ -281,9 +279,7 @@ export default function DemoCheckoutPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
-                        Recommended
-                      </div>
+                      <div className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">Recommended</div>
                       <div className="w-5 h-5 rounded-full border-2 border-blue-500 bg-blue-500 flex items-center justify-center">
                         <div className="w-2 h-2 bg-white rounded-full"></div>
                       </div>
@@ -378,8 +374,8 @@ export default function DemoCheckoutPage() {
                 <div>
                   <p className="text-amber-800 font-medium text-sm mb-1">Demo Mode</p>
                   <p className="text-amber-700 text-sm">
-                    This is a demonstration. In production, this would connect to your wallet 
-                    and process a real transaction on Base network.
+                    This is a demonstration. In production, this would connect to your wallet and process a real
+                    transaction on Base network.
                   </p>
                 </div>
               </div>
@@ -389,18 +385,20 @@ export default function DemoCheckoutPage() {
             <div className="space-y-3">
               {connectedWallet ? (
                 <div className="space-y-3">
-                  <Button 
+                  <Button
                     className="w-full bg-[#676FFF] hover:bg-[#5a5ce6] text-white h-12 rounded-lg font-semibold"
                     onClick={() => {
-                      alert(`Payment processed!\nWallet: ${connectedWallet.type}\nAmount: $${amount} USDC\nAddress: ${connectedWallet.address}`)
+                      alert(
+                        `Payment processed!\nWallet: ${connectedWallet.type}\nAmount: $${amount} USDC\nAddress: ${connectedWallet.address}`,
+                      )
                     }}
                   >
                     <Zap className="h-5 w-5 mr-2" />
                     Pay ${amount} USDC
                   </Button>
-                  
-                  <Button 
-                    variant="ghost" 
+
+                  <Button
+                    variant="ghost"
                     className="w-full text-gray-600 hover:text-gray-800 hover:bg-gray-50 h-10 rounded-lg font-medium"
                     onClick={() => {
                       logout()
@@ -411,17 +409,14 @@ export default function DemoCheckoutPage() {
                   </Button>
                 </div>
               ) : (
-                <Button 
-                  className="w-full bg-gray-400 text-white h-12 rounded-lg font-semibold"
-                  disabled
-                >
+                <Button className="w-full bg-gray-400 text-white h-12 rounded-lg font-semibold" disabled>
                   <Wallet className="h-5 w-5 mr-2" />
                   Connect Wallet to Pay ${amount}
                 </Button>
               )}
-              
-              <Button 
-                variant="ghost" 
+
+              <Button
+                variant="ghost"
                 className="w-full text-gray-500 hover:text-gray-700 h-10 rounded-lg font-medium"
                 onClick={() => window.close()}
               >
@@ -431,8 +426,8 @@ export default function DemoCheckoutPage() {
 
             {/* Back to Demo */}
             <div className="text-center pt-6 border-t border-gray-200">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="text-gray-500 hover:text-gray-700"
                 onClick={() => window.open('/complete-demo', '_self')}
               >

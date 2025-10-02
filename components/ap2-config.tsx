@@ -24,7 +24,7 @@ export function AP2Config() {
     cloudLocation: 'global',
     apiKey: '',
     vertexAIKey: '',
-    hasCredentials: false
+    hasCredentials: false,
   })
 
   const [status, setStatus] = useState<{
@@ -34,7 +34,7 @@ export function AP2Config() {
   }>({
     vertexAI: 'checking',
     apiKey: 'checking',
-    overall: 'checking'
+    overall: 'checking',
   })
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export function AP2Config() {
       // Check current configuration
       const response = await fetch('/api/ap2/config')
       const data = await response.json()
-      
+
       setConfig(data.config)
       setStatus(data.status)
     } catch (error) {
@@ -54,7 +54,7 @@ export function AP2Config() {
       setStatus({
         vertexAI: 'error',
         apiKey: 'error',
-        overall: 'error'
+        overall: 'error',
       })
     }
   }
@@ -112,9 +112,7 @@ export function AP2Config() {
           <Settings className="h-8 w-8 text-blue-600" />
           <h1 className="text-3xl font-bold">AP2 Configuration</h1>
         </div>
-        <p className="text-gray-600">
-          Configure Google's Agent Payments Protocol for production
-        </p>
+        <p className="text-gray-600">Configure Google's Agent Payments Protocol for production</p>
       </div>
 
       {/* Status Overview */}
@@ -172,9 +170,7 @@ export function AP2Config() {
               <Cloud className="h-5 w-5" />
               Vertex AI (Production)
             </CardTitle>
-            <CardDescription>
-              Recommended for production deployments
-            </CardDescription>
+            <CardDescription>Recommended for production deployments</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -182,7 +178,7 @@ export function AP2Config() {
               <Input
                 id="cloudProject"
                 value={config.cloudProject}
-                onChange={(e) => setConfig(prev => ({ ...prev, cloudProject: e.target.value }))}
+                onChange={(e) => setConfig((prev) => ({ ...prev, cloudProject: e.target.value }))}
                 placeholder="your-project-id"
               />
             </div>
@@ -192,7 +188,7 @@ export function AP2Config() {
               <Input
                 id="cloudLocation"
                 value={config.cloudLocation}
-                onChange={(e) => setConfig(prev => ({ ...prev, cloudLocation: e.target.value }))}
+                onChange={(e) => setConfig((prev) => ({ ...prev, cloudLocation: e.target.value }))}
                 placeholder="global"
               />
             </div>
@@ -203,15 +199,13 @@ export function AP2Config() {
                 id="vertexAIKey"
                 type="password"
                 value={config.vertexAIKey}
-                onChange={(e) => setConfig(prev => ({ ...prev, vertexAIKey: e.target.value }))}
+                onChange={(e) => setConfig((prev) => ({ ...prev, vertexAIKey: e.target.value }))}
                 placeholder="AQ.Ab8RN6K..."
               />
-              <p className="text-xs text-gray-500">
-                Current: {config.vertexAIKey ? '***configured***' : 'Not set'}
-              </p>
+              <p className="text-xs text-gray-500">Current: {config.vertexAIKey ? '***configured***' : 'Not set'}</p>
             </div>
 
-            <Button 
+            <Button
               onClick={() => updateConfig({ useVertexAI: true })}
               className="w-full"
               disabled={!config.cloudProject}
@@ -228,9 +222,7 @@ export function AP2Config() {
               <Key className="h-5 w-5" />
               API Key (Development)
             </CardTitle>
-            <CardDescription>
-              For development and testing
-            </CardDescription>
+            <CardDescription>For development and testing</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -239,16 +231,12 @@ export function AP2Config() {
                 id="apiKey"
                 type="password"
                 value={config.apiKey}
-                onChange={(e) => setConfig(prev => ({ ...prev, apiKey: e.target.value }))}
+                onChange={(e) => setConfig((prev) => ({ ...prev, apiKey: e.target.value }))}
                 placeholder="AIzaSy..."
               />
             </div>
 
-            <Button 
-              onClick={() => updateConfig({ useVertexAI: false })}
-              className="w-full"
-              disabled={!config.apiKey}
-            >
+            <Button onClick={() => updateConfig({ useVertexAI: false })} className="w-full" disabled={!config.apiKey}>
               Use API Key
             </Button>
           </CardContent>
@@ -267,7 +255,9 @@ export function AP2Config() {
               <ol className="list-decimal list-inside space-y-1 text-sm text-gray-600">
                 <li>Set up Google Cloud Project</li>
                 <li>Enable Vertex AI API</li>
-                <li>Authenticate: <code className="bg-gray-100 px-1 rounded">gcloud auth application-default login</code></li>
+                <li>
+                  Authenticate: <code className="bg-gray-100 px-1 rounded">gcloud auth application-default login</code>
+                </li>
                 <li>Configure environment variables above</li>
               </ol>
             </div>

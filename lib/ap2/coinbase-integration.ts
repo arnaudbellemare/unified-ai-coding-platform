@@ -65,7 +65,7 @@ export class AP2CoinbaseIntegration {
       apiKey: string
       vertexAIKey?: string
       useVertexAI: boolean
-    }
+    },
   ) {
     this.coinbaseCommerce = new CompleteCoinbaseCommerceIntegration(coinbaseConfig)
     this.mandateManager = new AP2MandateManager()
@@ -77,7 +77,9 @@ export class AP2CoinbaseIntegration {
    */
   async processAgentPayment(request: AP2CoinbasePaymentRequest): Promise<AP2CoinbasePaymentResponse> {
     try {
-      console.log(`🤖 AP2 Agent Payment: ${request.fromAgent} → ${request.toAgent} (${request.amount} ${request.currency})`)
+      console.log(
+        `🤖 AP2 Agent Payment: ${request.fromAgent} → ${request.toAgent} (${request.amount} ${request.currency})`,
+      )
 
       // Step 1: Verify AP2 mandate
       const mandate = await this.mandateManager.getMandate(request.mandateId)
@@ -103,8 +105,8 @@ export class AP2CoinbaseIntegration {
           productId: `ap2_payment_${Date.now()}`,
           agentId: request.fromAgent,
           ap2MandateId: request.mandateId,
-          autoConvertUSDC: request.autoUSDCConversion ?? true
-        }
+          autoConvertUSDC: request.autoUSDCConversion ?? true,
+        },
       }
 
       const coinbaseCharge = await this.coinbaseCommerce.createCryptoCheckout(cryptoPaymentRequest)
@@ -117,7 +119,7 @@ export class AP2CoinbaseIntegration {
         currency: request.currency,
         description: request.description,
         mandate_id: request.mandateId,
-        coinbase_charge_id: coinbaseCharge.id
+        coinbase_charge_id: coinbaseCharge.id,
       })
 
       // Step 5: Update mandate status
@@ -140,8 +142,8 @@ export class AP2CoinbaseIntegration {
           amount: request.amount,
           currency: request.currency,
           autoConverted: request.autoUSDCConversion ?? true,
-          network: this.coinbaseCommerce.getNetworkSupport().base ? 'Base' : 'Ethereum'
-        }
+          network: this.coinbaseCommerce.getNetworkSupport().base ? 'Base' : 'Ethereum',
+        },
       }
     } catch (error) {
       console.error('❌ AP2 Coinbase payment failed:', error)
@@ -156,8 +158,8 @@ export class AP2CoinbaseIntegration {
           amount: request.amount,
           currency: request.currency,
           autoConverted: false,
-          network: 'unknown'
-        }
+          network: 'unknown',
+        },
       }
     }
   }
@@ -224,7 +226,7 @@ export class AP2CoinbaseIntegration {
         success: true,
         ap2PaymentId: ap2Payment.paymentId,
         mandateId: ap2Payment.mandateId,
-        status: ap2Status
+        status: ap2Status,
       }
     } catch (error) {
       console.error('❌ Coinbase webhook handling failed:', error)
@@ -245,7 +247,7 @@ export class AP2CoinbaseIntegration {
       autoUSDCConversion: true,
       networkSupport: ['Base', 'Ethereum'],
       maxPaymentAmount: 10000,
-      minPaymentAmount: 0.01
+      minPaymentAmount: 0.01,
     }
   }
 
@@ -263,7 +265,7 @@ export class AP2CoinbaseIntegration {
       console.log(`🔍 Looking up AP2 payment for charge: ${chargeId}`)
       return {
         paymentId: `ap2_${chargeId}`,
-        mandateId: `mandate_${chargeId}`
+        mandateId: `mandate_${chargeId}`,
       }
     } catch (error) {
       console.error('❌ Failed to find AP2 payment:', error)
@@ -297,14 +299,14 @@ export class AP2CoinbaseIntegration {
     try {
       // In a real implementation, this would query the database
       console.log(`📊 Getting payment status: ${paymentId}`)
-      
+
       return {
         status: 'completed',
         mandateStatus: 'payment_completed',
         coinbaseStatus: 'CONFIRMED',
         amount: 100,
         currency: 'USD',
-        autoConverted: true
+        autoConverted: true,
       }
     } catch (error) {
       console.error('❌ Failed to get payment status:', error)

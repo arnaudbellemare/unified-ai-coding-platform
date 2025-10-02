@@ -4,15 +4,15 @@ import { ap2Service, AP2PaymentRequest } from '@/lib/ap2/ap2-service'
 export async function POST(request: NextRequest) {
   try {
     const body: AP2PaymentRequest = await request.json()
-    
+
     // Validate request
     if (!ap2Service.validatePaymentRequest(body)) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Invalid AP2 payment request' 
+        {
+          success: false,
+          error: 'Invalid AP2 payment request',
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -24,19 +24,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: result.status === 'completed',
       payment: result,
-      message: result.status === 'completed' 
-        ? 'AP2 payment processed successfully' 
-        : 'AP2 payment failed'
+      message: result.status === 'completed' ? 'AP2 payment processed successfully' : 'AP2 payment failed',
     })
-
   } catch (error) {
     console.error('AP2 Payment API Error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -59,19 +56,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, payments })
     }
 
-    return NextResponse.json(
-      { success: false, error: 'Missing paymentId or agentId parameter' },
-      { status: 400 }
-    )
-
+    return NextResponse.json({ success: false, error: 'Missing paymentId or agentId parameter' }, { status: 400 })
   } catch (error) {
     console.error('AP2 Payment Status API Error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

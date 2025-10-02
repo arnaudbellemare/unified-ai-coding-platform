@@ -1,10 +1,9 @@
-import { NextAuthOptions } from 'next-auth'
-import GitHubProvider from 'next-auth/providers/github'
+import NextAuth from 'next-auth'
+import GitHub from 'next-auth/providers/github'
 
-export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-development',
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
-    GitHubProvider({
+    GitHub({
       clientId: process.env.GITHUB_CLIENT_ID || 'your_github_client_id_here',
       clientSecret: process.env.GITHUB_CLIENT_SECRET || 'your_github_client_secret_here',
       authorization: {
@@ -32,4 +31,8 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/',
   },
+})
+
+export const authOptions = {
+  // For backward compatibility
 }

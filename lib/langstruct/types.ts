@@ -6,11 +6,14 @@
 export interface ExtractionResult {
   entities: Record<string, any>
   confidence: number
-  sources: Record<string, Array<{
-    text: string
-    start: number
-    end: number
-  }>>
+  sources: Record<
+    string,
+    Array<{
+      text: string
+      start: number
+      end: number
+    }>
+  >
   success: boolean
   error?: string
 }
@@ -57,11 +60,7 @@ export interface DocumentMetadataEntities {
   sentiment?: 'positive' | 'negative' | 'neutral'
 }
 
-export type ExtractorType = 
-  | 'geo_query'
-  | 'acp_payment' 
-  | 'ap2_agent'
-  | 'document_metadata'
+export type ExtractorType = 'geo_query' | 'acp_payment' | 'ap2_agent' | 'document_metadata'
 
 export interface LangStructConfig {
   apiKey?: string

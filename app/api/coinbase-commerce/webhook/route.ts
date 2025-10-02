@@ -8,7 +8,7 @@ const coinbaseCommerce = new CompleteCoinbaseCommerceIntegration({
   webhookSecret: process.env.COINBASE_COMMERCE_WEBHOOK_SECRET || '',
   autoUSDCConversion: true,
   supportedCurrencies: ['USDC', 'ETH', 'BTC', 'USDT'],
-  baseNetwork: true
+  baseNetwork: true,
 })
 
 // Initialize AP2 + Coinbase integration
@@ -18,22 +18,22 @@ const ap2CoinbaseIntegration = new AP2CoinbaseIntegration(
     webhookSecret: process.env.COINBASE_COMMERCE_WEBHOOK_SECRET || '',
     autoUSDCConversion: true,
     supportedCurrencies: ['USDC', 'ETH', 'BTC', 'USDT'],
-    baseNetwork: true
+    baseNetwork: true,
   },
   {
     projectId: process.env.GOOGLE_CLOUD_PROJECT || '',
     location: process.env.GOOGLE_CLOUD_LOCATION || 'global',
     apiKey: process.env.GOOGLE_API_KEY || '',
     vertexAIKey: process.env.VERTEX_AI_API_KEY,
-    useVertexAI: process.env.GOOGLE_GENAI_USE_VERTEXAI === 'true'
-  }
+    useVertexAI: process.env.GOOGLE_GENAI_USE_VERTEXAI === 'true',
+  },
 )
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text()
     const signature = request.headers.get('x-cc-webhook-signature') || ''
-    
+
     // Verify webhook signature
     if (!coinbaseCommerce.verifyWebhookSignature(body, signature)) {
       console.error('❌ Invalid webhook signature')
@@ -45,10 +45,10 @@ export async function POST(request: NextRequest) {
 
     // Process webhook event
     const result = await coinbaseCommerce.processWebhookEvent(webhookEvent)
-    
+
     if (result.success) {
       console.log(`✅ Webhook processed successfully: ${result.action}`)
-      
+
       // Handle AP2 payments if applicable
       if (result.chargeId) {
         const ap2Result = await ap2CoinbaseIntegration.handleCoinbaseWebhook(webhookEvent)
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         case 'payment_confirmed':
           console.log(`✅ Payment confirmed: ${result.chargeId}`)
           console.log(`💵 Amount: ${result.amount} ${result.currency}`)
-          
+
           // Handle order fulfillment
           await handleOrderFulfillment(result.chargeId, result.amount, result.currency)
           break
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
         success: true,
         action: result.action,
         chargeId: result.chargeId,
-        status: result.status
+        status: result.status,
       })
     } else {
       console.error(`❌ Webhook processing failed: ${result.status}`)
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
 async function handleOrderFulfillment(chargeId: string, amount: number, currency: string) {
   try {
     console.log(`📦 Processing order fulfillment for charge: ${chargeId}`)
-    
+
     // Get charge details
     const chargeStatus = await coinbaseCommerce.getChargeStatus(chargeId)
     console.log(`📊 Charge status: ${chargeStatus.status}`)
@@ -119,7 +119,7 @@ async function handleOrderFulfillment(chargeId: string, amount: number, currency
       amount: chargeStatus.amount,
       currency: chargeStatus.currency,
       autoConverted: chargeStatus.autoConverted,
-      confirmedAt: new Date().toISOString()
+      confirmedAt: new Date().toISOString(),
     })
 
     // Send confirmation email
@@ -144,11 +144,11 @@ async function handleOrderFulfillment(chargeId: string, amount: number, currency
 async function handlePaymentFailure(chargeId: string) {
   try {
     console.log(`❌ Handling payment failure for charge: ${chargeId}`)
-    
+
     // Update order status
     await updateOrderStatus(chargeId, 'failed', {
       failedAt: new Date().toISOString(),
-      reason: 'Payment failed'
+      reason: 'Payment failed',
     })
 
     // Send failure notification
@@ -170,11 +170,11 @@ async function handlePaymentFailure(chargeId: string) {
 async function handlePaymentDelay(chargeId: string) {
   try {
     console.log(`⏳ Handling payment delay for charge: ${chargeId}`)
-    
+
     // Update order status
     await updateOrderStatus(chargeId, 'pending', {
       delayedAt: new Date().toISOString(),
-      reason: 'Payment delayed'
+      reason: 'Payment delayed',
     })
 
     // Send delay notification

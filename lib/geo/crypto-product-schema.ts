@@ -4,34 +4,34 @@
  */
 
 export interface CryptoProductSchema {
-  "@context": "https://schema.org"
-  "@type": "Product"
+  '@context': 'https://schema.org'
+  '@type': 'Product'
   name: string
   description: string
   image: string[]
   brand: {
-    "@type": "Brand"
+    '@type': 'Brand'
     name: string
     logo: string
   }
   offers: {
-    "@type": "Offer"
+    '@type': 'Offer'
     price: string
-    priceCurrency: "USD" | "USDC" | "ETH"
+    priceCurrency: 'USD' | 'USDC' | 'ETH'
     acceptedPaymentMethod: string[]
     priceSpecification: {
-      "@type": "PriceSpecification"
+      '@type': 'PriceSpecification'
       eligibleQuantity: {
-        "@type": "QuantitativeValue"
+        '@type': 'QuantitativeValue'
         minValue: number
       }
       cryptoSupported: boolean
       autoConversion: boolean
       supportedCryptocurrencies: string[]
     }
-    availability: "https://schema.org/InStock" | "https://schema.org/OutOfStock"
+    availability: 'https://schema.org/InStock' | 'https://schema.org/OutOfStock'
     seller: {
-      "@type": "Organization"
+      '@type': 'Organization'
       name: string
       url: string
     }
@@ -47,20 +47,20 @@ export interface CryptoProductSchema {
     supportedNetworks: string[]
   }
   aggregateRating?: {
-    "@type": "AggregateRating"
+    '@type': 'AggregateRating'
     ratingValue: number
     reviewCount: number
     bestRating: number
     worstRating: number
   }
   review?: Array<{
-    "@type": "Review"
+    '@type': 'Review'
     author: {
-      "@type": "Person"
+      '@type': 'Person'
       name: string
     }
     reviewRating: {
-      "@type": "Rating"
+      '@type': 'Rating'
       ratingValue: number
       bestRating: number
     }
@@ -68,23 +68,23 @@ export interface CryptoProductSchema {
     datePublished: string
   }>
   faq?: Array<{
-    "@type": "Question"
+    '@type': 'Question'
     name: string
     acceptedAnswer: {
-      "@type": "Answer"
+      '@type': 'Answer'
       text: string
     }
   }>
   additionalProperty?: Array<{
-    "@type": "PropertyValue"
+    '@type': 'PropertyValue'
     name: string
     value: string
   }>
 }
 
 export interface CryptoCommerceSchema {
-  "@context": "https://schema.org"
-  "@type": "Organization"
+  '@context': 'https://schema.org'
+  '@type': 'Organization'
   name: string
   url: string
   logo: string
@@ -99,9 +99,9 @@ export interface CryptoCommerceSchema {
   }
   sameAs: string[]
   contactPoint: {
-    "@type": "ContactPoint"
+    '@type': 'ContactPoint'
     telephone: string
-    contactType: "customer service"
+    contactType: 'customer service'
     availableLanguage: string[]
   }
 }
@@ -125,98 +125,92 @@ export class CryptoProductSchemaGenerator {
     cryptoSupported?: boolean
   }): CryptoProductSchema {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://verclibase.com'
-    
+
     return {
-      "@context": "https://schema.org",
-      "@type": "Product",
+      '@context': 'https://schema.org',
+      '@type': 'Product',
       name: product.name,
       description: product.description,
       image: [product.image],
       brand: {
-        "@type": "Brand",
+        '@type': 'Brand',
         name: product.brand,
-        logo: `${baseUrl}/logo.png`
+        logo: `${baseUrl}/logo.png`,
       },
       offers: {
-        "@type": "Offer",
+        '@type': 'Offer',
         price: product.price.toString(),
-        priceCurrency: product.currency as "USD" | "USDC" | "ETH",
-        acceptedPaymentMethod: [
-          "CryptocurrencyPayment",
-          "CreditCard",
-          "DebitCard",
-          "PayPal"
-        ],
+        priceCurrency: product.currency as 'USD' | 'USDC' | 'ETH',
+        acceptedPaymentMethod: ['CryptocurrencyPayment', 'CreditCard', 'DebitCard', 'PayPal'],
         priceSpecification: {
-          "@type": "PriceSpecification",
+          '@type': 'PriceSpecification',
           eligibleQuantity: {
-            "@type": "QuantitativeValue",
-            minValue: 1
+            '@type': 'QuantitativeValue',
+            minValue: 1,
           },
           cryptoSupported: product.cryptoSupported || true,
           autoConversion: true,
-          supportedCryptocurrencies: ["USDC", "ETH", "BTC", "USDT"]
+          supportedCryptocurrencies: ['USDC', 'ETH', 'BTC', 'USDT'],
         },
-        availability: product.availability 
-          ? "https://schema.org/InStock" 
-          : "https://schema.org/OutOfStock",
+        availability: product.availability ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
         seller: {
-          "@type": "Organization",
-          name: "VERCLIBASE",
-          url: baseUrl
+          '@type': 'Organization',
+          name: 'VERCLIBASE',
+          url: baseUrl,
         },
         validFrom: new Date().toISOString(),
-        validThrough: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+        validThrough: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
       },
-      paymentAccepted: ["USDC", "ETH", "BTC", "USDT", "Credit Card", "PayPal"],
+      paymentAccepted: ['USDC', 'ETH', 'BTC', 'USDT', 'Credit Card', 'PayPal'],
       cryptoPaymentMethods: {
-        supportedCurrencies: ["USDC", "ETH", "BTC", "USDT"],
+        supportedCurrencies: ['USDC', 'ETH', 'BTC', 'USDT'],
         autoUSDCConversion: true,
         instantSettlement: true,
-        networkFees: "Free on Base network",
-        supportedNetworks: ["Base", "Ethereum", "Polygon"]
+        networkFees: 'Free on Base network',
+        supportedNetworks: ['Base', 'Ethereum', 'Polygon'],
       },
-      ...(product.rating && product.reviewCount && {
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: product.rating,
-          reviewCount: product.reviewCount,
-          bestRating: 5,
-          worstRating: 1
-        }
-      }),
+      ...(product.rating &&
+        product.reviewCount && {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: product.rating,
+            reviewCount: product.reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }),
       ...(product.faqs && {
-        faq: product.faqs.map(faq => ({
-          "@type": "Question",
+        faq: product.faqs.map((faq) => ({
+          '@type': 'Question',
           name: faq.question,
           acceptedAnswer: {
-            "@type": "Answer",
-            text: faq.answer
-          }
-        }))
+            '@type': 'Answer',
+            text: faq.answer,
+          },
+        })),
       }),
       additionalProperty: [
         {
-          "@type": "PropertyValue",
-          name: "Crypto Payment Support",
-          value: "Yes - USDC, ETH, BTC, USDT"
+          '@type': 'PropertyValue',
+          name: 'Crypto Payment Support',
+          value: 'Yes - USDC, ETH, BTC, USDT',
         },
         {
-          "@type": "PropertyValue",
-          name: "Auto USDC Conversion",
-          value: "Yes - Instant volatility protection"
+          '@type': 'PropertyValue',
+          name: 'Auto USDC Conversion',
+          value: 'Yes - Instant volatility protection',
         },
         {
-          "@type": "PropertyValue",
-          name: "Settlement Time",
-          value: "Instant on Base network"
+          '@type': 'PropertyValue',
+          name: 'Settlement Time',
+          value: 'Instant on Base network',
         },
         {
-          "@type": "PropertyValue",
-          name: "Network Fees",
-          value: "Free on Base, low fees on Ethereum"
-        }
-      ]
+          '@type': 'PropertyValue',
+          name: 'Network Fees',
+          value: 'Free on Base, low fees on Ethereum',
+        },
+      ],
     }
   }
 
@@ -225,33 +219,33 @@ export class CryptoProductSchemaGenerator {
    */
   static generateCommerceSchema(): CryptoCommerceSchema {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://verclibase.com'
-    
+
     return {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "VERCLIBASE",
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'VERCLIBASE',
       url: baseUrl,
       logo: `${baseUrl}/logo.png`,
-      description: "AI-powered crypto commerce platform with instant USDC conversion and agent-to-agent payments",
-      paymentAccepted: ["USDC", "ETH", "BTC", "USDT", "Credit Card", "PayPal"],
+      description: 'AI-powered crypto commerce platform with instant USDC conversion and agent-to-agent payments',
+      paymentAccepted: ['USDC', 'ETH', 'BTC', 'USDT', 'Credit Card', 'PayPal'],
       cryptoCapabilities: {
-        supportedCurrencies: ["USDC", "ETH", "BTC", "USDT"],
+        supportedCurrencies: ['USDC', 'ETH', 'BTC', 'USDT'],
         autoUSDCConversion: true,
         instantSettlement: true,
-        networkSupport: ["Base", "Ethereum", "Polygon"],
-        feeStructure: "1% fee, free on Base network"
+        networkSupport: ['Base', 'Ethereum', 'Polygon'],
+        feeStructure: '1% fee, free on Base network',
       },
       sameAs: [
-        "https://github.com/verclibase",
-        "https://twitter.com/verclibase",
-        "https://linkedin.com/company/verclibase"
+        'https://github.com/verclibase',
+        'https://twitter.com/verclibase',
+        'https://linkedin.com/company/verclibase',
       ],
       contactPoint: {
-        "@type": "ContactPoint",
-        telephone: "+1-555-VERCLI",
-        contactType: "customer service",
-        availableLanguage: ["English", "Spanish"]
-      }
+        '@type': 'ContactPoint',
+        telephone: '+1-555-VERCLI',
+        contactType: 'customer service',
+        availableLanguage: ['English', 'Spanish'],
+      },
     }
   }
 
@@ -260,16 +254,16 @@ export class CryptoProductSchemaGenerator {
    */
   static generateFAQSchema(faqs: Array<{ question: string; answer: string }>) {
     return {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqs.map(faq => ({
-        "@type": "Question",
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
         name: faq.question,
         acceptedAnswer: {
-          "@type": "Answer",
-          text: faq.answer
-        }
-      }))
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
     }
   }
 
@@ -278,42 +272,42 @@ export class CryptoProductSchemaGenerator {
    */
   static generateHowToSchema() {
     return {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      name: "How to Pay with Cryptocurrency",
-      description: "Step-by-step guide to paying with crypto on VERCLIBASE",
-      totalTime: "PT2M",
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      name: 'How to Pay with Cryptocurrency',
+      description: 'Step-by-step guide to paying with crypto on VERCLIBASE',
+      totalTime: 'PT2M',
       estimatedCost: {
-        "@type": "MonetaryAmount",
-        currency: "USD",
-        value: "0"
+        '@type': 'MonetaryAmount',
+        currency: 'USD',
+        value: '0',
       },
       step: [
         {
-          "@type": "HowToStep",
-          name: "Select Crypto Payment",
-          text: "Choose your preferred cryptocurrency (USDC, ETH, BTC, USDT) at checkout",
-          image: "/images/crypto-payment-step1.jpg"
+          '@type': 'HowToStep',
+          name: 'Select Crypto Payment',
+          text: 'Choose your preferred cryptocurrency (USDC, ETH, BTC, USDT) at checkout',
+          image: '/images/crypto-payment-step1.jpg',
         },
         {
-          "@type": "HowToStep",
-          name: "Connect Wallet",
-          text: "Connect your crypto wallet or use Coinbase account for instant payment",
-          image: "/images/crypto-payment-step2.jpg"
+          '@type': 'HowToStep',
+          name: 'Connect Wallet',
+          text: 'Connect your crypto wallet or use Coinbase account for instant payment',
+          image: '/images/crypto-payment-step2.jpg',
         },
         {
-          "@type": "HowToStep",
-          name: "Confirm Transaction",
-          text: "Review payment details and confirm the transaction. USDC conversion happens automatically",
-          image: "/images/crypto-payment-step3.jpg"
+          '@type': 'HowToStep',
+          name: 'Confirm Transaction',
+          text: 'Review payment details and confirm the transaction. USDC conversion happens automatically',
+          image: '/images/crypto-payment-step3.jpg',
         },
         {
-          "@type": "HowToStep",
-          name: "Instant Settlement",
-          text: "Receive instant confirmation and product access. No waiting for blockchain confirmations",
-          image: "/images/crypto-payment-step4.jpg"
-        }
-      ]
+          '@type': 'HowToStep',
+          name: 'Instant Settlement',
+          text: 'Receive instant confirmation and product access. No waiting for blockchain confirmations',
+          image: '/images/crypto-payment-step4.jpg',
+        },
+      ],
     }
   }
 }

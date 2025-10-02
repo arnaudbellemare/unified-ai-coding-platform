@@ -94,12 +94,12 @@ export async function POST(request: NextRequest) {
 
     // Create order in order manager
     const order = await orderManager.createOrder({
-      items: items.map(item => ({
+      items: items.map((item) => ({
         product_id: item.productId || item.id,
         name: item.name,
         quantity: item.quantity || 1,
         price: item.price,
-        total: (item.price || 0) * (item.quantity || 1)
+        total: (item.price || 0) * (item.quantity || 1),
       })),
       customer: {
         id: user?.id || 'guest',
@@ -110,21 +110,21 @@ export async function POST(request: NextRequest) {
           city: 'San Francisco',
           state: 'CA',
           zip: '94105',
-          country: 'US'
-        }
+          country: 'US',
+        },
       },
       payment: {
         method: paymentMethod || 'x402',
         transaction_id: checkoutResult.paymentId || `txn_${Date.now()}`,
         status: 'completed',
         amount: totalAmount,
-        currency
+        currency,
       },
       shipping: {
         method: 'standard',
-        status: 'pending'
+        status: 'pending',
       },
-      metadata
+      metadata,
     })
 
     // Process webhook events
@@ -135,9 +135,9 @@ export async function POST(request: NextRequest) {
         order_id: order.id,
         total: order.total,
         currency: order.currency,
-        items_count: order.items.length
+        items_count: order.items.length,
       },
-      signature: 'webhook_signature'
+      signature: 'webhook_signature',
     })
 
     // Create ACP-compliant response

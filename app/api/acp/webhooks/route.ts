@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       type: eventType as any,
       order_id: body.order_id,
       data: body.data || {},
-      signature
+      signature,
     })
 
     return NextResponse.json({ success: true, message: 'Webhook processed' })
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
           secret: process.env.ACP_WEBHOOK_SECRET || 'dev_secret',
           events,
           retry_count: 3,
-          timeout: 30
+          timeout: 30,
         })
 
         return NextResponse.json({ success: true, message: 'Webhook registered' })

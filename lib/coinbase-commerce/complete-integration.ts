@@ -108,30 +108,30 @@ export class CompleteCoinbaseCommerceIntegration {
     try {
       // Calculate pricing for multiple cryptocurrencies
       const pricing = await this.calculateCryptoPricing(request.amount, request.currency)
-      
+
       const chargeData = {
         name: request.name,
         description: request.description,
         local_price: {
           amount: request.amount.toString(),
-          currency: request.currency.toUpperCase()
+          currency: request.currency.toUpperCase(),
         },
         pricing_type: 'fixed_price',
         metadata: {
           ...request.metadata,
           auto_usdc_conversion: this.config.autoUSDCConversion,
           supported_currencies: this.config.supportedCurrencies.join(','),
-          base_network: this.config.baseNetwork
+          base_network: this.config.baseNetwork,
         },
         redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/store/success`,
         cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/store/cancel`,
         // Enable multiple cryptocurrency support
         supported_networks: this.config.baseNetwork ? ['base', 'ethereum'] : ['ethereum'],
-        auto_conversion: this.config.autoUSDCConversion
+        auto_conversion: this.config.autoUSDCConversion,
       }
 
       const charge = await this.commerce.charges.create(chargeData)
-      
+
       console.log(`🚀 Crypto checkout created: ${charge.id}`)
       console.log(`💰 Auto USDC conversion: ${this.config.autoUSDCConversion}`)
       console.log(`🌐 Supported networks: ${this.config.baseNetwork ? 'Base + Ethereum' : 'Ethereum'}`)
@@ -143,12 +143,12 @@ export class CompleteCoinbaseCommerceIntegration {
         pricing: {
           local: {
             amount: request.amount.toString(),
-            currency: request.currency.toUpperCase()
+            currency: request.currency.toUpperCase(),
           },
-          ...pricing
+          ...pricing,
         },
         addresses: charge.addresses || {},
-        timeline: charge.timeline || []
+        timeline: charge.timeline || [],
       }
     } catch (error) {
       console.error('❌ Crypto checkout creation failed:', error)
@@ -167,22 +167,22 @@ export class CompleteCoinbaseCommerceIntegration {
         BTC: 45000,
         ETH: 3000,
         USDC: 1,
-        USDT: 1
+        USDT: 1,
       }
 
       return {
         bitcoin: {
           amount: (amount / mockPrices.BTC).toFixed(8),
-          currency: 'BTC'
+          currency: 'BTC',
         },
         ethereum: {
           amount: (amount / mockPrices.ETH).toFixed(6),
-          currency: 'ETH'
+          currency: 'ETH',
         },
         usdc: {
           amount: amount.toString(),
-          currency: 'USDC'
-        }
+          currency: 'USDC',
+        },
       }
     } catch (error) {
       console.error('❌ Crypto pricing calculation failed:', error)
@@ -226,7 +226,7 @@ export class CompleteCoinbaseCommerceIntegration {
           action = 'payment_confirmed'
           success = true
           console.log(`✅ Payment confirmed: ${chargeId}`)
-          
+
           // Handle auto USDC conversion if enabled
           if (this.config.autoUSDCConversion && currency !== 'USDC') {
             await this.handleAutoUSDCConversion(chargeId, amount, currency)
@@ -255,7 +255,7 @@ export class CompleteCoinbaseCommerceIntegration {
         chargeId,
         status,
         amount,
-        currency
+        currency,
       }
     } catch (error) {
       console.error('❌ Webhook processing failed:', error)
@@ -269,22 +269,22 @@ export class CompleteCoinbaseCommerceIntegration {
   private async handleAutoUSDCConversion(chargeId: string, amount: number, originalCurrency: string) {
     try {
       console.log(`🔄 Auto-converting ${amount} ${originalCurrency} to USDC for volatility protection`)
-      
+
       // In a real implementation, you'd:
       // 1. Convert the crypto to USDC at current market rate
       // 2. Update the charge metadata
       // 3. Notify the merchant of the conversion
-      
+
       // For now, we'll just log the conversion
       console.log(`✅ Auto-conversion completed: ${amount} ${originalCurrency} → ${amount} USDC`)
-      
+
       // Update charge metadata
       await this.updateChargeMetadata(chargeId, {
         auto_converted: true,
         original_currency: originalCurrency,
         converted_amount: amount,
         converted_currency: 'USDC',
-        conversion_timestamp: new Date().toISOString()
+        conversion_timestamp: new Date().toISOString(),
       })
     } catch (error) {
       console.error('❌ Auto USDC conversion failed:', error)
@@ -329,7 +329,7 @@ export class CompleteCoinbaseCommerceIntegration {
         amount,
         currency,
         confirmed,
-        autoConverted
+        autoConverted,
       }
     } catch (error) {
       console.error('❌ Failed to get charge status:', error)
@@ -343,15 +343,9 @@ export class CompleteCoinbaseCommerceIntegration {
   verifyWebhookSignature(payload: string, signature: string): boolean {
     try {
       const crypto = require('crypto')
-      const expectedSignature = crypto
-        .createHmac('sha256', this.config.webhookSecret)
-        .update(payload)
-        .digest('hex')
-      
-      return crypto.timingSafeEqual(
-        Buffer.from(signature, 'hex'),
-        Buffer.from(expectedSignature, 'hex')
-      )
+      const expectedSignature = crypto.createHmac('sha256', this.config.webhookSecret).update(payload).digest('hex')
+
+      return crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expectedSignature, 'hex'))
     } catch (error) {
       console.error('❌ Webhook signature verification failed:', error)
       return false
@@ -383,9 +377,7 @@ export class CompleteCoinbaseCommerceIntegration {
     return {
       base: this.config.baseNetwork,
       ethereum: true,
-      supportedNetworks: this.config.baseNetwork 
-        ? ['Base', 'Ethereum'] 
-        : ['Ethereum']
+      supportedNetworks: this.config.baseNetwork ? ['Base', 'Ethereum'] : ['Ethereum'],
     }
   }
 }
