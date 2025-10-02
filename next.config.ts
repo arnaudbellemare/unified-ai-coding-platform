@@ -10,14 +10,25 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   // Enable Turbopack configuration
   experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+    // Turbopack is now enabled by default in canary
+  },
+  // Add security headers to prevent COOP errors
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups',
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'unsafe-none',
+          },
+        ],
       },
-    },
+    ]
   },
   images: {
     remotePatterns: [

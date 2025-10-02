@@ -118,6 +118,24 @@ export function MarketingLanding({
 
   return (
     <div className={styleVariant === 'mcpay' ? 'bg-[#0b0e14]' : 'bg-gray-50'}>
+      {/* Demo Link Banner */}
+      <div className="bg-black text-white py-4 relative z-30">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <p className="text-xl font-bold mb-2 font-mono">
+            Experience the Future of AI Commerce
+          </p>
+          <div className="flex justify-center">
+            <a 
+              href="http://localhost:3001/complete-demo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-white text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition-colors"
+            >
+              View Complete Demo →
+            </a>
+          </div>
+        </div>
+      </div>
       {/* Fixed Animated Background that follows scroll */}
       {!disableAnimatedBg && (
         <div className="fixed inset-0 pointer-events-none z-0">
@@ -842,6 +860,113 @@ export function MarketingLanding({
           {/* Base Store Section */}
           <div className="bg-white rounded-2xl p-8 shadow-sm">
             <OnchainStoreTemplate />
+          </div>
+
+          {/* Protocol Demos Section */}
+          <div className="mt-12">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-black mb-4">
+                Complete Agentic Commerce Protocol Stack
+              </h3>
+              <p className="text-gray-600 max-w-3xl mx-auto">
+                The only platform implementing both OpenAI's ACP and Google's AP2 protocols, 
+                plus Base blockchain payments for complete agentic commerce coverage.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* ACP Demo */}
+              <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gray-900 flex items-center justify-center shadow-sm">
+                    <span className="text-white font-bold text-lg">ACP</span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xl text-gray-900">OpenAI ACP</h4>
+                    <p className="text-sm text-gray-600">Human-to-Business Payments</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-base mb-6 leading-relaxed">
+                  When customers ask AI "Find me a blue shirt under $50" and AI finds your product, 
+                  you pay a small fee to appear higher in future searches.
+                </p>
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={() => window.open('/store', '_blank')}
+                    className="flex-1 bg-gray-900 hover:bg-gray-800 text-white h-12 font-medium"
+                  >
+                    Try ACP Demo →
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => window.open('https://www.agenticcommerce.dev/', '_blank')}
+                    className="px-6 h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
+                  >
+                    Learn More
+                  </Button>
+                </div>
+              </div>
+
+              {/* AP2 Demo */}
+              <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gray-900 flex items-center justify-center shadow-sm">
+                    <span className="text-white font-bold text-lg">AP2</span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xl text-gray-900">Google AP2</h4>
+                    <p className="text-sm text-gray-600">Agent-to-Agent Payments</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-base mb-6 leading-relaxed">
+                  AI agents can pay each other directly using Google's Agent Payments Protocol. 
+                  Enable autonomous agent commerce with secure, instant payments.
+                </p>
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={() => window.open('/ap2-demo', '_blank')}
+                    className="flex-1 bg-gray-900 hover:bg-gray-800 text-white h-12 font-medium"
+                  >
+                    Try AP2 Demo →
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => window.open('https://github.com/google-agentic-commerce/AP2', '_blank')}
+                    className="px-6 h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
+                  >
+                    Learn More
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Protocol Comparison */}
+            <div className="mt-8 bg-gray-50 rounded-2xl p-6">
+              <h4 className="font-bold text-lg text-black mb-4 text-center">Protocol Comparison</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-3">
+                    <span className="text-blue-600 font-bold">ACP</span>
+                  </div>
+                  <h5 className="font-semibold text-black mb-2">OpenAI ACP</h5>
+                  <p className="text-sm text-gray-600">Human customers buying from businesses via AI assistants</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                    <span className="text-green-600 font-bold">AP2</span>
+                  </div>
+                  <h5 className="font-semibold text-black mb-2">Google AP2</h5>
+                  <p className="text-sm text-gray-600">AI agents paying each other for services and recommendations</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-3">
+                    <span className="text-purple-600 font-bold">x402</span>
+                  </div>
+                  <h5 className="font-semibold text-black mb-2">Base x402</h5>
+                  <p className="text-sm text-gray-600">Blockchain payments on Base network for transparent transactions</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </div>

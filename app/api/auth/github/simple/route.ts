@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         )
       }
 
-      const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/github/simple`
+      const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'}/api/auth/github/simple`
       const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo,user&state=${Date.now()}`
 
       return NextResponse.redirect(githubAuthUrl)

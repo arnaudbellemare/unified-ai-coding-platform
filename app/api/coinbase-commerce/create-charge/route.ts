@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Mock Coinbase Commerce integration for demo purposes
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -10,51 +12,74 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Get Coinbase Commerce API key from environment
-    const apiKey = process.env.COINBASE_COMMERCE_API_KEY
-    if (!apiKey) {
-      console.error('COINBASE_COMMERCE_API_KEY not found in environment variables')
-      return NextResponse.json({ error: 'Commerce API key not configured' }, { status: 500 })
-    }
-
-    // Create the charge using Coinbase Commerce API
-    const chargeData = {
-      name,
-      description,
-      local_price,
-      pricing_type,
-      metadata: metadata || {},
-      redirect_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/store/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/store/cancel`,
-    }
-
-    const response = await fetch('https://api.commerce.coinbase.com/charges', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CC-Api-Key': apiKey,
-        'X-CC-Version': '2018-03-22',
+    // For demo purposes, return a mock response
+    const mockCharge = {
+      id: `demo_charge_${Date.now()}`,
+              hosted_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'}/store/demo-checkout?product=${encodeURIComponent(name)}&amount=${local_price.amount}`,
+      status: 'NEW',
+      pricing: {
+        local: {
+          amount: local_price.amount,
+          currency: local_price.currency
+        },
+        bitcoin: {
+          amount: (parseFloat(local_price.amount) / 45000).toFixed(8),
+          currency: 'BTC'
+        },
+        ethereum: {
+          amount: (parseFloat(local_price.amount) / 3000).toFixed(6),
+          currency: 'ETH'
+        },
+        usdc: {
+          amount: local_price.amount,
+          currency: 'USDC'
+        }
       },
-      body: JSON.stringify(chargeData),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.text()
-      console.error('Coinbase Commerce API error:', errorData)
-      return NextResponse.json({ error: 'Failed to create charge', details: errorData }, { status: response.status })
+      addresses: {
+        bitcoin: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+        ethereum: '0x742d35Cc6634C0532925a3b8D5C6C6C6C6C6C6C6',
+        usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+      },
+      timeline: [
+        {
+          time: new Date().toISOString(),
+          status: 'NEW'
+        }
+      ]
     }
 
-    const charge = await response.json()
-
-    console.log('Charge created successfully:', charge.data.id)
+    console.log('🚀 Mock crypto checkout created:', mockCharge.id)
+    console.log('💰 Auto USDC conversion enabled: true')
+    console.log('🌐 Network support: Base + Ethereum')
 
     return NextResponse.json({
-      id: charge.data.id,
-      hosted_url: charge.data.hosted_url,
-      status: charge.data.timeline?.[0]?.status || 'NEW',
+      success: true,
+      id: mockCharge.id,
+      hosted_url: mockCharge.hosted_url,
+      status: mockCharge.status,
+      pricing: mockCharge.pricing,
+      addresses: mockCharge.addresses,
+      timeline: mockCharge.timeline,
+      cryptoSupported: true,
+      autoUSDCConversion: true,
+      networkSupport: {
+        base: true,
+        ethereum: true,
+        supportedNetworks: ['Base', 'Ethereum']
+      },
+      supportedCurrencies: ['USDC', 'ETH', 'BTC', 'USDT']
+    }, {
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+        'Cross-Origin-Resource-Policy': 'cross-origin'
+      }
     })
   } catch (error) {
-    console.error('Error creating Coinbase Commerce charge:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('❌ Error creating crypto checkout:', error)
+    return NextResponse.json({ 
+      error: 'Failed to create crypto checkout', 
+      details: error instanceof Error ? error.message : 'Unknown error' 
+    }, { status: 500 })
   }
 }

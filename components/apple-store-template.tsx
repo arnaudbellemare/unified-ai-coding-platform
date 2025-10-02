@@ -220,7 +220,6 @@ export function AppleStoreTemplate() {
 
   return (
     <div className="min-h-screen bg-white">
-
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Product Images */}
@@ -246,18 +245,14 @@ export function AppleStoreTemplate() {
             {/* Product Header */}
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
-                  {selectedProduct.name}
-                </h1>
+                <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">{selectedProduct.name}</h1>
                 <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">
                   <Sparkles className="h-3 w-3 mr-1" />
                   AI Ready
                 </Badge>
               </div>
-              
-              <p className="text-xl text-gray-600 leading-relaxed">
-                {selectedProduct.description}
-              </p>
+
+              <p className="text-xl text-gray-600 leading-relaxed">{selectedProduct.description}</p>
 
               {/* Rating */}
               <div className="flex items-center space-x-4">
@@ -318,9 +313,7 @@ export function AppleStoreTemplate() {
             {/* Price and Quantity */}
             <div className="space-y-6">
               <div className="flex items-baseline space-x-2">
-                <span className="text-4xl font-bold text-gray-900">
-                  ${selectedProduct.price.toFixed(2)}
-                </span>
+                <span className="text-4xl font-bold text-gray-900">${selectedProduct.price.toFixed(2)}</span>
                 <span className="text-lg text-gray-600">USDC</span>
               </div>
 
@@ -373,9 +366,7 @@ export function AppleStoreTemplate() {
               {quantity > 1 && (
                 <div className="flex items-center justify-between py-4 border-t border-gray-200">
                   <span className="text-lg font-medium text-gray-700">Total:</span>
-                  <span className="text-2xl font-bold text-gray-900">
-                    ${getTotalPrice().toFixed(2)} USDC
-                  </span>
+                  <span className="text-2xl font-bold text-gray-900">${getTotalPrice().toFixed(2)} USDC</span>
                 </div>
               )}
             </div>
@@ -393,11 +384,19 @@ export function AppleStoreTemplate() {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <Button variant="outline" size="lg" className="h-12 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="h-12 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white"
+                >
                   <Heart className="h-4 w-4 mr-2" />
                   Save for Later
                 </Button>
-                <Button variant="outline" size="lg" className="h-12 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="h-12 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white"
+                >
                   <Share2 className="h-4 w-4 mr-2" />
                   Share
                 </Button>

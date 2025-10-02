@@ -1,6 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCurrentUser, requireAuth } from '@/lib/auth/simple-auth'
 import { acpService } from '@/lib/acp/acp-service'
+import { ACPOrderManager } from '@/lib/acp/order-manager'
+import { ACPWebhookHandler } from '@/lib/acp/webhook-handler'
+
+// Initialize services
+const orderManager = new ACPOrderManager()
+const webhookHandler = new ACPWebhookHandler()
+
+// Register webhook handlers
+webhookHandler.addEventHandler('order.created', async (order, event) => {
+  console.log(`📦 Order created webhook: ${order.id}`)
+  // Send confirmation email, update inventory, etc.
+})
+
+webhookHandler.addEventHandler('payment.processed', async (order, event) => {
+  console.log(`💳 Payment processed webhook: ${order.id}`)
+  // Update payment status, trigger fulfillment
+})
+
+webhookHandler.addEventHandler('shipped', async (order, event) => {
+  console.log(`🚚 Order shipped webhook: ${order.id}`)
+  // Send tracking email, update customer portal
+})
 
 /**
  * Agentic Commerce Protocol (ACP) Checkout Endpoint
@@ -69,6 +91,54 @@ export async function POST(request: NextRequest) {
         { status: 402 },
       )
     }
+
+    // Create order in order manager
+    const order = await orderManager.createOrder({
+      items: items.map(item => ({
+        product_id: item.productId || item.id,
+        name: item.name,
+        quantity: item.quantity || 1,
+        price: item.price,
+        total: (item.price || 0) * (item.quantity || 1)
+      })),
+      customer: {
+        id: user?.id || 'guest',
+        email: user?.email || 'guest@verclibase.com',
+        name: user?.name || 'Guest User',
+        address: {
+          street: '123 Main St',
+          city: 'San Francisco',
+          state: 'CA',
+          zip: '94105',
+          country: 'US'
+        }
+      },
+      payment: {
+        method: paymentMethod || 'x402',
+        transaction_id: checkoutResult.paymentId || `txn_${Date.now()}`,
+        status: 'completed',
+        amount: totalAmount,
+        currency
+      },
+      shipping: {
+        method: 'standard',
+        status: 'pending'
+      },
+      metadata
+    })
+
+    // Process webhook events
+    await webhookHandler.processWebhookEvent({
+      type: 'order.created',
+      order_id: order.id,
+      data: {
+        order_id: order.id,
+        total: order.total,
+        currency: order.currency,
+        items_count: order.items.length
+      },
+      signature: 'webhook_signature'
+    })
 
     // Create ACP-compliant response
     const checkoutResponse = {

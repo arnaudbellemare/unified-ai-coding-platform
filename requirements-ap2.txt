@@ -1,0 +1,14 @@
+# AP2 (Agent Payments Protocol) Dependencies
+# Install with: pip install -r requirements-ap2.txt
+
+# AP2 Types Package (from GitHub)
+git+https://github.com/google-agentic-commerce/AP2.git@main
+
+# Google AI/Vertex AI dependencies
+google-generativeai
+google-cloud-aiplatform
+
+# Additional AP2 dependencies
+uvicorn
+fastapi
+pydantic

@@ -49,11 +49,11 @@ interface AppleProductPageProps {
   initialQuantity?: number
 }
 
-export function AppleProductPage({ 
-  product, 
-  onAddToCart, 
+export function AppleProductPage({
+  product,
+  onAddToCart,
   onQuantityChange,
-  initialQuantity = 1 
+  initialQuantity = 1,
 }: AppleProductPageProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [quantity, setQuantity] = useState(initialQuantity)
@@ -97,9 +97,9 @@ export function AppleProductPage({
               <Button variant="ghost" size="sm" className="p-2">
                 <Share2 className="h-4 w-4" />
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className={`p-2 ${isLiked ? 'text-red-500' : 'text-gray-400'}`}
                 onClick={() => setIsLiked(!isLiked)}
               >
@@ -121,7 +121,7 @@ export function AppleProductPage({
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              
+
               {/* Navigation Arrows */}
               {product.images.length > 1 && (
                 <>
@@ -151,9 +151,7 @@ export function AppleProductPage({
                     <button
                       key={index}
                       className={`w-2 h-2 rounded-full transition-all ${
-                        index === currentImageIndex 
-                          ? 'bg-white scale-125' 
-                          : 'bg-white/50 hover:bg-white/75'
+                        index === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
                       }`}
                       onClick={() => setCurrentImageIndex(index)}
                     />
@@ -169,17 +167,11 @@ export function AppleProductPage({
                   <button
                     key={index}
                     className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
-                      index === currentImageIndex 
-                        ? 'border-gray-900' 
-                        : 'border-transparent hover:border-gray-300'
+                      index === currentImageIndex ? 'border-gray-900' : 'border-transparent hover:border-gray-300'
                     }`}
                     onClick={() => setCurrentImageIndex(index)}
                   >
-                    <img
-                      src={image}
-                      alt={`${product.name} view ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={image} alt={`${product.name} view ${index + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -191,9 +183,7 @@ export function AppleProductPage({
             {/* Product Header */}
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
-                  {product.name}
-                </h1>
+                <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">{product.name}</h1>
                 {product.aiScore && (
                   <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">
                     <Sparkles className="h-3 w-3 mr-1" />
@@ -201,10 +191,8 @@ export function AppleProductPage({
                   </Badge>
                 )}
               </div>
-              
-              <p className="text-xl text-gray-600 leading-relaxed">
-                {product.description}
-              </p>
+
+              <p className="text-xl text-gray-600 leading-relaxed">{product.description}</p>
 
               {/* Rating */}
               <div className="flex items-center space-x-4">
@@ -213,9 +201,7 @@ export function AppleProductPage({
                     <Star
                       key={i}
                       className={`h-4 w-4 ${
-                        i < Math.floor(product.rating) 
-                          ? 'text-yellow-400 fill-current' 
-                          : 'text-gray-300'
+                        i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
                       }`}
                     />
                   ))}
@@ -301,9 +287,7 @@ export function AppleProductPage({
             {/* Price and Quantity */}
             <div className="space-y-6">
               <div className="flex items-baseline space-x-2">
-                <span className="text-4xl font-bold text-gray-900">
-                  ${product.price.toFixed(2)}
-                </span>
+                <span className="text-4xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
                 <span className="text-lg text-gray-600">{product.currency}</span>
               </div>
 
@@ -417,7 +401,7 @@ export function AppleProductPageDemo() {
     id: 'base-tshirt',
     name: 'BASE T-SHIRT',
     description: 'Premium quality cotton t-shirt featuring the Base logo. Comfortable fit with modern design.',
-    price: 28.00,
+    price: 28.0,
     currency: 'USDC',
     images: [
       'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop&crop=center',
@@ -449,10 +433,5 @@ export function AppleProductPageDemo() {
     console.log(`Added ${quantity} x ${product.name} to cart`)
   }
 
-  return (
-    <AppleProductPage
-      product={sampleProduct}
-      onAddToCart={handleAddToCart}
-    />
-  )
+  return <AppleProductPage product={sampleProduct} onAddToCart={handleAddToCart} />
 }

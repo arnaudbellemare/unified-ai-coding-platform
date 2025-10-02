@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
 
         // Check if we have access to the repository
         const accessResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/check-repo-access`,
+          `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'}/api/check-repo-access`,
           {
             method: 'POST',
             headers: {
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
 
             // Fork the repository
             const forkResponse = await fetch(
-              `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/fork-repository`,
+              `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'}/api/fork-repository`,
               {
                 method: 'POST',
                 headers: {

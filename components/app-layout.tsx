@@ -356,9 +356,7 @@ export function AppLayout({ children, initialSidebarWidth, initialSidebarOpen }:
         suppressHydrationWarning
       >
         {/* Backdrop - COMPLETELY DISABLED - NO SIDEBAR ANYWHERE! */}
-        {false && (
-          <div className="lg:hidden fixed inset-0 bg-black/50 z-30" onClick={closeSidebar} />
-        )}
+        {false && <div className="lg:hidden fixed inset-0 bg-black/50 z-30" onClick={closeSidebar} />}
 
         {/* Sidebar - COMPLETELY DISABLED - NO SIDEBAR ANYWHERE! */}
         {false && (
