@@ -142,7 +142,7 @@ export function AppleStoreTemplate() {
   const handlePayment = () => {
     // Create checkout URL directly
     const checkoutUrl = `/store/demo-checkout?product=${encodeURIComponent(selectedProduct.name)}&amount=${getTotalPrice().toFixed(2)}`
-    
+
     // Try to open checkout page with popup blocking protection
     const popup = window.open(
       checkoutUrl,
@@ -152,8 +152,10 @@ export function AppleStoreTemplate() {
 
     if (!popup || popup.closed || typeof popup.closed === 'undefined') {
       // Popup was blocked, show fallback message
-      alert('Popup blocked! Please allow popups for this site and try again, or manually navigate to the checkout page.')
-      
+      alert(
+        'Popup blocked! Please allow popups for this site and try again, or manually navigate to the checkout page.',
+      )
+
       // Alternative: redirect in same window
       const userConfirm = confirm('Would you like to navigate to the checkout page in this window instead?')
       if (userConfirm) {
