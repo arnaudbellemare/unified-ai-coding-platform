@@ -866,7 +866,30 @@ export function MarketingLanding({
                 </p>
                 <div className="flex gap-3">
                   <Button
-                    onClick={() => window.open('/store', '_blank')}
+                    onClick={() => {
+                      // Detect mobile devices
+                      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                      
+                      if (isMobile) {
+                        // On mobile, directly navigate to store page instead of trying to open popup
+                        window.location.href = '/store'
+                        return
+                      }
+                      
+                      // Try to open store page with popup blocking protection (desktop)
+                      const popup = window.open('/store', '_blank', 'noopener,noreferrer,width=800,height=600,scrollbars=yes,resizable=yes')
+                      
+                      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+                        // Popup was blocked, show fallback message
+                        alert('Popup blocked! Please allow popups for this site and try again, or manually navigate to the store page.')
+                        
+                        // Alternative: redirect in same window
+                        const userConfirm = confirm('Would you like to navigate to the store page in this window instead?')
+                        if (userConfirm) {
+                          window.location.href = '/store'
+                        }
+                      }
+                    }}
                     className="flex-1 bg-gray-900 hover:bg-gray-800 text-white h-12 font-medium"
                   >
                     Try ACP Demo →
@@ -898,7 +921,30 @@ export function MarketingLanding({
                 </p>
                 <div className="flex gap-3">
                   <Button
-                    onClick={() => window.open('/ap2-demo', '_blank')}
+                    onClick={() => {
+                      // Detect mobile devices
+                      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                      
+                      if (isMobile) {
+                        // On mobile, directly navigate to AP2 demo page instead of trying to open popup
+                        window.location.href = '/ap2-demo'
+                        return
+                      }
+                      
+                      // Try to open AP2 demo page with popup blocking protection (desktop)
+                      const popup = window.open('/ap2-demo', '_blank', 'noopener,noreferrer,width=800,height=600,scrollbars=yes,resizable=yes')
+                      
+                      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+                        // Popup was blocked, show fallback message
+                        alert('Popup blocked! Please allow popups for this site and try again, or manually navigate to the AP2 demo page.')
+                        
+                        // Alternative: redirect in same window
+                        const userConfirm = confirm('Would you like to navigate to the AP2 demo page in this window instead?')
+                        if (userConfirm) {
+                          window.location.href = '/ap2-demo'
+                        }
+                      }
+                    }}
                     className="flex-1 bg-gray-900 hover:bg-gray-800 text-white h-12 font-medium"
                   >
                     Try AP2 Demo →

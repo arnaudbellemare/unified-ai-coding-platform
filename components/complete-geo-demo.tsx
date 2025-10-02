@@ -802,7 +802,10 @@ export function CompleteGEODemo() {
                           <Play className="h-4 w-4 mr-2" />
                           Try ACP Demo
                         </Button>
-                        <Button variant="outline" className="px-6 h-12 border-gray-600 text-black hover:bg-gray-800 hover:text-white">
+                        <Button
+                          variant="outline"
+                          className="px-6 h-12 border-gray-600 text-black hover:bg-gray-800 hover:text-white"
+                        >
                           Learn More
                         </Button>
                       </div>
@@ -849,7 +852,10 @@ export function CompleteGEODemo() {
                           <Play className="h-4 w-4 mr-2" />
                           Try AP2 Demo
                         </Button>
-                        <Button variant="outline" className="px-6 h-12 border-gray-600 text-black hover:bg-gray-800 hover:text-white">
+                        <Button
+                          variant="outline"
+                          className="px-6 h-12 border-gray-600 text-black hover:bg-gray-800 hover:text-white"
+                        >
                           Learn More
                         </Button>
                       </div>
