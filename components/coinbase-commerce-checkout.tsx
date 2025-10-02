@@ -30,8 +30,23 @@ export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: Coinba
 
   // Detect mobile devices
   React.useEffect(() => {
-    const mobileCheck = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    const userAgent = navigator.userAgent
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
+    const isSmallScreen = window.innerWidth <= 768
+    
+    // Consider it mobile if any of these conditions are true
+    const mobileCheck = isMobileUA || (isTouchDevice && isSmallScreen)
+    
     setIsMobile(mobileCheck)
+    console.log('Mobile detection:', {
+      mobileCheck,
+      isMobileUA,
+      isTouchDevice,
+      isSmallScreen,
+      userAgent,
+      windowWidth: window.innerWidth
+    })
   }, [])
 
   // Create a charge dynamically using our backend
@@ -134,12 +149,19 @@ export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: Coinba
 
       // For mobile, redirect directly to Coinbase Commerce checkout page
       const checkoutUrl = data.hosted_url
+      console.log('Redirecting to:', checkoutUrl)
       window.location.href = checkoutUrl
     } catch (error) {
       setIsCreatingCharge(false)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       onError?.(errorMessage)
     }
+  }
+
+  // Fallback handler for when popup is blocked
+  const handlePopupBlocked = async () => {
+    console.log('Popup blocked, using fallback')
+    await handleMobilePayment()
   }
 
   return (
