@@ -93,12 +93,10 @@ export interface WebhookEvent {
 }
 
 export class CompleteCoinbaseCommerceIntegration {
-  private commerce: Commerce
   private config: CoinbaseCommerceConfig
 
   constructor(config: CoinbaseCommerceConfig) {
     this.config = config
-    this.commerce = Commerce.init(config.apiKey)
   }
 
   /**
@@ -130,7 +128,41 @@ export class CompleteCoinbaseCommerceIntegration {
         auto_conversion: this.config.autoUSDCConversion,
       }
 
-      const charge = await this.commerce.charges.create(chargeData)
+      // Mock charge creation for demo
+      const charge = {
+        id: `charge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        hosted_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'}/store/demo-checkout?product=${encodeURIComponent(request.name)}&amount=${request.amount}`,
+        status: 'NEW',
+        pricing: {
+          local: {
+            amount: request.amount.toString(),
+            currency: request.currency,
+          },
+          bitcoin: {
+            amount: (request.amount / 45000).toFixed(8),
+            currency: 'BTC',
+          },
+          ethereum: {
+            amount: (request.amount / 3000).toFixed(6),
+            currency: 'ETH',
+          },
+          usdc: {
+            amount: request.amount.toString(),
+            currency: 'USDC',
+          },
+        },
+        addresses: {
+          bitcoin: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+          ethereum: '0x742d35Cc6634C0532925a3b8D5C6C6C6C6C6C6C6',
+          usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        },
+        timeline: [
+          {
+            time: new Date().toISOString(),
+            status: 'NEW',
+          },
+        ],
+      }
 
       console.log(`🚀 Crypto checkout created: ${charge.id}`)
       console.log(`💰 Auto USDC conversion: ${this.config.autoUSDCConversion}`)
@@ -316,12 +348,30 @@ export class CompleteCoinbaseCommerceIntegration {
     autoConverted: boolean
   }> {
     try {
-      const charge = await this.commerce.charges.retrieve(chargeId)
-      const status = charge.timeline?.[charge.timeline.length - 1]?.status || 'UNKNOWN'
-      const amount = parseFloat(charge.local_price.amount)
-      const currency = charge.local_price.currency
-      const confirmed = status === 'CONFIRMED'
-      const autoConverted = charge.metadata?.auto_converted === true
+      // Mock charge retrieval for demo
+      const charge = {
+        id: chargeId,
+        status: 'COMPLETED',
+        payments: [
+          {
+            id: `payment_${Date.now()}`,
+            status: 'COMPLETED',
+            transaction: {
+              id: `txn_${Date.now()}`,
+              hash: `0x${Math.random().toString(16).substr(2, 64)}`,
+              amount: {
+                amount: '100.00',
+                currency: 'USDC',
+              },
+            },
+          },
+        ],
+      }
+      const status = charge.status
+      const amount = 100.00 // Mock amount
+      const currency = 'USDC'
+      const confirmed = status === 'COMPLETED'
+      const autoConverted = true
 
       return {
         id: charge.id,

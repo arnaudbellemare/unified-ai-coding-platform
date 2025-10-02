@@ -37,7 +37,7 @@ export function AP2Demo() {
   // Update stats when payments change
   useEffect(() => {
     const totalPayments = payments.length
-    const totalVolume = payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0)
+    const totalVolume = payments.reduce((sum, payment) => sum + payment.amount, 0)
     const successfulPayments = payments.filter((p) => p.status === 'completed').length
     const successRate = totalPayments > 0 ? (successfulPayments / totalPayments) * 100 : 100
 
@@ -215,9 +215,8 @@ export function AP2Demo() {
                     status: 'completed',
                     fromAgent: randomAgent.from,
                     toAgent: randomAgent.to,
-                    amount: (Math.random() * 50 + 10).toFixed(2),
+                     amount: Math.round((Math.random() * 50 + 10) * 100) / 100,
                     currency: 'USD',
-                    description: randomDescription,
                     timestamp: new Date(),
                   }
 
@@ -290,7 +289,7 @@ export function AP2Demo() {
                     <div className="text-lg font-medium text-black mb-1">
                       {payment.fromAgent} → {payment.toAgent}
                     </div>
-                    <div className="text-sm text-gray-600">{payment.description || 'Agent payment'}</div>
+                     <div className="text-sm text-gray-600">Agent payment</div>
                   </div>
 
                   <div className="flex items-center justify-between">

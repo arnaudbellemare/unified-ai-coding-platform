@@ -9,18 +9,18 @@ const orderManager = new ACPOrderManager()
 const webhookHandler = new ACPWebhookHandler()
 
 // Register webhook handlers
-webhookHandler.addEventHandler('order.created', async (order, event) => {
-  console.log(`📦 Order created webhook: ${order.id}`)
+webhookHandler.addEventHandler('order.created', async (event) => {
+  console.log(`📦 Order created webhook: ${event.order_id}`)
   // Send confirmation email, update inventory, etc.
 })
 
-webhookHandler.addEventHandler('payment.processed', async (order, event) => {
-  console.log(`💳 Payment processed webhook: ${order.id}`)
+webhookHandler.addEventHandler('payment.processed', async (event) => {
+  console.log(`💳 Payment processed webhook: ${event.order_id}`)
   // Update payment status, trigger fulfillment
 })
 
-webhookHandler.addEventHandler('shipped', async (order, event) => {
-  console.log(`🚚 Order shipped webhook: ${order.id}`)
+webhookHandler.addEventHandler('shipped', async (event) => {
+  console.log(`🚚 Order shipped webhook: ${event.order_id}`)
   // Send tracking email, update customer portal
 })
 
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       })),
       customer: {
         id: user?.id || 'guest',
-        email: user?.email || 'guest@verclibase.com',
+        email: 'guest@verclibase.com', // SimpleUser doesn't have email
         name: user?.name || 'Guest User',
         address: {
           street: '123 Main St',

@@ -227,20 +227,30 @@ export function CompleteGEODemo() {
       } else {
         // If API fails, just update the metrics locally
         setMetrics((prev) => ({
-          ...prev,
           citations: (prev?.citations || 0) + 3,
           impressions: (prev?.impressions || 0) + 150,
+          clickThroughRate: prev?.clickThroughRate || 0,
+          conversionRate: prev?.conversionRate || 0,
           revenueAttribution: (prev?.revenueAttribution || 0) + 125,
+          authorityScore: prev?.authorityScore || 0,
+          trustSignals: prev?.trustSignals || 0,
+          backlinks: prev?.backlinks || 0,
+          socialSignals: prev?.socialSignals || 0,
         }))
       }
     } catch (error) {
       console.error('Failed to simulate citation:', error)
       // Update metrics locally on error
       setMetrics((prev) => ({
-        ...prev,
         citations: (prev?.citations || 0) + 3,
         impressions: (prev?.impressions || 0) + 150,
+        clickThroughRate: prev?.clickThroughRate || 0,
+        conversionRate: prev?.conversionRate || 0,
         revenueAttribution: (prev?.revenueAttribution || 0) + 125,
+        authorityScore: prev?.authorityScore || 0,
+        trustSignals: prev?.trustSignals || 0,
+        backlinks: prev?.backlinks || 0,
+        socialSignals: prev?.socialSignals || 0,
       }))
     }
   }

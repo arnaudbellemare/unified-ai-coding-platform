@@ -100,7 +100,7 @@ export class AP2MandateManager {
       id: mandateId,
       intent_mandate_id: intentMandateId,
       cart_data: cartData,
-      merchant_signature,
+      merchant_signature: merchantSignature,
       created_at: new Date(),
     }
 
@@ -125,7 +125,7 @@ export class AP2MandateManager {
       id: mandateId,
       cart_mandate_id: cartMandateId,
       payment_data: paymentData,
-      user_signature,
+      user_signature: userSignature,
       created_at: new Date(),
     }
 

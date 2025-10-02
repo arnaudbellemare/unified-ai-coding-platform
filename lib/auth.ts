@@ -22,8 +22,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async session({ session, token }) {
       // Add access token to session
-      if (token.accessToken) {
-        session.accessToken = token.accessToken
+      if (token.accessToken && typeof token.accessToken === 'string') {
+        (session as any).accessToken = token.accessToken
       }
       return session
     },

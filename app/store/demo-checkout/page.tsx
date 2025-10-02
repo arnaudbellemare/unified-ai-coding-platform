@@ -9,8 +9,8 @@ import { LogoVerclibase } from '@/components/logo-verclibase'
 
 export default function DemoCheckoutPage() {
   const searchParams = useSearchParams()
-  const product = searchParams.get('product') || 'Demo Product'
-  const amount = searchParams.get('amount') || '29.99'
+  const product = searchParams?.get('product') || 'Demo Product'
+  const amount = searchParams?.get('amount') || '29.99'
 
   const { user, authenticated, ready, login, logout } = usePrivy()
   const [selectedWallet, setSelectedWallet] = useState<string>('')

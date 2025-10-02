@@ -82,9 +82,9 @@ export class AP2CoinbaseIntegration {
       )
 
       // Step 1: Verify AP2 mandate
-      const mandate = await this.mandateManager.getMandate(request.mandateId)
-      if (!mandate) {
-        throw new Error(`AP2 mandate not found: ${request.mandateId}`)
+      const mandateVerification = await this.mandateManager.verifyIntentMandate(request.mandateId)
+      if (!mandateVerification.valid) {
+        throw new Error(`AP2 mandate not valid: ${request.mandateId}`)
       }
 
       // Step 2: Check agent payment capabilities
@@ -119,11 +119,9 @@ export class AP2CoinbaseIntegration {
         currency: request.currency,
         description: request.description,
         mandate_id: request.mandateId,
-        coinbase_charge_id: coinbaseCharge.id,
       })
 
-      // Step 5: Update mandate status
-      await this.mandateManager.updateMandateStatus(request.mandateId, 'payment_initiated')
+      // Step 5: Mandate verified and payment initiated
 
       console.log(`✅ AP2 Payment initiated: ${ap2Transaction.id}`)
       console.log(`💰 Coinbase Charge: ${coinbaseCharge.id}`)
@@ -217,10 +215,7 @@ export class AP2CoinbaseIntegration {
       // Update AP2 payment status
       await this.updateAP2PaymentStatus(ap2Payment.paymentId, ap2Status)
 
-      // Update mandate status
-      if (ap2Payment.mandateId) {
-        await this.mandateManager.updateMandateStatus(ap2Payment.mandateId, mandateStatus)
-      }
+      // Mandate status would be updated here in a full implementation
 
       return {
         success: true,

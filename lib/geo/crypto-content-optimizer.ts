@@ -294,7 +294,7 @@ A: You can buy crypto directly through Coinbase Commerce or use traditional paym
         'blockchain payments',
         'stablecoin payments',
         'crypto shopping',
-      ].join(', '),
+      ],
       openGraph: {
         title: `${product.name} - Crypto Commerce`,
         description: `Instant crypto payments with auto USDC conversion. Pay with Bitcoin, Ethereum, USDC, USDT.`,
@@ -306,6 +306,12 @@ A: You can buy crypto directly through Coinbase Commerce or use traditional paym
         title: `${product.name} - Crypto Commerce`,
         description: `Instant crypto payments with auto USDC conversion.`,
         images: [`${process.env.NEXT_PUBLIC_APP_URL}/images/crypto-payment-twitter.jpg`],
+      },
+      metaTags: {
+        'crypto-payment': 'enabled',
+        'usdc-conversion': 'auto',
+        'instant-settlement': 'true',
+        'base-network': 'supported',
       },
     }
   }
