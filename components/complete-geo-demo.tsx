@@ -259,15 +259,21 @@ export function CompleteGEODemo() {
     try {
       // Open the demo checkout page with Privy wallet selection
       const checkoutUrl = `${window.location.protocol}//${window.location.hostname}:3001/store/demo-checkout?product=${encodeURIComponent(product.name)}&amount=${product.price}`
-      
+
       // Try to open popup window
-      const popup = window.open(checkoutUrl, '_blank', 'noopener,noreferrer,width=800,height=600,scrollbars=yes,resizable=yes')
-      
+      const popup = window.open(
+        checkoutUrl,
+        '_blank',
+        'noopener,noreferrer,width=800,height=600,scrollbars=yes,resizable=yes',
+      )
+
       // Check if popup was blocked
       if (!popup || popup.closed || typeof popup.closed === 'undefined') {
         // Popup was blocked, show fallback message
-        alert('Popup blocked! Please allow popups for this site and try again, or manually navigate to the checkout page.')
-        
+        alert(
+          'Popup blocked! Please allow popups for this site and try again, or manually navigate to the checkout page.',
+        )
+
         // Alternative: redirect in same window
         const userConfirm = confirm('Would you like to navigate to the checkout page in this window instead?')
         if (userConfirm) {
@@ -374,23 +380,25 @@ export function CompleteGEODemo() {
       {/* Demo Tabs */}
       <div className="max-w-7xl mx-auto px-6 py-12 !bg-black">
         <Tabs value={activeDemo} onValueChange={setActiveDemo} className="w-full">
-          <TabsList className="flex w-full overflow-x-auto scrollbar-hide gap-2 p-1 bg-gray-900 rounded-lg">
-            <TabsTrigger value="overview" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="geo" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
-              GEO Analytics
-            </TabsTrigger>
-            <TabsTrigger value="crypto" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
-              Crypto Commerce
-            </TabsTrigger>
-            <TabsTrigger value="ap2" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
-              AP2 Payments
-            </TabsTrigger>
-            <TabsTrigger value="langstruct" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
-              LangStruct AI
-            </TabsTrigger>
-          </TabsList>
+          <div className="w-full overflow-x-auto scrollbar-hide">
+            <TabsList className="inline-flex w-max min-w-full gap-2 p-1 bg-gray-900 rounded-lg">
+              <TabsTrigger value="overview" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="geo" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+                GEO Analytics
+              </TabsTrigger>
+              <TabsTrigger value="crypto" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+                Crypto Commerce
+              </TabsTrigger>
+              <TabsTrigger value="ap2" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+                AP2 Payments
+              </TabsTrigger>
+              <TabsTrigger value="langstruct" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+                LangStruct AI
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-8">

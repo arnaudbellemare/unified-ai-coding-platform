@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Checkout, CheckoutButton, CheckoutStatus } from '@coinbase/onchainkit/checkout'
+// import { Checkout, CheckoutButton, CheckoutStatus } from '@coinbase/onchainkit/checkout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -138,8 +138,8 @@ export function AppleStoreTemplate() {
     // For now, just log the action
   }
 
-  // Charge handler for OnchainKit Checkout
-  const chargeHandler = async (): Promise<string> => {
+  // Custom payment handler with popup blocking protection
+  const handlePayment = async () => {
     try {
       const response = await fetch('/api/coinbase-commerce/create-charge', {
         method: 'POST',
@@ -167,10 +167,29 @@ export function AppleStoreTemplate() {
       }
 
       const data = await response.json()
-      return data.id
+      
+      // Try to open checkout page with popup blocking protection
+      const checkoutUrl = data.hosted_url || `/store/demo-checkout?product=${encodeURIComponent(selectedProduct.name)}&amount=${getTotalPrice().toFixed(2)}`
+      
+      const popup = window.open(
+        checkoutUrl,
+        '_blank',
+        'noopener,noreferrer,width=800,height=600,scrollbars=yes,resizable=yes'
+      )
+      
+      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+        // Popup was blocked, show fallback message
+        alert('Popup blocked! Please allow popups for this site and try again, or manually navigate to the checkout page.')
+        
+        // Alternative: redirect in same window
+        const userConfirm = confirm('Would you like to navigate to the checkout page in this window instead?')
+        if (userConfirm) {
+          window.location.href = checkoutUrl
+        }
+      }
     } catch (error) {
-      console.error('Error creating charge:', error)
-      throw error
+      console.error('Payment failed:', error)
+      alert('Payment failed. Please try again.')
     }
   }
 
@@ -374,13 +393,12 @@ export function AppleStoreTemplate() {
             {/* Action Buttons */}
             <div className="space-y-4">
               <div className="w-full">
-                <Checkout chargeHandler={chargeHandler} onStatus={handleCheckoutStatus}>
-                  <CheckoutButton
-                    text={`Pay ${getTotalPrice().toFixed(2)} USDC`}
-                    className="w-full bg-gray-900 hover:bg-gray-800 text-white h-14 text-lg font-medium rounded-xl"
-                  />
-                  <CheckoutStatus />
-                </Checkout>
+                <Button
+                  onClick={handlePayment}
+                  className="w-full bg-gray-900 hover:bg-gray-800 text-white h-14 text-lg font-medium rounded-xl"
+                >
+                  Pay {getTotalPrice().toFixed(2)} USDC
+                </Button>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

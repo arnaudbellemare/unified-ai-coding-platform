@@ -189,47 +189,17 @@ export function AP2Demo() {
                 </p>
               </div>
               <button
-                onClick={() => {
-                  // Create a new AP2 payment transaction with variety
-                  const agents = [
-                    { from: 'ShoppingBot_001', to: 'PaymentBot_002' },
-                    { from: 'RecommendationBot_003', to: 'AnalyticsBot_004' },
-                    { from: 'SearchBot_005', to: 'DataBot_006' },
-                    { from: 'CustomerBot_007', to: 'InventoryBot_008' },
-                    { from: 'MarketingBot_009', to: 'SalesBot_010' },
-                  ]
-
-                  const descriptions = [
-                    'Agent recommendation fee',
-                    'Data access payment',
-                    'Service discovery fee',
-                    'Analytics processing',
-                    'Recommendation optimization',
-                  ]
-
-                  const randomAgent = agents[Math.floor(Math.random() * agents.length)]
-                  const randomDescription = descriptions[Math.floor(Math.random() * descriptions.length)]
-
-                  const newPayment: AP2Payment = {
-                    paymentId: `ap2_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                    status: 'completed',
-                    fromAgent: randomAgent.from,
-                    toAgent: randomAgent.to,
-                    amount: Math.round((Math.random() * 50 + 10) * 100) / 100,
-                    currency: 'USD',
-                    timestamp: new Date(),
-                  }
-
-                  setPayments((prev) => [...prev, newPayment])
-
-                  // Scroll to payment history
+                onClick={async () => {
+                  await handleAP2Payment()
+                  // Scroll to payment history after processing
                   setTimeout(() => {
                     document.getElementById('payment-history')?.scrollIntoView({ behavior: 'smooth' })
                   }, 500)
                 }}
-                className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-all duration-300 group-hover:shadow-lg"
+                disabled={isProcessing}
+                className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-all duration-300 group-hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Try AP2 Payment →
+                {isProcessing ? 'Processing...' : 'Try AP2 Payment →'}
               </button>
             </div>
 
