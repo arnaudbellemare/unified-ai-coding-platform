@@ -138,58 +138,27 @@ export function AppleStoreTemplate() {
     // For now, just log the action
   }
 
-  // Custom payment handler with popup blocking protection
-  const handlePayment = async () => {
-    try {
-      const response = await fetch('/api/coinbase-commerce/create-charge', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: `${selectedProduct.name} - VERCLIBASE Store`,
-          description: selectedProduct.description,
-          local_price: {
-            amount: getTotalPrice().toFixed(2),
-            currency: 'USD',
-          },
-          pricing_type: 'fixed_price',
-          metadata: {
-            product_id: selectedProduct.id,
-            quantity: quantity,
-            total: getTotalPrice(),
-          },
-        }),
-      })
+  // Direct checkout navigation with popup blocking protection
+  const handlePayment = () => {
+    // Create checkout URL directly
+    const checkoutUrl = `/store/demo-checkout?product=${encodeURIComponent(selectedProduct.name)}&amount=${getTotalPrice().toFixed(2)}`
+    
+    // Try to open checkout page with popup blocking protection
+    const popup = window.open(
+      checkoutUrl,
+      '_blank',
+      'noopener,noreferrer,width=800,height=600,scrollbars=yes,resizable=yes',
+    )
 
-      if (!response.ok) {
-        throw new Error('Failed to create charge')
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      // Popup was blocked, show fallback message
+      alert('Popup blocked! Please allow popups for this site and try again, or manually navigate to the checkout page.')
+      
+      // Alternative: redirect in same window
+      const userConfirm = confirm('Would you like to navigate to the checkout page in this window instead?')
+      if (userConfirm) {
+        window.location.href = checkoutUrl
       }
-
-      const data = await response.json()
-      
-      // Try to open checkout page with popup blocking protection
-      const checkoutUrl = data.hosted_url || `/store/demo-checkout?product=${encodeURIComponent(selectedProduct.name)}&amount=${getTotalPrice().toFixed(2)}`
-      
-      const popup = window.open(
-        checkoutUrl,
-        '_blank',
-        'noopener,noreferrer,width=800,height=600,scrollbars=yes,resizable=yes'
-      )
-      
-      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-        // Popup was blocked, show fallback message
-        alert('Popup blocked! Please allow popups for this site and try again, or manually navigate to the checkout page.')
-        
-        // Alternative: redirect in same window
-        const userConfirm = confirm('Would you like to navigate to the checkout page in this window instead?')
-        if (userConfirm) {
-          window.location.href = checkoutUrl
-        }
-      }
-    } catch (error) {
-      console.error('Payment failed:', error)
-      alert('Payment failed. Please try again.')
     }
   }
 
