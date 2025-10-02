@@ -62,6 +62,8 @@ export function CompleteGEODemo() {
   const [isLoading, setIsLoading] = useState(true)
   const [showPopup, setShowPopup] = useState(false)
   const [popupData, setPopupData] = useState<any>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [stars, setStars] = useState<Array<{ id: number; x: number; y: number; delay: number; size: number }>>([])
   const [agentTransactions, setAgentTransactions] = useState([
     {
       id: 'tx_001',
@@ -91,6 +93,35 @@ export function CompleteGEODemo() {
 
   useEffect(() => {
     loadDemoData()
+  }, [])
+
+  // Initialize star field
+  useEffect(() => {
+    const generateStars = () => {
+      const newStars = Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        delay: Math.random() * 3,
+        size: Math.random() * 3 + 1,
+      }))
+      setStars(newStars)
+    }
+    
+    generateStars()
+  }, [])
+
+  // Track mouse movement
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      })
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
   const loadDemoData = async () => {
@@ -290,7 +321,7 @@ export function CompleteGEODemo() {
   const testAP2Payment = async () => {
     try {
       console.log('🤖 AP2 Payment: Starting mock payment simulation...')
-      
+
       // Mock AP2 payment scenarios
       const mockScenarios = [
         {
@@ -303,7 +334,7 @@ export function CompleteGEODemo() {
           fromAgent: 'AnalyticsBot_003',
           toAgent: 'DataBot_004',
           description: 'Market analysis service',
-          amount: 42.50,
+          amount: 42.5,
         },
         {
           fromAgent: 'SearchBot_005',
@@ -315,7 +346,7 @@ export function CompleteGEODemo() {
           fromAgent: 'CustomerBot_007',
           toAgent: 'SupportBot_008',
           description: 'Customer service coordination',
-          amount: 33.00,
+          amount: 33.0,
         },
         {
           fromAgent: 'MarketingBot_009',
@@ -326,11 +357,11 @@ export function CompleteGEODemo() {
       ]
 
       // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       // Pick a random scenario
       const scenario = mockScenarios[Math.floor(Math.random() * mockScenarios.length)]
-      
+
       // Generate mock transaction
       const newTransaction = {
         id: `ap2_tx_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
@@ -344,7 +375,6 @@ export function CompleteGEODemo() {
       console.log('🤖 AP2 Payment: Generated mock transaction:', newTransaction)
       setAgentTransactions((prev) => [newTransaction, ...prev])
       console.log('✅ AP2 Payment: Successfully added mock transaction to list')
-      
     } catch (error) {
       console.error('❌ AP2 Payment failed:', error)
       alert(`AP2 Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -363,7 +393,62 @@ export function CompleteGEODemo() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black relative">
+      {/* Star Field CSS Animations */}
+      <style jsx>{`
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          25% { transform: translateY(-2px) rotate(1deg); }
+          50% { transform: translateY(-1px) rotate(0deg); }
+          75% { transform: translateY(-3px) rotate(-1deg); }
+        }
+        .star-twinkle {
+          animation: twinkle 2s ease-in-out infinite;
+        }
+        .star-float {
+          animation: float 4s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* Star Field Effect */}
+      <div className="fixed inset-0 pointer-events-none z-10">
+        {stars.map((star) => {
+          // Calculate distance from mouse to star
+          const distance = Math.sqrt(
+            Math.pow(mousePosition.x - star.x, 2) + Math.pow(mousePosition.y - star.y, 2)
+          )
+          const intensity = Math.max(0, 1 - distance / 30) // 30px radius of effect
+          const scale = 1 + intensity * 2 // Scale up stars near mouse
+          const opacity = 0.3 + intensity * 0.7 // Increase opacity near mouse
+          
+          return (
+            <div
+              key={star.id}
+              className={`absolute rounded-full bg-white transition-all duration-300 ease-out star-twinkle star-float`}
+              style={{
+                left: `${star.x}%`,
+                top: `${star.y}%`,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                transform: `scale(${scale})`,
+                opacity: opacity,
+                animationDelay: `${star.delay}s`,
+                boxShadow: intensity > 0.5 
+                  ? `0 0 ${star.size * 4}px rgba(255, 255, 255, ${intensity}), 0 0 ${star.size * 8}px rgba(255, 255, 255, ${intensity * 0.5})` 
+                  : 'none',
+                filter: intensity > 0.3 
+                  ? `brightness(${1 + intensity * 2}) drop-shadow(0 0 ${star.size * 3}px rgba(255, 255, 255, ${intensity * 0.8}))` 
+                  : 'none',
+              }}
+            />
+          )
+        })}
+      </div>
+
       {/* Hero Section */}
       <div className="relative bg-black text-white py-16 overflow-hidden rounded-3xl">
         {/* White light corner effect */}
