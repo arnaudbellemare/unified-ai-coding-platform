@@ -368,7 +368,7 @@ export class CompleteCoinbaseCommerceIntegration {
         ],
       }
       const status = charge.status
-      const amount = 100.00 // Mock amount
+      const amount = 100.0 // Mock amount
       const currency = 'USDC'
       const confirmed = status === 'COMPLETED'
       const autoConverted = true

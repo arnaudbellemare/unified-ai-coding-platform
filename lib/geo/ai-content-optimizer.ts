@@ -132,7 +132,7 @@ export class GEOAIContentOptimizer {
 
     // Key Features
     content += `## Key Features\n`
-     product.features.forEach((feature: string) => {
+    product.features.forEach((feature: string) => {
       content += `- ${feature}\n`
     })
     content += `\n`
@@ -150,7 +150,7 @@ export class GEOAIContentOptimizer {
     if (product.pros && product.cons) {
       content += `## Pros and Cons\n\n`
       content += `### Pros\n`
-       product.pros.forEach((pro: string) => {
+      product.pros.forEach((pro: string) => {
         content += `- ${pro}\n`
       })
       content += `\n### Cons\n`
@@ -163,7 +163,7 @@ export class GEOAIContentOptimizer {
     // Use Cases
     if (product.useCases && product.useCases.length > 0) {
       content += `## Best For\n`
-       product.useCases.forEach((useCase: string) => {
+      product.useCases.forEach((useCase: string) => {
         content += `- ${useCase}\n`
       })
       content += `\n`

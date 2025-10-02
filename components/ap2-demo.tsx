@@ -215,7 +215,7 @@ export function AP2Demo() {
                     status: 'completed',
                     fromAgent: randomAgent.from,
                     toAgent: randomAgent.to,
-                     amount: Math.round((Math.random() * 50 + 10) * 100) / 100,
+                    amount: Math.round((Math.random() * 50 + 10) * 100) / 100,
                     currency: 'USD',
                     timestamp: new Date(),
                   }
@@ -289,7 +289,7 @@ export function AP2Demo() {
                     <div className="text-lg font-medium text-black mb-1">
                       {payment.fromAgent} → {payment.toAgent}
                     </div>
-                     <div className="text-sm text-gray-600">Agent payment</div>
+                    <div className="text-sm text-gray-600">Agent payment</div>
                   </div>
 
                   <div className="flex items-center justify-between">
