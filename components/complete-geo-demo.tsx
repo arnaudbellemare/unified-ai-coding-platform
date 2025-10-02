@@ -294,7 +294,7 @@ export function CompleteGEODemo() {
 
       // Detect mobile devices
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-      
+
       if (isMobile) {
         // On mobile, directly navigate to checkout page instead of trying to open popup
         window.location.href = checkoutUrl
@@ -547,39 +547,39 @@ export function CompleteGEODemo() {
             <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gradient-to-r from-black to-transparent w-8 h-full flex items-center justify-start pointer-events-none">
               <div className="w-0 h-0 border-l-[6px] border-r-0 border-t-[6px] border-b-[6px] border-l-white border-t-transparent border-b-transparent opacity-60"></div>
             </div>
-            
+
             {/* Right swipe indicator */}
             <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gradient-to-l from-black to-transparent w-8 h-full flex items-center justify-end pointer-events-none">
               <div className="w-0 h-0 border-r-[6px] border-l-0 border-t-[6px] border-b-[6px] border-r-white border-t-transparent border-b-transparent opacity-60"></div>
             </div>
-            
+
             <TabsList className="inline-flex w-max min-w-full gap-2 p-1 bg-gray-900 rounded-lg">
-              <TabsTrigger 
-                value="overview" 
+              <TabsTrigger
+                value="overview"
                 className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
               >
                 Overview
               </TabsTrigger>
-              <TabsTrigger 
-                value="geo" 
+              <TabsTrigger
+                value="geo"
                 className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
               >
                 GEO Analytics
               </TabsTrigger>
-              <TabsTrigger 
-                value="crypto" 
+              <TabsTrigger
+                value="crypto"
                 className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
               >
                 Crypto Commerce
               </TabsTrigger>
-              <TabsTrigger 
-                value="ap2" 
+              <TabsTrigger
+                value="ap2"
                 className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
               >
                 AP2 Payments
               </TabsTrigger>
-              <TabsTrigger 
-                value="langstruct" 
+              <TabsTrigger
+                value="langstruct"
                 className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
               >
                 LangStruct AI
@@ -1021,20 +1021,20 @@ export function CompleteGEODemo() {
                     <CardContent>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm">Google AI Overviews</span>
-                          <Badge variant="outline">45%</Badge>
+                          <span className="text-sm text-white">Google AI Overviews</span>
+                          <Badge variant="outline" className="text-white border-gray-600">45%</Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm">ChatGPT</span>
-                          <Badge variant="outline">30%</Badge>
+                          <span className="text-sm text-white">ChatGPT</span>
+                          <Badge variant="outline" className="text-white border-gray-600">30%</Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm">Perplexity</span>
-                          <Badge variant="outline">15%</Badge>
+                          <span className="text-sm text-white">Perplexity</span>
+                          <Badge variant="outline" className="text-white border-gray-600">15%</Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm">Copilot</span>
-                          <Badge variant="outline">10%</Badge>
+                          <span className="text-sm text-white">Copilot</span>
+                          <Badge variant="outline" className="text-white border-gray-600">10%</Badge>
                         </div>
                       </div>
                     </CardContent>
@@ -1113,13 +1113,13 @@ export function CompleteGEODemo() {
                         <div className="flex items-center justify-between mb-4">
                           <span className="text-2xl font-bold">${product.price}</span>
                           <div className="flex gap-1">
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs text-white border-gray-600">
                               USDC
                             </Badge>
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs text-white border-gray-600">
                               ETH
                             </Badge>
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs text-white border-gray-600">
                               BTC
                             </Badge>
                           </div>
@@ -1238,7 +1238,7 @@ export function CompleteGEODemo() {
                             </div>
                             <div className="text-right">
                               <p className="font-semibold text-white">${transaction.amount.toFixed(2)}</p>
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs text-white border-gray-600">
                                 {transaction.status}
                               </Badge>
                             </div>
@@ -1510,7 +1510,7 @@ export function CompleteGEODemo() {
               <Code className="h-5 w-5 mr-2" />
               View Source Code
             </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-white hover:bg-gray-800">
+            <Button size="lg" variant="outline" className="border-gray-600 text-black hover:bg-gray-800 hover:text-white">
               <ExternalLink className="h-5 w-5 mr-2" />
               Live Demo
             </Button>

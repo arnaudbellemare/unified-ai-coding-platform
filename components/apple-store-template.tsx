@@ -142,10 +142,10 @@ export function AppleStoreTemplate() {
   const handlePayment = () => {
     // Create checkout URL directly
     const checkoutUrl = `/store/demo-checkout?product=${encodeURIComponent(selectedProduct.name)}&amount=${getTotalPrice().toFixed(2)}`
-    
+
     // Detect mobile devices
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    
+
     if (isMobile) {
       // On mobile, directly navigate to checkout page instead of trying to open popup
       window.location.href = checkoutUrl
