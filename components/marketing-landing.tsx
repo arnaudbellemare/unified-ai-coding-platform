@@ -579,30 +579,8 @@ export function MarketingLanding({
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-xl px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105"
-                  onClick={async () => {
-                    try {
-                      const example = {
-                        id: 'verclibase-demo-merchant',
-                        name: 'Verclibase Demo Merchant',
-                        description: 'High-trust, Base-native merchant for agentic commerce',
-                        url: 'https://verclibase.vercel.app',
-                        trust: { rating: 4.8, onTimeRate: 0.99, returnRate: 0.03 },
-                        sponsoredBudgetUSD: 250,
-                      }
-                      const res = await fetch('/api/acp/merchant', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(example),
-                      })
-                      const data = await res.json().catch(() => ({}))
-                      const ok = res.ok && data?.success
-                      const msg = ok
-                        ? 'Your merchant is now featured for agentic GEO ranking.'
-                        : `Request failed: ${data?.error || res.statusText}`
-                      alert(msg)
-                    } catch (e) {
-                      alert('Network error while featuring merchant')
-                    }
+                  onClick={() => {
+                    window.location.href = '/complete-demo'
                   }}
                 >
                   <Search className="h-5 w-5 mr-2" />
