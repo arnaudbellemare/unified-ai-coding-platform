@@ -442,25 +442,35 @@ export function CompleteGEODemo() {
           return (
             <div
               key={star.id}
-              className={`absolute rounded-full bg-white transition-all duration-300 ease-out star-twinkle star-float`}
+              className={`absolute transition-all duration-300 ease-out star-twinkle star-float`}
               style={{
                 left: `${star.x}%`,
                 top: `${star.y}%`,
-                width: `${star.size}px`,
-                height: `${star.size}px`,
+                width: `${star.size * 2}px`,
+                height: `${star.size * 2}px`,
                 transform: `scale(${scale})`,
                 opacity: opacity,
                 animationDelay: `${star.delay}s`,
-                boxShadow:
-                  intensity > 0.5
-                    ? `0 0 ${star.size * 4}px rgba(255, 255, 255, ${intensity}), 0 0 ${star.size * 8}px rgba(255, 255, 255, ${intensity * 0.5})`
-                    : 'none',
-                filter:
-                  intensity > 0.3
-                    ? `brightness(${1 + intensity * 2}) drop-shadow(0 0 ${star.size * 3}px rgba(255, 255, 255, ${intensity * 0.8}))`
-                    : 'none',
+                filter: intensity > 0.3 
+                  ? `brightness(${1 + intensity * 2}) drop-shadow(0 0 ${star.size * 2}px rgba(255, 255, 255, ${intensity * 0.8}))` 
+                  : 'none',
               }}
-            />
+            >
+              <svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 24 24"
+                fill="white"
+                className="transition-all duration-300"
+                style={{
+                  filter: intensity > 0.5 
+                    ? `drop-shadow(0 0 ${star.size}px rgba(255, 255, 255, ${intensity})) drop-shadow(0 0 ${star.size * 2}px rgba(255, 255, 255, ${intensity * 0.5}))` 
+                    : 'none',
+                }}
+              >
+                <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
           )
         })}
       </div>
