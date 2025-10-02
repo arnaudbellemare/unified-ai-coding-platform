@@ -225,10 +225,7 @@ export function GEOOptimizedCheckout({
         {/* Base OnchainKit Checkout with Coinbase Branding */}
         <div className="space-y-4">
           <Checkout productId={chargeId}>
-            <CheckoutButton 
-              coinbaseBranded 
-              text={`Pay $${amount} USDC`}
-            />
+            <CheckoutButton coinbaseBranded text={`Pay $${amount} USDC`} />
           </Checkout>
 
           {/* GEO Features */}

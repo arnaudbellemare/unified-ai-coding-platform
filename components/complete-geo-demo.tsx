@@ -292,7 +292,16 @@ export function CompleteGEODemo() {
       // Use current origin (without port) for production compatibility
       const checkoutUrl = `${window.location.origin}/store/demo-checkout?product=${encodeURIComponent(product.name)}&amount=${product.price}`
 
-      // Try to open popup window
+      // Detect mobile devices
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      
+      if (isMobile) {
+        // On mobile, directly navigate to checkout page instead of trying to open popup
+        window.location.href = checkoutUrl
+        return
+      }
+
+      // Try to open popup window (desktop)
       const popup = window.open(
         checkoutUrl,
         '_blank',
@@ -533,21 +542,46 @@ export function CompleteGEODemo() {
       {/* Demo Tabs */}
       <div className="max-w-7xl mx-auto px-6 py-12 !bg-black">
         <Tabs value={activeDemo} onValueChange={setActiveDemo} className="w-full">
-          <div className="w-full overflow-x-auto scrollbar-hide">
+          <div className="w-full overflow-x-auto scrollbar-hide relative">
+            {/* Left swipe indicator */}
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gradient-to-r from-black to-transparent w-8 h-full flex items-center justify-start pointer-events-none">
+              <div className="w-0 h-0 border-l-[6px] border-r-0 border-t-[6px] border-b-[6px] border-l-white border-t-transparent border-b-transparent opacity-60"></div>
+            </div>
+            
+            {/* Right swipe indicator */}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gradient-to-l from-black to-transparent w-8 h-full flex items-center justify-end pointer-events-none">
+              <div className="w-0 h-0 border-r-[6px] border-l-0 border-t-[6px] border-b-[6px] border-r-white border-t-transparent border-b-transparent opacity-60"></div>
+            </div>
+            
             <TabsList className="inline-flex w-max min-w-full gap-2 p-1 bg-gray-900 rounded-lg">
-              <TabsTrigger value="overview" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+              <TabsTrigger 
+                value="overview" 
+                className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
+              >
                 Overview
               </TabsTrigger>
-              <TabsTrigger value="geo" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+              <TabsTrigger 
+                value="geo" 
+                className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
+              >
                 GEO Analytics
               </TabsTrigger>
-              <TabsTrigger value="crypto" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+              <TabsTrigger 
+                value="crypto" 
+                className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
+              >
                 Crypto Commerce
               </TabsTrigger>
-              <TabsTrigger value="ap2" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+              <TabsTrigger 
+                value="ap2" 
+                className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
+              >
                 AP2 Payments
               </TabsTrigger>
-              <TabsTrigger value="langstruct" className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2">
+              <TabsTrigger 
+                value="langstruct" 
+                className="text-white text-sm whitespace-nowrap flex-shrink-0 px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold transition-all duration-200"
+              >
                 LangStruct AI
               </TabsTrigger>
             </TabsList>

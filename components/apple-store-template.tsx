@@ -138,12 +138,21 @@ export function AppleStoreTemplate() {
     // For now, just log the action
   }
 
-  // Direct checkout navigation with popup blocking protection
+  // Direct checkout navigation with mobile-optimized popup blocking protection
   const handlePayment = () => {
     // Create checkout URL directly
     const checkoutUrl = `/store/demo-checkout?product=${encodeURIComponent(selectedProduct.name)}&amount=${getTotalPrice().toFixed(2)}`
+    
+    // Detect mobile devices
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    
+    if (isMobile) {
+      // On mobile, directly navigate to checkout page instead of trying to open popup
+      window.location.href = checkoutUrl
+      return
+    }
 
-    // Try to open checkout page with popup blocking protection
+    // Try to open checkout page with popup blocking protection (desktop)
     const popup = window.open(
       checkoutUrl,
       '_blank',
