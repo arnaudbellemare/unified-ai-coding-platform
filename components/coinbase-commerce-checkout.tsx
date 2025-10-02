@@ -25,6 +25,14 @@ interface CoinbaseCommerceCheckoutProps {
 export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: CoinbaseCommerceCheckoutProps) {
   const [isCreatingCharge, setIsCreatingCharge] = useState(false)
   const [chargeId, setChargeId] = useState<string | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [showMobileFallback, setShowMobileFallback] = useState(false)
+
+  // Detect mobile devices
+  React.useEffect(() => {
+    const mobileCheck = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    setIsMobile(mobileCheck)
+  }, [])
 
   // Create a charge dynamically using our backend
   const chargeHandler = async (): Promise<string> => {
@@ -92,6 +100,48 @@ export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: Coinba
     }
   }
 
+  // Mobile-friendly payment handler
+  const handleMobilePayment = async () => {
+    setIsCreatingCharge(true)
+    try {
+      const response = await fetch('/api/coinbase-commerce/create-charge', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: product.name,
+          description: product.description,
+          local_price: {
+            amount: product.price.toString(),
+            currency: product.currency.toUpperCase(),
+          },
+          pricing_type: 'fixed_price',
+          metadata: {
+            product_id: product.id,
+            timestamp: new Date().toISOString(),
+          },
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create charge')
+      }
+
+      const data = await response.json()
+      const chargeId = data.id
+      setChargeId(chargeId)
+
+      // For mobile, redirect directly to Coinbase Commerce checkout page
+      const checkoutUrl = data.hosted_url
+      window.location.href = checkoutUrl
+    } catch (error) {
+      setIsCreatingCharge(false)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      onError?.(errorMessage)
+    }
+  }
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
@@ -124,14 +174,33 @@ export function CoinbaseCommerceCheckout({ product, onSuccess, onError }: Coinba
 
         {/* Coinbase Commerce Checkout */}
         <div className="border-t pt-4">
-          <Checkout chargeHandler={chargeHandler} onStatus={handleStatus}>
-            <CheckoutButton
-              coinbaseBranded
-              text={`Pay ${product.currency.toUpperCase()} ${product.price.toFixed(2)}`}
+          {isMobile ? (
+            // Mobile-friendly button that redirects directly to Coinbase Commerce
+            <Button
+              onClick={handleMobilePayment}
               disabled={isCreatingCharge}
-            />
-            <CheckoutStatus />
-          </Checkout>
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg"
+            >
+              {isCreatingCharge ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating Payment...
+                </>
+              ) : (
+                `Pay ${product.currency.toUpperCase()} ${product.price.toFixed(2)}`
+              )}
+            </Button>
+          ) : (
+            // Desktop version using OnchainKit components
+            <Checkout chargeHandler={chargeHandler} onStatus={handleStatus}>
+              <CheckoutButton
+                coinbaseBranded
+                text={`Pay ${product.currency.toUpperCase()} ${product.price.toFixed(2)}`}
+                disabled={isCreatingCharge}
+              />
+              <CheckoutStatus />
+            </Checkout>
+          )}
         </div>
 
         {/* Loading State */}
