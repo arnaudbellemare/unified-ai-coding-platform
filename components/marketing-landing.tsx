@@ -124,7 +124,7 @@ export function MarketingLanding({
           <p className="text-xl font-bold mb-2 font-mono">Experience the Future of AI Commerce</p>
           <div className="flex justify-center">
             <a
-              href="http://localhost:3001/complete-demo"
+              href="https://verclibase.com/complete-demo"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-white text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition-colors"
