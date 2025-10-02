@@ -258,7 +258,8 @@ export function CompleteGEODemo() {
   const testCryptoCheckout = async (product: CryptoProduct) => {
     try {
       // Open the demo checkout page with Privy wallet selection
-      const checkoutUrl = `${window.location.protocol}//${window.location.hostname}:3001/store/demo-checkout?product=${encodeURIComponent(product.name)}&amount=${product.price}`
+      // Use current origin (without port) for production compatibility
+      const checkoutUrl = `${window.location.origin}/store/demo-checkout?product=${encodeURIComponent(product.name)}&amount=${product.price}`
 
       // Try to open popup window
       const popup = window.open(
