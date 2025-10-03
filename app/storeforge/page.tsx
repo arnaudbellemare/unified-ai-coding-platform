@@ -140,6 +140,7 @@ export default function StoreForgePage() {
     setBuildResult(null)
 
     try {
+      console.log('🚀 Sending StoreForge request...')
       const response = await fetch('/api/storeforge/build', {
         method: 'POST',
         headers: {
@@ -155,10 +156,31 @@ export default function StoreForgePage() {
         }),
       })
 
-      const data = await response.json()
+      console.log('📡 Response received:', {
+        status: response.status,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      })
+
+      let data
+      const responseText = await response.text()
+      
+      console.log('📄 Response text length:', responseText.length)
+      console.log('📄 Response text preview:', responseText.substring(0, 200) + '...')
+      
+      try {
+        data = JSON.parse(responseText)
+        console.log('✅ JSON parsed successfully')
+      } catch (parseError) {
+        console.error('❌ JSON parse error:', parseError)
+        console.error('Response status:', response.status)
+        console.error('Response text length:', responseText.length)
+        console.error('Response text:', responseText)
+        throw new Error('Invalid response from server')
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Build failed')
+        throw new Error(data?.error || 'Build failed')
       }
 
       if (data.success) {
