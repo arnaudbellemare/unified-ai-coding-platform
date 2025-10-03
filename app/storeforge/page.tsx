@@ -24,6 +24,7 @@ import {
   Rocket,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import StoreForgeMonitoringDashboard from '@/components/storeforge-monitoring-dashboard'
 
 interface BuildResult {
   storeId: string
@@ -59,11 +60,44 @@ interface BuildResult {
     gitBranch: string
     commitHash: string
   }
+  x402Payment?: {
+    success: boolean
+    transactionId: string
+    amount: number
+    fees: number
+    chain: string
+    timestamp: number
+  }
+  agentMandate?: string
   scores?: {
     geo: number
     aeo: number
     overall: number
   }
+  agentSpecificScores?: Record<string, number>
+  contentOptimizations?: Array<{
+    type: string
+    priority: 'high' | 'medium' | 'low'
+    description: string
+    impact: number
+    implementation: string
+  }>
+  schemaRecommendations?: Array<{
+    type: 'json-ld' | 'rdf' | 'faq' | 'structured'
+    content: string
+    priority: number
+  }>
+  quantumRouting?: {
+    optimalChains: string[]
+    efficiencyGain: number
+    reasoning: string
+  }
+  multimodalAssets?: Array<{
+    type: 'image' | 'video' | 'audio' | 'ar'
+    description: string
+    url: string
+    optimization: string
+  }>
   pitfalls?: string[]
   optimizations?: string[]
 }
@@ -389,10 +423,12 @@ export default function StoreForgePage() {
 
                 {/* Detailed Results */}
                 <Tabs defaultValue="overview" className="w-full">
-                  <TabsList className="grid w-full grid-cols-4 bg-slate-700">
+                  <TabsList className="grid w-full grid-cols-6 bg-slate-700">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="products">Products</TabsTrigger>
                     <TabsTrigger value="schemas">Schemas</TabsTrigger>
+                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                    <TabsTrigger value="monitoring">Monitoring</TabsTrigger>
                     <TabsTrigger value="deployment">Deployment</TabsTrigger>
                   </TabsList>
 
@@ -465,18 +501,19 @@ export default function StoreForgePage() {
                     </Card>
                   </TabsContent>
 
-                  <TabsContent value="schemas">
+                  <TabsContent value="schemas" className="space-y-4">
+                    {/* Payment Configuration */}
                     <Card className="bg-slate-800/50 border-slate-700">
                       <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
                           <Database className="h-5 w-5" />
-                          Generated Schemas
+                          Payment Configuration
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
                           <div>
-                            <h4 className="text-white font-medium mb-2">Payment Configuration</h4>
+                            <h4 className="text-white font-medium mb-2">Protocols</h4>
                             <div className="flex flex-wrap gap-2">
                               {Object.entries(buildResult.paymentConfig).map(([key, value]) => (
                                 <Badge
@@ -500,9 +537,219 @@ export default function StoreForgePage() {
                               ))}
                             </div>
                           </div>
+
+                          {/* x402 Payment Details */}
+                          {buildResult.x402Payment && (
+                            <div>
+                              <h4 className="text-white font-medium mb-2">x402 Micropayment</h4>
+                              <div className="bg-slate-700 rounded-lg p-3 space-y-2">
+                                <div className="flex justify-between">
+                                  <span className="text-gray-400">Transaction ID:</span>
+                                  <span className="text-white font-mono text-sm">
+                                    {buildResult.x402Payment.transactionId.slice(0, 10)}...
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-400">Amount:</span>
+                                  <span className="text-green-400">${buildResult.x402Payment.amount} USDC</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-400">Chain:</span>
+                                  <span className="text-blue-400 capitalize">{buildResult.x402Payment.chain}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-400">Fees:</span>
+                                  <span className="text-gray-300">${buildResult.x402Payment.fees}</span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Agent Mandate */}
+                          {buildResult.agentMandate && (
+                            <div>
+                              <h4 className="text-white font-medium mb-2">Agent Mandate</h4>
+                              <div className="bg-slate-700 rounded-lg p-3">
+                                <div className="flex justify-between">
+                                  <span className="text-gray-400">Mandate ID:</span>
+                                  <span className="text-white font-mono text-sm">
+                                    {buildResult.agentMandate.slice(0, 15)}...
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
+
+                    {/* Schema Recommendations */}
+                    {buildResult.schemaRecommendations && buildResult.schemaRecommendations.length > 0 && (
+                      <Card className="bg-slate-800/50 border-slate-700">
+                        <CardHeader>
+                          <CardTitle className="text-white flex items-center gap-2">
+                            <Code className="h-5 w-5" />
+                            Schema Recommendations
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            {buildResult.schemaRecommendations.map((rec, index) => (
+                              <div key={index} className="border border-slate-600 rounded-lg p-4">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Badge variant="outline" className="border-purple-400 text-purple-300">
+                                    {rec.type.toUpperCase()}
+                                  </Badge>
+                                  <Badge variant="outline" className="border-yellow-400 text-yellow-300">
+                                    Priority: {rec.priority}
+                                  </Badge>
+                                </div>
+                                <pre className="text-gray-300 text-xs bg-slate-900 p-2 rounded overflow-x-auto">
+                                  {rec.content}
+                                </pre>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Quantum Routing */}
+                    {buildResult.quantumRouting && (
+                      <Card className="bg-slate-800/50 border-slate-700">
+                        <CardHeader>
+                          <CardTitle className="text-white flex items-center gap-2">
+                            <Zap className="h-5 w-5" />
+                            Quantum Routing Optimization
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="text-white font-medium mb-2">Optimal Chains</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {buildResult.quantumRouting.optimalChains.map((chain) => (
+                                  <Badge key={chain} variant="default" className="bg-purple-600">
+                                    {chain}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <div className="text-sm text-gray-400">Efficiency Gain</div>
+                                <div className="text-lg font-bold text-green-400">
+                                  {Math.round(buildResult.quantumRouting.efficiencyGain * 100)}%
+                                </div>
+                              </div>
+                              <div>
+                                <div className="text-sm text-gray-400">Reasoning</div>
+                                <div className="text-sm text-gray-300">
+                                  {buildResult.quantumRouting.reasoning}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="analytics" className="space-y-4">
+                    {/* Agent-Specific Scores */}
+                    {buildResult.agentSpecificScores && (
+                      <Card className="bg-slate-800/50 border-slate-700">
+                        <CardHeader>
+                          <CardTitle className="text-white flex items-center gap-2">
+                            <Bot className="h-5 w-5" />
+                            Agent-Specific Optimization Scores
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {Object.entries(buildResult.agentSpecificScores).map(([agent, score]) => (
+                              <div key={agent} className="text-center">
+                                <div className="text-2xl font-bold text-blue-400">{score}%</div>
+                                <div className="text-sm text-gray-400">{agent}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Content Optimizations */}
+                    {buildResult.contentOptimizations && buildResult.contentOptimizations.length > 0 && (
+                      <Card className="bg-slate-800/50 border-slate-700">
+                        <CardHeader>
+                          <CardTitle className="text-white flex items-center gap-2">
+                            <Zap className="h-5 w-5" />
+                            Content Optimization Recommendations
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            {buildResult.contentOptimizations.map((opt, index) => (
+                              <div key={index} className="border border-slate-600 rounded-lg p-4">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Badge 
+                                    variant="outline" 
+                                    className={
+                                      opt.priority === 'high' 
+                                        ? 'border-red-400 text-red-300' 
+                                        : opt.priority === 'medium'
+                                        ? 'border-yellow-400 text-yellow-300'
+                                        : 'border-green-400 text-green-300'
+                                    }
+                                  >
+                                    {opt.priority.toUpperCase()}
+                                  </Badge>
+                                  <Badge variant="outline" className="border-blue-400 text-blue-300">
+                                    {opt.impact}% impact
+                                  </Badge>
+                                </div>
+                                <h4 className="text-white font-medium mb-1">{opt.description}</h4>
+                                <p className="text-gray-400 text-sm">{opt.implementation}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Multimodal Assets */}
+                    {buildResult.multimodalAssets && buildResult.multimodalAssets.length > 0 && (
+                      <Card className="bg-slate-800/50 border-slate-700">
+                        <CardHeader>
+                          <CardTitle className="text-white flex items-center gap-2">
+                            <Globe className="h-5 w-5" />
+                            Multimodal Assets Generated
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {buildResult.multimodalAssets.map((asset, index) => (
+                              <div key={index} className="border border-slate-600 rounded-lg p-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Badge variant="outline" className="border-purple-400 text-purple-300">
+                                    {asset.type.toUpperCase()}
+                                  </Badge>
+                                </div>
+                                <h4 className="text-white font-medium mb-1">{asset.description}</h4>
+                                <p className="text-gray-400 text-sm mb-2">{asset.optimization}</p>
+                                <div className="text-xs text-gray-500 font-mono break-all">
+                                  {asset.url}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="monitoring">
+                    <StoreForgeMonitoringDashboard />
                   </TabsContent>
 
                   <TabsContent value="deployment">

@@ -6,6 +6,8 @@
  */
 
 import { AutonomousAgentWallet } from '@/lib/agent-wallets/autonomous-agent-wallet'
+import { x402Processor, createX402Payment, createAgentMandate } from '@/lib/storeforge/x402-integration'
+import { geoAeoEngine, analyzeGEOAEO } from '@/lib/storeforge/geo-aeo-engine'
 import { z } from 'zod'
 
 // Simple agent base class for StoreForge swarm
@@ -25,10 +27,10 @@ class AgentBase {
   async execute(task: string, data?: any): Promise<any> {
     this.status = 'active'
     this.lastActivity = new Date()
-    
+
     try {
       // Simulate agent processing
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await new Promise((resolve) => setTimeout(resolve, 100))
       this.status = 'idle'
       return { success: true, agent: this.name, result: `Processed: ${task}` }
     } catch (error) {
@@ -84,6 +86,46 @@ const StoreBuildResultSchema = z.object({
     gitBranch: z.string(),
     commitHash: z.string(),
   }),
+  x402Payment: z.object({
+    success: z.boolean(),
+    transactionId: z.string(),
+    amount: z.number(),
+    fees: z.number(),
+    chain: z.string(),
+    timestamp: z.number(),
+  }).optional(),
+  agentMandate: z.string().optional(),
+  scores: z.object({
+    geo: z.number(),
+    aeo: z.number(),
+    overall: z.number(),
+  }).optional(),
+  agentSpecificScores: z.record(z.number()).optional(),
+  contentOptimizations: z.array(z.object({
+    type: z.string(),
+    priority: z.enum(['high', 'medium', 'low']),
+    description: z.string(),
+    impact: z.number(),
+    implementation: z.string(),
+  })).optional(),
+  schemaRecommendations: z.array(z.object({
+    type: z.enum(['json-ld', 'rdf', 'faq', 'structured']),
+    content: z.string(),
+    priority: z.number(),
+  })).optional(),
+  quantumRouting: z.object({
+    optimalChains: z.array(z.string()),
+    efficiencyGain: z.number(),
+    reasoning: z.string(),
+  }).optional(),
+  multimodalAssets: z.array(z.object({
+    type: z.enum(['image', 'video', 'audio', 'ar']),
+    description: z.string(),
+    url: z.string(),
+    optimization: z.string(),
+  })).optional(),
+  pitfalls: z.array(z.string()).optional(),
+  optimizations: z.array(z.string()).optional(),
 })
 
 type StoreForgePrompt = z.infer<typeof StoreForgePromptSchema>
@@ -141,7 +183,7 @@ export class StoreForgeOrchestrator {
 
   private async initializeSwarm() {
     console.log('🤖 Initializing StoreForge swarm...')
-    
+
     // Initialize each agent with AgentBase
     for (const agentConfig of SWARM_AGENTS) {
       const agent = new AgentBase({
@@ -149,11 +191,11 @@ export class StoreForgeOrchestrator {
         role: agentConfig.role,
         capabilities: agentConfig.capabilities,
       })
-      
+
       this.agents.set(agentConfig.name, agent)
       console.log(`✅ ${agentConfig.name} initialized`)
     }
-    
+
     console.log('🚀 StoreForge swarm ready!')
   }
 
@@ -265,9 +307,37 @@ export class StoreForgeOrchestrator {
 
     console.log('⚡ OptAgent: Optimizing for GEO/AEO...')
 
-    // Score current implementation
-    const geoScore = this.calculateGEOScore(buildData.schemas.geo)
-    const aeoScore = this.calculateAEOScore(buildData.schemas.aeo)
+    // Configure GEO/AEO analysis
+    const geoAeoConfig = {
+      targetAgents: prompt.targetAgents || ['ChatGPT', 'Perplexity', 'Claude'],
+      contentTypes: ['text', 'image', 'video', 'ar'] as ('text' | 'image' | 'video' | 'audio' | 'ar')[],
+      optimizationLevel: 'advanced' as const,
+      locationData: {
+        latitude: buildData.geoData.latitude,
+        longitude: buildData.geoData.longitude,
+        radius: buildData.geoData.radius,
+        timezone: 'America/New_York', // Default, could be determined from location
+        locale: buildData.geoData.address,
+      },
+      marketContext: {
+        competitors: Math.floor(Math.random() * 20) + 5,
+        avgPrice: buildData.products.reduce((sum: number, p: any) => sum + p.price, 0) / buildData.products.length,
+        demandScore: Math.floor(Math.random() * 100),
+        seasonality: {
+          spring: 0.8,
+          summer: 1.2,
+          fall: 0.9,
+          winter: 0.7,
+        },
+      },
+    }
+
+    // Run advanced GEO/AEO analysis
+    const geoAeoResult = await analyzeGEOAEO(
+      geoAeoConfig,
+      buildData.products,
+      buildData.schemas
+    )
 
     // Detect and fix common pitfalls
     const pitfalls = this.detectPitfalls(buildData)
@@ -276,10 +346,15 @@ export class StoreForgeOrchestrator {
     return {
       ...buildData,
       scores: {
-        geo: geoScore,
-        aeo: aeoScore,
-        overall: Math.round((geoScore + aeoScore) / 2),
+        geo: geoAeoResult.geoScore,
+        aeo: geoAeoResult.aeoScore,
+        overall: geoAeoResult.overallScore,
       },
+      agentSpecificScores: geoAeoResult.agentSpecificScores,
+      contentOptimizations: geoAeoResult.contentOptimizations,
+      schemaRecommendations: geoAeoResult.schemaRecommendations,
+      quantumRouting: geoAeoResult.quantumRouting,
+      multimodalAssets: geoAeoResult.multimodalAssets,
       pitfalls,
       optimizations,
     }
@@ -299,10 +374,40 @@ export class StoreForgeOrchestrator {
       chains: prompt.location?.includes('NYC') ? ['base', 'algorand'] : ['base'],
     }
 
+    // Create x402 micropayment for premium GEO data access
+    let x402Payment = null
+    if (paymentConfig.x402) {
+      try {
+        console.log('🔗 Creating x402 micropayment for GEO data access...')
+        x402Payment = await createX402Payment(0.01, 'data_access', 'storeforge-agent')
+        console.log('✅ x402 micropayment created:', x402Payment.transactionId)
+      } catch (error) {
+        console.warn('⚠️ x402 micropayment failed, continuing without:', error)
+      }
+    }
+
+    // Create agent mandate for autonomous payments
+    let agentMandate = null
+    if (paymentConfig.ap2) {
+      try {
+        console.log('📋 Creating agent payment mandate...')
+        agentMandate = await createAgentMandate(
+          `storeforge-${optData.storeId}`,
+          100, // $100 max daily spend
+          ['geo_data', 'schema_generation', 'optimization']
+        )
+        console.log('✅ Agent mandate created:', agentMandate)
+      } catch (error) {
+        console.warn('⚠️ Agent mandate creation failed:', error)
+      }
+    }
+
     return {
       ...optData,
       paymentConfig,
       paymentIntegrations: this.generatePaymentIntegrations(paymentConfig),
+      x402Payment,
+      agentMandate,
     }
   }
 
@@ -329,6 +434,16 @@ export class StoreForgeOrchestrator {
       schemas: paymentData.schemas,
       paymentConfig: paymentData.paymentConfig,
       deployment,
+      x402Payment: paymentData.x402Payment,
+      agentMandate: paymentData.agentMandate,
+      scores: paymentData.scores,
+      agentSpecificScores: paymentData.agentSpecificScores,
+      contentOptimizations: paymentData.contentOptimizations,
+      schemaRecommendations: paymentData.schemaRecommendations,
+      quantumRouting: paymentData.quantumRouting,
+      multimodalAssets: paymentData.multimodalAssets,
+      pitfalls: paymentData.pitfalls,
+      optimizations: paymentData.optimizations,
     }
 
     return finalResult
