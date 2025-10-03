@@ -155,16 +155,12 @@ export default function ${this.sanitizeComponentName(storeName)}() {
               <h1 className="text-2xl font-bold" style={{ color: '${branding.primaryColor}' }}>
                 ${storeName}
               </h1>
-              ${
-                features.includes('local_pickup')
-                  ? `
-              <Badge variant="outline" className="flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
-                Local Pickup
-              </Badge>
-              `
-                  : ''
-              }
+              {features.includes('local_pickup') && (
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  Local Pickup
+                </Badge>
+              )}
             </div>
             
             <div className="flex items-center space-x-4">
@@ -202,49 +198,37 @@ export default function ${this.sanitizeComponentName(storeName)}() {
             ${config.description}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            ${paymentMethods
-              .map(
-                (method) => `
-            <Badge variant="secondary" className="px-4 py-2">
-              ${method.toUpperCase().replace('_', ' ')}
-            </Badge>
-            `,
-              )
-              .join('')}
+            {paymentMethods.map((method, index) => (
+              <Badge key={index} variant="secondary" className="px-4 py-2">
+                {method.toUpperCase().replace('_', ' ')}
+              </Badge>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features */}
-      ${
-        features.length > 0
-          ? `
-      <section className="py-16 bg-white/10">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-${Math.min(features.length, 4)} gap-8">
-            ${features
-              .map(
-                (feature) => `
-            <Card className="bg-white/20 backdrop-blur-sm border-white/30">
-              <CardContent className="p-6 text-center">
-                ${this.getFeatureIcon(feature)}
-                <h3 className="text-lg font-semibold text-white mt-4">
-                  ${this.formatFeatureName(feature)}
-                </h3>
-                <p className="text-white/80 text-sm mt-2">
-                  ${this.getFeatureDescription(feature)}
-                </p>
-              </CardContent>
-            </Card>
-            `,
-              )
-              .join('')}
+      {features.length > 0 && (
+        <section className="py-16 bg-white/10">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {features.map((feature, index) => (
+                <Card key={index} className="bg-white/20 backdrop-blur-sm border-white/30">
+                  <CardContent className="p-6 text-center">
+                    <div dangerouslySetInnerHTML={{ __html: this.getFeatureIcon(feature) }} />
+                    <h3 className="text-lg font-semibold text-white mt-4">
+                      {this.formatFeatureName(feature)}
+                    </h3>
+                    <p className="text-white/80 text-sm mt-2">
+                      {this.getFeatureDescription(feature)}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-      `
-          : ''
-      }
+        </section>
+      )}
 
       {/* Products */}
       <section className="py-20">
@@ -252,19 +236,16 @@ export default function ${this.sanitizeComponentName(storeName)}() {
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-3xl font-bold text-white">Our Products</h3>
             <div className="flex gap-2">
-              ${['all', ...new Set(products.map((p) => p.category))]
-                .map(
-                  (category) => `
-              <Button
-                variant={selectedCategory === '${category}' ? 'default' : 'outline'}
-                onClick={() => setSelectedCategory('${category}')}
-                className="text-white"
-              >
-                ${category === 'all' ? 'All' : this.formatCategoryName(category)}
-              </Button>
-              `,
-                )
-                .join('')}
+              {['all', ...new Set(products.map((p) => p.category))].map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? 'default' : 'outline'}
+                  onClick={() => setSelectedCategory(category)}
+                  className="text-white"
+                >
+                  {category === 'all' ? 'All' : this.formatCategoryName(category)}
+                </Button>
+              ))}
             </div>
           </div>
 
@@ -273,21 +254,17 @@ export default function ${this.sanitizeComponentName(storeName)}() {
               <Card key={product.id} className="bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30 transition-all">
                 <CardHeader className="p-0">
                   <div className="aspect-square bg-gray-200 rounded-t-lg overflow-hidden">
-                    ${
-                      product.image
-                        ? `
-                    <img 
-                      src="${product.image}" 
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                    `
-                        : `
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <span>No Image</span>
-                    </div>
-                    `
-                    }
+                    {product.image ? (
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <span>No Image</span>
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="p-4">
@@ -308,7 +285,7 @@ export default function ${this.sanitizeComponentName(storeName)}() {
                   
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-2xl font-bold text-white">
-                      ${product.currency} {product.price}
+                      {product.currency} {product.price}
                     </span>
                     {product.inStock ? (
                       <Badge className="bg-green-500">In Stock</Badge>
@@ -317,16 +294,12 @@ export default function ${this.sanitizeComponentName(storeName)}() {
                     )}
                   </div>
 
-                  ${
-                    product.geoAttributes.pickupAvailable
-                      ? `
-                  <div className="flex items-center text-green-400 text-sm mb-4">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    Local pickup available
-                  </div>
-                  `
-                      : ''
-                  }
+                  {product.geoAttributes.pickupAvailable && (
+                    <div className="flex items-center text-green-400 text-sm mb-4">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      Local pickup available
+                    </div>
+                  )}
 
                   <div className="flex gap-2">
                     <Button
@@ -371,7 +344,7 @@ export default function ${this.sanitizeComponentName(storeName)}() {
                     <div key={productId} className="flex items-center justify-between">
                       <div className="flex-1">
                         <p className="font-medium text-sm">{product.name}</p>
-                        <p className="text-gray-500 text-xs">${product.currency} {product.price}</p>
+                        <p className="text-gray-500 text-xs">{product.currency} {product.price}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
@@ -398,7 +371,7 @@ export default function ${this.sanitizeComponentName(storeName)}() {
               <div className="border-t pt-4 mt-4">
                 <div className="flex items-center justify-between mb-4">
                   <span className="font-semibold">Total:</span>
-                  <span className="text-xl font-bold">${products[0]?.currency || 'USD'} {getCartTotal().toFixed(2)}</span>
+                  <span className="text-xl font-bold">{products[0]?.currency || 'USD'} {getCartTotal().toFixed(2)}</span>
                 </div>
                 <Button className="w-full" style={{ backgroundColor: branding.primaryColor }}>
                   <ArrowRight className="h-4 w-4 mr-2" />
