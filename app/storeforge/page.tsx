@@ -145,6 +145,7 @@ export default function StoreForgePage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({
           prompt: prompt.trim(),
@@ -154,20 +155,24 @@ export default function StoreForgePage() {
           paymentMethods: paymentMethods.length > 0 ? paymentMethods : undefined,
           targetAgents: targetAgents.length > 0 ? targetAgents : undefined,
         }),
+        signal: AbortSignal.timeout(30000), // 30 second timeout
       })
 
       console.log('📡 Response received:', {
         status: response.status,
         ok: response.ok,
-        headers: Object.fromEntries(response.headers.entries())
+        headers: Object.fromEntries(response.headers.entries()),
       })
 
       let data
       const responseText = await response.text()
-      
+
       console.log('📄 Response text length:', responseText.length)
       console.log('📄 Response text preview:', responseText.substring(0, 200) + '...')
-      
+      console.log('📄 Response text last 200 chars:', responseText.substring(Math.max(0, responseText.length - 200)))
+      console.log('📄 Response starts with:', responseText.substring(0, 50))
+      console.log('📄 Response ends with:', responseText.substring(Math.max(0, responseText.length - 50)))
+
       try {
         data = JSON.parse(responseText)
         console.log('✅ JSON parsed successfully')
@@ -175,7 +180,9 @@ export default function StoreForgePage() {
         console.error('❌ JSON parse error:', parseError)
         console.error('Response status:', response.status)
         console.error('Response text length:', responseText.length)
-        console.error('Response text:', responseText)
+        console.error('Response text (first 500):', responseText.substring(0, 500))
+        console.error('Response text (last 500):', responseText.substring(Math.max(0, responseText.length - 500)))
+        console.error('Full response text:', responseText)
         throw new Error('Invalid response from server')
       }
 
@@ -191,7 +198,18 @@ export default function StoreForgePage() {
       }
     } catch (error) {
       console.error('Build error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Failed to build store'
+      let errorMessage = 'Failed to build store'
+      
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage = 'Request timed out. Please try again.'
+        } else if (error.message.includes('fetch')) {
+          errorMessage = 'Network error. Please check your connection.'
+        } else {
+          errorMessage = error.message
+        }
+      }
+      
       toast.error(errorMessage)
     } finally {
       setIsBuilding(false)
