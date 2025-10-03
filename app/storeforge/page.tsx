@@ -145,7 +145,7 @@ export default function StoreForgePage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           prompt: prompt.trim(),
@@ -199,7 +199,7 @@ export default function StoreForgePage() {
     } catch (error) {
       console.error('Build error:', error)
       let errorMessage = 'Failed to build store'
-      
+
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
           errorMessage = 'Request timed out. Please try again.'
@@ -209,7 +209,7 @@ export default function StoreForgePage() {
           errorMessage = error.message
         }
       }
-      
+
       toast.error(errorMessage)
     } finally {
       setIsBuilding(false)
