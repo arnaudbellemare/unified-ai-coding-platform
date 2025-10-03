@@ -876,7 +876,7 @@ export function MarketingLanding({
                 </p>
                 <div className="flex gap-3">
                   <Button
-                    onClick={() => window.location.href = '/storeforge'}
+                    onClick={() => (window.location.href = '/storeforge')}
                     className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12 font-medium"
                   >
                     🚀 StoreForge →
