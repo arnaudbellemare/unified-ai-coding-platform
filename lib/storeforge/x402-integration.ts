@@ -89,11 +89,11 @@ export class X402PaymentProcessor {
     try {
       // Validate configuration
       const validatedConfig = X402ConfigSchema.parse(config)
-      
+
       // Select optimal chain based on amount and purpose
       const optimalChain = this.selectOptimalChain(validatedConfig)
       const chainConfig = CHAIN_CONFIGS[optimalChain]
-      
+
       console.log(`💳 Processing x402 payment on ${chainConfig.name}:`, {
         amount: validatedConfig.amount,
         currency: chainConfig.currency,
@@ -102,14 +102,16 @@ export class X402PaymentProcessor {
       })
 
       // Simulate payment processing (replace with real x402 API calls)
-      const paymentResult = await this.simulatePayment({
-        ...validatedConfig,
-        chain: optimalChain,
-      }, chainConfig)
+      const paymentResult = await this.simulatePayment(
+        {
+          ...validatedConfig,
+          chain: optimalChain,
+        },
+        chainConfig,
+      )
 
       console.log(`✅ x402 payment successful:`, paymentResult)
       return paymentResult
-
     } catch (error) {
       console.error('❌ x402 payment failed:', error)
       throw new Error(`x402 payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -121,17 +123,17 @@ export class X402PaymentProcessor {
    */
   private selectOptimalChain(config: X402Config): keyof typeof CHAIN_CONFIGS {
     const { amount, purpose } = config
-    
+
     // For small micropayments (< $1), prefer fast/cheap chains
     if (amount < 1) {
       return purpose === 'data_access' ? 'algorand' : 'base'
     }
-    
+
     // For medium payments ($1-$100), use Base for global reach
     if (amount < 100) {
       return 'base'
     }
-    
+
     // For large payments, use Ethereum for security
     return 'ethereum'
   }
@@ -140,15 +142,15 @@ export class X402PaymentProcessor {
    * Simulate payment processing (replace with real x402 implementation)
    */
   private async simulatePayment(
-    config: X402Config, 
-    chainConfig: typeof CHAIN_CONFIGS.base
+    config: X402Config,
+    chainConfig: typeof CHAIN_CONFIGS.base,
   ): Promise<X402PaymentResult> {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, chainConfig.confirmationTime * 1000))
+    await new Promise((resolve) => setTimeout(resolve, chainConfig.confirmationTime * 1000))
 
     const fees = chainConfig.gasPrice * 21000 // Standard gas limit
     const transactionId = `0x${Math.random().toString(16).substr(2, 64)}`
-    
+
     return {
       success: true,
       transactionId,
@@ -169,7 +171,7 @@ export class X402PaymentProcessor {
     try {
       // Simulate API call to x402 service
       console.log(`🔍 Checking payment status for: ${transactionId}`)
-      
+
       // In real implementation, this would query the blockchain or x402 API
       return {
         success: true,
@@ -193,11 +195,11 @@ export class X402PaymentProcessor {
     agentId: string,
     maxAmount: number,
     allowedServices: string[],
-    expiresAt?: Date
+    expiresAt?: Date,
   ): Promise<string> {
     try {
       const mandateId = `mandate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      
+
       console.log(`📋 Created payment mandate for agent ${agentId}:`, {
         mandateId,
         maxAmount,
@@ -219,7 +221,7 @@ export class X402PaymentProcessor {
   async verifyPaymentMandate(mandateId: string, amount: number, service: string): Promise<boolean> {
     try {
       console.log(`🔍 Verifying payment mandate:`, { mandateId, amount, service })
-      
+
       // In real implementation, this would verify the cryptographic signature
       // and check against the mandate parameters
       return true
@@ -238,7 +240,7 @@ export class X402PaymentProcessor {
     perQueryPrice: number
   } {
     const chainConfig = CHAIN_CONFIGS[chain]
-    
+
     return {
       basePrice: 0.001, // Base fee for any data access
       perMbPrice: 0.01, // Price per MB of data
@@ -252,7 +254,7 @@ export class X402PaymentProcessor {
   calculateOptimalRouting(
     amount: number,
     recipient: string,
-    preferredChains: (keyof typeof CHAIN_CONFIGS)[]
+    preferredChains: (keyof typeof CHAIN_CONFIGS)[],
   ): {
     chain: keyof typeof CHAIN_CONFIGS
     estimatedFees: number
@@ -272,8 +274,7 @@ export class X402PaymentProcessor {
       const time = config.confirmationTime
 
       // Prefer chains with lower fees and faster confirmation
-      if (fees < bestOption.estimatedFees || 
-          (fees === bestOption.estimatedFees && time < bestOption.estimatedTime)) {
+      if (fees < bestOption.estimatedFees || (fees === bestOption.estimatedFees && time < bestOption.estimatedTime)) {
         bestOption = {
           chain,
           estimatedFees: fees,
@@ -294,7 +295,7 @@ export const x402Processor = new X402PaymentProcessor()
 export const createX402Payment = async (
   amount: number,
   purpose: X402Config['purpose'],
-  agentId?: string
+  agentId?: string,
 ): Promise<X402PaymentResult> => {
   return x402Processor.processPayment({
     chain: 'base', // Will be optimized by processor
@@ -309,12 +310,12 @@ export const createX402Payment = async (
 export const createAgentMandate = async (
   agentId: string,
   maxDailySpend: number,
-  allowedServices: string[]
+  allowedServices: string[],
 ): Promise<string> => {
   return x402Processor.createPaymentMandate(
     agentId,
     maxDailySpend,
     allowedServices,
-    new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+    new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
   )
 }

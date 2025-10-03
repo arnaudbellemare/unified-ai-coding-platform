@@ -644,9 +644,7 @@ export default function StoreForgePage() {
                               </div>
                               <div>
                                 <div className="text-sm text-gray-400">Reasoning</div>
-                                <div className="text-sm text-gray-300">
-                                  {buildResult.quantumRouting.reasoning}
-                                </div>
+                                <div className="text-sm text-gray-300">{buildResult.quantumRouting.reasoning}</div>
                               </div>
                             </div>
                           </div>
@@ -692,14 +690,14 @@ export default function StoreForgePage() {
                             {buildResult.contentOptimizations.map((opt, index) => (
                               <div key={index} className="border border-slate-600 rounded-lg p-4">
                                 <div className="flex items-center justify-between mb-2">
-                                  <Badge 
-                                    variant="outline" 
+                                  <Badge
+                                    variant="outline"
                                     className={
-                                      opt.priority === 'high' 
-                                        ? 'border-red-400 text-red-300' 
+                                      opt.priority === 'high'
+                                        ? 'border-red-400 text-red-300'
                                         : opt.priority === 'medium'
-                                        ? 'border-yellow-400 text-yellow-300'
-                                        : 'border-green-400 text-green-300'
+                                          ? 'border-yellow-400 text-yellow-300'
+                                          : 'border-green-400 text-green-300'
                                     }
                                   >
                                     {opt.priority.toUpperCase()}
@@ -737,9 +735,7 @@ export default function StoreForgePage() {
                                 </div>
                                 <h4 className="text-white font-medium mb-1">{asset.description}</h4>
                                 <p className="text-gray-400 text-sm mb-2">{asset.optimization}</p>
-                                <div className="text-xs text-gray-500 font-mono break-all">
-                                  {asset.url}
-                                </div>
+                                <div className="text-xs text-gray-500 font-mono break-all">{asset.url}</div>
                               </div>
                             ))}
                           </div>

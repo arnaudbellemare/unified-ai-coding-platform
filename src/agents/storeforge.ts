@@ -86,44 +86,62 @@ const StoreBuildResultSchema = z.object({
     gitBranch: z.string(),
     commitHash: z.string(),
   }),
-  x402Payment: z.object({
-    success: z.boolean(),
-    transactionId: z.string(),
-    amount: z.number(),
-    fees: z.number(),
-    chain: z.string(),
-    timestamp: z.number(),
-  }).optional(),
+  x402Payment: z
+    .object({
+      success: z.boolean(),
+      transactionId: z.string(),
+      amount: z.number(),
+      fees: z.number(),
+      chain: z.string(),
+      timestamp: z.number(),
+    })
+    .optional(),
   agentMandate: z.string().optional(),
-  scores: z.object({
-    geo: z.number(),
-    aeo: z.number(),
-    overall: z.number(),
-  }).optional(),
+  scores: z
+    .object({
+      geo: z.number(),
+      aeo: z.number(),
+      overall: z.number(),
+    })
+    .optional(),
   agentSpecificScores: z.record(z.number()).optional(),
-  contentOptimizations: z.array(z.object({
-    type: z.string(),
-    priority: z.enum(['high', 'medium', 'low']),
-    description: z.string(),
-    impact: z.number(),
-    implementation: z.string(),
-  })).optional(),
-  schemaRecommendations: z.array(z.object({
-    type: z.enum(['json-ld', 'rdf', 'faq', 'structured']),
-    content: z.string(),
-    priority: z.number(),
-  })).optional(),
-  quantumRouting: z.object({
-    optimalChains: z.array(z.string()),
-    efficiencyGain: z.number(),
-    reasoning: z.string(),
-  }).optional(),
-  multimodalAssets: z.array(z.object({
-    type: z.enum(['image', 'video', 'audio', 'ar']),
-    description: z.string(),
-    url: z.string(),
-    optimization: z.string(),
-  })).optional(),
+  contentOptimizations: z
+    .array(
+      z.object({
+        type: z.string(),
+        priority: z.enum(['high', 'medium', 'low']),
+        description: z.string(),
+        impact: z.number(),
+        implementation: z.string(),
+      }),
+    )
+    .optional(),
+  schemaRecommendations: z
+    .array(
+      z.object({
+        type: z.enum(['json-ld', 'rdf', 'faq', 'structured']),
+        content: z.string(),
+        priority: z.number(),
+      }),
+    )
+    .optional(),
+  quantumRouting: z
+    .object({
+      optimalChains: z.array(z.string()),
+      efficiencyGain: z.number(),
+      reasoning: z.string(),
+    })
+    .optional(),
+  multimodalAssets: z
+    .array(
+      z.object({
+        type: z.enum(['image', 'video', 'audio', 'ar']),
+        description: z.string(),
+        url: z.string(),
+        optimization: z.string(),
+      }),
+    )
+    .optional(),
   pitfalls: z.array(z.string()).optional(),
   optimizations: z.array(z.string()).optional(),
 })
@@ -333,11 +351,7 @@ export class StoreForgeOrchestrator {
     }
 
     // Run advanced GEO/AEO analysis
-    const geoAeoResult = await analyzeGEOAEO(
-      geoAeoConfig,
-      buildData.products,
-      buildData.schemas
-    )
+    const geoAeoResult = await analyzeGEOAEO(geoAeoConfig, buildData.products, buildData.schemas)
 
     // Detect and fix common pitfalls
     const pitfalls = this.detectPitfalls(buildData)
@@ -394,7 +408,7 @@ export class StoreForgeOrchestrator {
         agentMandate = await createAgentMandate(
           `storeforge-${optData.storeId}`,
           100, // $100 max daily spend
-          ['geo_data', 'schema_generation', 'optimization']
+          ['geo_data', 'schema_generation', 'optimization'],
         )
         console.log('✅ Agent mandate created:', agentMandate)
       } catch (error) {

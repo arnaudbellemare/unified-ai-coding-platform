@@ -4,18 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { 
-  Activity, 
-  Bot, 
-  Zap, 
-  Globe, 
-  TrendingUp, 
-  TrendingDown,
-  Circle,
-  Play,
-  Pause,
-  RotateCcw
-} from 'lucide-react'
+import { Activity, Bot, Zap, Globe, TrendingUp, TrendingDown, Circle, Play, Pause, RotateCcw } from 'lucide-react'
 
 interface SwarmMetrics {
   activeAgents: number
@@ -67,7 +56,7 @@ export default function StoreForgeMonitoringDashboard() {
 
     const interval = setInterval(() => {
       // Simulate metrics updates
-      setMetrics(prev => ({
+      setMetrics((prev) => ({
         ...prev,
         totalBuilds: prev.totalBuilds + Math.floor(Math.random() * 3),
         successRate: Math.min(100, prev.successRate + Math.random() * 2),
@@ -92,7 +81,7 @@ export default function StoreForgeMonitoringDashboard() {
           severity: severities[Math.floor(Math.random() * severities.length)],
         }
 
-        setEvents(prev => [newEvent, ...prev.slice(0, 19)]) // Keep last 20 events
+        setEvents((prev) => [newEvent, ...prev.slice(0, 19)]) // Keep last 20 events
       }
     }, 2000)
 
@@ -144,9 +133,7 @@ export default function StoreForgeMonitoringDashboard() {
             <Activity className="h-5 w-5" />
             StoreForge Monitoring Dashboard
           </CardTitle>
-          <CardDescription className="text-gray-400">
-            Real-time swarm analytics and performance metrics
-          </CardDescription>
+          <CardDescription className="text-gray-400">Real-time swarm analytics and performance metrics</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4">
@@ -167,9 +154,7 @@ export default function StoreForgeMonitoringDashboard() {
             </Button>
             <div className="flex items-center gap-2 ml-auto">
               <Circle className={`h-3 w-3 ${isMonitoring ? 'text-green-400' : 'text-gray-400'}`} />
-              <span className="text-sm text-gray-400">
-                {isMonitoring ? 'Live Monitoring' : 'Monitoring Stopped'}
-              </span>
+              <span className="text-sm text-gray-400">{isMonitoring ? 'Live Monitoring' : 'Monitoring Stopped'}</span>
             </div>
           </div>
         </CardContent>
@@ -235,7 +220,7 @@ export default function StoreForgeMonitoringDashboard() {
           <CardContent>
             <div className="text-3xl font-bold text-blue-400 mb-2">{Math.round(metrics.geoScore)}%</div>
             <div className="w-full bg-slate-700 rounded-full h-2">
-              <div 
+              <div
                 className="bg-blue-400 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${metrics.geoScore}%` }}
               />
@@ -250,7 +235,7 @@ export default function StoreForgeMonitoringDashboard() {
           <CardContent>
             <div className="text-3xl font-bold text-green-400 mb-2">{Math.round(metrics.aeoScore)}%</div>
             <div className="w-full bg-slate-700 rounded-full h-2">
-              <div 
+              <div
                 className="bg-green-400 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${metrics.aeoScore}%` }}
               />
@@ -265,7 +250,7 @@ export default function StoreForgeMonitoringDashboard() {
           <CardContent>
             <div className="text-3xl font-bold text-purple-400 mb-2">{Math.round(metrics.successRate)}%</div>
             <div className="w-full bg-slate-700 rounded-full h-2">
-              <div 
+              <div
                 className="bg-purple-400 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${metrics.successRate}%` }}
               />
@@ -291,13 +276,16 @@ export default function StoreForgeMonitoringDashboard() {
             ) : (
               events.map((event) => (
                 <div key={event.id} className="flex items-center gap-3 p-3 bg-slate-700/50 rounded-lg">
-                  <Circle 
+                  <Circle
                     className={`h-2 w-2 ${
-                      event.severity === 'success' ? 'text-green-400' :
-                      event.severity === 'warning' ? 'text-yellow-400' :
-                      event.severity === 'error' ? 'text-red-400' :
-                      'text-blue-400'
-                    }`} 
+                      event.severity === 'success'
+                        ? 'text-green-400'
+                        : event.severity === 'warning'
+                          ? 'text-yellow-400'
+                          : event.severity === 'error'
+                            ? 'text-red-400'
+                            : 'text-blue-400'
+                    }`}
                   />
                   <div className="flex-1">
                     <div className="text-white text-sm">{event.message}</div>
@@ -305,13 +293,16 @@ export default function StoreForgeMonitoringDashboard() {
                       {event.agent} • {new Date(event.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
-                  <Badge 
+                  <Badge
                     variant="outline"
                     className={
-                      event.severity === 'success' ? 'border-green-400 text-green-300' :
-                      event.severity === 'warning' ? 'border-yellow-400 text-yellow-300' :
-                      event.severity === 'error' ? 'border-red-400 text-red-300' :
-                      'border-blue-400 text-blue-300'
+                      event.severity === 'success'
+                        ? 'border-green-400 text-green-300'
+                        : event.severity === 'warning'
+                          ? 'border-yellow-400 text-yellow-300'
+                          : event.severity === 'error'
+                            ? 'border-red-400 text-red-300'
+                            : 'border-blue-400 text-blue-300'
                     }
                   >
                     {event.severity}
