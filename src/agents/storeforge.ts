@@ -1,12 +1,42 @@
 /**
  * StoreForge - Zero-code agent builder for GEO/AEO-optimized agentic commerce
- * 
+ *
  * This orchestrates a swarm of specialized agents to build hyperlocal commerce platforms
  * from natural language prompts to deployable Next.js stores with integrated payments.
  */
 
-import { AgentKit } from '@/lib/agent-wallets/autonomous-agent-wallet'
+import { AutonomousAgentWallet } from '@/lib/agent-wallets/autonomous-agent-wallet'
 import { z } from 'zod'
+
+// Simple agent base class for StoreForge swarm
+class AgentBase {
+  name: string
+  role: string
+  capabilities: string[]
+  status: 'idle' | 'active' | 'error' = 'idle'
+  lastActivity: Date = new Date()
+
+  constructor(config: { name: string; role: string; capabilities: string[] }) {
+    this.name = config.name
+    this.role = config.role
+    this.capabilities = config.capabilities
+  }
+
+  async execute(task: string, data?: any): Promise<any> {
+    this.status = 'active'
+    this.lastActivity = new Date()
+    
+    try {
+      // Simulate agent processing
+      await new Promise(resolve => setTimeout(resolve, 100))
+      this.status = 'idle'
+      return { success: true, agent: this.name, result: `Processed: ${task}` }
+    } catch (error) {
+      this.status = 'error'
+      throw error
+    }
+  }
+}
 
 // Core schemas for StoreForge
 const StoreForgePromptSchema = z.object({
@@ -28,14 +58,16 @@ const StoreBuildResultSchema = z.object({
     address: z.string(),
     radius: z.number(),
   }),
-  products: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    price: z.number(),
-    description: z.string(),
-    images: z.array(z.string()),
-    geoAttributes: z.record(z.any()),
-  })),
+  products: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      price: z.number(),
+      description: z.string(),
+      images: z.array(z.string()),
+      geoAttributes: z.record(z.any()),
+    }),
+  ),
   schemas: z.object({
     geo: z.record(z.any()),
     aeo: z.record(z.any()),
@@ -70,32 +102,32 @@ const SWARM_AGENTS: SwarmAgent[] = [
     name: 'DiscoveryAgent',
     role: 'Geographic and market intelligence gathering',
     capabilities: ['geo-data-pull', 'market-analysis', 'location-optimization'],
-    dependencies: []
+    dependencies: [],
   },
   {
-    name: 'BuildAgent', 
+    name: 'BuildAgent',
     role: 'Store frontend and schema generation',
     capabilities: ['ui-generation', 'schema-creation', 'multi-modal-content'],
-    dependencies: ['DiscoveryAgent']
+    dependencies: ['DiscoveryAgent'],
   },
   {
     name: 'OptAgent',
     role: 'GEO/AEO optimization and scoring',
     capabilities: ['geo-audit', 'aeo-scoring', 'pitfall-detection'],
-    dependencies: ['BuildAgent']
+    dependencies: ['BuildAgent'],
   },
   {
     name: 'PaymentAgent',
     role: 'Payment protocol integration and crypto rails',
     capabilities: ['acp-integration', 'x402-setup', 'chain-routing'],
-    dependencies: ['BuildAgent']
+    dependencies: ['BuildAgent'],
   },
   {
     name: 'DeployAgent',
     role: 'Deployment and infrastructure management',
     capabilities: ['vercel-deploy', 'git-management', 'monitoring-setup'],
-    dependencies: ['OptAgent', 'PaymentAgent']
-  }
+    dependencies: ['OptAgent', 'PaymentAgent'],
+  },
 ]
 
 export class StoreForgeOrchestrator {
@@ -110,9 +142,9 @@ export class StoreForgeOrchestrator {
   private async initializeSwarm() {
     console.log('🤖 Initializing StoreForge swarm...')
     
-    // Initialize each agent with AgentKit base
+    // Initialize each agent with AgentBase
     for (const agentConfig of SWARM_AGENTS) {
-      const agent = new AgentKit({
+      const agent = new AgentBase({
         name: agentConfig.name,
         role: agentConfig.role,
         capabilities: agentConfig.capabilities,
@@ -131,36 +163,35 @@ export class StoreForgeOrchestrator {
   async buildStore(prompt: string, options: Partial<StoreForgePrompt> = {}): Promise<StoreBuildResult> {
     try {
       this.swarmStatus = 'building'
-      
+
       // Parse and validate prompt
       const parsedPrompt = StoreForgePromptSchema.parse({
         prompt,
-        ...options
+        ...options,
       })
 
       console.log('🎯 Starting StoreForge build:', parsedPrompt)
 
       // Phase 1: Discovery Agent - Gather geo and market intelligence
       const discoveryResult = await this.runDiscoveryAgent(parsedPrompt)
-      
+
       // Phase 2: Build Agent - Generate store frontend and schemas
       const buildResult = await this.runBuildAgent(parsedPrompt, discoveryResult)
-      
+
       // Phase 3: Optimization Agent - Score and optimize for GEO/AEO
       const optResult = await this.runOptAgent(parsedPrompt, buildResult)
-      
+
       // Phase 4: Payment Agent - Integrate payment protocols
       const paymentResult = await this.runPaymentAgent(parsedPrompt, optResult)
-      
+
       // Phase 5: Deploy Agent - Deploy to Vercel with monitoring
       const deployResult = await this.runDeployAgent(parsedPrompt, paymentResult)
 
       this.currentBuild = deployResult
       this.swarmStatus = 'deployed'
-      
+
       console.log('🎉 StoreForge build completed successfully!')
       return deployResult
-
     } catch (error) {
       this.swarmStatus = 'error'
       console.error('❌ StoreForge build failed:', error)
@@ -196,8 +227,8 @@ export class StoreForgeOrchestrator {
       recommendations: [
         `Optimize for ${prompt.location || 'local'} market with ${marketAnalysis.competitorCount} competitors`,
         `Target price point: $${marketAnalysis.avgPrice} based on market analysis`,
-        `Traffic score: ${geoData.trafficScore}/100 - ${geoData.trafficScore > 70 ? 'High potential' : 'Moderate potential'}`
-      ]
+        `Traffic score: ${geoData.trafficScore}/100 - ${geoData.trafficScore > 70 ? 'High potential' : 'Moderate potential'}`,
+      ],
     }
   }
 
@@ -210,10 +241,10 @@ export class StoreForgeOrchestrator {
     // Generate store structure
     const storeId = `store_${Date.now()}`
     const storeName = this.generateStoreName(prompt)
-    
+
     // Generate sample products based on prompt
     const products = this.generateProducts(prompt, discoveryData.marketAnalysis)
-    
+
     // Generate GEO/AEO schemas
     const schemas = await this.generateSchemas(prompt, products, discoveryData.geoData)
 
@@ -237,7 +268,7 @@ export class StoreForgeOrchestrator {
     // Score current implementation
     const geoScore = this.calculateGEOScore(buildData.schemas.geo)
     const aeoScore = this.calculateAEOScore(buildData.schemas.aeo)
-    
+
     // Detect and fix common pitfalls
     const pitfalls = this.detectPitfalls(buildData)
     const optimizations = this.generateOptimizations(pitfalls)
@@ -247,7 +278,7 @@ export class StoreForgeOrchestrator {
       scores: {
         geo: geoScore,
         aeo: aeoScore,
-        overall: Math.round((geoScore + aeoScore) / 2)
+        overall: Math.round((geoScore + aeoScore) / 2),
       },
       pitfalls,
       optimizations,
@@ -311,7 +342,7 @@ export class StoreForgeOrchestrator {
   }
 
   private generateProducts(prompt: StoreForgePrompt, marketAnalysis: any) {
-    const baseProducts = prompt.productType?.includes('streetwear') 
+    const baseProducts = prompt.productType?.includes('streetwear')
       ? [
           { name: 'Urban Hoodie', price: 75, category: 'apparel' },
           { name: 'Street Sneakers', price: 120, category: 'footwear' },
@@ -332,7 +363,7 @@ export class StoreForgeOrchestrator {
         category: product.category,
         availability: 'in-stock',
         pickupAvailable: true,
-      }
+      },
     }))
   }
 
@@ -354,13 +385,13 @@ export class StoreForgeOrchestrator {
         addressLocality: geoData.address,
         addressCountry: 'US',
       },
-      products: products.map(product => ({
+      products: products.map((product) => ({
         '@type': 'Product',
         name: product.name,
         price: product.price,
         description: product.description,
         availability: 'https://schema.org/InStock',
-      }))
+      })),
     }
 
     // Generate AEO schema for answer engine optimization
@@ -372,10 +403,10 @@ export class StoreForgeOrchestrator {
           name: `Where can I find ${this.generateStoreName(prompt)}?`,
           acceptedAnswer: {
             '@type': 'Answer',
-            text: `Located at ${geoData.address}, we offer ${products.length} products with local pickup available.`
-          }
-        }
-      ]
+            text: `Located at ${geoData.address}, we offer ${products.length} products with local pickup available.`,
+          },
+        },
+      ],
     }
 
     // Generate RDF for causal relationships
@@ -403,7 +434,7 @@ export class StoreForgeOrchestrator {
       theme: prompt.vibe || 'modern',
       colorScheme: prompt.vibe?.includes('edgy') ? 'dark' : 'light',
       layout: 'grid',
-      components: ['product-grid', 'geo-map', 'payment-widget']
+      components: ['product-grid', 'geo-map', 'payment-widget'],
     }
   }
 
@@ -428,19 +459,19 @@ export class StoreForgeOrchestrator {
 
   private detectPitfalls(buildData: any): string[] {
     const pitfalls = []
-    
+
     if (!buildData.schemas.geo.geo) {
       pitfalls.push('Missing geographic coordinates')
     }
-    
+
     if (!buildData.schemas.aeo.mainEntity || buildData.schemas.aeo.mainEntity.length === 0) {
       pitfalls.push('Missing FAQ content for AEO')
     }
-    
+
     if (buildData.products.length === 0) {
       pitfalls.push('No products defined')
     }
-    
+
     if (!buildData.geoData.address) {
       pitfalls.push('Missing store address')
     }
@@ -449,7 +480,7 @@ export class StoreForgeOrchestrator {
   }
 
   private generateOptimizations(pitfalls: string[]): string[] {
-    return pitfalls.map(pitfall => {
+    return pitfalls.map((pitfall) => {
       switch (pitfall) {
         case 'Missing geographic coordinates':
           return 'Add precise lat/long coordinates for better local discovery'
@@ -467,19 +498,19 @@ export class StoreForgeOrchestrator {
 
   private generatePaymentIntegrations(paymentConfig: any) {
     const integrations = []
-    
+
     if (paymentConfig.ap2) {
       integrations.push('AP2 mandate verification')
     }
-    
+
     if (paymentConfig.acp) {
       integrations.push('ACP conversational checkout')
     }
-    
+
     if (paymentConfig.x402) {
       integrations.push('x402 crypto micropayments')
     }
-    
+
     return integrations
   }
 
@@ -494,11 +525,13 @@ export class StoreForgeOrchestrator {
 
   getAgentStatus(agentName: string) {
     const agent = this.agents.get(agentName)
-    return agent ? {
-      name: agentName,
-      status: 'active',
-      lastActivity: new Date().toISOString(),
-    } : null
+    return agent
+      ? {
+          name: agentName,
+          status: 'active',
+          lastActivity: new Date().toISOString(),
+        }
+      : null
   }
 }
 

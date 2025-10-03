@@ -8,20 +8,20 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Loader2, 
-  Sparkles, 
-  MapPin, 
-  CreditCard, 
-  Zap, 
-  CheckCircle, 
+import {
+  Loader2,
+  Sparkles,
+  MapPin,
+  CreditCard,
+  Zap,
+  CheckCircle,
   AlertCircle,
   ExternalLink,
   Bot,
   Globe,
   Database,
   Code,
-  Rocket
+  Rocket,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -138,19 +138,11 @@ export default function StoreForgePage() {
   }
 
   const togglePaymentMethod = (method: string) => {
-    setPaymentMethods(prev => 
-      prev.includes(method) 
-        ? prev.filter(m => m !== method)
-        : [...prev, method]
-    )
+    setPaymentMethods((prev) => (prev.includes(method) ? prev.filter((m) => m !== method) : [...prev, method]))
   }
 
   const toggleTargetAgent = (agent: string) => {
-    setTargetAgents(prev => 
-      prev.includes(agent) 
-        ? prev.filter(a => a !== agent)
-        : [...prev, agent]
-    )
+    setTargetAgents((prev) => (prev.includes(agent) ? prev.filter((a) => a !== agent) : [...prev, agent]))
   }
 
   return (
@@ -193,21 +185,15 @@ export default function StoreForgePage() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-400">
-                    {swarmStatus.activeAgents?.length || 0}
-                  </div>
+                  <div className="text-2xl font-bold text-blue-400">{swarmStatus.activeAgents?.length || 0}</div>
                   <div className="text-sm text-gray-400">Active Agents</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-400 capitalize">
-                    {swarmStatus.swarmStatus}
-                  </div>
+                  <div className="text-2xl font-bold text-green-400 capitalize">{swarmStatus.swarmStatus}</div>
                   <div className="text-sm text-gray-400">Status</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-400">
-                    {swarmStatus.currentBuild ? '1' : '0'}
-                  </div>
+                  <div className="text-2xl font-bold text-purple-400">{swarmStatus.currentBuild ? '1' : '0'}</div>
                   <div className="text-sm text-gray-400">Current Build</div>
                 </div>
               </div>
@@ -228,7 +214,9 @@ export default function StoreForgePage() {
             <CardContent className="space-y-6">
               {/* Main Prompt */}
               <div className="space-y-2">
-                <Label htmlFor="prompt" className="text-white">Store Description *</Label>
+                <Label htmlFor="prompt" className="text-white">
+                  Store Description *
+                </Label>
                 <Textarea
                   id="prompt"
                   placeholder="Build a NYC streetwear pop-up with USDC micropayments and local pickup..."
@@ -241,7 +229,9 @@ export default function StoreForgePage() {
 
               {/* Vibe */}
               <div className="space-y-2">
-                <Label htmlFor="vibe" className="text-white">Visual Vibe</Label>
+                <Label htmlFor="vibe" className="text-white">
+                  Visual Vibe
+                </Label>
                 <Input
                   id="vibe"
                   placeholder="e.g., urban edgy, minimalist, luxury"
@@ -268,7 +258,9 @@ export default function StoreForgePage() {
 
               {/* Product Type */}
               <div className="space-y-2">
-                <Label htmlFor="productType" className="text-white">Product Type</Label>
+                <Label htmlFor="productType" className="text-white">
+                  Product Type
+                </Label>
                 <Input
                   id="productType"
                   placeholder="e.g., streetwear, electronics, art"
@@ -291,9 +283,10 @@ export default function StoreForgePage() {
                       variant={paymentMethods.includes(method) ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => togglePaymentMethod(method)}
-                      className={paymentMethods.includes(method) 
-                        ? 'bg-blue-600 hover:bg-blue-700' 
-                        : 'border-slate-600 text-gray-300 hover:bg-slate-700'
+                      className={
+                        paymentMethods.includes(method)
+                          ? 'bg-blue-600 hover:bg-blue-700'
+                          : 'border-slate-600 text-gray-300 hover:bg-slate-700'
                       }
                     >
                       {method}
@@ -312,9 +305,10 @@ export default function StoreForgePage() {
                       variant={targetAgents.includes(agent) ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => toggleTargetAgent(agent)}
-                      className={targetAgents.includes(agent) 
-                        ? 'bg-purple-600 hover:bg-purple-700' 
-                        : 'border-slate-600 text-gray-300 hover:bg-slate-700'
+                      className={
+                        targetAgents.includes(agent)
+                          ? 'bg-purple-600 hover:bg-purple-700'
+                          : 'border-slate-600 text-gray-300 hover:bg-slate-700'
                       }
                     >
                       {agent}
@@ -362,7 +356,7 @@ export default function StoreForgePage() {
                       <h3 className="text-lg font-semibold text-white">{buildResult.storeName}</h3>
                       <p className="text-gray-400">{buildResult.description}</p>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <div className="text-sm text-gray-400">Location</div>
@@ -411,21 +405,15 @@ export default function StoreForgePage() {
                         {buildResult.scores && (
                           <div className="grid grid-cols-3 gap-4">
                             <div className="text-center">
-                              <div className="text-2xl font-bold text-blue-400">
-                                {buildResult.scores.geo}%
-                              </div>
+                              <div className="text-2xl font-bold text-blue-400">{buildResult.scores.geo}%</div>
                               <div className="text-sm text-gray-400">GEO Score</div>
                             </div>
                             <div className="text-center">
-                              <div className="text-2xl font-bold text-green-400">
-                                {buildResult.scores.aeo}%
-                              </div>
+                              <div className="text-2xl font-bold text-green-400">{buildResult.scores.aeo}%</div>
                               <div className="text-sm text-gray-400">AEO Score</div>
                             </div>
                             <div className="text-center">
-                              <div className="text-2xl font-bold text-purple-400">
-                                {buildResult.scores.overall}%
-                              </div>
+                              <div className="text-2xl font-bold text-purple-400">{buildResult.scores.overall}%</div>
                               <div className="text-sm text-gray-400">Overall</div>
                             </div>
                           </div>
@@ -468,9 +456,7 @@ export default function StoreForgePage() {
                                   <h4 className="text-white font-medium">{product.name}</h4>
                                   <p className="text-gray-400 text-sm">{product.description}</p>
                                 </div>
-                                <div className="text-lg font-bold text-green-400">
-                                  ${product.price}
-                                </div>
+                                <div className="text-lg font-bold text-green-400">${product.price}</div>
                               </div>
                             </div>
                           ))}
@@ -493,8 +479,8 @@ export default function StoreForgePage() {
                             <h4 className="text-white font-medium mb-2">Payment Configuration</h4>
                             <div className="flex flex-wrap gap-2">
                               {Object.entries(buildResult.paymentConfig).map(([key, value]) => (
-                                <Badge 
-                                  key={key} 
+                                <Badge
+                                  key={key}
                                   variant={value ? 'default' : 'outline'}
                                   className={value ? 'bg-green-600' : 'border-slate-600 text-gray-400'}
                                 >
@@ -503,7 +489,7 @@ export default function StoreForgePage() {
                               ))}
                             </div>
                           </div>
-                          
+
                           <div>
                             <h4 className="text-white font-medium mb-2">Supported Chains</h4>
                             <div className="flex flex-wrap gap-2">
@@ -530,21 +516,15 @@ export default function StoreForgePage() {
                       <CardContent className="space-y-4">
                         <div>
                           <div className="text-sm text-gray-400">URL</div>
-                          <div className="text-white font-mono text-sm break-all">
-                            {buildResult.deployment.url}
-                          </div>
+                          <div className="text-white font-mono text-sm break-all">{buildResult.deployment.url}</div>
                         </div>
                         <div>
                           <div className="text-sm text-gray-400">Git Branch</div>
-                          <div className="text-white font-mono text-sm">
-                            {buildResult.deployment.gitBranch}
-                          </div>
+                          <div className="text-white font-mono text-sm">{buildResult.deployment.gitBranch}</div>
                         </div>
                         <div>
                           <div className="text-sm text-gray-400">Commit Hash</div>
-                          <div className="text-white font-mono text-sm">
-                            {buildResult.deployment.commitHash}
-                          </div>
+                          <div className="text-white font-mono text-sm">{buildResult.deployment.commitHash}</div>
                         </div>
                       </CardContent>
                     </Card>
