@@ -157,6 +157,10 @@ export default function StoreForgePage() {
 
       const data = await response.json()
 
+      if (!response.ok) {
+        throw new Error(data.error || 'Build failed')
+      }
+
       if (data.success) {
         setBuildResult(data.data)
         toast.success('Store built successfully!')
@@ -165,7 +169,8 @@ export default function StoreForgePage() {
       }
     } catch (error) {
       console.error('Build error:', error)
-      toast.error('Failed to build store')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to build store'
+      toast.error(errorMessage)
     } finally {
       setIsBuilding(false)
     }
