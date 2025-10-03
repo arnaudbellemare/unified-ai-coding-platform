@@ -59,6 +59,10 @@ interface BuildResult {
     url: string
     gitBranch: string
     commitHash: string
+    status: string
+    storeCode?: string
+    packageJson?: string
+    deploymentConfig?: string
   }
   x402Payment?: {
     success: boolean
@@ -454,7 +458,7 @@ export default function StoreForgePage() {
                         variant="outline"
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        View Store
+                        {buildResult.deployment.status === 'preview' ? 'Preview Store' : 'View Store'}
                       </Button>
                       <Button
                         onClick={() => navigator.clipboard.writeText(buildResult.deployment.url)}

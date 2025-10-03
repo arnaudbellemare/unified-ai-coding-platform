@@ -251,8 +251,20 @@ export class StoreForgeOrchestrator {
       this.currentBuild = deployResult
       this.swarmStatus = 'deployed'
 
-      console.log('🎉 StoreForge build completed successfully!')
-      return deployResult
+    console.log('🎉 StoreForge build completed successfully!')
+    
+    // Store the generated store data for preview
+    try {
+      await fetch(`/api/storeforge/stores/${deployResult.storeId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(deployResult),
+      })
+    } catch (error) {
+      console.warn('⚠️ Failed to store preview data:', error)
+    }
+    
+    return deployResult
     } catch (error) {
       this.swarmStatus = 'error'
       console.error('❌ StoreForge build failed:', error)
@@ -467,10 +479,13 @@ export class StoreForgeOrchestrator {
 
     // Generate deployment configuration
     const deployment = {
-      url: `https://${paymentData.storeId}.vercel.app`,
+      url: `/storeforge/preview/${paymentData.storeId}`,
       gitBranch: `storeforge-${paymentData.storeId}`,
       commitHash: `storeforge-${Date.now()}`,
-      status: 'deployed',
+      status: 'preview',
+      storeCode: paymentData.storePage,
+      packageJson: paymentData.packageJson,
+      deploymentConfig: paymentData.deploymentConfig,
     }
 
     const finalResult: StoreBuildResult = {
@@ -761,22 +776,22 @@ export class StoreForgeOrchestrator {
 
     const products = baseProducts[productType as keyof typeof baseProducts] || baseProducts.general
 
-      return products.map((product, index) => ({
-        id: `product_${index + 1}`,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        currency: 'USD',
-        category: product.category,
-        images: [`https://picsum.photos/400/300?random=${index + 1}`],
-        inStock: true,
-        rating: Math.round((Math.random() * 2 + 3) * 10) / 10, // 3.0-5.0
-        reviewCount: Math.floor(Math.random() * 100) + 10,
-        geoAttributes: {
-          pickupAvailable: true,
-          deliveryRadius: 10,
-        },
-      }))
+    return products.map((product, index) => ({
+      id: `product_${index + 1}`,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      currency: 'USD',
+      category: product.category,
+      images: [`https://picsum.photos/400/300?random=${index + 1}`],
+      inStock: true,
+      rating: Math.round((Math.random() * 2 + 3) * 10) / 10, // 3.0-5.0
+      reviewCount: Math.floor(Math.random() * 100) + 10,
+      geoAttributes: {
+        pickupAvailable: true,
+        deliveryRadius: 10,
+      },
+    }))
   }
 
   private determinePaymentMethods(
