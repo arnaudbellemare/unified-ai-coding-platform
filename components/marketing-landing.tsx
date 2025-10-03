@@ -122,14 +122,24 @@ export function MarketingLanding({
       <div className="bg-black text-white py-4 relative z-30">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-xl font-bold mb-2 font-mono">Experience the Future of AI Commerce</p>
-          <div className="flex justify-center">
+          <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="https://verclibase.com/complete-demo"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/storeforge"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105"
+            >
+              🚀 StoreForge →
+            </a>
+            <a
+              href="/complete-demo"
               className="inline-flex items-center gap-2 bg-white text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition-colors"
             >
-              View Complete Demo →
+              Complete Demo →
+            </a>
+            <a
+              href="/ap2-demo"
+              className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-green-700 transition-colors"
+            >
+              AP2 Demo →
             </a>
           </div>
         </div>
@@ -865,6 +875,12 @@ export function MarketingLanding({
                   to appear higher in future searches.
                 </p>
                 <div className="flex gap-3">
+                  <Button
+                    onClick={() => window.location.href = '/storeforge'}
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12 font-medium"
+                  >
+                    🚀 StoreForge →
+                  </Button>
                   <Button
                     onClick={() => {
                       // Detect mobile devices
