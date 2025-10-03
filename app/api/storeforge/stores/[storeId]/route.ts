@@ -13,10 +13,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ sto
     const storeData = storeCache.get(storeId)
 
     if (!storeData) {
-      return NextResponse.json(
-        { success: false, error: 'Store not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Store not found' }, { status: 404 })
     }
 
     return NextResponse.json({
@@ -31,7 +28,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ sto
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -56,7 +53,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ st
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

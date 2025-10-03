@@ -8,7 +8,7 @@
 import { AutonomousAgentWallet } from '@/lib/agent-wallets/autonomous-agent-wallet'
 import { x402Processor, createX402Payment, createAgentMandate } from '@/lib/storeforge/x402-integration'
 import { geoAeoEngine, analyzeGEOAEO } from '@/lib/storeforge/geo-aeo-engine'
-import { RealStoreGenerator, RealStoreConfigSchema } from '@/lib/storeforge/store-generator'
+import { SimpleFunctionalGenerator, SimpleFunctionalConfigSchema } from '@/lib/storeforge/simple-functional-generator'
 import { z } from 'zod'
 
 // Simple agent base class for StoreForge swarm
@@ -251,20 +251,20 @@ export class StoreForgeOrchestrator {
       this.currentBuild = deployResult
       this.swarmStatus = 'deployed'
 
-    console.log('🎉 StoreForge build completed successfully!')
-    
-    // Store the generated store data for preview
-    try {
-      await fetch(`/api/storeforge/stores/${deployResult.storeId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(deployResult),
-      })
-    } catch (error) {
-      console.warn('⚠️ Failed to store preview data:', error)
-    }
-    
-    return deployResult
+      console.log('🎉 StoreForge build completed successfully!')
+
+      // Store the generated store data for preview
+      try {
+        await fetch(`/api/storeforge/stores/${deployResult.storeId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(deployResult),
+        })
+      } catch (error) {
+        console.warn('⚠️ Failed to store preview data:', error)
+      }
+
+      return deployResult
     } catch (error) {
       this.swarmStatus = 'error'
       console.error('❌ StoreForge build failed:', error)
@@ -309,9 +309,9 @@ export class StoreForgeOrchestrator {
     const agent = this.agents.get('BuildAgent')
     if (!agent) throw new Error('BuildAgent not initialized')
 
-    console.log('🏗️ BuildAgent: Generating real store frontend and schemas...')
+    console.log('🏗️ BuildAgent: Generating fully functional store with real features...')
 
-    // Generate real store configuration
+    // Generate functional store configuration
     const storeId = `store_${Date.now()}`
     const storeName = this.generateStoreName(prompt)
     const theme = this.determineTheme(prompt.prompt, prompt.vibe)
@@ -321,8 +321,8 @@ export class StoreForgeOrchestrator {
     const features = this.determineFeatures(prompt.prompt, location)
     const branding = this.generateBranding(theme, prompt.vibe)
 
-    // Create real store configuration
-    const storeConfig = RealStoreConfigSchema.parse({
+    // Create functional store configuration
+    const storeConfig = SimpleFunctionalConfigSchema.parse({
       storeId,
       storeName,
       description: prompt.prompt,
@@ -335,17 +335,21 @@ export class StoreForgeOrchestrator {
           lng: discoveryData.geoData.longitude,
         },
       },
-      products,
+      products: products.map(p => ({
+        ...p,
+        inventory: Math.floor(Math.random() * 50) + 10, // Add inventory tracking
+      })),
       paymentMethods,
       features,
       branding,
     })
 
-    // Generate actual store components
-    const storeGenerator = new RealStoreGenerator()
-    const storePage = storeGenerator.generateStorePage(storeConfig)
-    const packageJson = storeGenerator.generatePackageJson(storeConfig)
+    // Generate fully functional store components
+    const storeGenerator = new SimpleFunctionalGenerator()
+    const storePage = storeGenerator.generateFunctionalStore(storeConfig)
+    const packageJson = storeGenerator.generateEnhancedPackageJson(storeConfig)
     const deploymentConfig = storeGenerator.generateDeploymentConfig(storeConfig)
+    const readme = storeGenerator.generateReadme(storeConfig)
 
     // Generate schemas for SEO/GEO optimization
     const schemas = await this.generateSchemas(prompt, products, discoveryData.geoData)
@@ -358,6 +362,7 @@ export class StoreForgeOrchestrator {
       storePage,
       packageJson,
       deploymentConfig,
+      readme,
       schemas,
       products,
       uiComponents: this.generateUIComponents(prompt),
@@ -486,6 +491,7 @@ export class StoreForgeOrchestrator {
       storeCode: paymentData.storePage,
       packageJson: paymentData.packageJson,
       deploymentConfig: paymentData.deploymentConfig,
+      readme: paymentData.readme,
     }
 
     const finalResult: StoreBuildResult = {

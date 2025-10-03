@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Download, ExternalLink, Code, Package, Settings } from 'lucide-react'
+import { ArrowLeft, Download, ExternalLink, Code, Package, Settings, FileText } from 'lucide-react'
 import Link from 'next/link'
 
 interface StorePreviewData {
@@ -15,6 +15,7 @@ interface StorePreviewData {
   storeCode: string
   packageJson: string
   deploymentConfig: string
+  readme?: string
   products: Array<{
     id: string
     name: string
@@ -51,14 +52,14 @@ export default function StorePreviewPage() {
   const [storeData, setStoreData] = useState<StorePreviewData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'preview' | 'code' | 'config'>('preview')
+  const [activeTab, setActiveTab] = useState<'preview' | 'code' | 'config' | 'readme'>('preview')
 
   useEffect(() => {
     const fetchStoreData = async () => {
       try {
         const response = await fetch(`/api/storeforge/stores/${storeId}`)
         const result = await response.json()
-        
+
         if (result.success) {
           setStoreData(result.data)
         } else {
@@ -76,7 +77,7 @@ export default function StorePreviewPage() {
 
   const downloadStoreCode = () => {
     if (!storeData) return
-    
+
     const blob = new Blob([storeData.storeCode], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -90,7 +91,7 @@ export default function StorePreviewPage() {
 
   const downloadPackageJson = () => {
     if (!storeData) return
-    
+
     const blob = new Blob([storeData.packageJson], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -116,6 +117,20 @@ export default function StorePreviewPage() {
     URL.revokeObjectURL(url)
   }
 
+  const downloadReadme = () => {
+    if (!storeData || !storeData.readme) return
+    
+    const blob = new Blob([storeData.readme], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${storeData.storeId}-README.md`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center">
@@ -133,9 +148,7 @@ export default function StorePreviewPage() {
         <Card className="bg-slate-800/50 border-slate-700 max-w-md mx-4">
           <CardContent className="p-6 text-center">
             <h2 className="text-xl font-bold text-white mb-4">Store Not Found</h2>
-            <p className="text-gray-400 mb-6">
-              The store you're looking for doesn't exist or has been removed.
-            </p>
+            <p className="text-gray-400 mb-6">The store you're looking for doesn't exist or has been removed.</p>
             <Link href="/storeforge">
               <Button className="w-full">
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -202,6 +215,16 @@ export default function StorePreviewPage() {
             <Settings className="h-4 w-4 mr-2" />
             Config
           </Button>
+          {storeData?.readme && (
+            <Button
+              variant={activeTab === 'readme' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('readme')}
+              className="text-white"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              README
+            </Button>
+          )}
         </div>
 
         {/* Preview Tab */}
@@ -238,7 +261,9 @@ export default function StorePreviewPage() {
                         </span>
                         <div className="flex items-center gap-1">
                           <span className="text-yellow-500">★</span>
-                          <span className="text-sm text-gray-600">{product.rating} ({product.reviewCount})</span>
+                          <span className="text-sm text-gray-600">
+                            {product.rating} ({product.reviewCount})
+                          </span>
                         </div>
                       </div>
                       <Button className="w-full" disabled={!product.inStock}>
@@ -326,6 +351,28 @@ export default function StorePreviewPage() {
               </CardContent>
             </Card>
           </div>
+        )}
+
+        {/* README Tab */}
+        {activeTab === 'readme' && storeData?.readme && (
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-white">README Documentation</CardTitle>
+                <Button onClick={downloadReadme} variant="outline" size="sm">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download README
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-gray-900 rounded-lg p-4 overflow-auto max-h-96">
+                <pre className="text-green-400 text-sm whitespace-pre-wrap">
+                  <code>{storeData.readme}</code>
+                </pre>
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
