@@ -761,22 +761,22 @@ export class StoreForgeOrchestrator {
 
     const products = baseProducts[productType as keyof typeof baseProducts] || baseProducts.general
 
-    return products.map((product, index) => ({
-      id: `product_${index + 1}`,
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      currency: 'USD',
-      category: product.category,
-      image: `https://picsum.photos/400/300?random=${index + 1}`,
-      inStock: true,
-      rating: Math.round((Math.random() * 2 + 3) * 10) / 10, // 3.0-5.0
-      reviewCount: Math.floor(Math.random() * 100) + 10,
-      geoAttributes: {
-        pickupAvailable: true,
-        deliveryRadius: 10,
-      },
-    }))
+      return products.map((product, index) => ({
+        id: `product_${index + 1}`,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        currency: 'USD',
+        category: product.category,
+        images: [`https://picsum.photos/400/300?random=${index + 1}`],
+        inStock: true,
+        rating: Math.round((Math.random() * 2 + 3) * 10) / 10, // 3.0-5.0
+        reviewCount: Math.floor(Math.random() * 100) + 10,
+        geoAttributes: {
+          pickupAvailable: true,
+          deliveryRadius: 10,
+        },
+      }))
   }
 
   private determinePaymentMethods(
