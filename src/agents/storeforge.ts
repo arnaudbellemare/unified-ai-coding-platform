@@ -677,7 +677,10 @@ export class StoreForgeOrchestrator {
     return integrations
   }
 
-  private determineTheme(prompt: string, vibe?: string): 'minimal' | 'luxury' | 'streetwear' | 'tech' | 'eco' | 'vintage' {
+  private determineTheme(
+    prompt: string,
+    vibe?: string,
+  ): 'minimal' | 'luxury' | 'streetwear' | 'tech' | 'eco' | 'vintage' {
     const text = (prompt + ' ' + (vibe || '')).toLowerCase()
     if (text.includes('streetwear') || text.includes('urban') || text.includes('edgy')) return 'streetwear'
     if (text.includes('luxury') || text.includes('premium') || text.includes('high-end')) return 'luxury'
@@ -692,7 +695,7 @@ export class StoreForgeOrchestrator {
     if (parts.length >= 2) {
       return {
         city: parts[0].trim(),
-        country: parts[parts.length - 1].trim()
+        country: parts[parts.length - 1].trim(),
       }
     }
     return { city: 'San Francisco', country: 'USA' }
@@ -701,23 +704,63 @@ export class StoreForgeOrchestrator {
   private generateRealProducts(productType: string, prompt: string, location: { city: string; country: string }) {
     const baseProducts = {
       streetwear: [
-        { name: 'Urban Hoodie', description: 'Premium streetwear hoodie with local city graphics', price: 89, category: 'apparel' },
-        { name: 'City Snapback', description: 'Limited edition snapback cap featuring city landmarks', price: 45, category: 'accessories' },
-        { name: 'Street Sneakers', description: 'Exclusive sneaker collab with local artists', price: 150, category: 'footwear' }
+        {
+          name: 'Urban Hoodie',
+          description: 'Premium streetwear hoodie with local city graphics',
+          price: 89,
+          category: 'apparel',
+        },
+        {
+          name: 'City Snapback',
+          description: 'Limited edition snapback cap featuring city landmarks',
+          price: 45,
+          category: 'accessories',
+        },
+        {
+          name: 'Street Sneakers',
+          description: 'Exclusive sneaker collab with local artists',
+          price: 150,
+          category: 'footwear',
+        },
       ],
       tech: [
-        { name: 'Smart Device', description: 'Latest tech gadget with local tech hub integration', price: 299, category: 'electronics' },
-        { name: 'Wireless Earbuds', description: 'Premium audio experience for urban lifestyle', price: 129, category: 'audio' },
-        { name: 'Tech Accessories', description: 'Essential tech accessories for modern living', price: 49, category: 'accessories' }
+        {
+          name: 'Smart Device',
+          description: 'Latest tech gadget with local tech hub integration',
+          price: 299,
+          category: 'electronics',
+        },
+        {
+          name: 'Wireless Earbuds',
+          description: 'Premium audio experience for urban lifestyle',
+          price: 129,
+          category: 'audio',
+        },
+        {
+          name: 'Tech Accessories',
+          description: 'Essential tech accessories for modern living',
+          price: 49,
+          category: 'accessories',
+        },
       ],
       general: [
-        { name: 'Premium Product', description: 'High-quality premium product perfect for your needs', price: 45, category: 'general' },
-        { name: 'Standard Item', description: 'High-quality standard item perfect for your needs', price: 32, category: 'general' }
-      ]
+        {
+          name: 'Premium Product',
+          description: 'High-quality premium product perfect for your needs',
+          price: 45,
+          category: 'general',
+        },
+        {
+          name: 'Standard Item',
+          description: 'High-quality standard item perfect for your needs',
+          price: 32,
+          category: 'general',
+        },
+      ],
     }
 
     const products = baseProducts[productType as keyof typeof baseProducts] || baseProducts.general
-    
+
     return products.map((product, index) => ({
       id: `product_${index + 1}`,
       name: product.name,
@@ -731,46 +774,55 @@ export class StoreForgeOrchestrator {
       reviewCount: Math.floor(Math.random() * 100) + 10,
       geoAttributes: {
         pickupAvailable: true,
-        deliveryRadius: 10
-      }
+        deliveryRadius: 10,
+      },
     }))
   }
 
-  private determinePaymentMethods(requestedMethods?: string[]): Array<'usdc' | 'eth' | 'credit_card' | 'apple_pay' | 'google_pay'> {
+  private determinePaymentMethods(
+    requestedMethods?: string[],
+  ): Array<'usdc' | 'eth' | 'credit_card' | 'apple_pay' | 'google_pay'> {
     const methods: Array<'usdc' | 'eth' | 'credit_card' | 'apple_pay' | 'google_pay'> = ['credit_card']
-    
+
     if (requestedMethods?.includes('crypto') || requestedMethods?.includes('usdc')) {
       methods.push('usdc', 'eth')
     }
     if (requestedMethods?.includes('mobile')) {
       methods.push('apple_pay', 'google_pay')
     }
-    
+
     return methods
   }
 
-  private determineFeatures(prompt: string, location: { city: string; country: string }): Array<'local_pickup' | 'instant_delivery' | 'ar_tryon' | 'ai_recommendations' | 'loyalty_program'> {
-    const features: Array<'local_pickup' | 'instant_delivery' | 'ar_tryon' | 'ai_recommendations' | 'loyalty_program'> = ['local_pickup']
-    
+  private determineFeatures(
+    prompt: string,
+    location: { city: string; country: string },
+  ): Array<'local_pickup' | 'instant_delivery' | 'ar_tryon' | 'ai_recommendations' | 'loyalty_program'> {
+    const features: Array<'local_pickup' | 'instant_delivery' | 'ar_tryon' | 'ai_recommendations' | 'loyalty_program'> =
+      ['local_pickup']
+
     const text = prompt.toLowerCase()
     if (text.includes('ar') || text.includes('augmented')) features.push('ar_tryon')
     if (text.includes('ai') || text.includes('recommendation')) features.push('ai_recommendations')
     if (text.includes('instant') || text.includes('fast')) features.push('instant_delivery')
     if (text.includes('loyalty') || text.includes('rewards')) features.push('loyalty_program')
-    
+
     return features
   }
 
-  private generateBranding(theme: string, vibe?: string): { primaryColor: string; secondaryColor: string; logo?: string; font: string } {
+  private generateBranding(
+    theme: string,
+    vibe?: string,
+  ): { primaryColor: string; secondaryColor: string; logo?: string; font: string } {
     const brandings = {
       minimal: { primaryColor: '#000000', secondaryColor: '#f3f4f6', font: 'Inter' },
       luxury: { primaryColor: '#8b5cf6', secondaryColor: '#faf5ff', font: 'Playfair Display' },
       streetwear: { primaryColor: '#000000', secondaryColor: '#fbbf24', font: 'Space Grotesk' },
       tech: { primaryColor: '#3b82f6', secondaryColor: '#eff6ff', font: 'JetBrains Mono' },
       eco: { primaryColor: '#10b981', secondaryColor: '#ecfdf5', font: 'Poppins' },
-      vintage: { primaryColor: '#d97706', secondaryColor: '#fef3c7', font: 'Crimson Text' }
+      vintage: { primaryColor: '#d97706', secondaryColor: '#fef3c7', font: 'Crimson Text' },
     }
-    
+
     return brandings[theme as keyof typeof brandings] || brandings.minimal
   }
 

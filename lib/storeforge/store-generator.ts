@@ -1,6 +1,6 @@
 /**
  * StoreForge Store Generator - Creates real deployable stores based on agent demand
- * 
+ *
  * This generates actual Next.js components, pages, and configurations
  * instead of mock data, making stores that can be deployed immediately.
  */
@@ -21,22 +21,24 @@ export const RealStoreConfigSchema = z.object({
       lng: z.number(),
     }),
   }),
-  products: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    description: z.string(),
-    price: z.number(),
-    currency: z.string(),
-    category: z.string(),
-    image: z.string().optional(),
-    inStock: z.boolean(),
-    rating: z.number().min(0).max(5),
-    reviewCount: z.number(),
-    geoAttributes: z.object({
-      pickupAvailable: z.boolean(),
-      deliveryRadius: z.number(),
+  products: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      description: z.string(),
+      price: z.number(),
+      currency: z.string(),
+      category: z.string(),
+      image: z.string().optional(),
+      inStock: z.boolean(),
+      rating: z.number().min(0).max(5),
+      reviewCount: z.number(),
+      geoAttributes: z.object({
+        pickupAvailable: z.boolean(),
+        deliveryRadius: z.number(),
+      }),
     }),
-  })),
+  ),
   paymentMethods: z.array(z.enum(['usdc', 'eth', 'credit_card', 'apple_pay', 'google_pay'])),
   features: z.array(z.enum(['local_pickup', 'instant_delivery', 'ar_tryon', 'ai_recommendations', 'loyalty_program'])),
   branding: z.object({
@@ -53,13 +55,12 @@ export type RealStoreConfig = z.infer<typeof RealStoreConfigSchema>
  * Generate actual Next.js store components based on agent demand
  */
 export class RealStoreGenerator {
-  
   /**
    * Generate the main store page component
    */
   generateStorePage(config: RealStoreConfig): string {
     const { storeName, theme, products, paymentMethods, features, branding } = config
-    
+
     return `'use client'
 
 import React, { useState } from 'react'
@@ -154,12 +155,16 @@ export default function ${this.sanitizeComponentName(storeName)}() {
               <h1 className="text-2xl font-bold" style={{ color: '${branding.primaryColor}' }}>
                 ${storeName}
               </h1>
-              ${features.includes('local_pickup') ? `
+              ${
+                features.includes('local_pickup')
+                  ? `
               <Badge variant="outline" className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
                 Local Pickup
               </Badge>
-              ` : ''}
+              `
+                  : ''
+              }
             </div>
             
             <div className="flex items-center space-x-4">
@@ -197,21 +202,29 @@ export default function ${this.sanitizeComponentName(storeName)}() {
             ${config.description}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            ${paymentMethods.map(method => `
+            ${paymentMethods
+              .map(
+                (method) => `
             <Badge variant="secondary" className="px-4 py-2">
               ${method.toUpperCase().replace('_', ' ')}
             </Badge>
-            `).join('')}
+            `,
+              )
+              .join('')}
           </div>
         </div>
       </section>
 
       {/* Features */}
-      ${features.length > 0 ? `
+      ${
+        features.length > 0
+          ? `
       <section className="py-16 bg-white/10">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-${Math.min(features.length, 4)} gap-8">
-            ${features.map(feature => `
+            ${features
+              .map(
+                (feature) => `
             <Card className="bg-white/20 backdrop-blur-sm border-white/30">
               <CardContent className="p-6 text-center">
                 ${this.getFeatureIcon(feature)}
@@ -223,11 +236,15 @@ export default function ${this.sanitizeComponentName(storeName)}() {
                 </p>
               </CardContent>
             </Card>
-            `).join('')}
+            `,
+              )
+              .join('')}
           </div>
         </div>
       </section>
-      ` : ''}
+      `
+          : ''
+      }
 
       {/* Products */}
       <section className="py-20">
@@ -235,7 +252,9 @@ export default function ${this.sanitizeComponentName(storeName)}() {
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-3xl font-bold text-white">Our Products</h3>
             <div className="flex gap-2">
-              ${['all', ...new Set(products.map(p => p.category))].map(category => `
+              ${['all', ...new Set(products.map((p) => p.category))]
+                .map(
+                  (category) => `
               <Button
                 variant={selectedCategory === '${category}' ? 'default' : 'outline'}
                 onClick={() => setSelectedCategory('${category}')}
@@ -243,7 +262,9 @@ export default function ${this.sanitizeComponentName(storeName)}() {
               >
                 ${category === 'all' ? 'All' : this.formatCategoryName(category)}
               </Button>
-              `).join('')}
+              `,
+                )
+                .join('')}
             </div>
           </div>
 
@@ -252,17 +273,21 @@ export default function ${this.sanitizeComponentName(storeName)}() {
               <Card key={product.id} className="bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30 transition-all">
                 <CardHeader className="p-0">
                   <div className="aspect-square bg-gray-200 rounded-t-lg overflow-hidden">
-                    ${product.image ? `
+                    ${
+                      product.image
+                        ? `
                     <img 
                       src="${product.image}" 
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />
-                    ` : `
+                    `
+                        : `
                     <div className="w-full h-full flex items-center justify-center text-gray-400">
                       <span>No Image</span>
                     </div>
-                    `}
+                    `
+                    }
                   </div>
                 </CardHeader>
                 <CardContent className="p-4">
@@ -292,12 +317,16 @@ export default function ${this.sanitizeComponentName(storeName)}() {
                     )}
                   </div>
 
-                  ${product.geoAttributes.pickupAvailable ? `
+                  ${
+                    product.geoAttributes.pickupAvailable
+                      ? `
                   <div className="flex items-center text-green-400 text-sm mb-4">
                     <MapPin className="h-4 w-4 mr-1" />
                     Local pickup available
                   </div>
-                  ` : ''}
+                  `
+                      : ''
+                  }
 
                   <div className="flex gap-2">
                     <Button
@@ -389,65 +418,73 @@ export default function ${this.sanitizeComponentName(storeName)}() {
    * Generate package.json for the store
    */
   generatePackageJson(config: RealStoreConfig): string {
-    return JSON.stringify({
-      name: this.sanitizePackageName(config.storeName),
-      version: "0.1.0",
-      private: true,
-      scripts: {
-        dev: "next dev",
-        build: "next build",
-        start: "next start",
-        lint: "next lint"
+    return JSON.stringify(
+      {
+        name: this.sanitizePackageName(config.storeName),
+        version: '0.1.0',
+        private: true,
+        scripts: {
+          dev: 'next dev',
+          build: 'next build',
+          start: 'next start',
+          lint: 'next lint',
+        },
+        dependencies: {
+          next: '^14.0.0',
+          react: '^18.0.0',
+          'react-dom': '^18.0.0',
+          '@radix-ui/react-slot': '^1.0.0',
+          'class-variance-authority': '^0.7.0',
+          clsx: '^2.0.0',
+          'lucide-react': '^0.294.0',
+          'tailwind-merge': '^2.0.0',
+          'tailwindcss-animate': '^1.0.7',
+        },
+        devDependencies: {
+          '@types/node': '^20.0.0',
+          '@types/react': '^18.0.0',
+          '@types/react-dom': '^18.0.0',
+          autoprefixer: '^10.0.0',
+          eslint: '^8.0.0',
+          'eslint-config-next': '^14.0.0',
+          postcss: '^8.0.0',
+          tailwindcss: '^3.0.0',
+          typescript: '^5.0.0',
+        },
       },
-      dependencies: {
-        "next": "^14.0.0",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0",
-        "@radix-ui/react-slot": "^1.0.0",
-        "class-variance-authority": "^0.7.0",
-        "clsx": "^2.0.0",
-        "lucide-react": "^0.294.0",
-        "tailwind-merge": "^2.0.0",
-        "tailwindcss-animate": "^1.0.7"
-      },
-      devDependencies: {
-        "@types/node": "^20.0.0",
-        "@types/react": "^18.0.0",
-        "@types/react-dom": "^18.0.0",
-        "autoprefixer": "^10.0.0",
-        "eslint": "^8.0.0",
-        "eslint-config-next": "^14.0.0",
-        "postcss": "^8.0.0",
-        "tailwindcss": "^3.0.0",
-        "typescript": "^5.0.0"
-      }
-    }, null, 2)
+      null,
+      2,
+    )
   }
 
   /**
    * Generate deployment configuration
    */
   generateDeploymentConfig(config: RealStoreConfig): string {
-    return JSON.stringify({
-      storeId: config.storeId,
-      storeName: config.storeName,
-      description: config.description,
-      theme: config.theme,
-      location: config.location,
-      deployment: {
-        platform: "vercel",
-        domain: `${this.sanitizePackageName(config.storeName)}.vercel.app`,
-        buildCommand: "npm run build",
-        outputDirectory: ".next",
-        installCommand: "npm install"
+    return JSON.stringify(
+      {
+        storeId: config.storeId,
+        storeName: config.storeName,
+        description: config.description,
+        theme: config.theme,
+        location: config.location,
+        deployment: {
+          platform: 'vercel',
+          domain: `${this.sanitizePackageName(config.storeName)}.vercel.app`,
+          buildCommand: 'npm run build',
+          outputDirectory: '.next',
+          installCommand: 'npm install',
+        },
+        features: config.features,
+        paymentMethods: config.paymentMethods,
+        analytics: {
+          enabled: true,
+          provider: 'vercel-analytics',
+        },
       },
-      features: config.features,
-      paymentMethods: config.paymentMethods,
-      analytics: {
-        enabled: true,
-        provider: "vercel-analytics"
-      }
-    }, null, 2)
+      null,
+      2,
+    )
   }
 
   // Helper methods
@@ -456,7 +493,10 @@ export default function ${this.sanitizeComponentName(storeName)}() {
   }
 
   private sanitizePackageName(name: string): string {
-    return name.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/^-+|-+$/g, '')
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '-')
+      .replace(/^-+|-+$/g, '')
   }
 
   private getThemeGradient(theme: string): string {
@@ -466,7 +506,7 @@ export default function ${this.sanitizeComponentName(storeName)}() {
       streetwear: 'from-black via-gray-900 to-gray-800',
       tech: 'from-blue-600 via-purple-600 to-blue-800',
       eco: 'from-green-400 via-blue-500 to-purple-600',
-      vintage: 'from-amber-200 via-orange-200 to-yellow-200'
+      vintage: 'from-amber-200 via-orange-200 to-yellow-200',
     }
     return gradients[theme as keyof typeof gradients] || gradients.minimal
   }
@@ -477,13 +517,13 @@ export default function ${this.sanitizeComponentName(storeName)}() {
       instant_delivery: '<Truck className="h-8 w-8 text-green-400 mx-auto" />',
       ar_tryon: '<Sparkles className="h-8 w-8 text-purple-400 mx-auto" />',
       ai_recommendations: '<Brain className="h-8 w-8 text-pink-400 mx-auto" />',
-      loyalty_program: '<Star className="h-8 w-8 text-yellow-400 mx-auto" />'
+      loyalty_program: '<Star className="h-8 w-8 text-yellow-400 mx-auto" />',
     }
     return icons[feature as keyof typeof icons] || '<CheckCircle className="h-8 w-8 text-blue-400 mx-auto" />'
   }
 
   private formatFeatureName(feature: string): string {
-    return feature.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    return feature.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
   }
 
   private getFeatureDescription(feature: string): string {
@@ -492,12 +532,12 @@ export default function ${this.sanitizeComponentName(storeName)}() {
       instant_delivery: 'Get your items delivered within 30 minutes',
       ar_tryon: 'Try products in augmented reality before buying',
       ai_recommendations: 'Get personalized product recommendations',
-      loyalty_program: 'Earn points and unlock exclusive rewards'
+      loyalty_program: 'Earn points and unlock exclusive rewards',
     }
     return descriptions[feature as keyof typeof descriptions] || 'Enhanced shopping experience'
   }
 
   private formatCategoryName(category: string): string {
-    return category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    return category.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
   }
 }
