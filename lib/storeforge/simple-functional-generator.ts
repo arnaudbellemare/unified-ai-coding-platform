@@ -49,7 +49,7 @@ export class SimpleFunctionalGenerator {
    */
   generateFunctionalStore(config: SimpleFunctionalConfig): string {
     const storeName = config.storeName.replace(/[^a-zA-Z0-9]/g, '')
-    
+
     return `'use client'
 
 import React, { useState, useEffect } from 'react'
@@ -207,12 +207,16 @@ export default function ${storeName}Store() {
               <h1 className="text-2xl font-bold" style={{ color: '${config.branding.primaryColor}' }}>
                 ${config.storeName}
               </h1>
-              ${config.features.includes('local_pickup') ? `
+              ${
+                config.features.includes('local_pickup')
+                  ? `
               <Badge variant="outline" className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
                 Local Pickup
               </Badge>
-              ` : ''}
+              `
+                  : ''
+              }
             </div>
             
             <div className="flex items-center space-x-4">
@@ -476,65 +480,73 @@ export default function ${storeName}Store() {
    * Generate enhanced package.json
    */
   generateEnhancedPackageJson(config: SimpleFunctionalConfig): string {
-    return JSON.stringify({
-      name: this.sanitizePackageName(config.storeName),
-      version: '1.0.0',
-      private: true,
-      description: config.description,
-      scripts: {
-        dev: 'next dev',
-        build: 'next build',
-        start: 'next start',
-        lint: 'next lint'
+    return JSON.stringify(
+      {
+        name: this.sanitizePackageName(config.storeName),
+        version: '1.0.0',
+        private: true,
+        description: config.description,
+        scripts: {
+          dev: 'next dev',
+          build: 'next build',
+          start: 'next start',
+          lint: 'next lint',
+        },
+        dependencies: {
+          next: '^14.0.0',
+          react: '^18.0.0',
+          'react-dom': '^18.0.0',
+          '@radix-ui/react-slot': '^1.0.0',
+          'class-variance-authority': '^0.7.0',
+          clsx: '^2.0.0',
+          'lucide-react': '^0.294.0',
+          'tailwind-merge': '^2.0.0',
+          'tailwindcss-animate': '^1.0.7',
+        },
+        devDependencies: {
+          '@types/node': '^20.0.0',
+          '@types/react': '^18.0.0',
+          '@types/react-dom': '^18.0.0',
+          autoprefixer: '^10.0.0',
+          eslint: '^8.0.0',
+          'eslint-config-next': '^14.0.0',
+          postcss: '^8.0.0',
+          tailwindcss: '^3.0.0',
+          typescript: '^5.0.0',
+        },
+        keywords: ['ecommerce', 'nextjs', 'react', 'storeforge', 'ai-generated'],
+        author: 'StoreForge AI',
+        license: 'MIT',
       },
-      dependencies: {
-        'next': '^14.0.0',
-        'react': '^18.0.0',
-        'react-dom': '^18.0.0',
-        '@radix-ui/react-slot': '^1.0.0',
-        'class-variance-authority': '^0.7.0',
-        'clsx': '^2.0.0',
-        'lucide-react': '^0.294.0',
-        'tailwind-merge': '^2.0.0',
-        'tailwindcss-animate': '^1.0.7'
-      },
-      devDependencies: {
-        '@types/node': '^20.0.0',
-        '@types/react': '^18.0.0',
-        '@types/react-dom': '^18.0.0',
-        'autoprefixer': '^10.0.0',
-        'eslint': '^8.0.0',
-        'eslint-config-next': '^14.0.0',
-        'postcss': '^8.0.0',
-        'tailwindcss': '^3.0.0',
-        'typescript': '^5.0.0'
-      },
-      keywords: ['ecommerce', 'nextjs', 'react', 'storeforge', 'ai-generated'],
-      author: 'StoreForge AI',
-      license: 'MIT'
-    }, null, 2)
+      null,
+      2,
+    )
   }
 
   /**
    * Generate deployment configuration
    */
   generateDeploymentConfig(config: SimpleFunctionalConfig): string {
-    return JSON.stringify({
-      storeId: config.storeId,
-      storeName: config.storeName,
-      description: config.description,
-      theme: config.theme,
-      location: config.location,
-      deployment: {
-        platform: 'vercel',
-        domain: `${this.sanitizePackageName(config.storeName)}.vercel.app`,
-        buildCommand: 'npm run build',
-        outputDirectory: '.next',
-        installCommand: 'npm install'
+    return JSON.stringify(
+      {
+        storeId: config.storeId,
+        storeName: config.storeName,
+        description: config.description,
+        theme: config.theme,
+        location: config.location,
+        deployment: {
+          platform: 'vercel',
+          domain: `${this.sanitizePackageName(config.storeName)}.vercel.app`,
+          buildCommand: 'npm run build',
+          outputDirectory: '.next',
+          installCommand: 'npm install',
+        },
+        features: config.features,
+        paymentMethods: config.paymentMethods,
       },
-      features: config.features,
-      paymentMethods: config.paymentMethods
-    }, null, 2)
+      null,
+      2,
+    )
   }
 
   /**
@@ -547,11 +559,11 @@ ${config.description}
 
 ## 🚀 Features
 
-${config.features.map(feature => `- **${feature.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}**: ${this.getFeatureDescription(feature)}`).join('\n')}
+${config.features.map((feature) => `- **${feature.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}**: ${this.getFeatureDescription(feature)}`).join('\n')}
 
 ## 💳 Payment Methods
 
-${config.paymentMethods.map(method => `- ${method.toUpperCase().replace('_', ' ')}`).join('\n')}
+${config.paymentMethods.map((method) => `- ${method.toUpperCase().replace('_', ' ')}`).join('\n')}
 
 ## 📍 Location
 

@@ -8,7 +8,7 @@
 import { AutonomousAgentWallet } from '@/lib/agent-wallets/autonomous-agent-wallet'
 import { x402Processor, createX402Payment, createAgentMandate } from '@/lib/storeforge/x402-integration'
 import { geoAeoEngine, analyzeGEOAEO } from '@/lib/storeforge/geo-aeo-engine'
-import { SimpleFunctionalGenerator, SimpleFunctionalConfigSchema } from '@/lib/storeforge/simple-functional-generator'
+import { SimpleStoreGenerator, SimpleStoreConfigSchema } from '@/lib/storeforge/simple-store-generator'
 import { z } from 'zod'
 
 // Simple agent base class for StoreForge swarm
@@ -255,7 +255,10 @@ export class StoreForgeOrchestrator {
 
       // Store the generated store data for preview
       try {
-        await fetch(`/api/storeforge/stores/${deployResult.storeId}`, {
+        const baseUrl = process.env.VERCEL_URL 
+          ? `https://${process.env.VERCEL_URL}` 
+          : 'http://localhost:3001'
+        await fetch(`${baseUrl}/api/storeforge/stores/${deployResult.storeId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(deployResult),
@@ -309,47 +312,40 @@ export class StoreForgeOrchestrator {
     const agent = this.agents.get('BuildAgent')
     if (!agent) throw new Error('BuildAgent not initialized')
 
-    console.log('🏗️ BuildAgent: Generating fully functional store with real features...')
+        console.log('🏗️ BuildAgent: Generating simple, functional store...')
 
-    // Generate functional store configuration
-    const storeId = `store_${Date.now()}`
-    const storeName = this.generateStoreName(prompt)
-    const theme = this.determineTheme(prompt.prompt, prompt.vibe)
-    const location = this.parseLocation(prompt.location || discoveryData.geoData.address)
-    const products = this.generateRealProducts(prompt.productType || 'general', prompt.prompt, location)
-    const paymentMethods = this.determinePaymentMethods(prompt.paymentMethods || [])
-    const features = this.determineFeatures(prompt.prompt, location)
-    const branding = this.generateBranding(theme, prompt.vibe)
+        // Generate functional store configuration
+        const storeId = `store_${Date.now()}`
+        const storeName = this.generateStoreName(prompt)
+        const theme = this.determineTheme(prompt.prompt, prompt.vibe)
+        const location = this.parseLocation(prompt.location || discoveryData.geoData.address)
+        const products = this.generateRealProducts(prompt.productType || 'general', prompt.prompt, location)
+        const paymentMethods = this.determinePaymentMethods(prompt.paymentMethods || [])
+        const features = this.determineFeatures(prompt.prompt, location)
+        const branding = this.generateBranding(theme, prompt.vibe)
 
-    // Create functional store configuration
-    const storeConfig = SimpleFunctionalConfigSchema.parse({
-      storeId,
-      storeName,
-      description: prompt.prompt,
-      theme,
-      location: {
-        city: location.city,
-        country: location.country,
-        coordinates: {
-          lat: discoveryData.geoData.latitude,
-          lng: discoveryData.geoData.longitude,
-        },
-      },
-      products: products.map(p => ({
-        ...p,
-        inventory: Math.floor(Math.random() * 50) + 10, // Add inventory tracking
-      })),
-      paymentMethods,
-      features,
-      branding,
-    })
+        // Create simple store configuration
+        const storeConfig = SimpleStoreConfigSchema.parse({
+          name: storeName,
+          description: prompt.prompt,
+          category: prompt.productType || 'general',
+          location: `${location.city}, ${location.country}`,
+          theme,
+          products: products.map((p) => ({
+            name: p.name,
+            price: p.price,
+            description: p.description,
+            image: p.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop'
+          })),
+        })
 
-    // Generate fully functional store components
-    const storeGenerator = new SimpleFunctionalGenerator()
-    const storePage = storeGenerator.generateFunctionalStore(storeConfig)
-    const packageJson = storeGenerator.generateEnhancedPackageJson(storeConfig)
-    const deploymentConfig = storeGenerator.generateDeploymentConfig(storeConfig)
-    const readme = storeGenerator.generateReadme(storeConfig)
+          // Generate simple store components
+          console.log('🏗️ Generating store with config:', JSON.stringify(storeConfig, null, 2))
+          const storeGenerator = new SimpleStoreGenerator()
+          const storePage = storeGenerator.generateStore(storeConfig)
+          const packageJson = storeGenerator.generatePackageJson(storeConfig)
+          const readme = storeGenerator.generateReadme(storeConfig)
+          console.log('🏗️ Store generated successfully')
 
     // Generate schemas for SEO/GEO optimization
     const schemas = await this.generateSchemas(prompt, products, discoveryData.geoData)
@@ -361,8 +357,23 @@ export class StoreForgeOrchestrator {
       storeConfig,
       storePage,
       packageJson,
-      deploymentConfig,
       readme,
+      deploymentConfig: {
+        storeId,
+        storeName,
+        description: prompt.prompt,
+        theme,
+        location: `${location.city}, ${location.country}`,
+        deployment: {
+          platform: 'vercel',
+          domain: `${storeName.toLowerCase().replace(/\s+/g, '-')}.vercel.app`,
+          buildCommand: 'npm run build',
+          outputDirectory: '.next',
+          installCommand: 'npm install',
+        },
+        features,
+        paymentMethods,
+      },
       schemas,
       products,
       uiComponents: this.generateUIComponents(prompt),
@@ -845,6 +856,35 @@ export class StoreForgeOrchestrator {
     }
 
     return brandings[theme as keyof typeof brandings] || brandings.minimal
+  }
+
+  private determineBusinessType(prompt: StoreForgePrompt): 'new' | 'shopify' | 'woocommerce' | 'existing' {
+    const promptText = prompt.prompt.toLowerCase()
+    
+    if (promptText.includes('shopify') || promptText.includes('existing shopify')) {
+      return 'shopify'
+    }
+    if (promptText.includes('woocommerce') || promptText.includes('wordpress') || promptText.includes('wp')) {
+      return 'woocommerce'
+    }
+    if (promptText.includes('existing') || promptText.includes('current') || promptText.includes('migrate')) {
+      return 'existing'
+    }
+    return 'new'
+  }
+
+  private detectExistingPlatform(prompt: StoreForgePrompt): string {
+    const promptText = prompt.prompt.toLowerCase()
+    
+    if (promptText.includes('shopify')) return 'Shopify'
+    if (promptText.includes('woocommerce')) return 'WooCommerce'
+    if (promptText.includes('wordpress')) return 'WordPress'
+    if (promptText.includes('magento')) return 'Magento'
+    if (promptText.includes('bigcommerce')) return 'BigCommerce'
+    if (promptText.includes('squarespace')) return 'Squarespace'
+    if (promptText.includes('wix')) return 'Wix'
+    
+    return 'Unknown'
   }
 
   // Public API methods

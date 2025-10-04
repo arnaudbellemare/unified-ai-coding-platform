@@ -127,7 +127,7 @@ export function MarketingLanding({
               href="/storeforge"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105"
             >
-              🚀 StoreForge →
+              StoreForge →
             </a>
             <a
               href="/complete-demo"
@@ -879,7 +879,7 @@ export function MarketingLanding({
                     onClick={() => (window.location.href = '/storeforge')}
                     className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12 font-medium"
                   >
-                    🚀 StoreForge →
+                    StoreForge →
                   </Button>
                   <Button
                     onClick={() => {

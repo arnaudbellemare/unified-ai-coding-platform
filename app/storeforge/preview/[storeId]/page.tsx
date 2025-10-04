@@ -105,7 +105,7 @@ export default function StorePreviewPage() {
 
   const downloadDeploymentConfig = () => {
     if (!storeData) return
-    
+
     const blob = new Blob([storeData.deploymentConfig], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -119,7 +119,7 @@ export default function StorePreviewPage() {
 
   const downloadReadme = () => {
     if (!storeData || !storeData.readme) return
-    
+
     const blob = new Blob([storeData.readme], { type: 'text/markdown' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
