@@ -310,7 +310,7 @@ export class StoreForgeOrchestrator {
     const agent = this.agents.get('BuildAgent')
     if (!agent) throw new Error('BuildAgent not initialized')
 
-    console.log('🏗️ BuildAgent: Generating simple, functional store...')
+    console.log('🏗️ BuildAgent: Generating modern storefront with v0.app-inspired features...')
 
     // Generate functional store configuration
     const storeId = `store_${Date.now()}`
@@ -343,7 +343,7 @@ export class StoreForgeOrchestrator {
     const storePage = storeGenerator.generateStore(storeConfig)
     const packageJson = storeGenerator.generatePackageJson(storeConfig)
     const readme = storeGenerator.generateReadme(storeConfig)
-    console.log('🏗️ Store generated successfully')
+    console.log('🏗️ Modern storefront generated successfully')
 
     // Generate schemas for SEO/GEO optimization
     const schemas = await this.generateSchemas(prompt, products, discoveryData.geoData)

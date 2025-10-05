@@ -75,13 +75,23 @@ export class SimpleStoreGenerator {
     return `'use client'
 
 import { useState, useMemo } from 'react'
-import { ShoppingCart, Plus, Minus, MapPin, Star, Heart, Share2 } from 'lucide-react'
+import { ShoppingCart, Plus, Minus, MapPin, Star, Heart, Share2, Search, Sparkles } from 'lucide-react'
 
 export default function ${storeName}Store() {
   const [cart, setCart] = useState<{[key: string]: number}>({})
   const [favorites, setFavorites] = useState<{[key: string]: boolean}>({})
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('all')
 
   const products = ${productsJson}
+  const categories = ['all', ...new Set(products.map(p => p.category))]
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
 
   const addToCart = (productName: string) => {
     setCart(prev => ({
