@@ -255,9 +255,7 @@ export class StoreForgeOrchestrator {
 
       // Store the generated store data for preview
       try {
-        const baseUrl = process.env.VERCEL_URL 
-          ? `https://${process.env.VERCEL_URL}` 
-          : 'http://localhost:3001'
+        const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3001'
         await fetch(`${baseUrl}/api/storeforge/stores/${deployResult.storeId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -312,40 +310,40 @@ export class StoreForgeOrchestrator {
     const agent = this.agents.get('BuildAgent')
     if (!agent) throw new Error('BuildAgent not initialized')
 
-        console.log('🏗️ BuildAgent: Generating simple, functional store...')
+    console.log('🏗️ BuildAgent: Generating simple, functional store...')
 
-        // Generate functional store configuration
-        const storeId = `store_${Date.now()}`
-        const storeName = this.generateStoreName(prompt)
-        const theme = this.determineTheme(prompt.prompt, prompt.vibe)
-        const location = this.parseLocation(prompt.location || discoveryData.geoData.address)
-        const products = this.generateRealProducts(prompt.productType || 'general', prompt.prompt, location)
-        const paymentMethods = this.determinePaymentMethods(prompt.paymentMethods || [])
-        const features = this.determineFeatures(prompt.prompt, location)
-        const branding = this.generateBranding(theme, prompt.vibe)
+    // Generate functional store configuration
+    const storeId = `store_${Date.now()}`
+    const storeName = this.generateStoreName(prompt)
+    const theme = this.determineTheme(prompt.prompt, prompt.vibe)
+    const location = this.parseLocation(prompt.location || discoveryData.geoData.address)
+    const products = this.generateRealProducts(prompt.productType || 'general', prompt.prompt, location)
+    const paymentMethods = this.determinePaymentMethods(prompt.paymentMethods || [])
+    const features = this.determineFeatures(prompt.prompt, location)
+    const branding = this.generateBranding(theme, prompt.vibe)
 
-        // Create simple store configuration
-        const storeConfig = SimpleStoreConfigSchema.parse({
-          name: storeName,
-          description: prompt.prompt,
-          category: prompt.productType || 'general',
-          location: `${location.city}, ${location.country}`,
-          theme,
-          products: products.map((p) => ({
-            name: p.name,
-            price: p.price,
-            description: p.description,
-            image: p.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop'
-          })),
-        })
+    // Create simple store configuration
+    const storeConfig = SimpleStoreConfigSchema.parse({
+      name: storeName,
+      description: prompt.prompt,
+      category: prompt.productType || 'general',
+      location: `${location.city}, ${location.country}`,
+      theme,
+      products: products.map((p) => ({
+        name: p.name,
+        price: p.price,
+        description: p.description,
+        image: p.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
+      })),
+    })
 
-          // Generate simple store components
-          console.log('🏗️ Generating store with config:', JSON.stringify(storeConfig, null, 2))
-          const storeGenerator = new SimpleStoreGenerator()
-          const storePage = storeGenerator.generateStore(storeConfig)
-          const packageJson = storeGenerator.generatePackageJson(storeConfig)
-          const readme = storeGenerator.generateReadme(storeConfig)
-          console.log('🏗️ Store generated successfully')
+    // Generate simple store components
+    console.log('🏗️ Generating store with config:', JSON.stringify(storeConfig, null, 2))
+    const storeGenerator = new SimpleStoreGenerator()
+    const storePage = storeGenerator.generateStore(storeConfig)
+    const packageJson = storeGenerator.generatePackageJson(storeConfig)
+    const readme = storeGenerator.generateReadme(storeConfig)
+    console.log('🏗️ Store generated successfully')
 
     // Generate schemas for SEO/GEO optimization
     const schemas = await this.generateSchemas(prompt, products, discoveryData.geoData)
@@ -860,7 +858,7 @@ export class StoreForgeOrchestrator {
 
   private determineBusinessType(prompt: StoreForgePrompt): 'new' | 'shopify' | 'woocommerce' | 'existing' {
     const promptText = prompt.prompt.toLowerCase()
-    
+
     if (promptText.includes('shopify') || promptText.includes('existing shopify')) {
       return 'shopify'
     }
@@ -875,7 +873,7 @@ export class StoreForgeOrchestrator {
 
   private detectExistingPlatform(prompt: StoreForgePrompt): string {
     const promptText = prompt.prompt.toLowerCase()
-    
+
     if (promptText.includes('shopify')) return 'Shopify'
     if (promptText.includes('woocommerce')) return 'WooCommerce'
     if (promptText.includes('wordpress')) return 'WordPress'
@@ -883,7 +881,7 @@ export class StoreForgeOrchestrator {
     if (promptText.includes('bigcommerce')) return 'BigCommerce'
     if (promptText.includes('squarespace')) return 'Squarespace'
     if (promptText.includes('wix')) return 'Wix'
-    
+
     return 'Unknown'
   }
 

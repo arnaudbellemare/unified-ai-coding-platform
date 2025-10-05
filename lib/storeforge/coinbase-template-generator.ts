@@ -104,7 +104,7 @@ export class CoinbaseTemplateGenerator {
   generateCoinbaseStore(config: CoinbaseTemplateConfig): string {
     const themeColors = this.getThemeColors(config.theme, config.branding)
     const storeName = config.storeName.replace(/[^a-zA-Z0-9]/g, '')
-    
+
     return `'use client'
 
 import { useState, useCallback, useMemo, createContext, useContext } from 'react'

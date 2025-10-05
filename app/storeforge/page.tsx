@@ -9,18 +9,18 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 // import { Separator } from '@/components/ui/separator'
-import { 
-  Store, 
-  ShoppingBag, 
-  Plus, 
-  Eye, 
+import {
+  Store,
+  ShoppingBag,
+  Plus,
+  Eye,
   Download,
   ExternalLink,
   CheckCircle,
   Loader2,
   MapPin,
   CreditCard,
-  Zap
+  Zap,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -51,35 +51,36 @@ export default function StoreForgePage() {
     theme: 'modern',
     businessType: 'new',
     existingPlatform: '',
-    products: []
+    products: [],
   })
   const [generatedStore, setGeneratedStore] = useState<any>(null)
 
   const addProduct = () => {
-    setStoreConfig(prev => ({
+    setStoreConfig((prev) => ({
       ...prev,
-      products: [...prev.products, {
-        name: '',
-        price: 0,
-        description: '',
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop'
-      }]
+      products: [
+        ...prev.products,
+        {
+          name: '',
+          price: 0,
+          description: '',
+          image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
+        },
+      ],
     }))
   }
 
   const updateProduct = (index: number, field: string, value: any) => {
-    setStoreConfig(prev => ({
+    setStoreConfig((prev) => ({
       ...prev,
-      products: prev.products.map((product, i) => 
-        i === index ? { ...product, [field]: value } : product
-      )
+      products: prev.products.map((product, i) => (i === index ? { ...product, [field]: value } : product)),
     }))
   }
 
   const removeProduct = (index: number) => {
-    setStoreConfig(prev => ({
+    setStoreConfig((prev) => ({
       ...prev,
-      products: prev.products.filter((_, i) => i !== index)
+      products: prev.products.filter((_, i) => i !== index),
     }))
   }
 
@@ -91,24 +92,25 @@ export default function StoreForgePage() {
 
     setLoading(true)
     try {
-            const businessContext = storeConfig.businessType === 'new' 
-              ? `Build a new ${storeConfig.category} store` 
-              : `Optimize my existing ${storeConfig.existingPlatform || 'store'} platform`
-            
-            const requestData = {
-              prompt: `${businessContext} called "${storeConfig.name}" in ${storeConfig.location}. ${storeConfig.description}`,
-              vibe: storeConfig.theme,
-              location: storeConfig.location,
-              productType: storeConfig.category,
-              paymentMethods: ['USDC', 'ETH'],
-            }
+      const businessContext =
+        storeConfig.businessType === 'new'
+          ? `Build a new ${storeConfig.category} store`
+          : `Optimize my existing ${storeConfig.existingPlatform || 'store'} platform`
+
+      const requestData = {
+        prompt: `${businessContext} called "${storeConfig.name}" in ${storeConfig.location}. ${storeConfig.description}`,
+        vibe: storeConfig.theme,
+        location: storeConfig.location,
+        productType: storeConfig.category,
+        paymentMethods: ['USDC', 'ETH'],
+      }
 
       console.log('Sending request:', requestData)
 
       const response = await fetch('/api/storeforge/build', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(requestData),
       })
 
       console.log('Response status:', response.status)
@@ -122,7 +124,7 @@ export default function StoreForgePage() {
 
       const result = await response.json()
       console.log('API Result:', result)
-      
+
       if (result.success) {
         setGeneratedStore(result.data)
         setStep(4)
@@ -140,7 +142,7 @@ export default function StoreForgePage() {
 
   const downloadStore = () => {
     if (!generatedStore) return
-    
+
     const storeCode = generatedStore.deployment?.storeCode
     if (storeCode) {
       const blob = new Blob([storeCode], { type: 'text/javascript' })
@@ -174,18 +176,14 @@ export default function StoreForgePage() {
           <div className="flex items-center gap-4">
             {[1, 2, 3, 4, 5].map((stepNum) => (
               <div key={stepNum} className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
-                  step >= stepNum 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-gray-200 text-gray-500'
-                }`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
+                    step >= stepNum ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
                   {step > stepNum ? <CheckCircle className="h-5 w-5" /> : stepNum}
                 </div>
-                {stepNum < 5 && (
-                  <div className={`w-16 h-1 mx-2 ${
-                    step > stepNum ? 'bg-blue-600' : 'bg-gray-200'
-                  }`} />
-                )}
+                {stepNum < 5 && <div className={`w-16 h-1 mx-2 ${step > stepNum ? 'bg-blue-600' : 'bg-gray-200'}`} />}
               </div>
             ))}
           </div>
@@ -204,10 +202,10 @@ export default function StoreForgePage() {
               <CardContent className="space-y-6">
                 <div>
                   <Label htmlFor="businessType">What type of business are you building?</Label>
-                  <Select 
-                    value={storeConfig.businessType} 
-                    onValueChange={(value: 'new' | 'shopify' | 'woocommerce' | 'existing') => 
-                      setStoreConfig(prev => ({ ...prev, businessType: value }))
+                  <Select
+                    value={storeConfig.businessType}
+                    onValueChange={(value: 'new' | 'shopify' | 'woocommerce' | 'existing') =>
+                      setStoreConfig((prev) => ({ ...prev, businessType: value }))
                     }
                   >
                     <SelectTrigger>
@@ -225,11 +223,9 @@ export default function StoreForgePage() {
                 {storeConfig.businessType !== 'new' && (
                   <div>
                     <Label htmlFor="existingPlatform">Current Platform</Label>
-                    <Select 
-                      value={storeConfig.existingPlatform} 
-                      onValueChange={(value) => 
-                        setStoreConfig(prev => ({ ...prev, existingPlatform: value }))
-                      }
+                    <Select
+                      value={storeConfig.existingPlatform}
+                      onValueChange={(value) => setStoreConfig((prev) => ({ ...prev, existingPlatform: value }))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select your current platform" />
@@ -257,10 +253,9 @@ export default function StoreForgePage() {
                     <li className="flex items-center gap-2 text-black">
                       <CheckCircle className="h-4 w-4 text-green-600" />
                       <span className="text-black">
-                        {storeConfig.businessType === 'new' 
-                          ? 'Professional e-commerce website' 
-                          : `GEO/AEO optimization for your ${storeConfig.existingPlatform || 'existing'} store`
-                        }
+                        {storeConfig.businessType === 'new'
+                          ? 'Professional e-commerce website'
+                          : `GEO/AEO optimization for your ${storeConfig.existingPlatform || 'existing'} store`}
                       </span>
                     </li>
                     <li className="flex items-center gap-2 text-black">
@@ -274,10 +269,9 @@ export default function StoreForgePage() {
                     <li className="flex items-center gap-2 text-black">
                       <CheckCircle className="h-4 w-4 text-green-600" />
                       <span className="text-black">
-                        {storeConfig.businessType === 'new' 
-                          ? 'Ready to deploy to Vercel' 
-                          : 'Integration guide and code snippets'
-                        }
+                        {storeConfig.businessType === 'new'
+                          ? 'Ready to deploy to Vercel'
+                          : 'Integration guide and code snippets'}
                       </span>
                     </li>
                     <li className="flex items-center gap-2 text-black">
@@ -288,9 +282,7 @@ export default function StoreForgePage() {
                 </div>
 
                 <div className="flex justify-end">
-                  <Button onClick={() => setStep(2)}>
-                    Continue to Store Details
-                  </Button>
+                  <Button onClick={() => setStep(2)}>Continue to Store Details</Button>
                 </div>
               </CardContent>
             </Card>
@@ -311,13 +303,16 @@ export default function StoreForgePage() {
                     <Input
                       id="name"
                       value={storeConfig.name}
-                      onChange={(e) => setStoreConfig(prev => ({ ...prev, name: e.target.value }))}
+                      onChange={(e) => setStoreConfig((prev) => ({ ...prev, name: e.target.value }))}
                       placeholder="My Awesome Store"
                     />
                   </div>
                   <div>
                     <Label htmlFor="category">Category</Label>
-                    <Select value={storeConfig.category} onValueChange={(value) => setStoreConfig(prev => ({ ...prev, category: value }))}>
+                    <Select
+                      value={storeConfig.category}
+                      onValueChange={(value) => setStoreConfig((prev) => ({ ...prev, category: value }))}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
@@ -334,13 +329,13 @@ export default function StoreForgePage() {
                     </Select>
                   </div>
                 </div>
-                
+
                 <div>
                   <Label htmlFor="description">Store Description *</Label>
                   <Textarea
                     id="description"
                     value={storeConfig.description}
-                    onChange={(e) => setStoreConfig(prev => ({ ...prev, description: e.target.value }))}
+                    onChange={(e) => setStoreConfig((prev) => ({ ...prev, description: e.target.value }))}
                     placeholder="Describe what your store sells and what makes it special..."
                     rows={3}
                   />
@@ -352,13 +347,16 @@ export default function StoreForgePage() {
                     <Input
                       id="location"
                       value={storeConfig.location}
-                      onChange={(e) => setStoreConfig(prev => ({ ...prev, location: e.target.value }))}
+                      onChange={(e) => setStoreConfig((prev) => ({ ...prev, location: e.target.value }))}
                       placeholder="New York, NY"
                     />
                   </div>
                   <div>
                     <Label htmlFor="theme">Theme</Label>
-                    <Select value={storeConfig.theme} onValueChange={(value) => setStoreConfig(prev => ({ ...prev, theme: value }))}>
+                    <Select
+                      value={storeConfig.theme}
+                      onValueChange={(value) => setStoreConfig((prev) => ({ ...prev, theme: value }))}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select theme" />
                       </SelectTrigger>
@@ -405,7 +403,7 @@ export default function StoreForgePage() {
                           Remove
                         </Button>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <Label>Product Name</Label>
@@ -426,7 +424,7 @@ export default function StoreForgePage() {
                           />
                         </div>
                       </div>
-                      
+
                       <div className="mt-4">
                         <Label>Description</Label>
                         <Textarea
@@ -471,10 +469,18 @@ export default function StoreForgePage() {
                   <div>
                     <h3 className="font-medium mb-2">Store Details</h3>
                     <div className="space-y-2 text-sm">
-                      <p><strong>Name:</strong> {storeConfig.name}</p>
-                      <p><strong>Category:</strong> {storeConfig.category}</p>
-                      <p><strong>Location:</strong> {storeConfig.location}</p>
-                      <p><strong>Theme:</strong> {storeConfig.theme}</p>
+                      <p>
+                        <strong>Name:</strong> {storeConfig.name}
+                      </p>
+                      <p>
+                        <strong>Category:</strong> {storeConfig.category}
+                      </p>
+                      <p>
+                        <strong>Location:</strong> {storeConfig.location}
+                      </p>
+                      <p>
+                        <strong>Theme:</strong> {storeConfig.theme}
+                      </p>
                     </div>
                   </div>
                   <div>
@@ -496,11 +502,7 @@ export default function StoreForgePage() {
                             <p className="text-sm text-gray-600">{product.description}</p>
                             <p className="text-sm font-medium text-blue-600">{product.price} USDC</p>
                           </div>
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-16 h-16 object-cover rounded"
-                          />
+                          <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
                         </div>
                       </div>
                     ))}
@@ -579,7 +581,7 @@ export default function StoreForgePage() {
                     <Eye className="h-6 w-6" />
                     <span>Preview Store</span>
                   </Button>
-                  
+
                   <Button
                     onClick={downloadStore}
                     variant="outline"
@@ -588,7 +590,7 @@ export default function StoreForgePage() {
                     <Download className="h-6 w-6" />
                     <span>Download Code</span>
                   </Button>
-                  
+
                   <Button
                     onClick={() => window.open('https://vercel.com/new', '_blank')}
                     variant="outline"
@@ -605,31 +607,49 @@ export default function StoreForgePage() {
                   <h3 className="font-medium mb-4">Store Details</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p><strong>Store ID:</strong> {generatedStore.storeId}</p>
-                      <p><strong>Name:</strong> {generatedStore.storeName}</p>
-                      <p><strong>Location:</strong> {generatedStore.geoData?.address}</p>
+                      <p>
+                        <strong>Store ID:</strong> {generatedStore.storeId}
+                      </p>
+                      <p>
+                        <strong>Name:</strong> {generatedStore.storeName}
+                      </p>
+                      <p>
+                        <strong>Location:</strong> {generatedStore.geoData?.address}
+                      </p>
                     </div>
                     <div>
-                      <p><strong>Products:</strong> {generatedStore.products?.length || 0}</p>
-                      <p><strong>Payment Methods:</strong> USDC, ETH</p>
-                      <p><strong>Status:</strong> <Badge variant="default">Ready</Badge></p>
+                      <p>
+                        <strong>Products:</strong> {generatedStore.products?.length || 0}
+                      </p>
+                      <p>
+                        <strong>Payment Methods:</strong> USDC, ETH
+                      </p>
+                      <p>
+                        <strong>Status:</strong> <Badge variant="default">Ready</Badge>
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex gap-4">
-                  <Button onClick={() => {
-                    setStep(1)
-                    setGeneratedStore(null)
-                    setStoreConfig({
-                      name: '',
-                      description: '',
-                      category: '',
-                      location: '',
-                      theme: 'modern',
-                      products: []
-                    })
-                  }} variant="outline" className="flex-1">
+                  <Button
+                    onClick={() => {
+                      setStep(1)
+                      setGeneratedStore(null)
+                      setStoreConfig({
+                        name: '',
+                        description: '',
+                        category: '',
+                        location: '',
+                        theme: 'modern',
+                        businessType: 'new',
+                        existingPlatform: '',
+                        products: [],
+                      })
+                    }}
+                    variant="outline"
+                    className="flex-1"
+                  >
                     Build Another Store
                   </Button>
                   <Button

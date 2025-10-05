@@ -12,7 +12,7 @@ export const SimpleStoreConfigSchema = z.object({
       price: z.number(),
       description: z.string(),
       image: z.string(),
-    })
+    }),
   ),
 })
 
@@ -71,7 +71,7 @@ export class SimpleStoreGenerator {
     const themeColors = this.getThemeColors(config.theme)
     const storeName = config.name.replace(/[^a-zA-Z0-9]/g, '')
     const productsJson = JSON.stringify(config.products)
-    
+
     return `'use client'
 
 import { useState, useMemo } from 'react'
@@ -282,38 +282,42 @@ export default function ${storeName}Store() {
   }
 
   generatePackageJson(config: SimpleStoreConfig): string {
-    return JSON.stringify({
-      name: config.name.toLowerCase().replace(/\s+/g, '-'),
-      version: '1.0.0',
-      private: true,
-      description: config.description,
-      scripts: {
-        dev: 'next dev',
-        build: 'next build',
-        start: 'next start',
-        lint: 'next lint',
+    return JSON.stringify(
+      {
+        name: config.name.toLowerCase().replace(/\s+/g, '-'),
+        version: '1.0.0',
+        private: true,
+        description: config.description,
+        scripts: {
+          dev: 'next dev',
+          build: 'next build',
+          start: 'next start',
+          lint: 'next lint',
+        },
+        dependencies: {
+          next: '^14.0.0',
+          react: '^18.0.0',
+          'react-dom': '^18.0.0',
+          'lucide-react': '^0.294.0',
+        },
+        devDependencies: {
+          '@types/node': '^20.0.0',
+          '@types/react': '^18.0.0',
+          '@types/react-dom': '^18.0.0',
+          autoprefixer: '^10.0.0',
+          eslint: '^8.0.0',
+          'eslint-config-next': '^14.0.0',
+          postcss: '^8.0.0',
+          tailwindcss: '^3.0.0',
+          typescript: '^5.0.0',
+        },
+        keywords: ['ecommerce', 'nextjs', 'react', 'crypto', 'storeforge'],
+        author: 'StoreForge AI',
+        license: 'MIT',
       },
-      dependencies: {
-        next: '^14.0.0',
-        react: '^18.0.0',
-        'react-dom': '^18.0.0',
-        'lucide-react': '^0.294.0',
-      },
-      devDependencies: {
-        '@types/node': '^20.0.0',
-        '@types/react': '^18.0.0',
-        '@types/react-dom': '^18.0.0',
-        autoprefixer: '^10.0.0',
-        eslint: '^8.0.0',
-        'eslint-config-next': '^14.0.0',
-        postcss: '^8.0.0',
-        tailwindcss: '^3.0.0',
-        typescript: '^5.0.0',
-      },
-      keywords: ['ecommerce', 'nextjs', 'react', 'crypto', 'storeforge'],
-      author: 'StoreForge AI',
-      license: 'MIT',
-    }, null, 2)
+      null,
+      2,
+    )
   }
 
   generateReadme(config: SimpleStoreConfig): string {
