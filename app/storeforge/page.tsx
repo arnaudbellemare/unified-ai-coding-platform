@@ -417,8 +417,13 @@ export default function StoreForgePage() {
                           <Label>Price (USDC)</Label>
                           <Input
                             type="number"
-                            value={product.price}
+                            value={product.price === 0 ? '' : product.price}
                             onChange={(e) => updateProduct(index, 'price', parseFloat(e.target.value) || 0)}
+                            onFocus={(e) => {
+                              if (product.price === 0) {
+                                e.target.value = ''
+                              }
+                            }}
                             placeholder="0.00"
                             step="0.01"
                           />
